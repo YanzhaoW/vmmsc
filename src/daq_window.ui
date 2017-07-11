@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1345</width>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -179,19 +179,6 @@
         <string>Config file</string>
        </property>
       </widget>
-      <zorder>Box_fec1</zorder>
-      <zorder>Box_fec2</zorder>
-      <zorder>Box_fec3</zorder>
-      <zorder>Box_fec4</zorder>
-      <zorder>Box_fec5</zorder>
-      <zorder>Box_fec6</zorder>
-      <zorder>Box_fec7</zorder>
-      <zorder>Box_fec8</zorder>
-      <zorder>Button_load</zorder>
-      <zorder>Button_save</zorder>
-      <zorder>line_configFile</zorder>
-      <zorder>label_configFile</zorder>
-      <zorder>tabWidget</zorder>
      </widget>
     </item>
     <item>
@@ -212,7 +199,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1345</width>
      <height>19</height>
     </rect>
    </property>

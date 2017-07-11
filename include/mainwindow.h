@@ -334,6 +334,7 @@ class MainWindow : public QMainWindow
         void slotFileChanged2(QString file);
 
         void on_sdcks_currentIndexChanged(int index);
+        void on_scrollArea_objectNameChanged(const QString &objectName);
 };
 
 

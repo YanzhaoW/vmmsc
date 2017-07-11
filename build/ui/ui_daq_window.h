@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'daq_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -56,7 +56,7 @@ public:
     {
         if (daq_window->objectName().isEmpty())
             daq_window->setObjectName(QStringLiteral("daq_window"));
-        daq_window->resize(800, 600);
+        daq_window->resize(1345, 917);
         centralwidget = new QWidget(daq_window);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         horizontalLayout = new QHBoxLayout(centralwidget);
@@ -100,18 +100,6 @@ public:
         label_configFile = new QLabel(groupBox);
         label_configFile->setObjectName(QStringLiteral("label_configFile"));
         label_configFile->setGeometry(QRect(20, 430, 61, 16));
-        Box_fec1->raise();
-        Box_fec2->raise();
-        Box_fec3->raise();
-        Box_fec4->raise();
-        Box_fec5->raise();
-        Box_fec6->raise();
-        Box_fec7->raise();
-        Box_fec8->raise();
-        Button_load->raise();
-        Button_save->raise();
-        line_configFile->raise();
-        label_configFile->raise();
 
         horizontalLayout->addWidget(groupBox);
 
@@ -128,7 +116,7 @@ public:
         daq_window->setCentralWidget(centralwidget);
         menubar = new QMenuBar(daq_window);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 19));
+        menubar->setGeometry(QRect(0, 0, 1345, 19));
         daq_window->setMenuBar(menubar);
         statusbar = new QStatusBar(daq_window);
         statusbar->setObjectName(QStringLiteral("statusbar"));

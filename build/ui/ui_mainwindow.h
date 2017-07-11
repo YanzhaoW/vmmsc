@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -384,7 +384,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         groupBox_4 = new QGroupBox(centralWidget);
         groupBox_4->setObjectName(QStringLiteral("groupBox_4"));
-        groupBox_4->setGeometry(QRect(280, 0, 311, 571));
+        groupBox_4->setGeometry(QRect(280, 0, 391, 571));
         groupBox_4->setFont(font);
         useMapping = new QCheckBox(groupBox_4);
         useMapping->setObjectName(QStringLiteral("useMapping"));
@@ -414,7 +414,7 @@ public:
         writeDAQXMLFile->setFont(font1);
         layoutWidget = new QWidget(groupBox_4);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 33, 291, 241));
+        layoutWidget->setGeometry(QRect(10, 33, 378, 241));
         verticalLayout = new QVBoxLayout(layoutWidget);
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
@@ -700,7 +700,7 @@ public:
 
         layoutWidget1 = new QWidget(groupBox_4);
         layoutWidget1->setObjectName(QStringLiteral("layoutWidget1"));
-        layoutWidget1->setGeometry(QRect(10, 280, 291, 211));
+        layoutWidget1->setGeometry(QRect(10, 280, 361, 211));
         verticalLayout_2 = new QVBoxLayout(layoutWidget1);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -1163,7 +1163,7 @@ public:
 
         horizontalLayoutWidget = new QWidget(groupBox_2);
         horizontalLayoutWidget->setObjectName(QStringLiteral("horizontalLayoutWidget"));
-        horizontalLayoutWidget->setGeometry(QRect(10, 20, 112, 62));
+        horizontalLayoutWidget->setGeometry(QRect(10, 20, 112, 64));
         gridLayout_2 = new QGridLayout(horizontalLayoutWidget);
         gridLayout_2->setSpacing(6);
         gridLayout_2->setContentsMargins(11, 11, 11, 11);
@@ -1441,7 +1441,7 @@ public:
         gridLayout_9->setColumnStretch(1, 1);
         layoutWidget3 = new QWidget(groupBox_3);
         layoutWidget3->setObjectName(QStringLiteral("layoutWidget3"));
-        layoutWidget3->setGeometry(QRect(0, 51, 111, 131));
+        layoutWidget3->setGeometry(QRect(0, 51, 111, 204));
         gridLayout_11 = new QGridLayout(layoutWidget3);
         gridLayout_11->setSpacing(6);
         gridLayout_11->setContentsMargins(11, 11, 11, 11);
@@ -1783,7 +1783,7 @@ public:
         setck_s6->setFont(font2);
         tabWidget = new QTabWidget(centralWidget);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(600, 10, 691, 671));
+        tabWidget->setGeometry(QRect(680, 10, 611, 671));
         QFont font5;
         font5.setPointSize(10);
         tabWidget->setFont(font5);
@@ -1803,7 +1803,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 553, 619));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 554, 619));
         scrollArea->setWidget(scrollAreaWidgetContents);
         gridLayoutWidget = new QWidget(tab_3);
         gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
@@ -2223,7 +2223,7 @@ public:
         doCalib->setCheckable(true);
         layoutWidget9 = new QWidget(tab);
         layoutWidget9->setObjectName(QStringLiteral("layoutWidget9"));
-        layoutWidget9->setGeometry(QRect(90, 10, 235, 21));
+        layoutWidget9->setGeometry(QRect(90, 10, 235, 22));
         horizontalLayout_17 = new QHBoxLayout(layoutWidget9);
         horizontalLayout_17->setSpacing(6);
         horizontalLayout_17->setContentsMargins(11, 11, 11, 11);

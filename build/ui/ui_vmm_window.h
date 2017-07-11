@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vmm_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -28,7 +28,7 @@ public:
     {
         if (vmm_window->objectName().isEmpty())
             vmm_window->setObjectName(QStringLiteral("vmm_window"));
-        vmm_window->resize(400, 300);
+        vmm_window->resize(1474, 1114);
         pushButton = new QPushButton(vmm_window);
         pushButton->setObjectName(QStringLiteral("pushButton"));
         pushButton->setGeometry(QRect(240, 120, 80, 22));

@@ -1777,6 +1777,54 @@ moc/moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -5439,6 +5487,54 @@ moc/moc_data_handler.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../include/boost/property_tree/detail/rapidxml.hpp \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -6654,6 +6750,54 @@ moc/moc_vmm_config_handler.cpp: ../include/globparameter.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -7811,6 +7955,54 @@ moc/moc_daq_config_handler.cpp: ../include/globparameter.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -8969,6 +9161,54 @@ moc/moc_commandline.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -10124,6 +10364,54 @@ moc/moc_fec_config_handler.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObje
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -11595,6 +11883,54 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -12752,6 +13088,54 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -13915,6 +14299,54 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -15078,6 +15510,54 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -16241,6 +16721,54 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -17403,6 +17931,54 @@ objects/main.o: ../src/main.cpp ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QA
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -18555,6 +19131,54 @@ objects/mainwindow.o: ../src/mainwindow.cpp ../include/mainwindow.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -19533,6 +20157,54 @@ objects/run_module.o: ../src/run_module.cpp ../include/run_module.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -22416,6 +23088,54 @@ objects/data_handler.o: ../src/data_handler.cpp ../include/data_handler.h \
 		../include/boost/property_tree/detail/rapidxml.hpp \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -23897,6 +24617,54 @@ objects/commandline.o: ../src/commandline.cpp ../include/commandline.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -25051,6 +25819,54 @@ objects/vmm_config_handler.o: ../src/vmm_config_handler.cpp ../include/vmm_confi
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -26206,6 +27022,54 @@ objects/daq_config_handler.o: ../src/daq_config_handler.cpp ../include/daq_confi
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -27360,6 +28224,54 @@ objects/fec_config_handler.o: ../src/fec_config_handler.cpp ../include/fec_confi
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -28823,6 +29735,54 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -29978,6 +30938,54 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -31145,6 +32153,54 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -32306,6 +33362,54 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
@@ -33467,6 +34571,54 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../include/data_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		$(ROOTSYS)/include/TROOT.h \
+		/usr/local/src/root_v5.34.36/include/TDirectory.h \
+		/usr/local/src/root_v5.34.36/include/TNamed.h \
+		/usr/local/src/root_v5.34.36/include/TObject.h \
+		/usr/local/src/root_v5.34.36/include/Rtypes.h \
+		/usr/local/src/root_v5.34.36/include/RConfig.h \
+		/usr/local/src/root_v5.34.36/include/RVersion.h \
+		/usr/local/src/root_v5.34.36/include/DllImport.h \
+		/usr/local/src/root_v5.34.36/include/Rtypeinfo.h \
+		$(ROOTSYS)/include/snprintf.h \
+		$(ROOTSYS)/include/strlcpy.h \
+		/usr/local/src/root_v5.34.36/include/TGenericClassInfo.h \
+		/usr/local/src/root_v5.34.36/include/TSchemaHelper.h \
+		/usr/local/src/root_v5.34.36/include/TStorage.h \
+		/usr/local/src/root_v5.34.36/include/TVersionCheck.h \
+		/usr/local/src/root_v5.34.36/include/Riosfwd.h \
+		/usr/local/src/root_v5.34.36/include/TBuffer.h \
+		/usr/local/src/root_v5.34.36/include/TString.h \
+		/usr/local/src/root_v5.34.36/include/TMathBase.h \
+		/usr/local/src/root_v5.34.36/include/TList.h \
+		/usr/local/src/root_v5.34.36/include/TSeqCollection.h \
+		/usr/local/src/root_v5.34.36/include/TCollection.h \
+		/usr/local/src/root_v5.34.36/include/TIterator.h \
+		/usr/local/src/root_v5.34.36/include/TDatime.h \
+		/usr/local/src/root_v5.34.36/include/TUUID.h \
+		$(ROOTSYS)/include/TFile.h \
+		/usr/local/src/root_v5.34.36/include/TDirectoryFile.h \
+		/usr/local/src/root_v5.34.36/include/TMap.h \
+		/usr/local/src/root_v5.34.36/include/THashTable.h \
+		/usr/local/src/root_v5.34.36/include/TUrl.h \
+		$(ROOTSYS)/include/TTree.h \
+		$(ROOTSYS)/include/TBranch.h \
+		/usr/local/src/root_v5.34.36/include/TObjArray.h \
+		/usr/local/src/root_v5.34.36/include/TAttFill.h \
+		/usr/local/src/root_v5.34.36/include/TDataType.h \
+		/usr/local/src/root_v5.34.36/include/TDictionary.h \
+		/usr/local/src/root_v5.34.36/include/Property.h \
+		/usr/local/src/root_v5.34.36/include/ESTLType.h \
+		/usr/local/src/root_v5.34.36/include/TAttLine.h \
+		/usr/local/src/root_v5.34.36/include/TAttMarker.h \
+		/usr/local/src/root_v5.34.36/include/TArrayD.h \
+		/usr/local/src/root_v5.34.36/include/TArray.h \
+		/usr/local/src/root_v5.34.36/include/TArrayI.h \
+		/usr/local/src/root_v5.34.36/include/TClass.h \
+		/usr/local/src/root_v5.34.36/include/TObjString.h \
+		/usr/local/src/root_v5.34.36/include/ThreadLocalStorage.h \
+		/usr/local/src/root_v5.34.36/include/RConfigure.h \
+		/usr/local/src/root_v5.34.36/include/TVirtualTreePlayer.h \
 		../include/boost/shared_ptr.hpp \
 		../include/boost/smart_ptr/shared_ptr.hpp \
 		../include/boost/checked_delete.hpp \
