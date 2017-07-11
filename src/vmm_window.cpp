@@ -10,6 +10,9 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
     ui(new Ui::vmm_window)
 {
     ui->setupUi(this);
+
+    ui->tabWidget->setStyleSheet("QTabBar::tab { height: 18px; width: 100px; }");
+    ui->tabWidget->setTabText(0,"Channel Registers");
 }
 
 vmm_window::~vmm_window()
