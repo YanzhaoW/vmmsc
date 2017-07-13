@@ -1,18 +1,18 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'run_module.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.7.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../../dg_epool/SRS/vmm_daq/include/run_module.h"
+#include "../../include/run_module.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'run_module.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.5.1. It"
+#error "This file was generated using the moc from 5.7.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -105,18 +105,21 @@ void RunModule::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
             typedef void (RunModule::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&RunModule::EndRun)) {
                 *result = 0;
+                return;
             }
         }
         {
             typedef void (RunModule::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&RunModule::checkLinks)) {
                 *result = 1;
+                return;
             }
         }
         {
             typedef void (RunModule::*_t)(bool );
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&RunModule::s6resetStatus)) {
                 *result = 2;
+                return;
             }
         }
     }

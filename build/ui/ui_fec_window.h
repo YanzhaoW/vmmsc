@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'fec_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.5.1
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -43,7 +43,7 @@ public:
     {
         if (fec_window->objectName().isEmpty())
             fec_window->setObjectName(QStringLiteral("fec_window"));
-        fec_window->resize(400, 300);
+        fec_window->resize(1336, 906);
         horizontalLayout = new QHBoxLayout(fec_window);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         groupBox = new QGroupBox(fec_window);

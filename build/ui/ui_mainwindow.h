@@ -2223,7 +2223,7 @@ public:
         doCalib->setCheckable(true);
         layoutWidget9 = new QWidget(tab);
         layoutWidget9->setObjectName(QStringLiteral("layoutWidget9"));
-        layoutWidget9->setGeometry(QRect(90, 10, 235, 22));
+        layoutWidget9->setGeometry(QRect(90, 10, 246, 22));
         horizontalLayout_17 = new QHBoxLayout(layoutWidget9);
         horizontalLayout_17->setSpacing(6);
         horizontalLayout_17->setContentsMargins(11, 11, 11, 11);
