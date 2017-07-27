@@ -1,6 +1,5 @@
 //Conneted hardware and vmm position map. No comment in the following lines, take care of syntax!
-daq 0: fecs: 1
-	fec 0: hdmis: 0
+daq 0: fecs: 0
 // daq general settings
 ignore16 false
 debug 0

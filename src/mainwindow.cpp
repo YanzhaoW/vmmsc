@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
         fecconfhandl = new FEC_config_handler(this);
         //daq_window *daqwindow = new daq_window(this);
         daqwindow = new daq_window(this);
-        daqwindow->setWindowTitle("VMM2 - SRS DCS new");
+        daqwindow->setWindowTitle("VMM3 - SRS DCS new");
         daqwindow->show();
     //thread
     daqThread = new QThread();

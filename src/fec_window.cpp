@@ -10,6 +10,10 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
 {
     ui->setupUi(this);
     updateWindow();
+    ui->pushButton_sL0enaV->setToolTip("disable mixed signal functions when L0 enabled");
+    ui->pushButton_sL0ena->setToolTip("enable L0 core / reset core & gate clk if 0");
+    ui->pushButton_sL0cktest->setToolTip("enable clocks when L0 core disabled (test)");
+
 }
 
 fec_window::~fec_window()

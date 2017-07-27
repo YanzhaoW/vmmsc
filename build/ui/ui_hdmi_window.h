@@ -14,8 +14,8 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
-#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QVBoxLayout>
@@ -26,19 +26,24 @@ QT_BEGIN_NAMESPACE
 class Ui_hdmi_window
 {
 public:
-    QHBoxLayout *horizontalLayout;
+    QGridLayout *gridLayout;
+    QTabWidget *tabWidget;
     QGroupBox *groupBox;
     QVBoxLayout *verticalLayout;
     QCheckBox *Box_hybrid1;
-    QTabWidget *tabWidget;
 
     void setupUi(QWidget *hdmi_window)
     {
         if (hdmi_window->objectName().isEmpty())
             hdmi_window->setObjectName(QStringLiteral("hdmi_window"));
-        hdmi_window->resize(400, 300);
-        horizontalLayout = new QHBoxLayout(hdmi_window);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        hdmi_window->resize(1045, 803);
+        gridLayout = new QGridLayout(hdmi_window);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        tabWidget = new QTabWidget(hdmi_window);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+
+        gridLayout->addWidget(tabWidget, 0, 1, 1, 1);
+
         groupBox = new QGroupBox(hdmi_window);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         verticalLayout = new QVBoxLayout(groupBox);
@@ -49,12 +54,7 @@ public:
         verticalLayout->addWidget(Box_hybrid1);
 
 
-        horizontalLayout->addWidget(groupBox);
-
-        tabWidget = new QTabWidget(hdmi_window);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
-
-        horizontalLayout->addWidget(tabWidget);
+        gridLayout->addWidget(groupBox, 0, 0, 1, 1);
 
 
         retranslateUi(hdmi_window);
