@@ -107,7 +107,7 @@ public:
     {
         if (daq_window->objectName().isEmpty())
             daq_window->setObjectName(QStringLiteral("daq_window"));
-        daq_window->resize(1760, 1154);
+        daq_window->resize(1235, 805);
         centralwidget = new QWidget(daq_window);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_2 = new QGridLayout(centralwidget);
@@ -404,7 +404,7 @@ public:
         daq_window->setCentralWidget(centralwidget);
         menubar = new QMenuBar(daq_window);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1760, 19));
+        menubar->setGeometry(QRect(0, 0, 1235, 19));
         daq_window->setMenuBar(menubar);
         statusbar = new QStatusBar(daq_window);
         statusbar->setObjectName(QStringLiteral("statusbar"));

@@ -71,9 +71,12 @@ void fec_window::hdmiBoxLogic(bool checked, unsigned short hdmi){
     if (checked){
         ui->tabWidget->insertTab(hdmi-NotActiveBefore, new hdmi_window(this,fec_index,hdmi), QString(" HDMI %0").arg(hdmi+1));
         ui->tabWidget->setCurrentIndex(hdmi-NotActiveBefore);
+        root_daq->root_main->daq[0].fec[fec_index].SetHDMI(hdmi, true);
+
     }
     else {
         ui->tabWidget->removeTab(hdmi-NotActiveBefore);
+        root_daq->root_main->daq[0].fec[fec_index].SetHDMI(hdmi, false);
     }
 }
 
@@ -89,6 +92,16 @@ void fec_window::updateWindow(){
             if (k == 5 && !ui->Box_hdmi6->isChecked()){ui->Box_hdmi6->setChecked(true); on_Box_hdmi6_clicked();}
             if (k == 6 && !ui->Box_hdmi7->isChecked()){ui->Box_hdmi7->setChecked(true); on_Box_hdmi7_clicked();}
             if (k == 7 && !ui->Box_hdmi8->isChecked()){ui->Box_hdmi8->setChecked(true); on_Box_hdmi8_clicked();}
+        }
+        else{
+            if (k == 0 && ui->Box_hdmi1->isChecked()){ui->Box_hdmi1->setChecked(false); on_Box_hdmi1_clicked();}
+            if (k == 1 && ui->Box_hdmi2->isChecked()){ui->Box_hdmi2->setChecked(false); on_Box_hdmi2_clicked();}
+            if (k == 2 && ui->Box_hdmi3->isChecked()){ui->Box_hdmi3->setChecked(false); on_Box_hdmi3_clicked();}
+            if (k == 3 && ui->Box_hdmi4->isChecked()){ui->Box_hdmi4->setChecked(false); on_Box_hdmi4_clicked();}
+            if (k == 4 && ui->Box_hdmi5->isChecked()){ui->Box_hdmi5->setChecked(false); on_Box_hdmi5_clicked();}
+            if (k == 5 && ui->Box_hdmi6->isChecked()){ui->Box_hdmi6->setChecked(false); on_Box_hdmi6_clicked();}
+            if (k == 6 && ui->Box_hdmi7->isChecked()){ui->Box_hdmi7->setChecked(false); on_Box_hdmi7_clicked();}
+            if (k == 7 && ui->Box_hdmi8->isChecked()){ui->Box_hdmi8->setChecked(false); on_Box_hdmi8_clicked();}
         }
     }
 }

@@ -100,7 +100,7 @@ public:
     {
         if (fec_window->objectName().isEmpty())
             fec_window->setObjectName(QStringLiteral("fec_window"));
-        fec_window->resize(1284, 1180);
+        fec_window->resize(1061, 918);
         gridLayout_6 = new QGridLayout(fec_window);
         gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
         widget = new QWidget(fec_window);

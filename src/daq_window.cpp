@@ -72,6 +72,7 @@ void daq_window::fecBoxLogic(bool checked, unsigned short fec){
 
 void daq_window::on_Button_load_clicked()
 {
+
     QString text = ui->line_configFile->displayText();
     std::string fname = text.toStdString();
     if (fname == "") {
@@ -79,13 +80,27 @@ void daq_window::on_Button_load_clicked()
         ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
+
         fname+=".txt";
         bool found = root_main->daqconfhandl->LoadDAQConf(fname.c_str());
         if (!found){
             std::cout << "File not found" << std::endl;
             ui->line_configFile->insert("ERROR: not found");
         }
+
         else {
+            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+
+                    if (j==0) {ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
+                    if (j==1 ){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
+                    if (j==2 ){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
+                    if (j==3 ){ui->Box_fec4->setChecked(false);on_Box_fec4_clicked();}
+                    if (j==4 ){ui->Box_fec5->setChecked(false);on_Box_fec5_clicked();}
+                    if (j==5 ){ui->Box_fec6->setChecked(false);on_Box_fec6_clicked();}
+                    if (j==6 ){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
+                    if (j==7 ){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
+            }
+            root_main->daqconfhandl->LoadDAQConf(fname.c_str());
             std::cout << "loading file " << fname << std::endl;
             for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
                 if (root_main->daq_act[i]){
@@ -112,6 +127,16 @@ void daq_window::on_Button_load_clicked()
                                     }
                                 }
                             }
+                        }
+                        else{
+                            if (j==0 && ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
+                            if (j==1 && ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
+                            if (j==2 && ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
+                            if (j==3 && ui->Box_fec4->isChecked()){ui->Box_fec4->setChecked(false);on_Box_fec4_clicked();}
+                            if (j==4 && ui->Box_fec5->isChecked()){ui->Box_fec5->setChecked(false);on_Box_fec5_clicked();}
+                            if (j==5 && ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(false);on_Box_fec6_clicked();}
+                            if (j==6 && ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
+                            if (j==7 && ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
                         }
                     }
                 }

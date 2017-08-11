@@ -17,6 +17,22 @@ bool DAQ_config_handler::WriteDAQConf(const char* filename){
 }
 
 bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ configuration from file
+    ////***************RESET before loading config file*******************////
+    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+//        root1->daq_act={false};
+            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+                root1->daq[i].SetFEC(j, false);
+                    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+                       root1->daq[i].fec[j].SetHDMI(k, false);
+                            for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                                root1->daq[i].fec[j].hdmi[k].SetHybrid(l, false);
+                                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                                        root1->daq[i].fec[j].hdmi[k].hybrid[l].SetVMM(m, false);
+                                    }
+                                }
+                            }
+                   }
+    }
     std::string empty = "";
     std::ifstream f; f.open(fname,std::ifstream::in);
     if(!f.is_open()) {std::cout<< "file "<<fname<<" not found"<<std::endl;return false;}
@@ -63,8 +79,16 @@ bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ config
                             iss >> val; std::string posnrst = val.substr(0, val.size()-1); root1->daq[0].fec[i].hdmi[hdminr].hybrid[k].SetPosNo(atoi(posnrst.c_str()));
                             iss >> word; if(word!= "vmms:") {std::cout  << "Syntax error in file, looking for \"vmms:\" in line "<< line << std::endl;return false;}
                             iss >> val; unsigned short vmms = atoi(val.c_str());
+                            std::cout<<"No. VMMS: "<<vmms<<std::endl;
                             for (unsigned short l = 0; l < vmms; l++){
-                                root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(l,true);
+                                //root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(l,true);
+                                std::getline (f,line);
+                                std::istringstream iss(line);
+                                iss >> word; if(word!= "vmm") {std::cout  << "Syntax error in file, looking for \"vmm\" in line "<< line << std::endl;return false;}
+                                iss >> val; std::string vmminrst = val.substr(0, val.size());
+                                unsigned short vmminr = atoi(vmminrst.c_str()); root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(vmminr,true); std::cout << "Setting vmm " << vmminr << " on hybrid " << hybridnr << " active" << std::endl;
+
+
                             }
                         }
                     }
@@ -164,6 +188,9 @@ bool DAQ_config_handler::WriteDAQConfig(std::string fname){
                                     else {
                                         f << "\t\t\thybrid "<< l << ": y " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
                                         std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo() << " on y axis has " << countVMMS << " active VMMS" << std::endl;
+                                    }
+                                    for (unsigned short m = 0; m < VMMS_PER_HYBRID; m++){
+                                       if (root1->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)) f << "\t\t\t\tvmm "<< m<< std::endl;
                                     }
                                 } //end if hybrid
                             }

@@ -50,6 +50,7 @@ class MainWindow : public QMainWindow
     friend class fec_window;
     friend class hdmi_window;
     friend class hybrid_window;
+    friend class vmm_window;
     DAQ daq[DAQS_PER_GUIWINDOW];
     public:
         explicit MainWindow(QWidget *parent = 0);

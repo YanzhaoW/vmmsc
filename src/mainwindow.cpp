@@ -556,7 +556,7 @@ void MainWindow::Connect()
     commInfo.comment = ui->userComments->text();
 
     configHandle().LoadCommInfo(commInfo);
-    bool pingOK = socketHandle().loadIPList(iplist).ping();
+    bool pingOK =socketHandle().loadIPList(iplist).ping();
 
     if(pingOK) {
         msg()("Ping successful");

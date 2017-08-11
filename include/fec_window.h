@@ -20,7 +20,9 @@ class fec_window : public QWidget
 public:
     explicit fec_window(daq_window *top, unsigned short fec = 0, QWidget *parent = 0);
     ~fec_window();
-
+    friend class hdmi_window;
+    friend class hybrid_window;
+    friend class vmm_window;
 private slots:
     void on_Box_hdmi1_clicked();
     void on_Box_hdmi2_clicked();

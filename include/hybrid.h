@@ -11,6 +11,7 @@ public:
     Hybrid();
     ~Hybrid();
     friend class Commandline;
+    friend class vmm;
     VMM vmm[VMMS_PER_HYBRID];
 
     bool SetVMM(unsigned short vmm, bool OnOff);

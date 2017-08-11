@@ -16,6 +16,8 @@ class hdmi_window : public QWidget
 {
     Q_OBJECT
     friend class hybrid_window;
+    friend class vmm_window;
+    friend class fec_window;
 
 public:
     explicit hdmi_window(fec_window *top, unsigned short fec = 0, unsigned short hdmi = 0, QWidget *parent = 0);

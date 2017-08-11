@@ -30,7 +30,6 @@ public:
     // Channel Fields Buttons
     /////////////////////////////////////////////////////
     QLineEdit *VMMChannel[64];
-    //QPushButton *VMMNegativeButton[64];
     QComboBox *VMMSDVoltage[64];
     QComboBox *VMMSZ010bCBox[64];
     QComboBox *VMMSZ08bCBox[64];
@@ -55,23 +54,13 @@ public:
     QComboBox *SZ06bLabel;
     QPushButton *SMXLabel;
 
-    QPushButton *SCLabel2;
-    QPushButton *SLLabel2;
-    QPushButton *STLabel2;
-    QPushButton *STHLabel2;
-    QPushButton *SMLabel2;
-    QComboBox *SDLabel2;
-    QComboBox *SZ010bLabel2;
-    QComboBox *SZ08bLabel2;
-    QComboBox *SZ06bLabel2;
-    QPushButton *SMXLabel2;
 
     bool VMMSCBool[64];
     bool VMMSLBool[64];
     bool VMMSTBool[64];
+    bool VMMSTHBool[64];
     bool VMMSMBool[64];
     bool VMMSMXBool[64];
-    bool VMMSTHBool[64];
     quint8 VMMSDValue[64];
     quint8 VMMSZ010bValue[64];
     quint8 VMMSZ08bValue[64];
@@ -87,15 +76,6 @@ public:
     bool VMMSZ08bBoolAll;
     bool VMMSZ06bBoolAll;
 
-    bool VMMSTHBoolAll2;
-    bool VMMSCBoolAll2;
-    bool VMMSLBoolAll2;
-    bool VMMSTBoolAll2;
-    bool VMMSMBoolAll2;
-    bool VMMSMXBoolAll2;
-    bool VMMSZ010bBoolAll2;
-    bool VMMSZ08bBoolAll2;
-    bool VMMSZ06bBoolAll2;
 
 private:
     hybrid_window *root_hybrid;
@@ -104,6 +84,8 @@ private:
     unsigned short hdmi_index;
     unsigned short vmm_index;
     Ui::vmm_window *ui;
+    unsigned short VMM_Get(std::string feature, int ch=-9999);
+    bool VMM_Set(std::string feature, int val ,int ch=-9999);
 
 public slots:
     // channel fields

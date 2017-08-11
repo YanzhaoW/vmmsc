@@ -8,8 +8,20 @@ VMM::VMM():
     RegGlobVals ( new std::vector<std::vector<const char*> > (34, std::vector<const char*>() ) ),
     RegChanVals ( new std::vector<std::vector<const char*> > (10, std::vector<const char*>() ) ),
     IsIntOrBool ( new std::vector<const char*> () ),
-    st (1024)      
+    st (1024),
+    Regi ( new VMM_Settings)
 {
+    //Fill Registers map with Standard value 0
+    for(std::string elem: Regi->Names_GReg1){
+        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    }
+    ///Possibility to add more default values and channel deault values have to be added!!!!!
+    Regi->m_GlobalReg1->at("gain") = 2;//corrsponds to 3 mV/fC
+//    Regi->ch_settings[6].VMMSCBool = 1;
+//    Regi->ch_settings[17].VMMSMXBool = 1;
+    std::cout<<"Here I go"<<std::endl;
+    SetRegister("gain","1");
+
     // generate const char * vector for allowed values of registers that hold a number e.g. threshold 0 to 1023
     std::vector<unsigned short> s(1024);
     std::iota(s.begin(), s.end(), 0);
@@ -20,7 +32,6 @@ VMM::VMM():
         ss <<s[i];
         st[i] = ss.str() ;
     }
-
     // set the size of the registers that hold values and fill them
     (*RegGlobVals)[31].resize(1024);
     (*RegGlobVals)[32].resize(1024);
@@ -115,6 +126,350 @@ VMM::VMM():
    IsIntOrBool->insert(IsIntOrBool->end(), (*RegGlobVals)[7].begin(), (*RegGlobVals)[7].end());
 
 }
+
+bool VMM::SetRegi(std::string feature, std::string val, int ch){
+     if (SetRegister(feature, val, ch)) return true;
+     else{
+        std::cout << "ERROR register or entered value does not exist." << std::endl;
+         return false;
+     }
+}
+bool VMM::SetRegi(std::string feature, bool val, int ch){
+    std::string value =std::to_string(val);
+    if (SetRegister(feature, value, ch)) return true;
+    else{
+       std::cout << "ERROR register or entered value does not exist." << std::endl;
+        return false;
+    }
+}
+
+bool VMM::SetRegi(std::string feature, int val, int ch){
+   std::string value =std::to_string(val);
+    if (SetRegister(feature, value, ch)) return true;
+    else{
+       std::cout << "ERROR register or entered value does not exist." << std::endl;
+        return false;
+    }
+}
+
+bool VMM::SetRegi(std::string feature, double val, int ch){
+    std::string value =std::to_string(val);
+    if (SetRegister(feature, value, ch)) return true;
+    else{
+       std::cout << "ERROR register or entered value does not exist." << std::endl;
+        return false;
+    }
+}
+
+
+bool VMM::SetRegister(std::string feature, std::string val, int ch ){
+    /// Function to set the VMM settings and write them in struct.
+    typedef std::map<std::string, unsigned short> InMap;
+    typedef std::pair<std::string, unsigned short> BiPair;
+//    InMap m_bin; // map for all settings which are booleans
+    std::string bools[14] = {"0","False","false","FALSE", "off", "OFF", "Off", "1", "True", "true", "TRUE", "on", "ON", "On"};
+    InMap m_bin = {{"0", 0},{"False", 0}};//,"false","FALSE", "off", "OFF", "Off", "1", "True", "true", "TRUE", "on", "ON", "On"};
+   std::cout<<"Here I go"<<std::endl;
+//    for(unsigned int i=0 ; i<sizeof(bools); i++){
+//        unsigned short bin_val=0;
+//                if(i>=7) bin_val=1;
+//        m_bin.insert(BiPair(bools[i], bin_val));
+//    }
+std::cout<<"Here I go"<<std::endl;
+
+    if(ch==-9999){
+
+        if(feature == "monitoring"){
+            InMap m_mon;
+            std::string mm_val[4] = {"Pulser_DAC", "Threshold_DAC", "Bandgap_reference", "Temperature_sensor"}; /// change these labels again
+            for(unsigned int i=1 ; i<=sizeof(mm_val); i++){
+                unsigned short bin_val=i;
+                m_mon.insert(BiPair(mm_val[i], bin_val));
+            }
+            if(m_mon.find(val)!=m_mon.end()){
+                Regi->m_GlobalReg1->at("monitoring") = m_mon[val];
+                Regi->m_GlobalReg1->at("scmx") = 0;
+                return true;
+            }
+            else{
+                for(unsigned short i=1; i<=64;i++){ //ATTENTION: here starting with Channel 1 to 64 and nit with 0
+                    if(val == std::to_string(i) ){
+                        Regi->m_GlobalReg1->at("monitoring") = i-1; // Channel -1 since started with 1
+                        Regi->m_GlobalReg1->at("scmx") = 1;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+        }
+
+        else if(feature == "sfam" ){
+            InMap m_sfam = m_bin;
+            m_sfam.insert(BiPair("timing at threshold", 0 ));
+            m_sfam.insert(BiPair("Timing at threshold", 0 ));
+            m_sfam.insert(BiPair("Timing At Threshold", 0 ));
+            m_sfam.insert(BiPair("timing at peak", 1 ));
+            m_sfam.insert(BiPair("Timing at peak", 1 ));
+            m_sfam.insert(BiPair("Timing At Peak", 1 ));
+
+             if(m_sfam.find(val)!=m_sfam.end()){
+               Regi->m_GlobalReg1->at(feature) = m_sfam[val];
+               return true;
+             }
+             return false;
+            /// enable of ART needed or automaticly done in GUI???
+        }
+
+        else if(feature == "peaktime" ){
+            InMap m_peakt;
+            std::string ptime[4] = { "200", "100", "50", "25" };
+            for(unsigned int i=0 ; i<sizeof(ptime); i++){
+                unsigned short bin_val=i;
+                m_peakt.insert(BiPair(ptime[i], bin_val));
+                m_peakt.insert(BiPair(std::to_string(i), bin_val));
+            }
+            if(m_peakt.find(val)!=m_peakt.end()){
+              Regi->m_GlobalReg1->at(feature) = m_peakt[val];
+              return true;
+            }
+            return false;
+        }
+
+        else if(feature == "gain" ){
+            InMap m_gain;
+            std::string gain[8] = {"0.5", "1", "3", "4.5", "6", "9", "12", "16"};
+            for(unsigned int i=0 ; i<sizeof(gain); i++){
+                unsigned short bin_val=i;
+                m_gain[(std::string)gain[i]]= bin_val;
+//                m_gain[std::to_string(i)]=bin_val;
+//                m_gain.insert(BiPair(gain[i], bin_val));
+//                m_gain.insert(BiPair(std::to_string(i), bin_val));
+            }
+            if(m_gain.find(val)!=m_gain.end()){
+              Regi->m_GlobalReg1->at(feature) = m_gain[val];
+              return true;
+            }
+            return false;
+        }
+
+
+
+
+        else if(feature == "stot" ){///or using the actual settings with mode?
+            InMap m_gain;
+            std::string gain[8] = {"TtP", "ToT", "PtP", "PtT"};
+            for(unsigned int i=0 ; i<sizeof(gain); i++){
+                unsigned short bin_val=i;
+                m_bin.insert(BiPair(gain[i], bin_val));
+                m_bin.insert(BiPair(std::to_string(i), bin_val));
+            }
+        }
+        else if(feature == "stc" ){
+            InMap m_gain;
+            std::string v_val[4] = {"60", "100", "350", "650"};
+            for(unsigned int i=0 ; i<sizeof(v_val); i++){
+                unsigned short bin_val=i;
+                m_gain.insert(BiPair(v_val[i], bin_val));
+                m_gain.insert(BiPair(std::to_string(i), bin_val));
+            }
+            if(m_gain.find(val)!=m_gain.end()){
+              Regi->m_GlobalReg1->at(feature) = m_gain[val];
+              return true;
+            }
+            return false;
+        }
+
+        else if(feature == "sdt" ){//coarse threshold DAC
+            InMap m_val;
+            for(unsigned short i=0 ; i<1024; i++){
+                m_val.insert(BiPair(std::to_string(i), i));
+            }
+            if(m_val.find(val)!=m_val.end()){
+              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "sdp" ){//test pulse DAC
+            InMap m_val;
+            for(unsigned short i=0 ; i<1024; i++){
+                m_val.insert(BiPair(std::to_string(i), i));
+            }
+            if(m_val.find(val)!=m_val.end()){
+              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "convtime_10" ){
+            InMap m_val;
+            m_val.insert(BiPair("200ns", 0 ));//sc010b
+            m_val.insert(BiPair("+60ns", 1 ));//sc110b
+
+            if(m_val.find(val)!=m_val.end()){
+              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "convtime_8" ){
+            InMap m_val;
+            m_val.insert(BiPair("100ns", 0 ));//sc08b
+            m_val.insert(BiPair("+60ns", 1 ));//sc18b
+
+            if(m_val.find(val)!=m_val.end()){
+              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "convtime_6" ){
+            InMap m_val;
+            m_val.insert(BiPair("low", 0 ));
+            m_val.insert(BiPair("middle", 1 ));
+            m_val.insert(BiPair("up", 1 ));
+
+            if(m_val.find(val)!=m_val.end()){
+              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        //filling the settings which are booleans
+        else if(Regi->m_GlobalReg1->find(feature)!=Regi->m_GlobalReg1->end()){
+            if(m_bin.find(val)!=m_bin.end()){
+                Regi->m_GlobalReg1->at(feature) = m_bin[val];
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+    else if(ch>=0 && ch<64){
+        if(feature == "sc" ){
+            Regi->ch_settings[ch].VMMSCBool = m_bin[val];
+            return true;
+        }
+        else if(feature == "sl" ){
+            Regi->ch_settings[ch].VMMSLBool = m_bin[val];
+            return true;
+        }
+        else if(feature == "st" ){
+            Regi->ch_settings[ch].VMMSTBool = m_bin[val];
+            return true;
+        }
+        else if(feature == "sth" ){
+            Regi->ch_settings[ch].VMMSTHBool = m_bin[val];
+            return true;
+        }
+        else if(feature == "sm" ){
+            Regi->ch_settings[ch].VMMSMBool = m_bin[val];
+            return true;
+        }
+        else if(feature == "sd"){
+            InMap m_val;
+            std::cout<<"I am here"<<std::endl;
+            for(unsigned short i=0 ; i<32; i++){
+                m_val.insert(BiPair(std::to_string(i), i));
+            }
+            if(m_val.find(val)!=m_val.end()){
+              Regi->ch_settings[ch].VMMSDValue = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "smx" ){
+            Regi->ch_settings[ch].VMMSMXBool = m_bin[val];
+            return true;
+        }
+        else if(feature == "ADC0_10"){
+            InMap m_val;
+            for(unsigned short i=0 ; i<32; i++){
+                m_val.insert(BiPair(std::to_string(i), i));
+            }
+            if(m_val.find(val)!=m_val.end()){
+              Regi->ch_settings[ch].VMMSZ010bValue = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "ADC0_8"){
+            InMap m_val;
+            for(unsigned short i=0 ; i<16; i++){
+                m_val.insert(BiPair(std::to_string(i), i));
+            }
+            if(m_val.find(val)!=m_val.end()){
+              Regi->ch_settings[ch].VMMSZ08bValue = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "ADC0_6"){
+            InMap m_val;
+            for(unsigned short i=0 ; i<8; i++){
+                m_val.insert(BiPair(std::to_string(i), i ));
+            }
+            if(m_val.find(val)!=m_val.end()){
+              Regi->ch_settings[ch].VMMSZ06bValue = m_val[val];
+              return true;
+            }
+            return false;
+        }
+
+
+        return false;
+    }
+
+    return false;
+}
+
+unsigned short VMM::GetRegister( std::string feature, int ch ){/// What should it return? for bit stream unsigned short, but for other options a string? -> in config file gain etc in 'normal' values
+    if(ch==-9999){
+        if(Regi->m_GlobalReg1->find(feature)!=Regi->m_GlobalReg1->end()){
+            return Regi->m_GlobalReg1->at(feature);
+        }
+        else{
+            std::cout<<"ERROR the feature "<<feature<<" does not exist"<<std::endl;
+        }
+    }
+    else if(ch>=0 && ch<64){
+        if(feature == "sc" ){
+            return Regi->ch_settings[ch].VMMSCBool;
+        }
+        else if(feature == "sl" ){
+            return Regi->ch_settings[ch].VMMSLBool;
+        }
+        else if(feature == "st" ){
+            return Regi->ch_settings[ch].VMMSTBool;
+        }
+        else if(feature == "sth" ){
+           return Regi->ch_settings[ch].VMMSTHBool;
+        }
+        else if(feature == "sm" ){
+           return Regi->ch_settings[ch].VMMSMBool;
+        }
+        else if(feature == "sd"){
+             return Regi->ch_settings[ch].VMMSDValue;
+        }
+        else if(feature == "smx" ){
+           return Regi->ch_settings[ch].VMMSMXBool;
+        }
+        else if(feature == "ADC0_10"){
+             return Regi->ch_settings[ch].VMMSZ010bValue;
+        }
+        else if(feature == "ADC0_8"){
+             return Regi->ch_settings[ch].VMMSZ08bValue;
+        }
+        else if(feature == "ADC0_6"){
+            return Regi->ch_settings[ch].VMMSZ06bValue;
+        }
+        else{
+           std::cout<<"ERROR the feature "<<feature<<" does not exist in Channel settings"<<std::endl;
+        }
+    }
+}
+
 
 bool VMM::SetGlobReg(unsigned short reg, unsigned short val){
 
@@ -467,3 +822,4 @@ VMM::~VMM(){
     IsIntOrBool = NULL;
 
 }
+

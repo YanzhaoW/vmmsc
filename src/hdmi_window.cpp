@@ -32,9 +32,11 @@ void hdmi_window::hybridBoxLogic(bool checked, unsigned short hybrid){
     if (checked){
         ui->tabWidget->insertTab(hybrid-NotActiveBefore, new hybrid_window(this,fec_index,hdmi_index,hybrid), QString(" Hybrid %0").arg(hybrid+1));
         ui->tabWidget->setCurrentIndex(hybrid-NotActiveBefore);
+        root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].SetHybrid(hybrid, true);
     }
     else {
         ui->tabWidget->removeTab(hybrid-NotActiveBefore);
+        root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].SetHybrid(hybrid, false);
     }
 }
 

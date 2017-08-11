@@ -37,9 +37,11 @@ void hybrid_window::vmmBoxLogic(bool checked, unsigned short vmm){
     if (checked){
         ui->tabWidget->insertTab(vmm-NotActiveBefore, new vmm_window(this,fec_index,hdmi_index,hybrid_index,vmm), QString(" VMM %0").arg(vmm+1));
         ui->tabWidget->setCurrentIndex(vmm-NotActiveBefore);
+        root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].SetVMM(vmm, true);
     }
     else {
         ui->tabWidget->removeTab(vmm-NotActiveBefore);
+        root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].SetVMM(vmm, false);
     }
 }
 

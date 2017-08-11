@@ -18,6 +18,7 @@ class daq_window : public QMainWindow
     friend class fec_window;
     friend class hdmi_window;
     friend class hybrid_window;
+    friend class vmm_window;
 
 public:
     explicit daq_window(MainWindow *top, QWidget *parent = 0);

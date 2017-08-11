@@ -19,6 +19,7 @@ class hybrid_window : public QWidget
 public:
     explicit hybrid_window(hdmi_window *top, unsigned short fec = 0, unsigned short hdmi = 0, unsigned short hybrid = 0, QWidget *parent = 0);
     ~hybrid_window();
+    friend class vmm_window;
 
 private slots:
     void on_Box_vmm1_clicked();
