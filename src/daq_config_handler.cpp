@@ -212,6 +212,9 @@ bool DAQ_config_handler::WriteDAQConfig(std::string fname){
     }
     f << "\n";
     f.close();
+
+
+
     return true;
 }
 

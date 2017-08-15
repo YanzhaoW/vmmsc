@@ -81,6 +81,7 @@ void daq_window::on_Button_load_clicked()
     }
     else {
 
+        root_main->vmmconfhandl->LoadAllVMMConf(fname);
         fname+=".txt";
         bool found = root_main->daqconfhandl->LoadDAQConf(fname.c_str());
         if (!found){
@@ -155,6 +156,7 @@ void daq_window::on_Button_save_clicked()
         ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
+        root_main->vmmconfhandl->WriteAllVMMConf(fname);
         fname+=".txt";
         root_main->daqconfhandl->WriteDAQConf(fname.c_str());
         std::cout << "loading file " << fname << std::endl;

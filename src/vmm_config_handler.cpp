@@ -5,11 +5,11 @@ VMM_config_handler::VMM_config_handler(MainWindow *top, QObject *parent) : root1
     getcwd(ExecPath,sizeof(ExecPath));
 }
 
-bool VMM_config_handler::LoadAllVMMConf(const char* filename){
+bool VMM_config_handler::LoadAllVMMConf(std::string filename){
     return GenericAllVMMConf(1,filename);
 }
 
-bool VMM_config_handler::WriteAllVMMConf(const char* filename){
+bool VMM_config_handler::WriteAllVMMConf(std::string filename){
     return GenericAllVMMConf(0,filename);
 }
 
@@ -51,7 +51,8 @@ bool VMM_config_handler::WriteSingleVMMConf(const char* filename){//exact file n
 
     return WriteVMMConfig(fname,daq,fec,hdmi,hybrid,vmm);
 }
-bool VMM_config_handler::GenericAllVMMConf(bool load, const char* filename){
+bool VMM_config_handler::GenericAllVMMConf(bool load, std::string filename){
+//    bool VMM_config_handler::GenericAllVMMConf(bool load, const char* filename){
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
         if (root1->daq_act[i]){
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
@@ -148,11 +149,13 @@ bool VMM_config_handler::LoadVMMConfig(std::string fname){ //load the VMM config
             unsigned short chan = atoi(val.c_str());
             f >> chanreg >> chanval;
             a = chanreg.c_str(); b= chanval.c_str();
-            if (!root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmms].SetReg(a,chan,b)) return false;
+//            if (!root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmms].SetReg(a,chan,b)) return false;
+            if (!root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmms].SetRegi(a,b,chan)) return false;
         }
         else {
             a = s.c_str(); b = val.c_str();
-            if (!root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmms].SetReg(a,b)) return false;
+//            if (!root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmms].SetReg(a,b)) return false;
+            if (!root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmms].SetRegi(a,b)) return false;
         }
         if( (f.fail()) ) {return false;}
     }
@@ -169,14 +172,22 @@ bool VMM_config_handler::WriteVMMConfig(std::string fname, unsigned short daq, u
     f << "hybrid " << hybrid << std::endl;
     f << "vmm " << vmm << std::endl;
     f << "\n";
-    for(unsigned short j=0;j<root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegGlobSize() ;j++){
-        f << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegGlobName(j) << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetReg(j) << std::endl;
+//    for(unsigned short j=0;j<root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegGlobSize() ;j++){
+//        f << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegGlobName(j) << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetReg(j) << std::endl;
+//        if(f.fail()) {return false;}
+//    }
+    for(auto const entr: (*root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].Regi->m_GlobalReg1)){
+        f<<entr.first<< " " <<entr.second<<std::endl;
         if(f.fail()) {return false;}
     }
     f << "\n";
     for(unsigned short k=0;k<VMM_CHANNELS;k++){
-        for (unsigned short j = 0; j < root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegChanSize(); j++){
-            f << "channel " << k << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegChanName(j) << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetReg(j,k) << std::endl;
+//        for (unsigned short j = 0; j < root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegChanSize(); j++){
+//            f << "channel " << k << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegChanName(j) << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetReg(j,k) << std::endl;
+//            if(f.fail()) {return false;}
+//        }
+        for(auto const entr: root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].Regi->ch_settings[k].m_channel){
+          f << "channel " << k << " " <<entr.first<< " " <<entr.second<<std::endl;
             if(f.fail()) {return false;}
         }
         if(k<63) f << "\n"; // no empty line at end

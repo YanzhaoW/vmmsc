@@ -85,8 +85,6 @@
              <height>659</height>
             </rect>
            </property>
-           <zorder>tabWidget_4</zorder>
-           <zorder>tabWidget_4</zorder>
           </widget>
          </widget>
          <widget class="QWidget" name="gridLayoutWidget">
@@ -100,9 +98,6 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_channels"/>
          </widget>
-         <zorder>scrollArea</zorder>
-         <zorder>gridLayoutWidget</zorder>
-         <zorder>tabWidget_4</zorder>
         </widget>
        </widget>
       </item>
@@ -165,7 +160,7 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabWidget_4Page1" native="true">
+     <widget class="QWidget" name="tabWidget_4Page1">
       <attribute name="title">
        <string>General Settings</string>
       </attribute>
@@ -180,7 +175,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_15">
           <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="sng">
             <property name="text">
              <string>Neighbor Trigger (sng)</string>
             </property>
@@ -190,7 +185,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="sdp">
             <property name="text">
              <string>Disable At Peak</string>
             </property>
@@ -200,7 +195,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="sdrv">
             <property name="text">
              <string>Analog tristates</string>
             </property>
@@ -210,7 +205,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="pushButton_7">
+           <widget class="QPushButton" name="ssh">
             <property name="text">
              <string>Sub Hysterisis </string>
             </property>
@@ -317,7 +312,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="spg">
+          <widget class="QComboBox" name="sp">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -743,7 +738,7 @@
        <item row="1" column="0" colspan="2">
         <layout class="QGridLayout" name="gridLayout_13">
          <item row="0" column="1">
-          <widget class="QComboBox" name="sfam_2">
+          <widget class="QComboBox" name="srat">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -765,7 +760,7 @@
          <item row="0" column="0">
           <layout class="QGridLayout" name="gridLayout_14">
            <item row="0" column="0">
-            <widget class="QLabel" name="sfamLabel_2">
+            <widget class="QLabel" name="sratLabel">
              <property name="font">
               <font>
                <family>Arial</family>
@@ -788,7 +783,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_10">
           <item row="0" column="2" colspan="2">
-           <widget class="QPushButton" name="pushButton_15">
+           <widget class="QPushButton" name="s8b">
             <property name="text">
              <string>8-bit Conv. Mode</string>
             </property>
@@ -831,7 +826,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="adcs">
             <property name="text">
              <string>ADCs</string>
             </property>
@@ -841,7 +836,7 @@
            </widget>
           </item>
           <item row="0" column="4" colspan="2">
-           <widget class="QPushButton" name="pushButton_16">
+           <widget class="QPushButton" name="s6b">
             <property name="text">
              <string>6-bit</string>
             </property>
@@ -931,7 +926,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
           <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_9">
+           <widget class="QPushButton" name="sdcka">
             <property name="text">
              <string>Dual Clock ART</string>
             </property>
@@ -941,7 +936,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_18">
+           <widget class="QPushButton" name="sdcks">
             <property name="text">
              <string>Dual Clock Data</string>
             </property>
@@ -951,7 +946,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_19">
+           <widget class="QPushButton" name="sdck6b">
             <property name="text">
              <string>Dual Clock 6-bit</string>
             </property>
@@ -1025,7 +1020,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QLabel" name="dacmvLabel_TP">
+           <widget class="QLabel" name="dacmvLabel">
             <property name="font">
              <font>
               <pointsize>9</pointsize>
@@ -1037,7 +1032,7 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLabel" name="dacmvLabel">
+           <widget class="QLabel" name="dacmvLabel_TP">
             <property name="font">
              <font>
               <pointsize>9</pointsize>
@@ -1061,18 +1056,8 @@
        <item row="3" column="0">
         <widget class="QGroupBox" name="gridGroupBox_3">
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="1">
-           <widget class="QPushButton" name="pushButton_stlc">
-            <property name="text">
-             <string>stlc</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_ssart">
+           <widget class="QPushButton" name="ssart">
             <property name="text">
              <string>ssart</string>
             </property>
@@ -1081,8 +1066,28 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="pushButton_sL0dckinv">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="slvs">
+            <property name="text">
+             <string>slvs</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="stcr">
+            <property name="text">
+             <string>stcr</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="3">
+           <widget class="QPushButton" name="sL0dckinv">
             <property name="text">
              <string>sL0dckinv</string>
             </property>
@@ -1092,37 +1097,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QPushButton" name="pushButton_sL0ckinv">
-            <property name="text">
-             <string>sL0ckinv</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="pushButton_srec">
-            <property name="text">
-             <string>srec</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_slvs">
-            <property name="text">
-             <string>slvs</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton_s32">
+           <widget class="QPushButton" name="s32">
             <property name="text">
              <string>s32</string>
             </property>
@@ -1131,18 +1106,28 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_stcr">
+          <item row="1" column="0">
+           <widget class="QPushButton" name="stlc">
             <property name="text">
-             <string>stcr</string>
+             <string>stlc</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="pushButton_sbip">
+          <item row="1" column="1">
+           <widget class="QPushButton" name="srec">
+            <property name="text">
+             <string>srec</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="sbip">
             <property name="text">
              <string>sbip</string>
             </property>
@@ -1151,8 +1136,18 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QPushButton" name="pushButton_sfrst">
+          <item row="2" column="2">
+           <widget class="QPushButton" name="sL0ckinv">
+            <property name="text">
+             <string>sL0ckinv</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="sfrst">
             <property name="text">
              <string>sfrst</string>
             </property>
@@ -1161,8 +1156,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="pushButton_nskipm_i">
+          <item row="2" column="0">
+           <widget class="QPushButton" name="nskipm_i">
             <property name="text">
              <string>nskipm_i</string>
             </property>
@@ -1187,7 +1182,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_bc">
+           <widget class="QPushButton" name="slvsbc">
             <property name="text">
              <string>bc</string>
             </property>
@@ -1200,7 +1195,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_tp">
+           <widget class="QPushButton" name="slvstp">
             <property name="text">
              <string>tp</string>
             </property>
@@ -1210,7 +1205,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_tk">
+           <widget class="QPushButton" name="slvstk">
             <property name="text">
              <string>tk</string>
             </property>
@@ -1220,7 +1215,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QPushButton" name="pushButton_dt">
+           <widget class="QPushButton" name="slvsdt">
             <property name="text">
              <string>dt</string>
             </property>
@@ -1230,7 +1225,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="pushButton_art">
+           <widget class="QPushButton" name="slvsart">
             <property name="text">
              <string>art</string>
             </property>
@@ -1240,7 +1235,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QPushButton" name="pushButton_tki">
+           <widget class="QPushButton" name="slvstki">
             <property name="text">
              <string>tki</string>
             </property>
@@ -1250,7 +1245,7 @@
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QPushButton" name="pushButton_ena">
+           <widget class="QPushButton" name="slvsena">
             <property name="text">
              <string>ena</string>
             </property>
@@ -1260,7 +1255,7 @@
            </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QPushButton" name="pushButton_6b">
+           <widget class="QPushButton" name="slvs6b">
             <property name="text">
              <string>6b</string>
             </property>
@@ -1275,7 +1270,7 @@
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_12">
          <item row="1" column="0">
-          <widget class="QPushButton" name="pushButton_8">
+          <widget class="QPushButton" name="ART">
            <property name="text">
             <string>ART</string>
            </property>
@@ -1367,30 +1362,10 @@
        </item>
        <item row="1" column="0">
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="2" column="2">
-          <widget class="QPushButton" name="pushButton_13">
-           <property name="text">
-            <string>SCMX</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="pushButton_14">
-           <property name="text">
-            <string>SBMX</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1">
-          <widget class="QPushButton" name="pushButton_11">
+          <widget class="QPushButton" name="sbft">
            <property name="text">
-            <string>sbft</string>
+            <string>SBFT</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -1398,7 +1373,7 @@
           </widget>
          </item>
          <item row="3" column="2">
-          <widget class="QPushButton" name="pushButton_6">
+          <widget class="QPushButton" name="sfm">
            <property name="text">
             <string>Double Leak</string>
            </property>
@@ -1408,9 +1383,9 @@
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QPushButton" name="pushButton_10">
+          <widget class="QPushButton" name="sbfp">
            <property name="text">
-            <string>sbfp</string>
+            <string>SBFP</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -1421,7 +1396,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QPushButton" name="pushButton_5">
+          <widget class="QPushButton" name="slg">
            <property name="text">
             <string>Leak. Curr.</string>
            </property>
@@ -1431,9 +1406,19 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QPushButton" name="pushButton_12">
+          <widget class="QPushButton" name="sbfm">
            <property name="text">
-            <string>sbfm</string>
+            <string>SBFM</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="sbmx">
+           <property name="text">
+            <string>SBMX</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -1445,7 +1430,7 @@
        <item row="2" column="0">
         <layout class="QGridLayout" name="gridLayout_9">
          <item row="1" column="0">
-          <widget class="QPushButton" name="pushButton_17">
+          <widget class="QPushButton" name="sttt">
            <property name="text">
             <string>Direct Time</string>
            </property>

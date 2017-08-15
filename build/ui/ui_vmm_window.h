@@ -48,88 +48,87 @@ public:
     QGridLayout *gridLayout_7;
     QFrame *frame;
     QGridLayout *gridLayout_15;
-    QPushButton *pushButton_3;
-    QPushButton *pushButton_4;
-    QPushButton *pushButton_2;
-    QPushButton *pushButton_7;
+    QPushButton *sng;
+    QPushButton *sdp;
+    QPushButton *sdrv;
+    QPushButton *ssh;
     QGridLayout *gridLayout_16;
     QComboBox *sg;
     QLabel *stcLabel;
     QLabel *sgLabel;
     QLabel *spgLabel;
-    QComboBox *spg;
+    QComboBox *sp;
     QComboBox *stc;
     QLabel *sm5_sm0Label;
     QComboBox *sm5_sm0;
     QGridLayout *gridLayout_13;
-    QComboBox *sfam_2;
+    QComboBox *srat;
     QGridLayout *gridLayout_14;
-    QLabel *sfamLabel_2;
+    QLabel *sratLabel;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_10;
-    QPushButton *pushButton_15;
+    QPushButton *s8b;
     QComboBox *sc010b;
     QLabel *sc010bLabel;
-    QPushButton *pushButton;
-    QPushButton *pushButton_16;
+    QPushButton *adcs;
+    QPushButton *s6b;
     QLabel *sc06bLabel;
     QComboBox *sc08b;
     QLabel *sc08bLabel;
     QComboBox *sc06b;
     QGroupBox *groupBox1;
     QGridLayout *gridLayout_11;
-    QPushButton *pushButton_9;
-    QPushButton *pushButton_18;
-    QPushButton *pushButton_19;
+    QPushButton *sdcka;
+    QPushButton *sdcks;
+    QPushButton *sdck6b;
     QGroupBox *gridGroupBox_4;
     QGridLayout *gridLayout_6;
     QSpinBox *sdt;
     QSpinBox *sdp_2;
     QLabel *sdpLabel_2;
     QLabel *sdtLabel;
-    QLabel *dacmvLabel_TP;
     QLabel *dacmvLabel;
+    QLabel *dacmvLabel_TP;
     QWidget *tab;
     QGridLayout *gridLayout_8;
     QGroupBox *gridGroupBox_3;
     QGridLayout *gridLayout;
-    QPushButton *pushButton_stlc;
-    QPushButton *pushButton_ssart;
-    QPushButton *pushButton_sL0dckinv;
-    QPushButton *pushButton_sL0ckinv;
-    QPushButton *pushButton_srec;
-    QPushButton *pushButton_slvs;
-    QPushButton *pushButton_s32;
-    QPushButton *pushButton_stcr;
-    QPushButton *pushButton_sbip;
-    QPushButton *pushButton_sfrst;
-    QPushButton *pushButton_nskipm_i;
+    QPushButton *ssart;
+    QPushButton *slvs;
+    QPushButton *stcr;
+    QPushButton *sL0dckinv;
+    QPushButton *s32;
+    QPushButton *stlc;
+    QPushButton *srec;
+    QPushButton *sbip;
+    QPushButton *sL0ckinv;
+    QPushButton *sfrst;
+    QPushButton *nskipm_i;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_2;
-    QPushButton *pushButton_bc;
-    QPushButton *pushButton_tp;
-    QPushButton *pushButton_tk;
-    QPushButton *pushButton_dt;
-    QPushButton *pushButton_art;
-    QPushButton *pushButton_tki;
-    QPushButton *pushButton_ena;
-    QPushButton *pushButton_6b;
+    QPushButton *slvsbc;
+    QPushButton *slvstp;
+    QPushButton *slvstk;
+    QPushButton *slvsdt;
+    QPushButton *slvsart;
+    QPushButton *slvstki;
+    QPushButton *slvsena;
+    QPushButton *slvs6b;
     QGridLayout *gridLayout_12;
-    QPushButton *pushButton_8;
+    QPushButton *ART;
     QComboBox *sfam;
     QLabel *sfamLabel;
     QLabel *stLabel;
     QComboBox *st;
     QGridLayout *gridLayout_5;
-    QPushButton *pushButton_13;
-    QPushButton *pushButton_14;
-    QPushButton *pushButton_11;
-    QPushButton *pushButton_6;
-    QPushButton *pushButton_10;
-    QPushButton *pushButton_5;
-    QPushButton *pushButton_12;
+    QPushButton *sbft;
+    QPushButton *sfm;
+    QPushButton *sbfp;
+    QPushButton *slg;
+    QPushButton *sbfm;
+    QPushButton *sbmx;
     QGridLayout *gridLayout_9;
-    QPushButton *pushButton_17;
+    QPushButton *sttt;
     QComboBox *stpp;
     QComboBox *stot;
     QLabel *stotLabel;
@@ -179,8 +178,6 @@ public:
         gridLayout_channels->setObjectName(QStringLiteral("gridLayout_channels"));
         gridLayout_channels->setContentsMargins(0, 0, 0, 0);
         stackedWidget->addWidget(stackedWidgetPage1);
-        scrollArea->raise();
-        gridLayoutWidget->raise();
 
         gridLayout_3->addWidget(stackedWidget, 1, 0, 1, 1);
 
@@ -223,29 +220,29 @@ public:
         frame->setFrameShadow(QFrame::Raised);
         gridLayout_15 = new QGridLayout(frame);
         gridLayout_15->setObjectName(QStringLiteral("gridLayout_15"));
-        pushButton_3 = new QPushButton(frame);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-        pushButton_3->setCheckable(true);
+        sng = new QPushButton(frame);
+        sng->setObjectName(QStringLiteral("sng"));
+        sng->setCheckable(true);
 
-        gridLayout_15->addWidget(pushButton_3, 0, 0, 1, 1);
+        gridLayout_15->addWidget(sng, 0, 0, 1, 1);
 
-        pushButton_4 = new QPushButton(frame);
-        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
-        pushButton_4->setCheckable(true);
+        sdp = new QPushButton(frame);
+        sdp->setObjectName(QStringLiteral("sdp"));
+        sdp->setCheckable(true);
 
-        gridLayout_15->addWidget(pushButton_4, 0, 1, 1, 1);
+        gridLayout_15->addWidget(sdp, 0, 1, 1, 1);
 
-        pushButton_2 = new QPushButton(frame);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setCheckable(true);
+        sdrv = new QPushButton(frame);
+        sdrv->setObjectName(QStringLiteral("sdrv"));
+        sdrv->setCheckable(true);
 
-        gridLayout_15->addWidget(pushButton_2, 1, 0, 1, 1);
+        gridLayout_15->addWidget(sdrv, 1, 0, 1, 1);
 
-        pushButton_7 = new QPushButton(frame);
-        pushButton_7->setObjectName(QStringLiteral("pushButton_7"));
-        pushButton_7->setCheckable(true);
+        ssh = new QPushButton(frame);
+        ssh->setObjectName(QStringLiteral("ssh"));
+        ssh->setCheckable(true);
 
-        gridLayout_15->addWidget(pushButton_7, 1, 1, 1, 1);
+        gridLayout_15->addWidget(ssh, 1, 1, 1, 1);
 
 
         gridLayout_7->addWidget(frame, 2, 0, 1, 2);
@@ -276,11 +273,11 @@ public:
 
         gridLayout_16->addWidget(spgLabel, 0, 0, 1, 1);
 
-        spg = new QComboBox(tabWidget_4Page1);
-        spg->setObjectName(QStringLiteral("spg"));
-        spg->setFont(font1);
+        sp = new QComboBox(tabWidget_4Page1);
+        sp->setObjectName(QStringLiteral("sp"));
+        sp->setFont(font1);
 
-        gridLayout_16->addWidget(spg, 0, 1, 1, 1);
+        gridLayout_16->addWidget(sp, 0, 1, 1, 1);
 
         stc = new QComboBox(tabWidget_4Page1);
         stc->setObjectName(QStringLiteral("stc"));
@@ -306,19 +303,19 @@ public:
 
         gridLayout_13 = new QGridLayout();
         gridLayout_13->setObjectName(QStringLiteral("gridLayout_13"));
-        sfam_2 = new QComboBox(tabWidget_4Page1);
-        sfam_2->setObjectName(QStringLiteral("sfam_2"));
-        sfam_2->setFont(font1);
+        srat = new QComboBox(tabWidget_4Page1);
+        srat->setObjectName(QStringLiteral("srat"));
+        srat->setFont(font1);
 
-        gridLayout_13->addWidget(sfam_2, 0, 1, 1, 1);
+        gridLayout_13->addWidget(srat, 0, 1, 1, 1);
 
         gridLayout_14 = new QGridLayout();
         gridLayout_14->setObjectName(QStringLiteral("gridLayout_14"));
-        sfamLabel_2 = new QLabel(tabWidget_4Page1);
-        sfamLabel_2->setObjectName(QStringLiteral("sfamLabel_2"));
-        sfamLabel_2->setFont(font1);
+        sratLabel = new QLabel(tabWidget_4Page1);
+        sratLabel->setObjectName(QStringLiteral("sratLabel"));
+        sratLabel->setFont(font1);
 
-        gridLayout_14->addWidget(sfamLabel_2, 0, 0, 1, 1);
+        gridLayout_14->addWidget(sratLabel, 0, 0, 1, 1);
 
 
         gridLayout_13->addLayout(gridLayout_14, 0, 0, 1, 1);
@@ -330,11 +327,11 @@ public:
         groupBox->setObjectName(QStringLiteral("groupBox"));
         gridLayout_10 = new QGridLayout(groupBox);
         gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
-        pushButton_15 = new QPushButton(groupBox);
-        pushButton_15->setObjectName(QStringLiteral("pushButton_15"));
-        pushButton_15->setCheckable(true);
+        s8b = new QPushButton(groupBox);
+        s8b->setObjectName(QStringLiteral("s8b"));
+        s8b->setCheckable(true);
 
-        gridLayout_10->addWidget(pushButton_15, 0, 2, 1, 2);
+        gridLayout_10->addWidget(s8b, 0, 2, 1, 2);
 
         sc010b = new QComboBox(groupBox);
         sc010b->setObjectName(QStringLiteral("sc010b"));
@@ -348,17 +345,17 @@ public:
 
         gridLayout_10->addWidget(sc010bLabel, 1, 0, 1, 1);
 
-        pushButton = new QPushButton(groupBox);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setCheckable(true);
+        adcs = new QPushButton(groupBox);
+        adcs->setObjectName(QStringLiteral("adcs"));
+        adcs->setCheckable(true);
 
-        gridLayout_10->addWidget(pushButton, 0, 0, 1, 2);
+        gridLayout_10->addWidget(adcs, 0, 0, 1, 2);
 
-        pushButton_16 = new QPushButton(groupBox);
-        pushButton_16->setObjectName(QStringLiteral("pushButton_16"));
-        pushButton_16->setCheckable(true);
+        s6b = new QPushButton(groupBox);
+        s6b->setObjectName(QStringLiteral("s6b"));
+        s6b->setCheckable(true);
 
-        gridLayout_10->addWidget(pushButton_16, 0, 4, 1, 2);
+        gridLayout_10->addWidget(s6b, 0, 4, 1, 2);
 
         sc06bLabel = new QLabel(groupBox);
         sc06bLabel->setObjectName(QStringLiteral("sc06bLabel"));
@@ -391,23 +388,23 @@ public:
         groupBox1->setObjectName(QStringLiteral("groupBox1"));
         gridLayout_11 = new QGridLayout(groupBox1);
         gridLayout_11->setObjectName(QStringLiteral("gridLayout_11"));
-        pushButton_9 = new QPushButton(groupBox1);
-        pushButton_9->setObjectName(QStringLiteral("pushButton_9"));
-        pushButton_9->setCheckable(true);
+        sdcka = new QPushButton(groupBox1);
+        sdcka->setObjectName(QStringLiteral("sdcka"));
+        sdcka->setCheckable(true);
 
-        gridLayout_11->addWidget(pushButton_9, 0, 0, 1, 1);
+        gridLayout_11->addWidget(sdcka, 0, 0, 1, 1);
 
-        pushButton_18 = new QPushButton(groupBox1);
-        pushButton_18->setObjectName(QStringLiteral("pushButton_18"));
-        pushButton_18->setCheckable(true);
+        sdcks = new QPushButton(groupBox1);
+        sdcks->setObjectName(QStringLiteral("sdcks"));
+        sdcks->setCheckable(true);
 
-        gridLayout_11->addWidget(pushButton_18, 0, 1, 1, 1);
+        gridLayout_11->addWidget(sdcks, 0, 1, 1, 1);
 
-        pushButton_19 = new QPushButton(groupBox1);
-        pushButton_19->setObjectName(QStringLiteral("pushButton_19"));
-        pushButton_19->setCheckable(true);
+        sdck6b = new QPushButton(groupBox1);
+        sdck6b->setObjectName(QStringLiteral("sdck6b"));
+        sdck6b->setCheckable(true);
 
-        gridLayout_11->addWidget(pushButton_19, 0, 2, 1, 1);
+        gridLayout_11->addWidget(sdck6b, 0, 2, 1, 1);
 
 
         gridLayout_7->addWidget(groupBox1, 4, 0, 1, 2);
@@ -444,19 +441,19 @@ public:
 
         gridLayout_6->addWidget(sdtLabel, 0, 0, 1, 1);
 
-        dacmvLabel_TP = new QLabel(gridGroupBox_4);
-        dacmvLabel_TP->setObjectName(QStringLiteral("dacmvLabel_TP"));
-        QFont font2;
-        font2.setPointSize(9);
-        dacmvLabel_TP->setFont(font2);
-
-        gridLayout_6->addWidget(dacmvLabel_TP, 0, 2, 1, 1);
-
         dacmvLabel = new QLabel(gridGroupBox_4);
         dacmvLabel->setObjectName(QStringLiteral("dacmvLabel"));
+        QFont font2;
+        font2.setPointSize(9);
         dacmvLabel->setFont(font2);
 
-        gridLayout_6->addWidget(dacmvLabel, 2, 2, 1, 1);
+        gridLayout_6->addWidget(dacmvLabel, 0, 2, 1, 1);
+
+        dacmvLabel_TP = new QLabel(gridGroupBox_4);
+        dacmvLabel_TP->setObjectName(QStringLiteral("dacmvLabel_TP"));
+        dacmvLabel_TP->setFont(font2);
+
+        gridLayout_6->addWidget(dacmvLabel_TP, 2, 2, 1, 1);
 
 
         gridLayout_7->addWidget(gridGroupBox_4, 7, 0, 1, 2);
@@ -470,71 +467,71 @@ public:
         gridGroupBox_3->setObjectName(QStringLiteral("gridGroupBox_3"));
         gridLayout = new QGridLayout(gridGroupBox_3);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
-        pushButton_stlc = new QPushButton(gridGroupBox_3);
-        pushButton_stlc->setObjectName(QStringLiteral("pushButton_stlc"));
-        pushButton_stlc->setCheckable(true);
+        ssart = new QPushButton(gridGroupBox_3);
+        ssart->setObjectName(QStringLiteral("ssart"));
+        ssart->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_stlc, 1, 1, 1, 1);
+        gridLayout->addWidget(ssart, 0, 2, 1, 1);
 
-        pushButton_ssart = new QPushButton(gridGroupBox_3);
-        pushButton_ssart->setObjectName(QStringLiteral("pushButton_ssart"));
-        pushButton_ssart->setCheckable(true);
+        slvs = new QPushButton(gridGroupBox_3);
+        slvs->setObjectName(QStringLiteral("slvs"));
+        slvs->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_ssart, 0, 2, 1, 1);
+        gridLayout->addWidget(slvs, 0, 0, 1, 1);
 
-        pushButton_sL0dckinv = new QPushButton(gridGroupBox_3);
-        pushButton_sL0dckinv->setObjectName(QStringLiteral("pushButton_sL0dckinv"));
-        pushButton_sL0dckinv->setCheckable(true);
+        stcr = new QPushButton(gridGroupBox_3);
+        stcr->setObjectName(QStringLiteral("stcr"));
+        stcr->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_sL0dckinv, 1, 3, 1, 1);
+        gridLayout->addWidget(stcr, 0, 1, 1, 1);
 
-        pushButton_sL0ckinv = new QPushButton(gridGroupBox_3);
-        pushButton_sL0ckinv->setObjectName(QStringLiteral("pushButton_sL0ckinv"));
-        pushButton_sL0ckinv->setCheckable(true);
+        sL0dckinv = new QPushButton(gridGroupBox_3);
+        sL0dckinv->setObjectName(QStringLiteral("sL0dckinv"));
+        sL0dckinv->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_sL0ckinv, 0, 3, 1, 1);
+        gridLayout->addWidget(sL0dckinv, 2, 3, 1, 1);
 
-        pushButton_srec = new QPushButton(gridGroupBox_3);
-        pushButton_srec->setObjectName(QStringLiteral("pushButton_srec"));
-        pushButton_srec->setCheckable(true);
+        s32 = new QPushButton(gridGroupBox_3);
+        s32->setObjectName(QStringLiteral("s32"));
+        s32->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_srec, 1, 2, 1, 1);
+        gridLayout->addWidget(s32, 0, 3, 1, 1);
 
-        pushButton_slvs = new QPushButton(gridGroupBox_3);
-        pushButton_slvs->setObjectName(QStringLiteral("pushButton_slvs"));
-        pushButton_slvs->setCheckable(true);
+        stlc = new QPushButton(gridGroupBox_3);
+        stlc->setObjectName(QStringLiteral("stlc"));
+        stlc->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_slvs, 0, 0, 1, 1);
+        gridLayout->addWidget(stlc, 1, 0, 1, 1);
 
-        pushButton_s32 = new QPushButton(gridGroupBox_3);
-        pushButton_s32->setObjectName(QStringLiteral("pushButton_s32"));
-        pushButton_s32->setCheckable(true);
+        srec = new QPushButton(gridGroupBox_3);
+        srec->setObjectName(QStringLiteral("srec"));
+        srec->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_s32, 1, 0, 1, 1);
+        gridLayout->addWidget(srec, 1, 1, 1, 1);
 
-        pushButton_stcr = new QPushButton(gridGroupBox_3);
-        pushButton_stcr->setObjectName(QStringLiteral("pushButton_stcr"));
-        pushButton_stcr->setCheckable(true);
+        sbip = new QPushButton(gridGroupBox_3);
+        sbip->setObjectName(QStringLiteral("sbip"));
+        sbip->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_stcr, 0, 1, 1, 1);
+        gridLayout->addWidget(sbip, 1, 2, 1, 1);
 
-        pushButton_sbip = new QPushButton(gridGroupBox_3);
-        pushButton_sbip->setObjectName(QStringLiteral("pushButton_sbip"));
-        pushButton_sbip->setCheckable(true);
+        sL0ckinv = new QPushButton(gridGroupBox_3);
+        sL0ckinv->setObjectName(QStringLiteral("sL0ckinv"));
+        sL0ckinv->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_sbip, 2, 0, 1, 1);
+        gridLayout->addWidget(sL0ckinv, 2, 2, 1, 1);
 
-        pushButton_sfrst = new QPushButton(gridGroupBox_3);
-        pushButton_sfrst->setObjectName(QStringLiteral("pushButton_sfrst"));
-        pushButton_sfrst->setCheckable(true);
+        sfrst = new QPushButton(gridGroupBox_3);
+        sfrst->setObjectName(QStringLiteral("sfrst"));
+        sfrst->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_sfrst, 2, 1, 1, 1);
+        gridLayout->addWidget(sfrst, 1, 3, 1, 1);
 
-        pushButton_nskipm_i = new QPushButton(gridGroupBox_3);
-        pushButton_nskipm_i->setObjectName(QStringLiteral("pushButton_nskipm_i"));
-        pushButton_nskipm_i->setCheckable(true);
+        nskipm_i = new QPushButton(gridGroupBox_3);
+        nskipm_i->setObjectName(QStringLiteral("nskipm_i"));
+        nskipm_i->setCheckable(true);
 
-        gridLayout->addWidget(pushButton_nskipm_i, 2, 2, 1, 1);
+        gridLayout->addWidget(nskipm_i, 2, 0, 1, 1);
 
 
         gridLayout_8->addWidget(gridGroupBox_3, 3, 0, 1, 1);
@@ -544,65 +541,65 @@ public:
         groupBox_2->setMaximumSize(QSize(400, 16777215));
         gridLayout_2 = new QGridLayout(groupBox_2);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        pushButton_bc = new QPushButton(groupBox_2);
-        pushButton_bc->setObjectName(QStringLiteral("pushButton_bc"));
-        pushButton_bc->setCheckable(true);
-        pushButton_bc->setChecked(false);
+        slvsbc = new QPushButton(groupBox_2);
+        slvsbc->setObjectName(QStringLiteral("slvsbc"));
+        slvsbc->setCheckable(true);
+        slvsbc->setChecked(false);
 
-        gridLayout_2->addWidget(pushButton_bc, 0, 0, 1, 1);
+        gridLayout_2->addWidget(slvsbc, 0, 0, 1, 1);
 
-        pushButton_tp = new QPushButton(groupBox_2);
-        pushButton_tp->setObjectName(QStringLiteral("pushButton_tp"));
-        pushButton_tp->setCheckable(true);
+        slvstp = new QPushButton(groupBox_2);
+        slvstp->setObjectName(QStringLiteral("slvstp"));
+        slvstp->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_tp, 0, 1, 1, 1);
+        gridLayout_2->addWidget(slvstp, 0, 1, 1, 1);
 
-        pushButton_tk = new QPushButton(groupBox_2);
-        pushButton_tk->setObjectName(QStringLiteral("pushButton_tk"));
-        pushButton_tk->setCheckable(true);
+        slvstk = new QPushButton(groupBox_2);
+        slvstk->setObjectName(QStringLiteral("slvstk"));
+        slvstk->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_tk, 0, 2, 1, 1);
+        gridLayout_2->addWidget(slvstk, 0, 2, 1, 1);
 
-        pushButton_dt = new QPushButton(groupBox_2);
-        pushButton_dt->setObjectName(QStringLiteral("pushButton_dt"));
-        pushButton_dt->setCheckable(true);
+        slvsdt = new QPushButton(groupBox_2);
+        slvsdt->setObjectName(QStringLiteral("slvsdt"));
+        slvsdt->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_dt, 0, 3, 1, 1);
+        gridLayout_2->addWidget(slvsdt, 0, 3, 1, 1);
 
-        pushButton_art = new QPushButton(groupBox_2);
-        pushButton_art->setObjectName(QStringLiteral("pushButton_art"));
-        pushButton_art->setCheckable(true);
+        slvsart = new QPushButton(groupBox_2);
+        slvsart->setObjectName(QStringLiteral("slvsart"));
+        slvsart->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_art, 1, 0, 1, 1);
+        gridLayout_2->addWidget(slvsart, 1, 0, 1, 1);
 
-        pushButton_tki = new QPushButton(groupBox_2);
-        pushButton_tki->setObjectName(QStringLiteral("pushButton_tki"));
-        pushButton_tki->setCheckable(true);
+        slvstki = new QPushButton(groupBox_2);
+        slvstki->setObjectName(QStringLiteral("slvstki"));
+        slvstki->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_tki, 1, 1, 1, 1);
+        gridLayout_2->addWidget(slvstki, 1, 1, 1, 1);
 
-        pushButton_ena = new QPushButton(groupBox_2);
-        pushButton_ena->setObjectName(QStringLiteral("pushButton_ena"));
-        pushButton_ena->setCheckable(true);
+        slvsena = new QPushButton(groupBox_2);
+        slvsena->setObjectName(QStringLiteral("slvsena"));
+        slvsena->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_ena, 1, 2, 1, 1);
+        gridLayout_2->addWidget(slvsena, 1, 2, 1, 1);
 
-        pushButton_6b = new QPushButton(groupBox_2);
-        pushButton_6b->setObjectName(QStringLiteral("pushButton_6b"));
-        pushButton_6b->setCheckable(true);
+        slvs6b = new QPushButton(groupBox_2);
+        slvs6b->setObjectName(QStringLiteral("slvs6b"));
+        slvs6b->setCheckable(true);
 
-        gridLayout_2->addWidget(pushButton_6b, 1, 3, 1, 1);
+        gridLayout_2->addWidget(slvs6b, 1, 3, 1, 1);
 
 
         gridLayout_8->addWidget(groupBox_2, 4, 0, 1, 1);
 
         gridLayout_12 = new QGridLayout();
         gridLayout_12->setObjectName(QStringLiteral("gridLayout_12"));
-        pushButton_8 = new QPushButton(tab);
-        pushButton_8->setObjectName(QStringLiteral("pushButton_8"));
-        pushButton_8->setCheckable(true);
+        ART = new QPushButton(tab);
+        ART->setObjectName(QStringLiteral("ART"));
+        ART->setCheckable(true);
 
-        gridLayout_12->addWidget(pushButton_8, 1, 0, 1, 1);
+        gridLayout_12->addWidget(ART, 1, 0, 1, 1);
 
         sfam = new QComboBox(tab);
         sfam->setObjectName(QStringLiteral("sfam"));
@@ -633,59 +630,53 @@ public:
 
         gridLayout_5 = new QGridLayout();
         gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        pushButton_13 = new QPushButton(tab);
-        pushButton_13->setObjectName(QStringLiteral("pushButton_13"));
-        pushButton_13->setCheckable(true);
+        sbft = new QPushButton(tab);
+        sbft->setObjectName(QStringLiteral("sbft"));
+        sbft->setCheckable(true);
 
-        gridLayout_5->addWidget(pushButton_13, 2, 2, 1, 1);
+        gridLayout_5->addWidget(sbft, 0, 1, 1, 1);
 
-        pushButton_14 = new QPushButton(tab);
-        pushButton_14->setObjectName(QStringLiteral("pushButton_14"));
-        pushButton_14->setCheckable(true);
+        sfm = new QPushButton(tab);
+        sfm->setObjectName(QStringLiteral("sfm"));
+        sfm->setCheckable(true);
 
-        gridLayout_5->addWidget(pushButton_14, 2, 1, 1, 1);
+        gridLayout_5->addWidget(sfm, 3, 2, 1, 1);
 
-        pushButton_11 = new QPushButton(tab);
-        pushButton_11->setObjectName(QStringLiteral("pushButton_11"));
-        pushButton_11->setCheckable(true);
+        sbfp = new QPushButton(tab);
+        sbfp->setObjectName(QStringLiteral("sbfp"));
+        sbfp->setCheckable(true);
+        sbfp->setAutoDefault(false);
 
-        gridLayout_5->addWidget(pushButton_11, 0, 1, 1, 1);
+        gridLayout_5->addWidget(sbfp, 0, 2, 1, 1);
 
-        pushButton_6 = new QPushButton(tab);
-        pushButton_6->setObjectName(QStringLiteral("pushButton_6"));
-        pushButton_6->setCheckable(true);
+        slg = new QPushButton(tab);
+        slg->setObjectName(QStringLiteral("slg"));
+        slg->setCheckable(true);
 
-        gridLayout_5->addWidget(pushButton_6, 3, 2, 1, 1);
+        gridLayout_5->addWidget(slg, 3, 1, 1, 1);
 
-        pushButton_10 = new QPushButton(tab);
-        pushButton_10->setObjectName(QStringLiteral("pushButton_10"));
-        pushButton_10->setCheckable(true);
-        pushButton_10->setAutoDefault(false);
+        sbfm = new QPushButton(tab);
+        sbfm->setObjectName(QStringLiteral("sbfm"));
+        sbfm->setCheckable(true);
 
-        gridLayout_5->addWidget(pushButton_10, 0, 2, 1, 1);
+        gridLayout_5->addWidget(sbfm, 1, 1, 1, 1);
 
-        pushButton_5 = new QPushButton(tab);
-        pushButton_5->setObjectName(QStringLiteral("pushButton_5"));
-        pushButton_5->setCheckable(true);
+        sbmx = new QPushButton(tab);
+        sbmx->setObjectName(QStringLiteral("sbmx"));
+        sbmx->setCheckable(true);
 
-        gridLayout_5->addWidget(pushButton_5, 3, 1, 1, 1);
-
-        pushButton_12 = new QPushButton(tab);
-        pushButton_12->setObjectName(QStringLiteral("pushButton_12"));
-        pushButton_12->setCheckable(true);
-
-        gridLayout_5->addWidget(pushButton_12, 1, 1, 1, 1);
+        gridLayout_5->addWidget(sbmx, 1, 2, 1, 1);
 
 
         gridLayout_8->addLayout(gridLayout_5, 1, 0, 1, 1);
 
         gridLayout_9 = new QGridLayout();
         gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
-        pushButton_17 = new QPushButton(tab);
-        pushButton_17->setObjectName(QStringLiteral("pushButton_17"));
-        pushButton_17->setCheckable(true);
+        sttt = new QPushButton(tab);
+        sttt->setObjectName(QStringLiteral("sttt"));
+        sttt->setCheckable(true);
 
-        gridLayout_9->addWidget(pushButton_17, 1, 0, 1, 1);
+        gridLayout_9->addWidget(sttt, 1, 0, 1, 1);
 
         stpp = new QComboBox(tab);
         stpp->setObjectName(QStringLiteral("stpp"));
@@ -717,7 +708,7 @@ public:
 
         tabWidget_4->setCurrentIndex(0);
         sg->setCurrentIndex(2);
-        spg->setCurrentIndex(0);
+        sp->setCurrentIndex(0);
         stc->setCurrentIndex(0);
         st->setCurrentIndex(0);
 
@@ -731,10 +722,10 @@ public:
         label->setText(QApplication::translate("vmm_window", "Channel Settings", 0));
         asic_reset_2->setText(QApplication::translate("vmm_window", "Hard Reset", 0));
         asic_reset->setText(QApplication::translate("vmm_window", "Reset VMM3", 0));
-        pushButton_3->setText(QApplication::translate("vmm_window", "Neighbor Trigger (sng)", 0));
-        pushButton_4->setText(QApplication::translate("vmm_window", "Disable At Peak", 0));
-        pushButton_2->setText(QApplication::translate("vmm_window", "Analog tristates", 0));
-        pushButton_7->setText(QApplication::translate("vmm_window", "Sub Hysterisis ", 0));
+        sng->setText(QApplication::translate("vmm_window", "Neighbor Trigger (sng)", 0));
+        sdp->setText(QApplication::translate("vmm_window", "Disable At Peak", 0));
+        sdrv->setText(QApplication::translate("vmm_window", "Analog tristates", 0));
+        ssh->setText(QApplication::translate("vmm_window", "Sub Hysterisis ", 0));
         sg->clear();
         sg->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "0.5 mV/fC", 0)
@@ -749,8 +740,8 @@ public:
         stcLabel->setText(QApplication::translate("vmm_window", "TAC Slop Adj (stc)", 0));
         sgLabel->setText(QApplication::translate("vmm_window", "Gain (sg)", 0));
         spgLabel->setText(QApplication::translate("vmm_window", "Input charge polarity", 0));
-        spg->clear();
-        spg->insertItems(0, QStringList()
+        sp->clear();
+        sp->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "negative", 0)
          << QApplication::translate("vmm_window", "positive", 0)
         );
@@ -833,22 +824,22 @@ public:
          << QApplication::translate("vmm_window", "63", 0)
          << QApplication::translate("vmm_window", "64", 0)
         );
-        sfam_2->clear();
-        sfam_2->insertItems(0, QStringList()
+        srat->clear();
+        srat->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "Timing At Threshold", 0)
          << QApplication::translate("vmm_window", "Timing At Peak", 0)
         );
-        sfamLabel_2->setText(QApplication::translate("vmm_window", "SRAT Mode", 0));
+        sratLabel->setText(QApplication::translate("vmm_window", "SRAT Mode", 0));
         groupBox->setTitle(QApplication::translate("vmm_window", "ADC ", 0));
-        pushButton_15->setText(QApplication::translate("vmm_window", "8-bit Conv. Mode", 0));
+        s8b->setText(QApplication::translate("vmm_window", "8-bit Conv. Mode", 0));
         sc010b->clear();
         sc010b->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "200ns", 0)
          << QApplication::translate("vmm_window", "+60ns", 0)
         );
         sc010bLabel->setText(QApplication::translate("vmm_window", "10b ADC", 0));
-        pushButton->setText(QApplication::translate("vmm_window", "ADCs", 0));
-        pushButton_16->setText(QApplication::translate("vmm_window", "6-bit", 0));
+        adcs->setText(QApplication::translate("vmm_window", "ADCs", 0));
+        s6b->setText(QApplication::translate("vmm_window", "6-bit", 0));
         sc06bLabel->setText(QApplication::translate("vmm_window", "6b ADC", 0));
         sc08b->clear();
         sc08b->insertItems(0, QStringList()
@@ -863,35 +854,35 @@ public:
          << QApplication::translate("vmm_window", "Up", 0)
         );
         groupBox1->setTitle(QApplication::translate("vmm_window", "Dual Clock", 0));
-        pushButton_9->setText(QApplication::translate("vmm_window", "Dual Clock ART", 0));
-        pushButton_18->setText(QApplication::translate("vmm_window", "Dual Clock Data", 0));
-        pushButton_19->setText(QApplication::translate("vmm_window", "Dual Clock 6-bit", 0));
+        sdcka->setText(QApplication::translate("vmm_window", "Dual Clock ART", 0));
+        sdcks->setText(QApplication::translate("vmm_window", "Dual Clock Data", 0));
+        sdck6b->setText(QApplication::translate("vmm_window", "Dual Clock 6-bit", 0));
         sdpLabel_2->setText(QApplication::translate("vmm_window", "Test Pulse DAC", 0));
         sdtLabel->setText(QApplication::translate("vmm_window", "Threshold DAC", 0));
-        dacmvLabel_TP->setText(QApplication::translate("vmm_window", "TextLabel", 0));
         dacmvLabel->setText(QApplication::translate("vmm_window", "TextLabel", 0));
+        dacmvLabel_TP->setText(QApplication::translate("vmm_window", "TextLabel", 0));
         tabWidget_4->setTabText(tabWidget_4->indexOf(tabWidget_4Page1), QApplication::translate("vmm_window", "General Settings", 0));
-        pushButton_stlc->setText(QApplication::translate("vmm_window", "stlc", 0));
-        pushButton_ssart->setText(QApplication::translate("vmm_window", "ssart", 0));
-        pushButton_sL0dckinv->setText(QApplication::translate("vmm_window", "sL0dckinv", 0));
-        pushButton_sL0ckinv->setText(QApplication::translate("vmm_window", "sL0ckinv", 0));
-        pushButton_srec->setText(QApplication::translate("vmm_window", "srec", 0));
-        pushButton_slvs->setText(QApplication::translate("vmm_window", "slvs", 0));
-        pushButton_s32->setText(QApplication::translate("vmm_window", "s32", 0));
-        pushButton_stcr->setText(QApplication::translate("vmm_window", "stcr", 0));
-        pushButton_sbip->setText(QApplication::translate("vmm_window", "sbip", 0));
-        pushButton_sfrst->setText(QApplication::translate("vmm_window", "sfrst", 0));
-        pushButton_nskipm_i->setText(QApplication::translate("vmm_window", "nskipm_i", 0));
+        ssart->setText(QApplication::translate("vmm_window", "ssart", 0));
+        slvs->setText(QApplication::translate("vmm_window", "slvs", 0));
+        stcr->setText(QApplication::translate("vmm_window", "stcr", 0));
+        sL0dckinv->setText(QApplication::translate("vmm_window", "sL0dckinv", 0));
+        s32->setText(QApplication::translate("vmm_window", "s32", 0));
+        stlc->setText(QApplication::translate("vmm_window", "stlc", 0));
+        srec->setText(QApplication::translate("vmm_window", "srec", 0));
+        sbip->setText(QApplication::translate("vmm_window", "sbip", 0));
+        sL0ckinv->setText(QApplication::translate("vmm_window", "sL0ckinv", 0));
+        sfrst->setText(QApplication::translate("vmm_window", "sfrst", 0));
+        nskipm_i->setText(QApplication::translate("vmm_window", "nskipm_i", 0));
         groupBox_2->setTitle(QApplication::translate("vmm_window", "SLVS 100 Ohm termination", 0));
-        pushButton_bc->setText(QApplication::translate("vmm_window", "bc", 0));
-        pushButton_tp->setText(QApplication::translate("vmm_window", "tp", 0));
-        pushButton_tk->setText(QApplication::translate("vmm_window", "tk", 0));
-        pushButton_dt->setText(QApplication::translate("vmm_window", "dt", 0));
-        pushButton_art->setText(QApplication::translate("vmm_window", "art", 0));
-        pushButton_tki->setText(QApplication::translate("vmm_window", "tki", 0));
-        pushButton_ena->setText(QApplication::translate("vmm_window", "ena", 0));
-        pushButton_6b->setText(QApplication::translate("vmm_window", "6b", 0));
-        pushButton_8->setText(QApplication::translate("vmm_window", "ART", 0));
+        slvsbc->setText(QApplication::translate("vmm_window", "bc", 0));
+        slvstp->setText(QApplication::translate("vmm_window", "tp", 0));
+        slvstk->setText(QApplication::translate("vmm_window", "tk", 0));
+        slvsdt->setText(QApplication::translate("vmm_window", "dt", 0));
+        slvsart->setText(QApplication::translate("vmm_window", "art", 0));
+        slvstki->setText(QApplication::translate("vmm_window", "tki", 0));
+        slvsena->setText(QApplication::translate("vmm_window", "ena", 0));
+        slvs6b->setText(QApplication::translate("vmm_window", "6b", 0));
+        ART->setText(QApplication::translate("vmm_window", "ART", 0));
         sfam->clear();
         sfam->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "Timing At Threshold", 0)
@@ -906,14 +897,13 @@ public:
          << QApplication::translate("vmm_window", "50 ns", 0)
          << QApplication::translate("vmm_window", "25 ns", 0)
         );
-        pushButton_13->setText(QApplication::translate("vmm_window", "SCMX", 0));
-        pushButton_14->setText(QApplication::translate("vmm_window", "SBMX", 0));
-        pushButton_11->setText(QApplication::translate("vmm_window", "sbft", 0));
-        pushButton_6->setText(QApplication::translate("vmm_window", "Double Leak", 0));
-        pushButton_10->setText(QApplication::translate("vmm_window", "sbfp", 0));
-        pushButton_5->setText(QApplication::translate("vmm_window", "Leak. Curr.", 0));
-        pushButton_12->setText(QApplication::translate("vmm_window", "sbfm", 0));
-        pushButton_17->setText(QApplication::translate("vmm_window", "Direct Time", 0));
+        sbft->setText(QApplication::translate("vmm_window", "SBFT", 0));
+        sfm->setText(QApplication::translate("vmm_window", "Double Leak", 0));
+        sbfp->setText(QApplication::translate("vmm_window", "SBFP", 0));
+        slg->setText(QApplication::translate("vmm_window", "Leak. Curr.", 0));
+        sbfm->setText(QApplication::translate("vmm_window", "SBFM", 0));
+        sbmx->setText(QApplication::translate("vmm_window", "SBMX", 0));
+        sttt->setText(QApplication::translate("vmm_window", "Direct Time", 0));
         stpp->clear();
         stpp->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "0", 0)

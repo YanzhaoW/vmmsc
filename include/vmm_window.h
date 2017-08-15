@@ -86,12 +86,16 @@ private:
     Ui::vmm_window *ui;
     unsigned short VMM_Get(std::string feature, int ch=-9999);
     bool VMM_Set(std::string feature, int val ,int ch=-9999);
-
+    bool VMM_Set(std::string feature, std::string value, int ch=-9999);
+//    void changeDACtoMVs(int);
+    void LoadSettings();
 public slots:
     // channel fields
     void updateChannelState();
     void updateChannelVoltages(int);
     void updateChannelADCs(int);
+    // VMM settings
+     void updateSettings();
 
 };
 

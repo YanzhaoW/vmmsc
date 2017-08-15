@@ -56,23 +56,14 @@ public:
     unsigned short GetRegGlobSize();
     unsigned short GetRegChanSize();
     struct Channel{
-        unsigned short VMMSCBool=0;
-        unsigned short VMMSLBool=0;
-        unsigned short VMMSTBool=0;
-        unsigned short VMMSTHBool=0;
-        unsigned short VMMSMBool=0;
-        unsigned short VMMSMXBool=0;
-        unsigned short VMMSDValue=0;
-        unsigned short VMMSZ010bValue=0;
-        unsigned short VMMSZ08bValue=0;
-        unsigned short VMMSZ06bValue=0;
+        std::map<std::string, unsigned short> m_channel={{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
     };
 
     struct VMM_Settings{
         //
         Channel ch_settings[64];
         std::map<std::string, unsigned short> *m_GlobalReg1 = new std::map<std::string, unsigned short>;
-        std::vector<std::string> Names_GReg1 = {"sp", "sdp", "sbmx", "sbft", "sbfp", "sbfm", "slg", "scmx", "monitoring", "sfa", "sfam", "peaktime", "sfm", "gain", "sng", "stot", "sttt", "ssh", "stc", "sdt", "sdp", "convtime_10", "convtime_8", "convtime_6", "s8b", "s6b", "s10b", "sdcks", "sdcka", "sdck6b", "sdrv", "stpp", "slvs", "s32", "stcr", "ssart", "srec", "stlc", "sbip", "srat", "sfrst", "slvsbc", "slvstp", "slvstk",  "slvsdt", "slvsart", "slvstki", "slvsena", "slvs6b", "reset"} ;
+        std::vector<std::string> Names_GReg1 = {"sp", "sdp", "sbmx", "sbft", "sbfp", "sbfm", "slg", "scmx", "monitoring", "sfa", "sfam", "peaktime", "sfm", "gain", "sng", "stot", "sttt", "ssh", "stc", "sdt", "sdp_2", "convtime_10", "convtime_8", "convtime_6", "s8b", "s6b", "s10b", "sdcks", "sdcka", "sdck6b", "sdrv", "stpp", "slvs", "s32", "stcr", "ssart", "srec", "stlc", "sbip", "srat", "sfrst", "slvsbc", "slvstp", "slvstk",  "slvsdt", "slvsart", "slvstki", "slvsena", "slvs6b", "reset"} ;
         std::vector<std::string> Names_GReg2 ={"sL0dckinv", "sL0ckinv", "nskipm_i" };//not clear whats difference between single resets!!!!!
 
 
@@ -82,7 +73,7 @@ public:
     unsigned short GetRegister( std::string feature, int ch =-9999 );
     bool SetRegister( std::string feature, std::string val, int ch =-9999 );
     bool SetRegi(std::string feature, std::string val, int ch=-9999);
-    bool SetRegi(std::string feature, bool val, int ch=-9999);
+//    bool SetRegi(std::string feature, bool val, int ch=-9999);
     bool SetRegi(std::string feature, int val, int ch=-9999);
     bool SetRegi(std::string feature, double val, int ch=-9999);
 private:
