@@ -50,7 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
     f1 = QtConcurrent::run(b, &Commandline::StartCommandline);
        std::cout << "commandline started" << std::endl;
 
-        vmmconfhandl = new VMM_config_handler(this);
+       vmmconfhandl = new VMM_config_handler(this);
+       hybridconfhandl = new hybrid_config_handler(this);
         daqconfhandl = new DAQ_config_handler(this);
         fecconfhandl = new FEC_config_handler(this);
         //daq_window *daqwindow = new daq_window(this);
@@ -353,7 +354,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //thread
     //msg()("NOT MOVING TO DAQ THREAD");
     vmmDataHandler->moveToThread(daqThread);
-
+    vmmconfhandl->LoadAllVMMConf("default");//loading the default config file
     // for now disable the ability to set the online monitoring ON
     // will wait until this is robus
     msg()(" *** Disabling online monitoring *** ");

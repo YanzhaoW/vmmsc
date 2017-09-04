@@ -24,6 +24,7 @@ public:
 private slots:
     void on_Box_vmm1_clicked();
     void on_Box_vmm2_clicked();
+    void updateSettings();
 private:
     hdmi_window *root_hdmi;
     unsigned short fec_index;
@@ -32,6 +33,9 @@ private:
     Ui::hybrid_window *ui;
     void vmmBoxLogic(bool checked, unsigned short vmm);
     void updateWindow();
+    void LoadSettings();
+    bool Hybrid_Set(std::string feature, unsigned short val);
+    unsigned short Hybrid_Get(std::string feature);
 };
 
 #endif // HYBRID_WINDOW_H

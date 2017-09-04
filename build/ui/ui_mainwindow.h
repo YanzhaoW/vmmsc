@@ -1441,7 +1441,7 @@ public:
         gridLayout_9->setColumnStretch(1, 1);
         layoutWidget3 = new QWidget(groupBox_3);
         layoutWidget3->setObjectName(QStringLiteral("layoutWidget3"));
-        layoutWidget3->setGeometry(QRect(0, 51, 111, 204));
+        layoutWidget3->setGeometry(QRect(0, 51, 111, 131));
         gridLayout_11 = new QGridLayout(layoutWidget3);
         gridLayout_11->setSpacing(6);
         gridLayout_11->setContentsMargins(11, 11, 11, 11);
@@ -2330,7 +2330,7 @@ public:
         cktk_s6->setCurrentIndex(0);
         ckbc_s6->setCurrentIndex(2);
         ckbc_skew_s6->setCurrentIndex(0);
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(2);
         sg_cal_min->setCurrentIndex(2);
         sg_cal_max->setCurrentIndex(2);
         delaySteps->setCurrentIndex(0);

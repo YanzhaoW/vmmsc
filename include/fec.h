@@ -4,6 +4,9 @@
 
 #include "globparameter.h"
 #include "hdmi.h"
+#include "fec_config_module.h"
+#include "socket_handler.h"
+//class FEC_config_module;
 
 class FEC: public QObject
 {
@@ -12,7 +15,15 @@ public:
     FEC();
     ~FEC();
     friend class Commandline;
+    friend class FEC_config_module;
+    friend class fec_window;
+    friend class vmm_window;
+    friend class daq_window;
     HDMI hdmi[HDMIS_PER_FEC];
+
+    void LoadMessageHandler(MessageHandler& m);
+    MessageHandler& msg() { return *m_msg; }
+    SocketHandler& socketHandle() { return *vmmSocketHandler; }
 
     bool SetHDMI(unsigned short hdmi, bool OnOff);
     bool GetHDMI(unsigned short hdmi);
@@ -33,6 +44,9 @@ public:
     const char *GetRegName(unsigned short regnum);
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
+    QString GetIP();
+    void SendAll();
+
 
 
 private:
@@ -47,5 +61,14 @@ private:
     std::vector<const char*> *RegNames;
     std::vector<unsigned long> *Reg;
     char *cchr;
+
+    unsigned short VMM_Get(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
+    bool VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
+    bool VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
+
+    FEC_config_module *fec_conf_mod;
+
+    MessageHandler *m_msg;
+    SocketHandler *vmmSocketHandler;
 };
 #endif // FEC_H

@@ -12,6 +12,7 @@
 
 #include "globparameter.h"
 #include "fec.h"
+#include "message_handler.h"
 
 class DAQ: public QObject
 {
@@ -21,6 +22,8 @@ public:
     ~DAQ();
     friend class Commandline;
     FEC fec[FECS_PER_DAQ];
+
+    MessageHandler& msg() { return *vmmMessageHandler; }
 
     bool SetFEC(unsigned short FEC, bool OnOff);
     bool GetFEC(unsigned short FEC);
@@ -42,7 +45,23 @@ public:
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
 
+    bool SetIP(int fec, QStringList ip);
+    bool GetIP(int fec, QStringList &ip);
+    bool ClearIp(int fec);
+
+    bool SetHybridPos(int fec, int hdmi, int hybrid, int xaxis, int position);
+    bool GetHybridPos(int fec, int hdmi, int hybrid, int &xaxis, int &position);
+    bool ClearHybridPos(int fec, int hdmi, int hybrid);
+
+    bool CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index);
+    bool CheckIP(QString ip, int fec_index);
+
+
 private:
+    std::map<int, int> *m_HybridPos = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int position>
+    std::map<int, int> *m_HybridAxis = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int Xaxis> 0 for Y axis and 1 for Xaxis
+    std::map<int, QStringList> m_FecIPs; // map<int number of fec, QStringList corresponding IP>
+
     bool SetText(unsigned short reg, const char * text);
     bool Set(unsigned short reg, unsigned short val);
     bool CheckAllowedVal(unsigned short reg, const char *val);
@@ -56,6 +75,9 @@ private:
 
     std::vector<bool> fec_act;//binary to store which fecs are activated
     char *cchr;
+
+    MessageHandler *vmmMessageHandler;
+    void SetMessageHandler();
 };
 
 #endif // DAQ_H

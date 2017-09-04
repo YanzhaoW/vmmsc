@@ -11,7 +11,8 @@ gain 2
 monitoring 64
 nskipm_i 0
 peaktime 0
-reset 0
+reset1 0
+reset2 0
 s10b 0
 s32 0
 s6b 0

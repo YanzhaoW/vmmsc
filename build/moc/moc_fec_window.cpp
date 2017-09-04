@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_fec_window_t {
-    QByteArrayData data[10];
-    char stringdata0[180];
+    QByteArrayData data[16];
+    char stringdata0[284];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,14 +38,23 @@ QT_MOC_LITERAL(5, 75, 20), // "on_Box_hdmi4_clicked"
 QT_MOC_LITERAL(6, 96, 20), // "on_Box_hdmi5_clicked"
 QT_MOC_LITERAL(7, 117, 20), // "on_Box_hdmi6_clicked"
 QT_MOC_LITERAL(8, 138, 20), // "on_Box_hdmi7_clicked"
-QT_MOC_LITERAL(9, 159, 20) // "on_Box_hdmi8_clicked"
+QT_MOC_LITERAL(9, 159, 20), // "on_Box_hdmi8_clicked"
+QT_MOC_LITERAL(10, 180, 14), // "updateSettings"
+QT_MOC_LITERAL(11, 195, 20), // "on_ip4_2_textChanged"
+QT_MOC_LITERAL(12, 216, 4), // "arg1"
+QT_MOC_LITERAL(13, 221, 20), // "on_ip3_2_textChanged"
+QT_MOC_LITERAL(14, 242, 20), // "on_ip2_2_textChanged"
+QT_MOC_LITERAL(15, 263, 20) // "on_ip1_2_textChanged"
 
     },
     "fec_window\0on_Box_hdmi1_clicked\0\0"
     "on_Box_hdmi2_clicked\0on_Box_hdmi3_clicked\0"
     "on_Box_hdmi4_clicked\0on_Box_hdmi5_clicked\0"
     "on_Box_hdmi6_clicked\0on_Box_hdmi7_clicked\0"
-    "on_Box_hdmi8_clicked"
+    "on_Box_hdmi8_clicked\0updateSettings\0"
+    "on_ip4_2_textChanged\0arg1\0"
+    "on_ip3_2_textChanged\0on_ip2_2_textChanged\0"
+    "on_ip1_2_textChanged"
 };
 #undef QT_MOC_LITERAL
 
@@ -55,7 +64,7 @@ static const uint qt_meta_data_fec_window[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       8,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -63,14 +72,19 @@ static const uint qt_meta_data_fec_window[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   54,    2, 0x08 /* Private */,
-       3,    0,   55,    2, 0x08 /* Private */,
-       4,    0,   56,    2, 0x08 /* Private */,
-       5,    0,   57,    2, 0x08 /* Private */,
-       6,    0,   58,    2, 0x08 /* Private */,
-       7,    0,   59,    2, 0x08 /* Private */,
-       8,    0,   60,    2, 0x08 /* Private */,
-       9,    0,   61,    2, 0x08 /* Private */,
+       1,    0,   79,    2, 0x08 /* Private */,
+       3,    0,   80,    2, 0x08 /* Private */,
+       4,    0,   81,    2, 0x08 /* Private */,
+       5,    0,   82,    2, 0x08 /* Private */,
+       6,    0,   83,    2, 0x08 /* Private */,
+       7,    0,   84,    2, 0x08 /* Private */,
+       8,    0,   85,    2, 0x08 /* Private */,
+       9,    0,   86,    2, 0x08 /* Private */,
+      10,    0,   87,    2, 0x08 /* Private */,
+      11,    1,   88,    2, 0x08 /* Private */,
+      13,    1,   91,    2, 0x08 /* Private */,
+      14,    1,   94,    2, 0x08 /* Private */,
+      15,    1,   97,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -81,6 +95,11 @@ static const uint qt_meta_data_fec_window[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString,   12,
+    QMetaType::Void, QMetaType::QString,   12,
 
        0        // eod
 };
@@ -99,10 +118,14 @@ void fec_window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 5: _t->on_Box_hdmi6_clicked(); break;
         case 6: _t->on_Box_hdmi7_clicked(); break;
         case 7: _t->on_Box_hdmi8_clicked(); break;
+        case 8: _t->updateSettings(); break;
+        case 9: _t->on_ip4_2_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 10: _t->on_ip3_2_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 11: _t->on_ip2_2_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
+        case 12: _t->on_ip1_2_textChanged((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         default: ;
         }
     }
-    Q_UNUSED(_a);
 }
 
 const QMetaObject fec_window::staticMetaObject = {
@@ -130,13 +153,13 @@ int fec_window::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 8)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 8;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 8)
+        if (_id < 13)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 8;
+        _id -= 13;
     }
     return _id;
 }

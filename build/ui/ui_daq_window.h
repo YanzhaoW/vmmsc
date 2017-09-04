@@ -26,9 +26,11 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -38,7 +40,14 @@ class Ui_daq_window
 public:
     QWidget *centralwidget;
     QGridLayout *gridLayout_2;
+    QTabWidget *tabWidget_2;
+    QWidget *tab;
+    QGridLayout *gridLayout_5;
+    QTabWidget *tabWidget;
     QGroupBox *groupBox;
+    QGridLayout *gridLayout_9;
+    QWidget *widget_3;
+    QGridLayout *gridLayout_7;
     QCheckBox *Box_fec1;
     QCheckBox *Box_fec2;
     QCheckBox *Box_fec3;
@@ -47,12 +56,15 @@ public:
     QCheckBox *Box_fec6;
     QCheckBox *Box_fec7;
     QCheckBox *Box_fec8;
-    QPushButton *Button_load;
-    QPushButton *Button_save;
-    QLineEdit *line_configFile;
-    QLabel *label_configFile;
-    QTabWidget *tabWidget;
     QWidget *widget_2;
+    QGridLayout *gridLayout_8;
+    QLabel *connectionLabel_3;
+    QPushButton *Send;
+    QPushButton *openConnection_2;
+    QSpacerItem *verticalSpacer;
+    QLabel *connectionLabel_2;
+    QPushButton *reset_warnings;
+    QWidget *tab_2;
     QGroupBox *runGroupbox;
     QLineEdit *userComments_2;
     QLabel *label_5;
@@ -100,6 +112,35 @@ public:
     QComboBox *setVMMs_3;
     QPushButton *SendConfiguration_3;
     QLabel *cmdlabel_3;
+    QGroupBox *groupBox_12;
+    QGridLayout *gridLayout_3;
+    QLabel *label_7;
+    QLabel *label_37;
+    QSpinBox *pulserDelay_3;
+    QSpinBox *bcid_reset_3;
+    QLabel *label_22;
+    QLabel *label_20;
+    QLineEdit *trgPeriod_3;
+    QSpinBox *acqSync_3;
+    QLabel *label_21;
+    QCheckBox *holdOffCheckBox_3;
+    QSpinBox *acqWindow_3;
+    QPushButton *setTrgAcqConst_3;
+    QPushButton *trgPulser_3;
+    QPushButton *onACQ_3;
+    QPushButton *trgExternal_3;
+    QPushButton *offACQ_3;
+    QWidget *tab_3;
+    QGridLayout *gridLayout_10;
+    QGroupBox *groupBox_5;
+    QGridLayout *gridLayout_11;
+    QTextEdit *loggingScreen;
+    QPushButton *logBottom;
+    QGroupBox *groupBox_3;
+    QGridLayout *gridLayout_6;
+    QPushButton *Button_load;
+    QLineEdit *line_configFile;
+    QPushButton *Button_save;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -107,67 +148,134 @@ public:
     {
         if (daq_window->objectName().isEmpty())
             daq_window->setObjectName(QStringLiteral("daq_window"));
-        daq_window->resize(1235, 805);
+        daq_window->resize(962, 776);
         centralwidget = new QWidget(daq_window);
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_2 = new QGridLayout(centralwidget);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
-        groupBox = new QGroupBox(centralwidget);
-        groupBox->setObjectName(QStringLiteral("groupBox"));
-        groupBox->setMinimumSize(QSize(100, 600));
-        Box_fec1 = new QCheckBox(groupBox);
-        Box_fec1->setObjectName(QStringLiteral("Box_fec1"));
-        Box_fec1->setGeometry(QRect(12, 29, 33, 20));
-        Box_fec2 = new QCheckBox(groupBox);
-        Box_fec2->setObjectName(QStringLiteral("Box_fec2"));
-        Box_fec2->setGeometry(QRect(12, 55, 33, 20));
-        Box_fec3 = new QCheckBox(groupBox);
-        Box_fec3->setObjectName(QStringLiteral("Box_fec3"));
-        Box_fec3->setGeometry(QRect(12, 81, 33, 20));
-        Box_fec4 = new QCheckBox(groupBox);
-        Box_fec4->setObjectName(QStringLiteral("Box_fec4"));
-        Box_fec4->setGeometry(QRect(12, 107, 33, 20));
-        Box_fec5 = new QCheckBox(groupBox);
-        Box_fec5->setObjectName(QStringLiteral("Box_fec5"));
-        Box_fec5->setGeometry(QRect(12, 133, 33, 20));
-        Box_fec6 = new QCheckBox(groupBox);
-        Box_fec6->setObjectName(QStringLiteral("Box_fec6"));
-        Box_fec6->setGeometry(QRect(12, 159, 33, 20));
-        Box_fec7 = new QCheckBox(groupBox);
-        Box_fec7->setObjectName(QStringLiteral("Box_fec7"));
-        Box_fec7->setGeometry(QRect(12, 185, 33, 20));
-        Box_fec8 = new QCheckBox(groupBox);
-        Box_fec8->setObjectName(QStringLiteral("Box_fec8"));
-        Box_fec8->setGeometry(QRect(12, 211, 33, 20));
-        Button_load = new QPushButton(groupBox);
-        Button_load->setObjectName(QStringLiteral("Button_load"));
-        Button_load->setGeometry(QRect(12, 479, 80, 22));
-        Button_save = new QPushButton(groupBox);
-        Button_save->setObjectName(QStringLiteral("Button_save"));
-        Button_save->setGeometry(QRect(12, 507, 80, 22));
-        line_configFile = new QLineEdit(groupBox);
-        line_configFile->setObjectName(QStringLiteral("line_configFile"));
-        line_configFile->setGeometry(QRect(12, 451, 81, 22));
-        label_configFile = new QLabel(groupBox);
-        label_configFile->setObjectName(QStringLiteral("label_configFile"));
-        label_configFile->setGeometry(QRect(20, 430, 61, 16));
-
-        gridLayout_2->addWidget(groupBox, 0, 0, 1, 1);
-
-        tabWidget = new QTabWidget(centralwidget);
+        tabWidget_2 = new QTabWidget(centralwidget);
+        tabWidget_2->setObjectName(QStringLiteral("tabWidget_2"));
+        tab = new QWidget();
+        tab->setObjectName(QStringLiteral("tab"));
+        gridLayout_5 = new QGridLayout(tab);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        tabWidget = new QTabWidget(tab);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
 
-        gridLayout_2->addWidget(tabWidget, 0, 1, 1, 1);
+        gridLayout_5->addWidget(tabWidget, 0, 2, 1, 1);
 
-        widget_2 = new QWidget(centralwidget);
+        groupBox = new QGroupBox(tab);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        groupBox->setMinimumSize(QSize(100, 600));
+        gridLayout_9 = new QGridLayout(groupBox);
+        gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
+        widget_3 = new QWidget(groupBox);
+        widget_3->setObjectName(QStringLiteral("widget_3"));
+        gridLayout_7 = new QGridLayout(widget_3);
+        gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        Box_fec1 = new QCheckBox(widget_3);
+        Box_fec1->setObjectName(QStringLiteral("Box_fec1"));
+
+        gridLayout_7->addWidget(Box_fec1, 0, 0, 1, 1);
+
+        Box_fec2 = new QCheckBox(widget_3);
+        Box_fec2->setObjectName(QStringLiteral("Box_fec2"));
+
+        gridLayout_7->addWidget(Box_fec2, 1, 0, 1, 1);
+
+        Box_fec3 = new QCheckBox(widget_3);
+        Box_fec3->setObjectName(QStringLiteral("Box_fec3"));
+
+        gridLayout_7->addWidget(Box_fec3, 2, 0, 1, 1);
+
+        Box_fec4 = new QCheckBox(widget_3);
+        Box_fec4->setObjectName(QStringLiteral("Box_fec4"));
+
+        gridLayout_7->addWidget(Box_fec4, 3, 0, 1, 1);
+
+        Box_fec5 = new QCheckBox(widget_3);
+        Box_fec5->setObjectName(QStringLiteral("Box_fec5"));
+
+        gridLayout_7->addWidget(Box_fec5, 4, 0, 1, 1);
+
+        Box_fec6 = new QCheckBox(widget_3);
+        Box_fec6->setObjectName(QStringLiteral("Box_fec6"));
+
+        gridLayout_7->addWidget(Box_fec6, 5, 0, 1, 1);
+
+        Box_fec7 = new QCheckBox(widget_3);
+        Box_fec7->setObjectName(QStringLiteral("Box_fec7"));
+
+        gridLayout_7->addWidget(Box_fec7, 6, 0, 1, 1);
+
+        Box_fec8 = new QCheckBox(widget_3);
+        Box_fec8->setObjectName(QStringLiteral("Box_fec8"));
+
+        gridLayout_7->addWidget(Box_fec8, 7, 0, 1, 1);
+
+
+        gridLayout_9->addWidget(widget_3, 3, 0, 1, 1);
+
+        widget_2 = new QWidget(groupBox);
         widget_2->setObjectName(QStringLiteral("widget_2"));
-        widget_2->setMinimumSize(QSize(1111, 140));
-        runGroupbox = new QGroupBox(widget_2);
-        runGroupbox->setObjectName(QStringLiteral("runGroupbox"));
-        runGroupbox->setGeometry(QRect(10, 10, 911, 121));
+        widget_2->setMaximumSize(QSize(16777215, 155));
+        gridLayout_8 = new QGridLayout(widget_2);
+        gridLayout_8->setObjectName(QStringLiteral("gridLayout_8"));
+        connectionLabel_3 = new QLabel(widget_2);
+        connectionLabel_3->setObjectName(QStringLiteral("connectionLabel_3"));
+        connectionLabel_3->setMinimumSize(QSize(0, 30));
+        connectionLabel_3->setMaximumSize(QSize(16777215, 22));
         QFont font;
         font.setFamily(QStringLiteral("Arial"));
         font.setPointSize(9);
+        connectionLabel_3->setFont(font);
+
+        gridLayout_8->addWidget(connectionLabel_3, 3, 0, 1, 1);
+
+        Send = new QPushButton(widget_2);
+        Send->setObjectName(QStringLiteral("Send"));
+
+        gridLayout_8->addWidget(Send, 2, 0, 1, 1);
+
+        openConnection_2 = new QPushButton(widget_2);
+        openConnection_2->setObjectName(QStringLiteral("openConnection_2"));
+        openConnection_2->setMinimumSize(QSize(0, 22));
+        QFont font1;
+        font1.setFamily(QStringLiteral("Arial"));
+        font1.setPointSize(8);
+        openConnection_2->setFont(font1);
+
+        gridLayout_8->addWidget(openConnection_2, 0, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_8->addItem(verticalSpacer, 5, 0, 2, 1);
+
+        connectionLabel_2 = new QLabel(widget_2);
+        connectionLabel_2->setObjectName(QStringLiteral("connectionLabel_2"));
+        connectionLabel_2->setMinimumSize(QSize(0, 20));
+        connectionLabel_2->setMaximumSize(QSize(16777215, 16777215));
+        connectionLabel_2->setFont(font);
+
+        gridLayout_8->addWidget(connectionLabel_2, 1, 0, 1, 1);
+
+        reset_warnings = new QPushButton(widget_2);
+        reset_warnings->setObjectName(QStringLiteral("reset_warnings"));
+
+        gridLayout_8->addWidget(reset_warnings, 4, 0, 1, 1);
+
+
+        gridLayout_9->addWidget(widget_2, 0, 0, 1, 1);
+
+
+        gridLayout_5->addWidget(groupBox, 0, 1, 1, 1);
+
+        tabWidget_2->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        runGroupbox = new QGroupBox(tab_2);
+        runGroupbox->setObjectName(QStringLiteral("runGroupbox"));
+        runGroupbox->setGeometry(QRect(50, 630, 911, 121));
         runGroupbox->setFont(font);
         userComments_2 = new QLineEdit(runGroupbox);
         userComments_2->setObjectName(QStringLiteral("userComments_2"));
@@ -178,13 +286,13 @@ public:
         label_5 = new QLabel(runGroupbox);
         label_5->setObjectName(QStringLiteral("label_5"));
         label_5->setGeometry(QRect(11, 27, 81, 16));
-        QFont font1;
-        font1.setPointSize(9);
-        label_5->setFont(font1);
+        QFont font2;
+        font2.setPointSize(9);
+        label_5->setFont(font2);
         label_11 = new QLabel(runGroupbox);
         label_11->setObjectName(QStringLiteral("label_11"));
         label_11->setGeometry(QRect(11, 86, 61, 16));
-        label_11->setFont(font1);
+        label_11->setFont(font2);
         runNumber_2 = new QSpinBox(runGroupbox);
         runNumber_2->setObjectName(QStringLiteral("runNumber_2"));
         runNumber_2->setGeometry(QRect(85, 23, 62, 25));
@@ -195,7 +303,7 @@ public:
         label_12 = new QLabel(runGroupbox);
         label_12->setObjectName(QStringLiteral("label_12"));
         label_12->setGeometry(QRect(11, 57, 61, 16));
-        label_12->setFont(font1);
+        label_12->setFont(font2);
         runDirectoryField_2 = new QLineEdit(runGroupbox);
         runDirectoryField_2->setObjectName(QStringLiteral("runDirectoryField_2"));
         runDirectoryField_2->setEnabled(true);
@@ -213,7 +321,7 @@ public:
         label_14 = new QLabel(runGroupbox);
         label_14->setObjectName(QStringLiteral("label_14"));
         label_14->setGeometry(QRect(146, 27, 41, 16));
-        label_14->setFont(font1);
+        label_14->setFont(font2);
         stopTriggerCnt_2 = new QPushButton(runGroupbox);
         stopTriggerCnt_2->setObjectName(QStringLiteral("stopTriggerCnt_2"));
         stopTriggerCnt_2->setGeometry(QRect(344, 62, 81, 21));
@@ -239,14 +347,11 @@ public:
         eventCountStopLabel_2 = new QLabel(frame_5);
         eventCountStopLabel_2->setObjectName(QStringLiteral("eventCountStopLabel_2"));
         eventCountStopLabel_2->setGeometry(QRect(0, 20, 51, 16));
-        QFont font2;
-        font2.setFamily(QStringLiteral("Arial"));
-        font2.setPointSize(8);
-        eventCountStopLabel_2->setFont(font2);
+        eventCountStopLabel_2->setFont(font1);
         label_15 = new QLabel(frame_5);
         label_15->setObjectName(QStringLiteral("label_15"));
         label_15->setGeometry(QRect(110, 0, 36, 16));
-        label_15->setFont(font1);
+        label_15->setFont(font2);
         triggerCntLabel_fpga_2 = new QLabel(frame_5);
         triggerCntLabel_fpga_2->setObjectName(QStringLiteral("triggerCntLabel_fpga_2"));
         triggerCntLabel_fpga_2->setGeometry(QRect(154, 0, 31, 16));
@@ -255,7 +360,7 @@ public:
         label_16 = new QLabel(frame_5);
         label_16->setObjectName(QStringLiteral("label_16"));
         label_16->setGeometry(QRect(110, 20, 36, 16));
-        label_16->setFont(font1);
+        label_16->setFont(font2);
         triggerCntLabel_2 = new QLabel(frame_5);
         triggerCntLabel_2->setObjectName(QStringLiteral("triggerCntLabel_2"));
         triggerCntLabel_2->setGeometry(QRect(150, 20, 35, 16));
@@ -325,10 +430,10 @@ public:
         openConnection = new QPushButton(runGroupbox);
         openConnection->setObjectName(QStringLiteral("openConnection"));
         openConnection->setGeometry(QRect(750, 30, 121, 21));
-        openConnection->setFont(font2);
-        groupBox_2 = new QGroupBox(widget_2);
+        openConnection->setFont(font1);
+        groupBox_2 = new QGroupBox(tab_2);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        groupBox_2->setGeometry(QRect(930, 20, 141, 111));
+        groupBox_2->setGeometry(QRect(630, 410, 141, 111));
         groupBox_2->setFont(font);
         horizontalLayoutWidget_5 = new QWidget(groupBox_2);
         horizontalLayoutWidget_5->setObjectName(QStringLiteral("horizontalLayoutWidget_5"));
@@ -398,13 +503,200 @@ public:
         cmdlabel_3->setFont(font);
         cmdlabel_3->setAlignment(Qt::AlignCenter);
         cmdlabel_3->setWordWrap(true);
+        groupBox_12 = new QGroupBox(tab_2);
+        groupBox_12->setObjectName(QStringLiteral("groupBox_12"));
+        groupBox_12->setGeometry(QRect(310, 310, 190, 244));
+        groupBox_12->setFont(font);
+        groupBox_12->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        gridLayout_3 = new QGridLayout(groupBox_12);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        label_7 = new QLabel(groupBox_12);
+        label_7->setObjectName(QStringLiteral("label_7"));
+        QFont font3;
+        font3.setPointSize(8);
+        label_7->setFont(font3);
 
-        gridLayout_2->addWidget(widget_2, 1, 1, 1, 1);
+        gridLayout_3->addWidget(label_7, 0, 0, 1, 1);
+
+        label_37 = new QLabel(groupBox_12);
+        label_37->setObjectName(QStringLiteral("label_37"));
+        label_37->setFont(font3);
+        label_37->setWordWrap(true);
+
+        gridLayout_3->addWidget(label_37, 0, 1, 1, 1);
+
+        pulserDelay_3 = new QSpinBox(groupBox_12);
+        pulserDelay_3->setObjectName(QStringLiteral("pulserDelay_3"));
+        pulserDelay_3->setFont(font);
+        pulserDelay_3->setMinimum(1);
+        pulserDelay_3->setMaximum(50000);
+        pulserDelay_3->setSingleStep(1);
+        pulserDelay_3->setValue(81);
+
+        gridLayout_3->addWidget(pulserDelay_3, 1, 0, 1, 1);
+
+        bcid_reset_3 = new QSpinBox(groupBox_12);
+        bcid_reset_3->setObjectName(QStringLiteral("bcid_reset_3"));
+        bcid_reset_3->setFont(font);
+        bcid_reset_3->setMinimum(0);
+        bcid_reset_3->setMaximum(65535);
+        bcid_reset_3->setSingleStep(1);
+        bcid_reset_3->setValue(0);
+
+        gridLayout_3->addWidget(bcid_reset_3, 1, 1, 1, 1);
+
+        label_22 = new QLabel(groupBox_12);
+        label_22->setObjectName(QStringLiteral("label_22"));
+        label_22->setFont(font3);
+        label_22->setWordWrap(true);
+
+        gridLayout_3->addWidget(label_22, 2, 0, 1, 1);
+
+        label_20 = new QLabel(groupBox_12);
+        label_20->setObjectName(QStringLiteral("label_20"));
+        label_20->setFont(font3);
+
+        gridLayout_3->addWidget(label_20, 2, 1, 1, 1);
+
+        trgPeriod_3 = new QLineEdit(groupBox_12);
+        trgPeriod_3->setObjectName(QStringLiteral("trgPeriod_3"));
+        trgPeriod_3->setFont(font);
+        trgPeriod_3->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+
+        gridLayout_3->addWidget(trgPeriod_3, 3, 0, 1, 1);
+
+        acqSync_3 = new QSpinBox(groupBox_12);
+        acqSync_3->setObjectName(QStringLiteral("acqSync_3"));
+        acqSync_3->setFont(font);
+        acqSync_3->setMinimum(1);
+        acqSync_3->setMaximum(50000);
+        acqSync_3->setSingleStep(1);
+        acqSync_3->setValue(100);
+
+        gridLayout_3->addWidget(acqSync_3, 3, 1, 1, 1);
+
+        label_21 = new QLabel(groupBox_12);
+        label_21->setObjectName(QStringLiteral("label_21"));
+        label_21->setFont(font3);
+        label_21->setWordWrap(true);
+
+        gridLayout_3->addWidget(label_21, 4, 0, 1, 1);
+
+        holdOffCheckBox_3 = new QCheckBox(groupBox_12);
+        holdOffCheckBox_3->setObjectName(QStringLiteral("holdOffCheckBox_3"));
+        holdOffCheckBox_3->setFont(font3);
+
+        gridLayout_3->addWidget(holdOffCheckBox_3, 4, 1, 2, 1);
+
+        acqWindow_3 = new QSpinBox(groupBox_12);
+        acqWindow_3->setObjectName(QStringLiteral("acqWindow_3"));
+        acqWindow_3->setFont(font);
+        acqWindow_3->setMinimum(1);
+        acqWindow_3->setMaximum(50000);
+        acqWindow_3->setSingleStep(1);
+        acqWindow_3->setValue(4096);
+
+        gridLayout_3->addWidget(acqWindow_3, 5, 0, 2, 1);
+
+        setTrgAcqConst_3 = new QPushButton(groupBox_12);
+        setTrgAcqConst_3->setObjectName(QStringLiteral("setTrgAcqConst_3"));
+        QFont font4;
+        font4.setPointSize(14);
+        setTrgAcqConst_3->setFont(font4);
+
+        gridLayout_3->addWidget(setTrgAcqConst_3, 6, 1, 1, 1);
+
+        trgPulser_3 = new QPushButton(groupBox_12);
+        trgPulser_3->setObjectName(QStringLiteral("trgPulser_3"));
+        trgPulser_3->setFont(font2);
+        trgPulser_3->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_3->addWidget(trgPulser_3, 7, 0, 1, 1);
+
+        onACQ_3 = new QPushButton(groupBox_12);
+        onACQ_3->setObjectName(QStringLiteral("onACQ_3"));
+        onACQ_3->setFont(font2);
+        onACQ_3->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_3->addWidget(onACQ_3, 7, 1, 1, 1);
+
+        trgExternal_3 = new QPushButton(groupBox_12);
+        trgExternal_3->setObjectName(QStringLiteral("trgExternal_3"));
+        trgExternal_3->setFont(font2);
+        trgExternal_3->setFocusPolicy(Qt::NoFocus);
+        trgExternal_3->setAutoFillBackground(false);
+        trgExternal_3->setAutoDefault(false);
+
+        gridLayout_3->addWidget(trgExternal_3, 8, 0, 1, 1);
+
+        offACQ_3 = new QPushButton(groupBox_12);
+        offACQ_3->setObjectName(QStringLiteral("offACQ_3"));
+        offACQ_3->setFont(font2);
+        offACQ_3->setFocusPolicy(Qt::NoFocus);
+
+        gridLayout_3->addWidget(offACQ_3, 8, 1, 1, 1);
+
+        tabWidget_2->addTab(tab_2, QString());
+        tab_3 = new QWidget();
+        tab_3->setObjectName(QStringLiteral("tab_3"));
+        gridLayout_10 = new QGridLayout(tab_3);
+        gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
+        groupBox_5 = new QGroupBox(tab_3);
+        groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
+        gridLayout_11 = new QGridLayout(groupBox_5);
+        gridLayout_11->setObjectName(QStringLiteral("gridLayout_11"));
+        loggingScreen = new QTextEdit(groupBox_5);
+        loggingScreen->setObjectName(QStringLiteral("loggingScreen"));
+        QFont font5;
+        font5.setFamily(QStringLiteral("Courier"));
+        font5.setPointSize(9);
+        loggingScreen->setFont(font5);
+        loggingScreen->setLineWrapMode(QTextEdit::NoWrap);
+        loggingScreen->setLineWrapColumnOrWidth(150);
+        loggingScreen->setTabStopWidth(0);
+
+        gridLayout_11->addWidget(loggingScreen, 0, 0, 1, 1);
+
+        logBottom = new QPushButton(groupBox_5);
+        logBottom->setObjectName(QStringLiteral("logBottom"));
+        logBottom->setFont(font);
+
+        gridLayout_11->addWidget(logBottom, 1, 0, 1, 1);
+
+
+        gridLayout_10->addWidget(groupBox_5, 0, 0, 1, 1);
+
+        tabWidget_2->addTab(tab_3, QString());
+
+        gridLayout_2->addWidget(tabWidget_2, 0, 1, 2, 2);
+
+        groupBox_3 = new QGroupBox(centralwidget);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setMaximumSize(QSize(300, 70));
+        gridLayout_6 = new QGridLayout(groupBox_3);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        Button_load = new QPushButton(groupBox_3);
+        Button_load->setObjectName(QStringLiteral("Button_load"));
+
+        gridLayout_6->addWidget(Button_load, 0, 1, 1, 1);
+
+        line_configFile = new QLineEdit(groupBox_3);
+        line_configFile->setObjectName(QStringLiteral("line_configFile"));
+
+        gridLayout_6->addWidget(line_configFile, 0, 0, 1, 1);
+
+        Button_save = new QPushButton(groupBox_3);
+        Button_save->setObjectName(QStringLiteral("Button_save"));
+
+        gridLayout_6->addWidget(Button_save, 0, 2, 1, 1);
+
+
+        gridLayout_2->addWidget(groupBox_3, 2, 1, 1, 1);
 
         daq_window->setCentralWidget(centralwidget);
         menubar = new QMenuBar(daq_window);
         menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1235, 19));
+        menubar->setGeometry(QRect(0, 0, 962, 19));
         daq_window->setMenuBar(menubar);
         statusbar = new QStatusBar(daq_window);
         statusbar->setObjectName(QStringLiteral("statusbar"));
@@ -412,6 +704,7 @@ public:
 
         retranslateUi(daq_window);
 
+        tabWidget_2->setCurrentIndex(0);
         tabWidget->setCurrentIndex(-1);
 
 
@@ -430,9 +723,12 @@ public:
         Box_fec6->setText(QApplication::translate("daq_window", "6", 0));
         Box_fec7->setText(QApplication::translate("daq_window", "7", 0));
         Box_fec8->setText(QApplication::translate("daq_window", "8", 0));
-        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
-        Button_save->setText(QApplication::translate("daq_window", "Save", 0));
-        label_configFile->setText(QApplication::translate("daq_window", "Config file", 0));
+        connectionLabel_3->setText(QString());
+        Send->setText(QApplication::translate("daq_window", "Send", 0));
+        openConnection_2->setText(QApplication::translate("daq_window", "Open Communication", 0));
+        connectionLabel_2->setText(QApplication::translate("daq_window", "  N/A", 0));
+        reset_warnings->setText(QApplication::translate("daq_window", "Reset Warnings", 0));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
         runGroupbox->setTitle(QApplication::translate("daq_window", "Run Control", 0));
         label_5->setText(QApplication::translate("daq_window", "Run Number", 0));
         label_11->setText(QApplication::translate("daq_window", "Comments", 0));
@@ -465,6 +761,26 @@ public:
         appRB_3->setText(QApplication::translate("daq_window", "APP", 0));
         SendConfiguration_3->setText(QApplication::translate("daq_window", "Send", 0));
         cmdlabel_3->setText(QApplication::translate("daq_window", "count", 0));
+        groupBox_12->setTitle(QApplication::translate("daq_window", "Trigger & Acquisition", 0));
+        label_7->setText(QApplication::translate("daq_window", "TP Delay", 0));
+        label_37->setText(QApplication::translate("daq_window", "BCID Reset", 0));
+        label_22->setText(QApplication::translate("daq_window", "Trg Per", 0));
+        label_20->setText(QApplication::translate("daq_window", "ACQ Sync", 0));
+        trgPeriod_3->setText(QApplication::translate("daq_window", "61A80", 0));
+        label_21->setText(QApplication::translate("daq_window", "ACQ Win", 0));
+        holdOffCheckBox_3->setText(QApplication::translate("daq_window", "Hold Off", 0));
+        setTrgAcqConst_3->setText(QApplication::translate("daq_window", "Set", 0));
+        trgPulser_3->setText(QApplication::translate("daq_window", "Pulser", 0));
+        onACQ_3->setText(QApplication::translate("daq_window", "ACQ On", 0));
+        trgExternal_3->setText(QApplication::translate("daq_window", "External", 0));
+        offACQ_3->setText(QApplication::translate("daq_window", "ACQ Off", 0));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("daq_window", "VMM Data Acquisition", 0));
+        groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
+        logBottom->setText(QApplication::translate("daq_window", "Bottom", 0));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", 0));
+        groupBox_3->setTitle(QApplication::translate("daq_window", "Config file", 0));
+        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
+        Button_save->setText(QApplication::translate("daq_window", "Save", 0));
     } // retranslateUi
 
 };

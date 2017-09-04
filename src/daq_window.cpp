@@ -3,24 +3,72 @@
 daq_window::daq_window(MainWindow *top, QWidget *parent) :
     QMainWindow(parent),
     root_main{top},
+    m_msg(0),
     ui(new Ui::daq_window)
 {
     ui->setupUi(this);
+    ui->Send->setEnabled(false);
+    LoadMessageHandler(root_main->daq[0].msg());
+    connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
+    ui->openConnection_2->setToolTip("Open communication");
+
 }
 
 daq_window::~daq_window()
 {
     delete ui;
 }
+// ------------------------------------------------------------------------ //
+void daq_window::LoadMessageHandler(MessageHandler& m)
+{
+    m_msg = &m;
+}
+// ------------------------------------------------------------------------- //
+void daq_window::readLog()
+{
+    string buff = msg().buffer();
+    ui->loggingScreen->append(QString::fromStdString(buff));
+    //ui->loggingScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    msg().clear();
+}
+// ------------------------------------------------------------------------- //
+void daq_window::SetWarning(QString warning, QString bkgcol ){
+
+     ui->connectionLabel_2->setWordWrap(true);
+    ui->connectionLabel_2->setText( warning );
+    ui->connectionLabel_2->setStyleSheet("background-color: "+bkgcol);
+
+//    ui->connectionLabel_2->setText("Select number of FECs");
+//    ui->connectionLabel_2->setStyleSheet("background-color: light");
+
+//    ui->connectionLabel_2->setText("all alive");
+//    ui->connectionLabel_2->setStyleSheet("background-color: green");
+
+//    ui->connectionLabel_2->setText("ping failed");
+//    ui->connectionLabel_2->setStyleSheet("background-color: lightGray");
+}
+// ------------------------------------------------------------------------- //
+void daq_window::SetWarning2(QString warning, QString bkgcol ){
+    ui->connectionLabel_3->setWordWrap(true);
+    ui->connectionLabel_3->setText( warning );
+    ui->connectionLabel_3->setStyleSheet("background-color: "+bkgcol);
+}
+// ------------------------------------------------------------------------- //
 
 void daq_window::on_Box_fec1_clicked()
 {
-    if (ui->Box_fec1->isChecked()){fecBoxLogic(true,0);}
+    if (ui->Box_fec1->isChecked()){
+        fecBoxLogic(true,0);
+        ui->Send->setEnabled(false);
+    }
     else {fecBoxLogic(false,0);}
 }
 void daq_window::on_Box_fec2_clicked()
 {
-    if (ui->Box_fec2->isChecked()){fecBoxLogic(true,1);}
+    if (ui->Box_fec2->isChecked()){
+        fecBoxLogic(true,1);
+        ui->Send->setEnabled(false);
+    }
     else {fecBoxLogic(false,1);}
 }
 void daq_window::on_Box_fec3_clicked()
@@ -67,6 +115,7 @@ void daq_window::fecBoxLogic(bool checked, unsigned short fec){
     else {
         ui->tabWidget->removeTab(fec-NotActiveBefore);
         root_main->daq[0].SetFEC(fec,false);
+//        delete fec_window(this,fec);
     }
 }
 
@@ -75,13 +124,13 @@ void daq_window::on_Button_load_clicked()
 
     QString text = ui->line_configFile->displayText();
     std::string fname = text.toStdString();
+    std::string filename = fname;
     if (fname == "") {
         std::cout << "No file name specified" << std::endl;
         ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
 
-        root_main->vmmconfhandl->LoadAllVMMConf(fname);
         fname+=".txt";
         bool found = root_main->daqconfhandl->LoadDAQConf(fname.c_str());
         if (!found){
@@ -90,6 +139,8 @@ void daq_window::on_Button_load_clicked()
         }
 
         else {
+            root_main->vmmconfhandl->LoadAllVMMConf(filename);
+            root_main->hybridconfhandl->LoadAllHybridConf(filename);
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
 
                     if (j==0) {ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
@@ -144,7 +195,7 @@ void daq_window::on_Button_load_clicked()
              }
         } //else file found
     } //end else not ""
-
+//root_main->vmmconfhandl->LoadAllVMMConf(filename);
 }
 
 void daq_window::on_Button_save_clicked()
@@ -157,8 +208,41 @@ void daq_window::on_Button_save_clicked()
     }
     else {
         root_main->vmmconfhandl->WriteAllVMMConf(fname);
+        root_main->hybridconfhandl->WriteAllHybridConf(fname);
         fname+=".txt";
         root_main->daqconfhandl->WriteDAQConf(fname.c_str());
         std::cout << "loading file " << fname << std::endl;
     }
+}
+
+void daq_window::on_openConnection_2_clicked()
+{
+    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+        if (root_main->daq_act[i]){
+            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+                if (root_main->daq[i].GetFEC(j)){
+
+                    if(root_main->daq[i].fec[j].fec_conf_mod->Connect()==1){
+                        SetWarning("all alive","green");
+                         ui->Send->setEnabled(true);
+                    }
+                    else{
+
+                        SetWarning("ping failed", "red");
+                         ui->Send->setEnabled(false);
+                        return;
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
+}
+
+void daq_window::on_reset_warnings_clicked()
+{
+    SetWarning2("","light");
 }

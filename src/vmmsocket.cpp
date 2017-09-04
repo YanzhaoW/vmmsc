@@ -165,7 +165,7 @@ QByteArray VMMSocket::processReply(const QString &ip_to_check, quint32 cmd_delay
     sx << getName() << " socket processing replies for IP: " + ip_to_check.toStdString();
     if(dbg()) msg()("Processing datagram replies for IP: " + ip_to_check.toStdString(),
                         "VMMSocket::processReply");
-
+//    m_dbg = true;
     bool ok;
     QString datagram_hex;
     unsigned int cmd_cnt_to_check = globalCount - cmd_delay; 
@@ -193,7 +193,7 @@ QByteArray VMMSocket::processReply(const QString &ip_to_check, quint32 cmd_delay
       //  buffer().resize(socket().pendingDatagramSize());
       //  socket().readDatagram(buffer().data(), buffer().size(), &vmmIP);
       //  qDebug() << "BLAH BLAHreceived datagram hex: " << buffer().toHex();
-
+       vmmIP = QHostAddress(vmmIP.toIPv4Address());
         if(dbg()) {
             //debug
             sx.str("");

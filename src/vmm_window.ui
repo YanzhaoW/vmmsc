@@ -26,6 +26,22 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <item row="1" column="0">
+    <widget class="QPushButton" name="vmm_reset">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>9</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Hard Reset</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QWidget" name="widget" native="true">
      <property name="minimumSize">
@@ -109,38 +125,6 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="asic_reset_2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Hard Reset</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="asic_reset">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>9</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Reset VMM3</string>
-     </property>
     </widget>
    </item>
    <item row="0" column="0">
@@ -747,12 +731,12 @@
            </property>
            <item>
             <property name="text">
-             <string>Timing At Threshold</string>
+             <string>Timing At Peak</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Timing At Peak</string>
+             <string>Timing At Threshold</string>
             </property>
            </item>
           </widget>
@@ -829,16 +813,6 @@
            <widget class="QPushButton" name="adcs">
             <property name="text">
              <string>ADCs</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4" colspan="2">
-           <widget class="QPushButton" name="s6b">
-            <property name="text">
-             <string>6-bit</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -1053,7 +1027,218 @@
        <string>Advanced Settings</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0" colspan="5">
+        <layout class="QGridLayout" name="gridLayout_12">
+         <item row="1" column="2">
+          <widget class="QComboBox" name="sfam">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <item>
+            <property name="text">
+             <string>Off</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Timing At Threshold</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Timing At Peak</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="stLabel">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Peak time (st)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="st">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>200 ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>100 ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>50 ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>25 ns</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QLabel" name="sfamLabel">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>ART-Mode</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0" colspan="3">
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="1">
+          <widget class="QPushButton" name="sbft">
+           <property name="text">
+            <string>SBFT</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QPushButton" name="sfm">
+           <property name="text">
+            <string>Double Leak</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="sbfp">
+           <property name="text">
+            <string>SBFP</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QPushButton" name="slg">
+           <property name="text">
+            <string>Leak. Curr.</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="sbfm">
+           <property name="text">
+            <string>SBFM</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="sbmx">
+           <property name="text">
+            <string>SBMX</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
        <item row="3" column="0">
+        <widget class="QPushButton" name="sttt">
+         <property name="minimumSize">
+          <size>
+           <width>64</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Direct Time</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="3">
+        <widget class="QComboBox" name="stpp">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <item>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="4">
+        <widget class="QComboBox" name="stot">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <item>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="5">
         <widget class="QGroupBox" name="gridGroupBox_3">
          <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="2">
@@ -1169,7 +1354,7 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0" colspan="5">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="maximumSize">
           <size>
@@ -1267,232 +1452,34 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout_12">
-         <item row="1" column="0">
-          <widget class="QPushButton" name="ART">
-           <property name="text">
-            <string>ART</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QComboBox" name="sfam">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <item>
-            <property name="text">
-             <string>Timing At Threshold</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Timing At Peak</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="sfamLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Mode</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="stLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Peak time (st)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="st">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>200 ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>100 ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>50 ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>25 ns</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
+       <item row="3" column="2">
+        <widget class="QLabel" name="stotLabel">
+         <property name="maximumSize">
+          <size>
+           <width>35</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Mode</string>
+         </property>
+        </widget>
        </item>
-       <item row="1" column="0">
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="1">
-          <widget class="QPushButton" name="sbft">
-           <property name="text">
-            <string>SBFT</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QPushButton" name="sfm">
-           <property name="text">
-            <string>Double Leak</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QPushButton" name="sbfp">
-           <property name="text">
-            <string>SBFP</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="autoDefault">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QPushButton" name="slg">
-           <property name="text">
-            <string>Leak. Curr.</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="sbfm">
-           <property name="text">
-            <string>SBFM</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QPushButton" name="sbmx">
-           <property name="text">
-            <string>SBMX</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <layout class="QGridLayout" name="gridLayout_9">
-         <item row="1" column="0">
-          <widget class="QPushButton" name="sttt">
-           <property name="text">
-            <string>Direct Time</string>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QComboBox" name="stpp">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <item>
-            <property name="text">
-             <string>0</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QComboBox" name="stot">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <item>
-            <property name="text">
-             <string>0</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLabel" name="stotLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>             Mode</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="s6b">
+         <property name="text">
+          <string>6-bit</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

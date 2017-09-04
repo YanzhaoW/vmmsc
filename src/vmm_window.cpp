@@ -19,8 +19,7 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
     CreateChannelsFields();
     SetToolTips();
     LoadSettings();
-
-
+    ui->vmm_reset->setEnabled(false);
     //connect the settings from the GUI
     // General Settings
     connect(ui->sdt, SIGNAL(valueChanged(int)),
@@ -76,8 +75,8 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
                                     this, SLOT(updateSettings()));
     connect(ui->sfam, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(updateSettings()));
-    connect(ui->ART, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+//    connect(ui->ART, SIGNAL(pressed()),
+//                                    this, SLOT(updateSettings()));
     connect(ui->sbft, SIGNAL(pressed()),
                                     this, SLOT(updateSettings()));
     connect(ui->sbfp, SIGNAL(pressed()),
@@ -139,7 +138,8 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
                                     this, SLOT(updateSettings()));
 
 
-
+    connect(root_hybrid->root_hdmi->root_fec->root_daq->ui->openConnection_2, SIGNAL(clicked()),
+                                    this, SLOT(updateSettings()));
 
 }
 
@@ -264,8 +264,9 @@ void vmm_window::LoadSettings()
     ui->dacmvLabel_TP->setText(tmp.number((0.6862*ui->sdp_2->value()+63.478), 'f', 2) + " mV");
 
     //Loading Advanced settings and updating GUI
-    ui->ART->setChecked(VMM_Get("sfa"));
-    ui->sfam->setCurrentIndex(VMM_Get("sfam"));
+//    ui->ART->setChecked(VMM_Get("sfa"));
+    if(VMM_Get("sfa")) ui->sfam->setCurrentIndex(VMM_Get("sfam")+1);
+    else ui->sfam->setCurrentIndex(VMM_Get("sfa"));
     ui->st->setCurrentIndex(VMM_Get("peaktime"));
     ui->sbfm->setChecked(VMM_Get("sbfm"));
     ui->sbfp->setChecked(VMM_Get("sbfp"));
@@ -281,6 +282,7 @@ void vmm_window::LoadSettings()
 
     ui->nskipm_i->setChecked(VMM_Get("nskipm_i"));
     ui->s32->setChecked(VMM_Get("s32"));
+    ui->stlc->setChecked(VMM_Get("stlc"));
     ui->sL0ckinv->setChecked(VMM_Get("sL0ckinv"));
     ui->sL0dckinv->setChecked(VMM_Get("sL0dckinv"));
     ui->sbip->setChecked(VMM_Get("sbip"));
@@ -312,7 +314,7 @@ void vmm_window::updateSettings()
     }
     else if(QObject::sender() == ui->sdp_2){
         ui->dacmvLabel_TP->setText(tmp.number((0.6862*ui->sdp_2->value()+63.478), 'f', 2) + " mV");
-        VMM_Set("sdp_2", ui->sdt->value());
+        VMM_Set("sdp_2", ui->sdp_2->value());
     }
     else if(QObject::sender() == ui->sp){
         VMM_Set("sp", ui->sp->currentIndex());
@@ -353,6 +355,10 @@ void vmm_window::updateSettings()
     }
     else if(QObject::sender() == ui->s6b){
         VMM_Set("s6b", !ui->s6b->isChecked());
+        if(!ui->s6b->isChecked()){
+            ui->sttt->setChecked(true);
+            VMM_Set("sttt",1);
+        }
     }
     else if(QObject::sender() == ui->sc010b){
         VMM_Set("convtime_10", ui->sc010b->currentIndex());
@@ -375,6 +381,10 @@ void vmm_window::updateSettings()
     }
     else if(QObject::sender() == ui->sttt){
         VMM_Set("sttt", !ui->sttt->isChecked());
+        if(ui->sttt->isChecked()) {
+            VMM_Set("s6b",0);
+            ui->s6b->setChecked(false);
+        }
     }
 
     else if(QObject::sender() == ui->stpp){
@@ -387,11 +397,15 @@ void vmm_window::updateSettings()
         VMM_Set("peaktime", ui->st->currentIndex());
     }
     else if(QObject::sender() == ui->sfam){
-        VMM_Set("sfam", ui->sfam->currentIndex());
+        if(ui->sfam->currentIndex()>0) {
+            VMM_Set("sfam", ui->sfam->currentIndex()-1);
+            VMM_Set("sfa",1);
+        }
+        else VMM_Set("sfa", 0);
     }
-    else if(QObject::sender() == ui->ART){
-        VMM_Set("sfa", !ui->ART->isChecked());
-    }
+//    else if(QObject::sender() == ui->ART){
+//        VMM_Set("sfa", !ui->ART->isChecked());
+//    }
     else if(QObject::sender() == ui->sbft){
         VMM_Set("sbft", !ui->sbft->isChecked());
     }
@@ -465,6 +479,11 @@ void vmm_window::updateSettings()
     else if(QObject::sender() == ui->slvs6b){
         VMM_Set("slvs6b", !ui->slvs6b->isChecked());
     }
+    else if(QObject::sender() == root_hybrid->root_hdmi->root_fec->root_daq->ui->openConnection_2){
+        if(root_hybrid->root_hdmi->root_fec->root_daq->ui->connectionLabel_2->text()==QString("all alive")) ui->vmm_reset->setEnabled(true);
+        else ui->vmm_reset->setEnabled(false);
+    }
+
 
 }
 
@@ -1005,3 +1024,14 @@ void vmm_window::updateChannelADCs(int index)
     }
 }
 // ------------------------------------------------------------------------- //
+
+void vmm_window::on_vmm_reset_clicked()
+{
+    VMM_Set("reset1", 1);
+    VMM_Set("reset2", 1);
+    root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
+    VMM_Set("reset1", 0);
+    VMM_Set("reset2", 0);
+    root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
+
+}

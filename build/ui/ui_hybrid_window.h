@@ -32,37 +32,44 @@ public:
     QGridLayout *gridLayout_3;
     QGroupBox *groupBox_8;
     QGridLayout *gridLayout;
+    QPushButton *setck_s6;
+    QLabel *ckbcLabel_2;
+    QLabel *label_32;
+    QLabel *ckbcLabel;
+    QComboBox *cktk_s6;
+    QLabel *label_34;
     QSpinBox *s6_tkPulses;
     QComboBox *ckbc_s6;
     QComboBox *ckbc_skew_s6;
     QLabel *cktkLabel;
     QSpinBox *fecPeriodReset;
     QPushButton *setck_s6_resets;
-    QPushButton *setck_s6;
-    QCheckBox *s6_autoReset;
-    QLabel *ckbcLabel_2;
-    QCheckBox *s6_FECReset;
-    QLabel *label_32;
-    QLabel *ckbcLabel;
-    QComboBox *cktk_s6;
-    QLabel *label_34;
+    QTabWidget *tabWidget;
+    QGroupBox *groupBox_3;
+    QGridLayout *gridLayout_5;
+    QLabel *tpSkewLabel;
+    QComboBox *tpSkew;
+    QLabel *tpWidthLabel;
+    QComboBox *tpWidth;
+    QLabel *tpPolarityLabel;
+    QComboBox *tpPolarity;
+    QPushButton *setTp_s6;
+    QGroupBox *groupBox_2;
+    QGridLayout *gridLayout_4;
+    QLabel *cktkLabel_2;
+    QComboBox *Xaxis;
+    QLabel *cktkLabel_3;
+    QSpinBox *position;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_2;
     QCheckBox *Box_vmm1;
     QCheckBox *Box_vmm2;
-    QTabWidget *tabWidget;
-    QGroupBox *groupBox_2;
-    QGridLayout *gridLayout_4;
-    QLabel *cktkLabel_2;
-    QComboBox *cktk_s6_2;
-    QLabel *cktkLabel_3;
-    QSpinBox *fecPeriodReset_2;
 
     void setupUi(QWidget *hybrid_window)
     {
         if (hybrid_window->objectName().isEmpty())
             hybrid_window->setObjectName(QStringLiteral("hybrid_window"));
-        hybrid_window->resize(986, 643);
+        hybrid_window->resize(1191, 746);
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -79,6 +86,49 @@ public:
         groupBox_8->setFont(font);
         gridLayout = new QGridLayout(groupBox_8);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        setck_s6 = new QPushButton(groupBox_8);
+        setck_s6->setObjectName(QStringLiteral("setck_s6"));
+        QFont font1;
+        font1.setPointSize(9);
+        setck_s6->setFont(font1);
+
+        gridLayout->addWidget(setck_s6, 6, 0, 1, 3);
+
+        ckbcLabel_2 = new QLabel(groupBox_8);
+        ckbcLabel_2->setObjectName(QStringLiteral("ckbcLabel_2"));
+        QFont font2;
+        font2.setFamily(QStringLiteral("Arial"));
+        font2.setPointSize(8);
+        ckbcLabel_2->setFont(font2);
+
+        gridLayout->addWidget(ckbcLabel_2, 4, 0, 1, 3);
+
+        label_32 = new QLabel(groupBox_8);
+        label_32->setObjectName(QStringLiteral("label_32"));
+        QFont font3;
+        font3.setPointSize(8);
+        label_32->setFont(font3);
+
+        gridLayout->addWidget(label_32, 7, 2, 1, 1);
+
+        ckbcLabel = new QLabel(groupBox_8);
+        ckbcLabel->setObjectName(QStringLiteral("ckbcLabel"));
+        ckbcLabel->setFont(font2);
+
+        gridLayout->addWidget(ckbcLabel, 2, 0, 1, 1);
+
+        cktk_s6 = new QComboBox(groupBox_8);
+        cktk_s6->setObjectName(QStringLiteral("cktk_s6"));
+        cktk_s6->setFont(font);
+
+        gridLayout->addWidget(cktk_s6, 1, 0, 1, 3);
+
+        label_34 = new QLabel(groupBox_8);
+        label_34->setObjectName(QStringLiteral("label_34"));
+        label_34->setFont(font3);
+
+        gridLayout->addWidget(label_34, 7, 0, 1, 2);
+
         s6_tkPulses = new QSpinBox(groupBox_8);
         s6_tkPulses->setObjectName(QStringLiteral("s6_tkPulses"));
         s6_tkPulses->setFont(font);
@@ -87,7 +137,7 @@ public:
         s6_tkPulses->setSingleStep(1);
         s6_tkPulses->setValue(2);
 
-        gridLayout->addWidget(s6_tkPulses, 10, 0, 1, 1);
+        gridLayout->addWidget(s6_tkPulses, 8, 0, 1, 1);
 
         ckbc_s6 = new QComboBox(groupBox_8);
         ckbc_s6->setObjectName(QStringLiteral("ckbc_s6"));
@@ -103,10 +153,7 @@ public:
 
         cktkLabel = new QLabel(groupBox_8);
         cktkLabel->setObjectName(QStringLiteral("cktkLabel"));
-        QFont font1;
-        font1.setFamily(QStringLiteral("Arial"));
-        font1.setPointSize(8);
-        cktkLabel->setFont(font1);
+        cktkLabel->setFont(font2);
 
         gridLayout->addWidget(cktkLabel, 0, 0, 1, 1);
 
@@ -118,69 +165,105 @@ public:
         fecPeriodReset->setSingleStep(1);
         fecPeriodReset->setValue(4094);
 
-        gridLayout->addWidget(fecPeriodReset, 10, 1, 1, 2);
+        gridLayout->addWidget(fecPeriodReset, 8, 1, 1, 2);
 
         setck_s6_resets = new QPushButton(groupBox_8);
         setck_s6_resets->setObjectName(QStringLiteral("setck_s6_resets"));
-        QFont font2;
-        font2.setPointSize(9);
-        setck_s6_resets->setFont(font2);
+        setck_s6_resets->setFont(font1);
 
-        gridLayout->addWidget(setck_s6_resets, 11, 0, 1, 3);
-
-        setck_s6 = new QPushButton(groupBox_8);
-        setck_s6->setObjectName(QStringLiteral("setck_s6"));
-        setck_s6->setFont(font2);
-
-        gridLayout->addWidget(setck_s6, 6, 0, 1, 3);
-
-        s6_autoReset = new QCheckBox(groupBox_8);
-        s6_autoReset->setObjectName(QStringLiteral("s6_autoReset"));
-        QFont font3;
-        font3.setPointSize(8);
-        s6_autoReset->setFont(font3);
-        s6_autoReset->setChecked(true);
-
-        gridLayout->addWidget(s6_autoReset, 7, 0, 1, 3);
-
-        ckbcLabel_2 = new QLabel(groupBox_8);
-        ckbcLabel_2->setObjectName(QStringLiteral("ckbcLabel_2"));
-        ckbcLabel_2->setFont(font1);
-
-        gridLayout->addWidget(ckbcLabel_2, 4, 0, 1, 3);
-
-        s6_FECReset = new QCheckBox(groupBox_8);
-        s6_FECReset->setObjectName(QStringLiteral("s6_FECReset"));
-        s6_FECReset->setFont(font3);
-
-        gridLayout->addWidget(s6_FECReset, 8, 0, 1, 3);
-
-        label_32 = new QLabel(groupBox_8);
-        label_32->setObjectName(QStringLiteral("label_32"));
-        label_32->setFont(font3);
-
-        gridLayout->addWidget(label_32, 9, 2, 1, 1);
-
-        ckbcLabel = new QLabel(groupBox_8);
-        ckbcLabel->setObjectName(QStringLiteral("ckbcLabel"));
-        ckbcLabel->setFont(font1);
-
-        gridLayout->addWidget(ckbcLabel, 2, 0, 1, 1);
-
-        cktk_s6 = new QComboBox(groupBox_8);
-        cktk_s6->setObjectName(QStringLiteral("cktk_s6"));
-        cktk_s6->setFont(font);
-
-        gridLayout->addWidget(cktk_s6, 1, 0, 1, 3);
-
-        label_34 = new QLabel(groupBox_8);
-        label_34->setObjectName(QStringLiteral("label_34"));
-        label_34->setFont(font3);
-
-        gridLayout->addWidget(label_34, 9, 0, 1, 2);
+        gridLayout->addWidget(setck_s6_resets, 9, 0, 1, 3);
 
 
         gridLayout_3->addWidget(groupBox_8, 2, 0, 1, 1);
+
+        tabWidget = new QTabWidget(hybrid_window);
+        tabWidget->setObjectName(QStringLiteral("tabWidget"));
+
+        gridLayout_3->addWidget(tabWidget, 0, 1, 5, 1);
+
+        groupBox_3 = new QGroupBox(hybrid_window);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        gridLayout_5 = new QGridLayout(groupBox_3);
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        tpSkewLabel = new QLabel(groupBox_3);
+        tpSkewLabel->setObjectName(QStringLiteral("tpSkewLabel"));
+        tpSkewLabel->setFont(font);
+
+        gridLayout_5->addWidget(tpSkewLabel, 0, 0, 1, 1);
+
+        tpSkew = new QComboBox(groupBox_3);
+        tpSkew->setObjectName(QStringLiteral("tpSkew"));
+        tpSkew->setFont(font);
+
+        gridLayout_5->addWidget(tpSkew, 1, 0, 1, 1);
+
+        tpWidthLabel = new QLabel(groupBox_3);
+        tpWidthLabel->setObjectName(QStringLiteral("tpWidthLabel"));
+        tpWidthLabel->setFont(font);
+
+        gridLayout_5->addWidget(tpWidthLabel, 2, 0, 1, 1);
+
+        tpWidth = new QComboBox(groupBox_3);
+        tpWidth->setObjectName(QStringLiteral("tpWidth"));
+        tpWidth->setFont(font);
+
+        gridLayout_5->addWidget(tpWidth, 3, 0, 1, 1);
+
+        tpPolarityLabel = new QLabel(groupBox_3);
+        tpPolarityLabel->setObjectName(QStringLiteral("tpPolarityLabel"));
+        tpPolarityLabel->setFont(font);
+
+        gridLayout_5->addWidget(tpPolarityLabel, 4, 0, 1, 1);
+
+        tpPolarity = new QComboBox(groupBox_3);
+        tpPolarity->setObjectName(QStringLiteral("tpPolarity"));
+        tpPolarity->setFont(font);
+
+        gridLayout_5->addWidget(tpPolarity, 5, 0, 1, 1);
+
+        setTp_s6 = new QPushButton(groupBox_3);
+        setTp_s6->setObjectName(QStringLiteral("setTp_s6"));
+        setTp_s6->setFont(font1);
+
+        gridLayout_5->addWidget(setTp_s6, 6, 0, 1, 1);
+
+
+        gridLayout_3->addWidget(groupBox_3, 3, 0, 2, 1);
+
+        groupBox_2 = new QGroupBox(hybrid_window);
+        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        gridLayout_4 = new QGridLayout(groupBox_2);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        cktkLabel_2 = new QLabel(groupBox_2);
+        cktkLabel_2->setObjectName(QStringLiteral("cktkLabel_2"));
+        cktkLabel_2->setFont(font2);
+
+        gridLayout_4->addWidget(cktkLabel_2, 0, 0, 1, 1);
+
+        Xaxis = new QComboBox(groupBox_2);
+        Xaxis->setObjectName(QStringLiteral("Xaxis"));
+        Xaxis->setFont(font);
+
+        gridLayout_4->addWidget(Xaxis, 1, 0, 1, 1);
+
+        cktkLabel_3 = new QLabel(groupBox_2);
+        cktkLabel_3->setObjectName(QStringLiteral("cktkLabel_3"));
+        cktkLabel_3->setFont(font2);
+
+        gridLayout_4->addWidget(cktkLabel_3, 2, 0, 1, 1);
+
+        position = new QSpinBox(groupBox_2);
+        position->setObjectName(QStringLiteral("position"));
+        position->setFont(font);
+        position->setMinimum(1);
+        position->setMaximum(65534);
+        position->setSingleStep(1);
+        position->setValue(1);
+
+        gridLayout_4->addWidget(position, 3, 0, 1, 1);
+
+
+        gridLayout_3->addWidget(groupBox_2, 1, 0, 1, 1);
 
         groupBox = new QGroupBox(hybrid_window);
         groupBox->setObjectName(QStringLiteral("groupBox"));
@@ -199,54 +282,17 @@ public:
 
         gridLayout_3->addWidget(groupBox, 0, 0, 1, 1);
 
-        tabWidget = new QTabWidget(hybrid_window);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
-
-        gridLayout_3->addWidget(tabWidget, 0, 1, 3, 1);
-
-        groupBox_2 = new QGroupBox(hybrid_window);
-        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
-        gridLayout_4 = new QGridLayout(groupBox_2);
-        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        cktkLabel_2 = new QLabel(groupBox_2);
-        cktkLabel_2->setObjectName(QStringLiteral("cktkLabel_2"));
-        cktkLabel_2->setFont(font1);
-
-        gridLayout_4->addWidget(cktkLabel_2, 0, 0, 1, 1);
-
-        cktk_s6_2 = new QComboBox(groupBox_2);
-        cktk_s6_2->setObjectName(QStringLiteral("cktk_s6_2"));
-        cktk_s6_2->setFont(font);
-
-        gridLayout_4->addWidget(cktk_s6_2, 1, 0, 1, 1);
-
-        cktkLabel_3 = new QLabel(groupBox_2);
-        cktkLabel_3->setObjectName(QStringLiteral("cktkLabel_3"));
-        cktkLabel_3->setFont(font1);
-
-        gridLayout_4->addWidget(cktkLabel_3, 2, 0, 1, 1);
-
-        fecPeriodReset_2 = new QSpinBox(groupBox_2);
-        fecPeriodReset_2->setObjectName(QStringLiteral("fecPeriodReset_2"));
-        fecPeriodReset_2->setFont(font);
-        fecPeriodReset_2->setMinimum(1);
-        fecPeriodReset_2->setMaximum(65534);
-        fecPeriodReset_2->setSingleStep(1);
-        fecPeriodReset_2->setValue(1);
-
-        gridLayout_4->addWidget(fecPeriodReset_2, 3, 0, 1, 1);
-
-
-        gridLayout_3->addWidget(groupBox_2, 1, 0, 1, 1);
-
 
         retranslateUi(hybrid_window);
 
+        cktk_s6->setCurrentIndex(0);
         ckbc_s6->setCurrentIndex(2);
         ckbc_skew_s6->setCurrentIndex(0);
-        cktk_s6->setCurrentIndex(0);
         tabWidget->setCurrentIndex(-1);
-        cktk_s6_2->setCurrentIndex(0);
+        tpSkew->setCurrentIndex(0);
+        tpWidth->setCurrentIndex(0);
+        tpPolarity->setCurrentIndex(0);
+        Xaxis->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(hybrid_window);
@@ -256,6 +302,17 @@ public:
     {
         hybrid_window->setWindowTitle(QApplication::translate("hybrid_window", "Form", 0));
         groupBox_8->setTitle(QApplication::translate("hybrid_window", "S6", 0));
+        setck_s6->setText(QApplication::translate("hybrid_window", "Set", 0));
+        ckbcLabel_2->setText(QApplication::translate("hybrid_window", "CKBC skew", 0));
+        label_32->setText(QApplication::translate("hybrid_window", "  Period", 0));
+        ckbcLabel->setText(QApplication::translate("hybrid_window", "CKBC", 0));
+        cktk_s6->clear();
+        cktk_s6->insertItems(0, QStringList()
+         << QApplication::translate("hybrid_window", "0 ns", 0)
+         << QApplication::translate("hybrid_window", "12.5 ns", 0)
+         << QApplication::translate("hybrid_window", "25 ns", 0)
+        );
+        label_34->setText(QApplication::translate("hybrid_window", "TK Pulses", 0));
         ckbc_s6->clear();
         ckbc_s6->insertItems(0, QStringList()
          << QApplication::translate("hybrid_window", "160MHz", 0)
@@ -276,30 +333,49 @@ public:
         );
         cktkLabel->setText(QApplication::translate("hybrid_window", "CKTK", 0));
         setck_s6_resets->setText(QApplication::translate("hybrid_window", "Set", 0));
-        setck_s6->setText(QApplication::translate("hybrid_window", "Set", 0));
-        s6_autoReset->setText(QApplication::translate("hybrid_window", "VMM Auto Reset", 0));
-        ckbcLabel_2->setText(QApplication::translate("hybrid_window", "CKBC skew", 0));
-        s6_FECReset->setText(QApplication::translate("hybrid_window", "FEC Period. Reset", 0));
-        label_32->setText(QApplication::translate("hybrid_window", "  Period", 0));
-        ckbcLabel->setText(QApplication::translate("hybrid_window", "CKBC", 0));
-        cktk_s6->clear();
-        cktk_s6->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "0 ns", 0)
-         << QApplication::translate("hybrid_window", "12.5 ns", 0)
-         << QApplication::translate("hybrid_window", "25 ns", 0)
+        groupBox_3->setTitle(QApplication::translate("hybrid_window", "Test Pulse", 0));
+        tpSkewLabel->setText(QApplication::translate("hybrid_window", "Skew", 0));
+        tpSkew->clear();
+        tpSkew->insertItems(0, QStringList()
+         << QApplication::translate("hybrid_window", "0ns", 0)
+         << QApplication::translate("hybrid_window", "3.125ns", 0)
+         << QApplication::translate("hybrid_window", "6.25ns", 0)
+         << QApplication::translate("hybrid_window", "9.375ns", 0)
+         << QApplication::translate("hybrid_window", "12.5ns", 0)
+         << QApplication::translate("hybrid_window", "15.625ns", 0)
+         << QApplication::translate("hybrid_window", "18.75ns", 0)
+         << QApplication::translate("hybrid_window", "21.875ns", 0)
         );
-        label_34->setText(QApplication::translate("hybrid_window", "TK Pulses", 0));
+        tpWidthLabel->setText(QApplication::translate("hybrid_window", "Width", 0));
+        tpWidth->clear();
+        tpWidth->insertItems(0, QStringList()
+         << QApplication::translate("hybrid_window", "128x25ns", 0)
+         << QApplication::translate("hybrid_window", "64x25ns", 0)
+         << QApplication::translate("hybrid_window", "32x25ns", 0)
+         << QApplication::translate("hybrid_window", "16x25ns", 0)
+         << QApplication::translate("hybrid_window", "8x25ns", 0)
+         << QApplication::translate("hybrid_window", "4x25ns", 0)
+         << QApplication::translate("hybrid_window", "2x25ns", 0)
+         << QApplication::translate("hybrid_window", "1x25ns", 0)
+        );
+        tpPolarityLabel->setText(QApplication::translate("hybrid_window", "Polarity", 0));
+        tpPolarity->clear();
+        tpPolarity->insertItems(0, QStringList()
+         << QApplication::translate("hybrid_window", "Positive", 0)
+         << QApplication::translate("hybrid_window", "Negative", 0)
+        );
+        setTp_s6->setText(QApplication::translate("hybrid_window", "Set", 0));
+        groupBox_2->setTitle(QApplication::translate("hybrid_window", "Position", 0));
+        cktkLabel_2->setText(QApplication::translate("hybrid_window", "Axis", 0));
+        Xaxis->clear();
+        Xaxis->insertItems(0, QStringList()
+         << QApplication::translate("hybrid_window", "Y", 0)
+         << QApplication::translate("hybrid_window", "X", 0)
+        );
+        cktkLabel_3->setText(QApplication::translate("hybrid_window", "Position", 0));
         groupBox->setTitle(QApplication::translate("hybrid_window", "VMM", 0));
         Box_vmm1->setText(QApplication::translate("hybrid_window", "1", 0));
         Box_vmm2->setText(QApplication::translate("hybrid_window", "2", 0));
-        groupBox_2->setTitle(QApplication::translate("hybrid_window", "Position", 0));
-        cktkLabel_2->setText(QApplication::translate("hybrid_window", "Axis", 0));
-        cktk_s6_2->clear();
-        cktk_s6_2->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "X", 0)
-         << QApplication::translate("hybrid_window", "Y", 0)
-        );
-        cktkLabel_3->setText(QApplication::translate("hybrid_window", "Position", 0));
     } // retranslateUi
 
 };

@@ -2,12 +2,13 @@
 
 FEC::FEC():
     hdmi_act (HDMIS_PER_FEC),
-    RegNames ( new std::vector<const char*> (17) ),
-    Reg ( new std::vector<unsigned long> (17) ),
+    m_msg(0),
+    vmmSocketHandler(0),
+    RegNames ( new std::vector<const char*> (30) ),
+    Reg ( new std::vector<unsigned long> (30) ),
     cchr ( new char ) //need for returning const char * in GetReg functions
 {
     //hdmi_act[0] = 1;
-
 
     (*RegNames)[0] ="tp_delay";                (*Reg)[0] = 81;      //32 bit //max 50000 by gui?
     (*RegNames)[1] ="trigger_period";          (*Reg)[1] = 262142;  //32 bit //max 7FFFFFFF = 31 bit?
@@ -29,11 +30,90 @@ FEC::FEC():
     (*RegNames)[14]="tpSkew";                   (*Reg)[14] = 0;   //{"0ns", "3.125ns", "6.25ns", "9.375ns", "12.5ns", "15.625ns", " 18.75ns", "21.875ns"};
     (*RegNames)[15]="tpWidth";                  (*Reg)[15] = 0;   //{"128x25ns", "64x25ns", "32x25ns", "16x25ns", "8x25ns", "4x25ns", "2x25ns", "1x25ns"};
     (*RegNames)[16]="tpPol";                    (*Reg)[16] = 0;   //{"0", "1", "pos" (=0), "neg" (=1)};
+
+    (*RegNames)[17]="sL0enaV";                  (*Reg)[17] = 0;   //{"0", "1", "false", "true"}
+    (*RegNames)[18]="sL0ena";                   (*Reg)[18] = 0;   //{"0", "1", "false", "true"}
+    (*RegNames)[19]="l0offset";                 (*Reg)[19] = 0;   //12 bit
+    (*RegNames)[20]="offset";                   (*Reg)[20] = 0;   //12 bit
+    (*RegNames)[21]="rollover";                 (*Reg)[21] = 0;   //12 bit
+    (*RegNames)[22]="window";                   (*Reg)[22] = 0;   //3 bit
+    (*RegNames)[23]="truncate";                 (*Reg)[23] = 0;   //6 bit
+    (*RegNames)[24]="nskip";                    (*Reg)[24] = 0;   //7 bit
+    (*RegNames)[25]="sL0cktest";                (*Reg)[25] = 0;   //{"0", "1", "false", "true"}
+    (*RegNames)[26]="ip1";                      (*Reg)[26] = 10;   //
+    (*RegNames)[27]="ip2";                      (*Reg)[27] = 0;   //
+    (*RegNames)[28]="ip3";                      (*Reg)[28] = 0;   //
+    (*RegNames)[29]="ip4";                      (*Reg)[29] = 2;   //
+
     //cktk: reg 0x06 (8bit cfg register)
 
     //ckbc: reg 0x07 (8bit cfg register)
+    vmmSocketHandler = new SocketHandler();
+    fec_conf_mod = new FEC_config_module(this);
+    fec_conf_mod->LoadSocket( socketHandle() );
+}
+
+QString FEC::GetIP(){
+    QString ip;
+    ip = QString("%1.%2.%3.%4").arg(Reg->at(26)).arg(Reg->at(27)).arg(Reg->at(28)).arg(Reg->at(29));
+    return ip;
+}
+
+// ------------------------------------------------------------------------ //
+void FEC::LoadMessageHandler(MessageHandler& m)
+{
+    m_msg = &m;
+    fec_conf_mod->LoadMessageHandler( m );
+    vmmSocketHandler->LoadMessageHandler( m );
+}
+// ------------------------------------------------------------------------- //
+
+void FEC::SendAll(){
+    /// function to send all configurations to fec, hybrid and vmm
+
+
+    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+        if(GetHDMI(k)){
+            for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                if (hdmi[k].GetHybrid(l)){
+                    fec_conf_mod->configTP(k, l);
+                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                        if (hdmi[k].hybrid[l].GetVMM(m)){
+                            fec_conf_mod->SendConfig(k, l, m);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
 }
+
+// ------------------------------------------------------------------------- //
+
+
+unsigned short FEC::VMM_Get(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch){
+    unsigned short setting = hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].GetRegister(feature, ch);
+    return setting;
+}
+
+bool FEC::VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch){
+    if(hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].SetRegi(feature, value, ch)){
+     return true;
+    }
+    else return false;
+}
+
+bool FEC::VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch){
+    if(hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].SetRegi(feature, value, ch)){
+     return true;
+    }
+    else return false;
+}
+
 
 bool FEC::SetHDMI(unsigned short hdmi, bool OnOff){
     if (hdmi < HDMIS_PER_FEC) {hdmi_act[hdmi] = OnOff; return true;}
@@ -232,6 +312,7 @@ unsigned long FEC::GetRegVal(const char *reg){
     for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
         if(ConstCharStar_comp(reg,(*RegNames)[i])){
             return GetRegVal((int)i);
+            std::cout<<"Position: "<<i<<std::endl;
         }
     }
     return -1;
@@ -263,6 +344,10 @@ bool FEC::ConstCharStar_comp(const char *ccs1, const char *ccs2){
     if (str1.str() == str2.str()) {return true;}
     else {return false;}
 }
+
+
+
+
 
 FEC::~FEC()
 {

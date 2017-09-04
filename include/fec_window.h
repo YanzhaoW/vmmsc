@@ -33,6 +33,16 @@ private slots:
     void on_Box_hdmi7_clicked();
     void on_Box_hdmi8_clicked();
 
+    void updateSettings();
+
+    void on_ip4_2_textChanged(const QString &arg1);
+
+    void on_ip3_2_textChanged(const QString &arg1);
+
+    void on_ip2_2_textChanged(const QString &arg1);
+
+    void on_ip1_2_textChanged(const QString &arg1);
+
 private:
     daq_window *root_daq;
     unsigned short fec_index;
@@ -40,6 +50,8 @@ private:
 
     void hdmiBoxLogic(bool checked, unsigned short hdmi);
     void updateWindow();
+    void LoadSettings();
+    void SetToolTips();
 
 };
 

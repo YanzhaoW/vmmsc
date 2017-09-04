@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "fec_window.h"
 #include "ui_daq_window.h"
+#include "message_handler.h"
 
 class MainWindow;
 
@@ -24,6 +25,12 @@ public:
     explicit daq_window(MainWindow *top, QWidget *parent = 0);
     ~daq_window();
 
+    void LoadMessageHandler(MessageHandler& m);
+    MessageHandler& msg() { return *m_msg; }
+    void SetWarning(QString warning, QString bkgcol );
+    void SetWarning2(QString warning, QString bkgcol );
+
+
 private slots:
     void on_Box_fec1_clicked();
     void on_Box_fec2_clicked();
@@ -37,10 +44,16 @@ private slots:
     void on_Button_load_clicked();
     void on_Button_save_clicked();
 
+    void on_openConnection_2_clicked();
+    void readLog();
+
+    void on_reset_warnings_clicked();
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;
     void fecBoxLogic(bool checked, unsigned short fec);
+    MessageHandler *m_msg;
 };
 
 #endif // DAQ_WINDOW_H

@@ -97,6 +97,8 @@ public slots:
     // VMM settings
      void updateSettings();
 
+private slots:
+     void on_vmm_reset_clicked();
 };
 
 #endif // VMM_WINDOW_H

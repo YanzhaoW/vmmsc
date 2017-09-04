@@ -3481,7 +3481,7 @@
         <x>0</x>
         <y>51</y>
         <width>111</width>
-        <height>204</height>
+        <height>131</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_11">
@@ -4505,7 +4505,7 @@
      <enum>QTabWidget::North</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <property name="iconSize">
      <size>

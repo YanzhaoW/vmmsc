@@ -136,7 +136,9 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/fec_window.cpp \
             $$sourcepath/hdmi_window.cpp \
             $$sourcepath/hybrid_window.cpp \
-            $$sourcepath/vmm_window.cpp
+            $$sourcepath/vmm_window.cpp \
+    ../src/hybrid_config_handler.cpp \
+    ../src/fec_config_module.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
             $$includepath/run_module.h\
@@ -181,7 +183,10 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/fec_window.h \
             $$includepath/hdmi_window.h \
             $$includepath/hybrid_window.h \
-            $$includepath/vmm_window.h
+            $$includepath/vmm_window.h \
+    ../src/hybrid_config_handler.h \
+    ../include/hybrid_config_handler.h \
+    ../include/fec_config_module.h
 
 
 FORMS    += $$sourcepath/mainwindow.ui \

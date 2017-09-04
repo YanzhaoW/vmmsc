@@ -30,6 +30,7 @@
 #include "message_handler.h"
 #include "commandline.h"
 #include "vmm_config_handler.h"
+#include "hybrid_config_handler.h"
 #include "daq_config_handler.h"
 #include "fec_config_handler.h"
 #include "daq_window.h"
@@ -44,6 +45,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     friend class Commandline;
     friend class VMM_config_handler;
+    friend class hybrid_config_handler;
     friend class DAQ_config_handler;
     friend class FEC_config_handler;
     friend class daq_window;
@@ -57,6 +59,7 @@ class MainWindow : public QMainWindow
         ~MainWindow();
         Commandline *b;
         VMM_config_handler *vmmconfhandl;
+        hybrid_config_handler *hybridconfhandl;
         DAQ_config_handler *daqconfhandl;
         FEC_config_handler *fecconfhandl;
         daq_window *daqwindow;
