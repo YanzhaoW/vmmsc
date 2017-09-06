@@ -111,7 +111,6 @@ quint16 FEC::GetChMap(){
             }
         }
     }
-    qDebug()<<"CHANNEL MAP: "<<chMapString;
     quint16 chMap = (quint16)chMapString.toInt(&ok,2);
     return chMap;
 }

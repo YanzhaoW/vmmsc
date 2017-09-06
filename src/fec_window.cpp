@@ -78,7 +78,7 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
     connect(ui->fec_reset, SIGNAL(clicked()),
                                     this, SLOT( resetFEC() ));
     connect(ui->setMask, SIGNAL(clicked()),
-                                    this, SLOT( resetFEC() ));
+                                    this, SLOT( updateSettings() ));
 
     connect(ui->trgPulser, SIGNAL(clicked()),
                                     this, SLOT( updateSettings() ));
@@ -186,6 +186,8 @@ void fec_window::updateSettings(){
         root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->resetLinks();
     }
     else if(QObject::sender() == ui->setMask){
+        ui->setMask->setCheckable(true);
+        ui->setMask->setChecked(true);
         root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->setMask();
     }
 
@@ -449,11 +451,11 @@ void fec_window::resetFEC()
     //    runModule().resetFEC(do_reset);
 //    ui->fecRB->setChecked(1);
 
-//    ui->trgExternal->setChecked(false);
-//    ui->trgPulser->setChecked(false);
-//    ui->setMask->setChecked(false);
-//    ui->onACQ->setChecked(false);
-//    ui->offACQ->setChecked(false);
+    ui->trgExternal->setChecked(false);
+    ui->trgPulser->setChecked(false);
+    ui->setMask->setChecked(false);
+    ui->onACQ->setChecked(false);
+    ui->offACQ->setChecked(false);
 //    ui->setTrgAcqConst->setChecked(false);
 
 //    SetInitialState();

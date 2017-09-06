@@ -1743,7 +1743,6 @@ void FEC_config_module::ACQoff()
 void FEC_config_module::setMask()
 {
     if(dbg()) msg()("Setting HDMI mask and ART...","FEC_config_module::setMask");
-
     bool ok;
     QByteArray datagram;
 
@@ -1784,7 +1783,7 @@ void FEC_config_module::setMask()
     ////////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 8 //[16,19]
-        << (quint32) config().getHDMIChannelMapART(); //[20,23]
+        << (quint32) fec->GetChMap();//config().getHDMIChannelMapART(); //[20,23]
       //  << (quint32) config().getHDMIChannelMap(); //[20,23]
 
     socket().SendDatagram(datagram, ip, send_to_port, "fec",
