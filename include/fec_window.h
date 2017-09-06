@@ -23,6 +23,7 @@ public:
     friend class hdmi_window;
     friend class hybrid_window;
     friend class vmm_window;
+
 private slots:
     void on_Box_hdmi1_clicked();
     void on_Box_hdmi2_clicked();
@@ -42,6 +43,11 @@ private slots:
     void on_ip2_2_textChanged(const QString &arg1);
 
     void on_ip1_2_textChanged(const QString &arg1);
+    void checkLinkStatus();
+    void writeFECStatus();
+
+    void on_clearDebugScreenPB_clicked();
+    void resetFEC();
 
 private:
     daq_window *root_daq;
@@ -52,6 +58,8 @@ private:
     void updateWindow();
     void LoadSettings();
     void SetToolTips();
+    bool Fec_Set(const char *feature, unsigned long val);
+    unsigned long Fec_Get(const char *feature);
 
 };
 

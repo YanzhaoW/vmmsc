@@ -246,3 +246,12 @@ void daq_window::on_reset_warnings_clicked()
 {
     SetWarning2("","light");
 }
+
+void daq_window::on_Send_clicked()
+{
+    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+        if (root_main->daq_act[i]){
+            root_main->daq[i].SendAll();
+        }
+    }
+}

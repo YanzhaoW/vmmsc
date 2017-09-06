@@ -14,13 +14,13 @@ VMM::VMM():
     ///Possibility to add more default values and channel deault values have to be added!!!!!
     SetRegi("gain", 2);//corrsponds to 3 mV/fC
     SetRegi("monitoring", "Pulser_DAC");
-//    std::cout<<"SCMX: "<<GetRegister("scmx")<<std::endl;
+    std::cout<<"SCMX: "<<GetRegister("scmx")<<std::endl;
+    std::cout<<"Monitoring: "<<GetRegister("monitoring")<<std::endl;
 //    Regi->ch_settings[6].VMMSCBool = 1;
 //    Regi->ch_settings[17].VMMSMXBool = 1;
 //    SetRegi("sbfm", 1);
 //    SetRegi("peaktime", 2);
     SetRegi("sdt",(std::string)"300");
-    SetRegi("sdp_2",(std::string)"300");
 //    SetRegi("monitoring",(std::string)"Pulser_DAC");
 
 }
@@ -70,11 +70,11 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
 
         if(feature == "monitoring"){
             InMap m_mon;
-            std::cout<<"monitoring: "<<val<<std::endl;
             std::string mm_val[4] = {"Pulser_DAC", "Threshold_DAC", "Bandgap_reference", "Temperature_sensor"};
             for(unsigned int i=1 ; i<=sizeof(mm_val)/sizeof(*mm_val); i++){
                 unsigned short bin_val=i;
                 m_mon.insert(BiPair(mm_val[i-1], bin_val+63));
+                std::cout<<"Mon: "<<i-1<<"  "<<mm_val[i-1]<<std::endl;
                 m_mon.insert(BiPair(std::to_string(i+63), bin_val+63));
             }
             if(m_mon.find(val)!=m_mon.end()){

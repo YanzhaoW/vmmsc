@@ -46,6 +46,7 @@ public:
     unsigned short GetRegSize();
     QString GetIP();
     void SendAll();
+    quint16 GetChMap();
 
 
 

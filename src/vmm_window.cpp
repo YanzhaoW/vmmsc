@@ -239,7 +239,7 @@ void vmm_window::LoadSettings()
     ui->sg->setCurrentIndex(VMM_Get("gain"));
     if(!VMM_Get("scmx")){
 //     std::cout<<"Settings Monitoring: "<<VMM_Get("monitoring")-63<<std::endl;
-        ui->sm5_sm0->setCurrentIndex(VMM_Get("monitoring")-64);
+        ui->sm5_sm0->setCurrentIndex(VMM_Get("monitoring")-1);
     }
     else ui->sm5_sm0->setCurrentIndex(VMM_Get("monitoring")+4);
     ui->stc->setCurrentIndex(VMM_Get("stc"));
@@ -324,7 +324,7 @@ void vmm_window::updateSettings()
             std::string mm_val[4] = {"Pulser_DAC", "Threshold_DAC", "Bandgap_reference", "Temperature_sensor"};
             VMM_Set("monitoring",mm_val[ui->sm5_sm0->currentIndex()]);
         }
-        else VMM_Set("monitoring", ui->sm5_sm0->currentIndex()-1);//starting with channel 1
+        else VMM_Set("monitoring", ui->sm5_sm0->currentIndex()-4);//starting with channel 1
     }
     else if(QObject::sender() == ui->sg){
         VMM_Set("gain", ui->sg->currentIndex());
@@ -488,6 +488,20 @@ void vmm_window::updateSettings()
 }
 
 // ------------------------------------------------------------------------- //
+bool vmm_window::eventFilter(QObject *obj, QEvent *event)
+{
+    if(event->type() == QEvent::Wheel)
+    {
+        //if(obj->hasFocus()) {
+//            ui->scrollArea->setFocus();
+        event->ignore();
+        //}
+    //    qDebug() << "Wheel event blocked";
+        return true;
+    }
+    return false;
+}
+
 void vmm_window::CreateChannelsFields()
 {
 //    VMM_Set("sd", 1, 2);
@@ -639,7 +653,7 @@ void vmm_window::CreateChannelsFields()
         VMMSDVoltage[i] = new QComboBox(ui->stackedWidgetPage1);
         VMMSDVoltage[i]->setFixedSize(60,20);
         VMMSDVoltage[i]->setFont(Font);
-
+//        VMMSDVoltage[i]->setFocusPolicy(Qt::StrongFocus);
         for(int j=0;j<32;j++){
             VMMSDVoltage[i]->addItem(counter.setNum(j)+" mV");
         }

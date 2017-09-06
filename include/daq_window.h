@@ -49,6 +49,8 @@ private slots:
 
     void on_reset_warnings_clicked();
 
+    void on_Send_clicked();
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;

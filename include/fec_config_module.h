@@ -49,10 +49,18 @@ public:
     int Connect();
 
     void configTP( int hdmi_index, int hybrid_index);
-    void setS6Resets(int s6_tk_pulses, bool set_s6_autoReset, bool set_s6_fecReset, int s6_fec_periodRest);
-    void s6clocks(int cktk, int ckbc, int ckbc_skew);
-    void setTriggerAcqConstants();
-    void setEventHeaders(const int bld_info, const int bld_mode, bool highRes);
+    void setS6Resets(int hdmi_index, int hybrid_index);
+    void s6clocks(int hdmi_index, int hybrid_index);
+    void setTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
+    void setEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
+    void checkLinkStatus();
+    void resetLinks();
+    void resetFEC(bool do_reset);
+    void setTriggerMode();
+    void ACQon();
+    void ACQoff();
+    void setMask();
+
 private:
     FEC *fec;
     bool m_dbg;
@@ -61,6 +69,7 @@ private:
     ConfigHandler *m_configHandler;
     MessageHandler* m_msg;
 signals:
+    void checkLinks();
 
 public slots:
 };

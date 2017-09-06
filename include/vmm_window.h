@@ -76,6 +76,8 @@ public:
     bool VMMSZ08bBoolAll;
     bool VMMSZ06bBoolAll;
 
+    bool eventFilter(QObject *obj, QEvent *event);
+
 
 private:
     hybrid_window *root_hybrid;

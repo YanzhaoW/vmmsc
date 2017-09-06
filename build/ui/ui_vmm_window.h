@@ -71,9 +71,9 @@ public:
     QLabel *sc010bLabel;
     QPushButton *adcs;
     QLabel *sc06bLabel;
-    QComboBox *sc08b;
-    QLabel *sc08bLabel;
     QComboBox *sc06b;
+    QLabel *sc08bLabel;
+    QComboBox *sc08b;
     QGroupBox *groupBox1;
     QGridLayout *gridLayout_11;
     QPushButton *sdcka;
@@ -134,13 +134,14 @@ public:
     {
         if (vmm_window->objectName().isEmpty())
             vmm_window->setObjectName(QStringLiteral("vmm_window"));
-        vmm_window->resize(844, 814);
+        vmm_window->resize(900, 813);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(vmm_window->sizePolicy().hasHeightForWidth());
         vmm_window->setSizePolicy(sizePolicy);
         vmm_window->setMinimumSize(QSize(844, 0));
+        vmm_window->setMaximumSize(QSize(900, 99999));
         gridLayout_4 = new QGridLayout(vmm_window);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
         vmm_reset = new QPushButton(vmm_window);
@@ -347,23 +348,23 @@ public:
 
         gridLayout_10->addWidget(sc06bLabel, 2, 0, 1, 1);
 
-        sc08b = new QComboBox(groupBox);
-        sc08b->setObjectName(QStringLiteral("sc08b"));
-        sc08b->setFont(font);
-
-        gridLayout_10->addWidget(sc08b, 1, 4, 1, 1);
-
-        sc08bLabel = new QLabel(groupBox);
-        sc08bLabel->setObjectName(QStringLiteral("sc08bLabel"));
-        sc08bLabel->setFont(font);
-
-        gridLayout_10->addWidget(sc08bLabel, 1, 3, 1, 1);
-
         sc06b = new QComboBox(groupBox);
         sc06b->setObjectName(QStringLiteral("sc06b"));
         sc06b->setFont(font);
 
         gridLayout_10->addWidget(sc06b, 2, 1, 1, 1);
+
+        sc08bLabel = new QLabel(groupBox);
+        sc08bLabel->setObjectName(QStringLiteral("sc08bLabel"));
+        sc08bLabel->setFont(font);
+
+        gridLayout_10->addWidget(sc08bLabel, 1, 2, 1, 1);
+
+        sc08b = new QComboBox(groupBox);
+        sc08b->setObjectName(QStringLiteral("sc08b"));
+        sc08b->setFont(font);
+
+        gridLayout_10->addWidget(sc08b, 1, 3, 1, 1);
 
 
         gridLayout_7->addWidget(groupBox, 3, 0, 1, 2);
@@ -820,17 +821,17 @@ public:
         sc010bLabel->setText(QApplication::translate("vmm_window", "10b ADC", 0));
         adcs->setText(QApplication::translate("vmm_window", "ADCs", 0));
         sc06bLabel->setText(QApplication::translate("vmm_window", "6b ADC", 0));
-        sc08b->clear();
-        sc08b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "100ns", 0)
-         << QApplication::translate("vmm_window", "+60ns", 0)
-        );
-        sc08bLabel->setText(QApplication::translate("vmm_window", "8b ADC", 0));
         sc06b->clear();
         sc06b->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "Low", 0)
          << QApplication::translate("vmm_window", "Middle", 0)
          << QApplication::translate("vmm_window", "Up", 0)
+        );
+        sc08bLabel->setText(QApplication::translate("vmm_window", "8b ADC", 0));
+        sc08b->clear();
+        sc08b->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "100ns", 0)
+         << QApplication::translate("vmm_window", "+60ns", 0)
         );
         groupBox1->setTitle(QApplication::translate("vmm_window", "Dual Clock", 0));
         sdcka->setText(QApplication::translate("vmm_window", "Dual Clock ART", 0));

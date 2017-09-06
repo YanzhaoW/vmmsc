@@ -32,7 +32,14 @@ DAQ::DAQ():
 }
 
 
+void DAQ::SendAll(){
 
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if ( GetFEC(j) ){
+            fec[j].SendAll();
+        }
+    }
+}
 
 bool DAQ::CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index){
     bool check = true;
@@ -76,93 +83,6 @@ void DAQ::SetMessageHandler(){
 //        fec[i].fec_conf_mod->LoadMessageHandler( msg() );
     }
 }
-
-
-bool DAQ::SetIP(int fec, QStringList ip){
-  ///////////////////////////////////////////////////////////////////////////
- /// Setting IP address from FEC fec and checks if IP address is unique  ///
-///////////////////////////////////////////////////////////////////////////
-
-    for(auto const entr: m_FecIPs){
-       if(entr.second == ip && fec!=entr.first){
-           return false;
-       }
-    }
-
-    m_FecIPs[fec] = ip;
-    return true;
-}
-
-bool DAQ::GetIP(int fec, QStringList &ip){
-  ////////////////////////////////////////////////////////////////
- /// Getting IP address of FEC fec and returns true if exists ///
-////////////////////////////////////////////////////////////////
-
-    if(m_FecIPs.find(fec)!=m_FecIPs.end()){
-        ip = m_FecIPs[fec];
-        return true;
-    }
-    else return false;
-}
-bool DAQ::ClearIp(int fec){
-  ////////////////////////////////////////
- /// Delets the IP address of FEC fec ///
-////////////////////////////////////////
-
-    if(m_FecIPs.find(fec)!=m_FecIPs.end()){
-          m_FecIPs.erase ( fec );
-        return true;
-    }
-    else return false;
-}
-
-bool DAQ::SetHybridPos(int fec, int hdmi, int hybrid, int xaxis, int position){
-  //////////////////////////////////////
- /// Setting the position of hybrid ///
-//////////////////////////////////////
-
-    hybrid = 100*fec + 10*fec + 1*hybrid;
-    for(auto const entr: (*m_HybridPos)){
-       if(entr.second == position && hybrid!=entr.first && m_HybridAxis->at(entr.first)!=xaxis){
-           return false;
-       }
-    }
-
-    m_HybridPos->at(hybrid) = position;
-    m_HybridAxis->at(hybrid) = xaxis;
-    return true;
-
-}
-
-bool DAQ::GetHybridPos(int fec, int hdmi, int hybrid, int &xaxis, int &position){
-  //////////////////////////////////////////////////////////
- /// Getting hybrid position and returns true if exists ///
-//////////////////////////////////////////////////////////
-
-    hybrid = 100*fec + 10*fec + 1*hybrid;
-    if(m_HybridPos->find(hybrid)!=m_HybridPos->end()){
-        position = m_HybridPos->at(hybrid);
-        xaxis = m_HybridAxis->at(hybrid);
-      return true;
-    }
-    else return false;
-}
-
-bool DAQ::ClearHybridPos(int fec, int hdmi, int hybrid){
-  //////////////////////////////////
- /// Delets the hybrid position ///
-//////////////////////////////////
-
-    hybrid = 100*fec + 10*fec + 1*hybrid;
-    if(m_HybridPos->find(hybrid)!=m_HybridPos->end()){
-        m_HybridPos->erase  ( hybrid );
-        m_HybridAxis->erase ( hybrid );
-        return true;
-    }
-    else return false;
-}
-
-
 
 bool DAQ::SetFEC(unsigned short FEC, bool OnOff){
     if (FEC < FECS_PER_DAQ) {fec_act[FEC] = OnOff; return true;}

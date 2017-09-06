@@ -32,7 +32,7 @@ FEC_config_module& FEC_config_module::LoadConfig(ConfigHandler& config)
     m_configHandler = &config;
     if(!m_configHandler) {
         msg()("ERROR ConfigHandler instance is null", "Configuration::LoadConfig", true);
-        exit(1);
+//        return;
     }
     else if(dbg()) {
         msg()("ConfigHandler instance loaded", "Configuration::LoadConfig");
@@ -45,7 +45,7 @@ FEC_config_module& FEC_config_module::LoadSocket(SocketHandler& socket)
     m_socketHandler = &socket;
     if(!m_socketHandler) {
         msg()("ERROR SocketHandler instance is null", "Configuration::LoadSocket", true);
-        exit(1);
+//        return;
     }
     else if(dbg()) {
         msg()("SocketHandler instance loaded", "Configuration::LoadSocket");
@@ -79,7 +79,7 @@ void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_ind
     fillGlobalRegisters(globalRegisters, hdmi_index,  hybrid_index,  vmm_index);
     if(globalRegisters.size()!=3){
         msg()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
-        exit(1);
+        return;
     }
     ///////////////////////////////////////////////////
     // Channel Registers
@@ -89,7 +89,7 @@ void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_ind
     fillChannelRegisters(channelRegisters, hdmi_index,  hybrid_index,  vmm_index);
     if(channelRegisters.size()!=64){
         msg()("ERROR Channel registers do not have 64 values", "FEC_config_module::SendConfig", true);
-        exit(1);
+        return;
     }
     ///////////////////////////////////////////////////
     // Global SPI_2
@@ -99,7 +99,7 @@ void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_ind
     fillGlobalRegisters2(globalRegisters2, hdmi_index,  hybrid_index,  vmm_index);
     if(globalRegisters2.size()!=3){
         msg()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
-        exit(1);
+        return;
     }
     ///////////////////////////////////////////////////
     // Now begin to send out the word
@@ -132,7 +132,7 @@ void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_ind
 
 
     QString chMapString = "0000000000000000";
-    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    chMapString.replace( 15 - (hdmi_index*2+vmm_index) , 1 , QString("1") );
     quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
@@ -180,7 +180,7 @@ void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_ind
     else {
         msg()("Timeout while waiting for replies from VMM", "FEC_config_module::SendConfig");
         socket().closeAndDisconnect("fec","Configuration::SendConfig");
-        exit(1);
+        return;
     }
 
     //send config
@@ -890,7 +890,7 @@ int FEC_config_module::Connect()
 
 void FEC_config_module::configTP( int hdmi_index, int hybrid_index)
 {
-    if(dbg()) msg()("Configuring the pulser...","RunModule::configTP");
+    if(dbg()) msg()("Configuring the pulser...","FEC_config_module::configTP");
 
     bool ok;
     QByteArray datagram;
@@ -918,7 +918,7 @@ void FEC_config_module::configTP( int hdmi_index, int hybrid_index)
     // header
     ////////////////////////////
     QString hdmiMapString = "00000000";
-    hdmiMapString.replace( hdmi_index , 1 , QString("1") );
+    hdmiMapString.replace( 7 - hdmi_index , 1 , QString("1") );
     quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
         << (quint32) hdmiMap //[4,7]
@@ -933,35 +933,39 @@ void FEC_config_module::configTP( int hdmi_index, int hybrid_index)
 
 
     socket().SendDatagram(datagram, ip, send_to_port, "fec",
-                                            "RunModule::configTP");
+                                            "FEC_config_module::configTP");
 
     bool readOK = true;
     readOK = socket().waitForReadyRead("fec");
     if(readOK) {
-        if(dbg()) msg()("Processing replies...","RunModule::configTP");
+        if(dbg()) msg()("Processing replies...","FEC_config_module::configTP");
         socket().processReply("fec",ip);
     } else {
         msg()("Timeout while waiting for replies from VMM",
-                "RunModule::configTP", true);
-        socket().closeAndDisconnect("fec","RunModule::configTP");
-        exit(1);
+                "FEC_config_module::configTP", true);
+        socket().closeAndDisconnect("fec","FEC_config_module::configTP");
+        return;
     }
 
-    socket().closeAndDisconnect("fec","RunModule::configTP");
+    socket().closeAndDisconnect("fec","FEC_config_module::configTP");
 
 }
 
 
 // ------------------------------------------------------------------------ //
-void FEC_config_module::setEventHeaders(const int bld_info, const int bld_mode, bool highRes)
+void FEC_config_module::setEventHeaders(int hdmi_index, int hybrid_index, int vmm_index)
 {
-    if(dbg()) msg()("Setting event headers...","RunModule::setEventHeaders");
+    if(dbg()) msg()("Setting event headers...","FEC_config_module::setEventHeaders");
 
     bool ok;
     QByteArray datagram;
 
     // send trigger mode to VMMAPP port
-    int send_to_port = config().commSettings().vmmapp_port;
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+    //get settings
+    const int bld_info = fec->GetRegVal("evbld_infodata");
+    const int bld_mode = fec->GetRegVal("evbld_mode");
+    bool highRes = fec->GetRegVal("highres");
 
     // headers
     QString cmd, msbCounter;
@@ -994,8 +998,12 @@ void FEC_config_module::setEventHeaders(const int bld_info, const int bld_mode, 
     ///////////////////////////
     // header info
     ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 15 - (hdmi_index*2+vmm_index) , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint32) config().getHDMIChannelMap() //[4,7]
+        << (quint32) chMap //[4,7]
         << (quint32) cmd.toUInt(&ok,16) //[8,11]
         << (quint32) 0; //[12,15]
 
@@ -1008,109 +1016,118 @@ void FEC_config_module::setEventHeaders(const int bld_info, const int bld_mode, 
         << (quint32) (evbldinfo + resolutionBits); //[28,31]
 
     socket().SendDatagram(datagram, ip, send_to_port, "fec",
-                                            "RunModule::setEventHeaders");
+                                            "FEC_config_module::setEventHeaders");
     bool readOK = true;
     readOK = socket().waitForReadyRead("fec");
     if(readOK) {
-        if(dbg()) msg()("Processing replies...","RunModule::setEventHeaders");
+        if(dbg()) msg()("Processing replies...","FEC_config_module::setEventHeaders");
         socket().processReply("fec", ip);
     } else {
         msg()("Timeout while waiting for replies from VMM",
-                "RunModule::setEventHeaders",true);
-        socket().closeAndDisconnect("fec","RunModule::setEventHeaders");
-        exit(1);
+                "FEC_config_module::setEventHeaders",true);
+        socket().closeAndDisconnect("fec","FEC_config_module::setEventHeaders");
+        return;
     }
 
-    socket().closeAndDisconnect("fec", "RunModule::setEventHeaders");
+    socket().closeAndDisconnect("fec", "FEC_config_module::setEventHeaders");
 }
 
 
 // ------------------------------------------------------------------------ //
-void FEC_config_module::setTriggerAcqConstants()
+void FEC_config_module::setTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index)
 {
-    if(dbg()) msg()("Sending trigger ACQ constants...","RunModule::setTriggerAcqConstants");
+    if(dbg()) msg()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
 
     bool ok;
     QByteArray datagram;
 
     // send T/DAQ constants to VMMAPP port
-    int send_to_port = config().commSettings().vmmapp_port;
+    int send_to_port = fec->GetRegVal("vmmapp_port");
 
     QString ip = fec->GetIP();
-        // UPDATE COUNTER, ETC... SHOULD NOW BE DONE
-        // SOLELY IN SOCKETHANDLER TO WHICH WE PASS
-        // THE DATAGRAMS
+    // UPDATE COUNTER, ETC... SHOULD NOW BE DONE
+    // SOLELY IN SOCKETHANDLER TO WHICH WE PASS
+    // THE DATAGRAMS
 
-        socket().updateCommandCounter();
+    socket().updateCommandCounter();
 
-        datagram.clear();
-        QDataStream out (&datagram, QIODevice::WriteOnly);
-        out.device()->seek(0); // rewind
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); // rewind
 
-        ///////////////////////////
-        // header info
-        ///////////////////////////
-        QString cmd, cmdType, cmdLength, msbCounter;
-        cmd         = "AA";
-        cmdType     = "AA";
-        cmdLength   = "FFFF";
-        msbCounter  = "0x80000000";
-        out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-            << (quint16) 0 //[4,5]
-            << (quint16) config().getHDMIChannelMap() //[6,7]
-            //<< (quint32) config().getHDMIChannelMap() //[8,11]
-            << (quint8)  cmd.toUInt(&ok,16) //[8]
-            << (quint8)  cmdType.toUInt(&ok,16) //[9]
-            << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 15 - (hdmi_index*2+vmm_index) , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
-        ///////////////////////////
-        // trigger constants
-        ///////////////////////////
-        out << (quint32) 0 //[12,15]
-            //trigger period
-            << (quint32) 2 //[16,19]
-            << (quint32) config().daqSettings().trigger_period.toInt(&ok,16) //[20,23]
-            //pulser delay
-            << (quint32) 4 //[24,27]
-            << (quint32) config().daqSettings().tp_delay //[28,31]
-            //acq. sync
-            << (quint32) 5 //[32,35]
-            << (quint32) config().daqSettings().acq_sync //[36,39]
-            //acq. window
-            << (quint32) 6 //[40,43]
-            << (quint32) config().daqSettings().acq_window //[44,47]
-            //bcid reset
-            << (quint32) 9 //[48,51]
-            << (quint32) config().daqSettings().bcid_reset; //[52,55]
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd         = "AA";
+    cmdType     = "AA";
+    cmdLength   = "FFFF";
+    msbCounter  = "0x80000000";
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) chMap //[6,7]
+        //<< (quint32) config().getHDMIChannelMap() //[8,11]
+        << (quint8)  cmd.toUInt(&ok,16) //[8]
+        << (quint8)  cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
-        socket().SendDatagram(datagram, ip, send_to_port, "fec",
-                                "RunModule::setTriggerAcqConstants");
+    ///////////////////////////
+    // trigger constants
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        //trigger period
+        << (quint32) 2 //[16,19]
+        << (quint32) fec->GetRegVal("trigger_period") //[20,23]
+        //pulser delay
+        << (quint32) 4 //[24,27]
+        << (quint32) fec->GetRegVal("tp_delay") //[28,31]
+        //acq. sync
+        << (quint32) 5 //[32,35]
+        << (quint32) fec->GetRegVal("acq_sync") //[36,39]
+        //acq. window
+        << (quint32) 6 //[40,43]
+        << (quint32) fec->GetRegVal("acq_window") //[44,47]
+        //bcid reset
+        << (quint32) 9 //[48,51]
+        << (quint32) fec->GetRegVal("bcid_reset"); //[52,55]
 
-        bool readOK = true;
-        readOK = socket().waitForReadyRead("fec");
-        if(readOK) {
-            if(dbg()) msg()("Processing replies...","RunModule::setTriggerAcqConstants");
-            socket().processReply("fec", ip);
-        }
-        else {
-            msg()("Timeout while waiting for replies from VMM",
-                        "RunModule::setTriggerAcqConstants", true);
-            socket().closeAndDisconnect("fec","RunModule::setTriggerAcqConstants");
-            exit(1);
-        }
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                            "FEC_config_module::setTriggerAcqConstants");
 
-    socket().closeAndDisconnect("fec","RunModule::setTriggerAcqConstants");
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::setTriggerAcqConstants");
+        socket().processReply("fec", ip);
+    }
+    else {
+        msg()("Timeout while waiting for replies from VMM",
+                    "FEC_config_module::setTriggerAcqConstants", true);
+        socket().closeAndDisconnect("fec","FEC_config_module::setTriggerAcqConstants");
+        return;
+    }
+
+    socket().closeAndDisconnect("fec","FEC_config_module::setTriggerAcqConstants");
 }
 // ------------------------------------------------------------------------ //
-void FEC_config_module::s6clocks(int cktk, int ckbc, int ckbc_skew)
+void FEC_config_module::s6clocks(int hdmi_index, int hybrid_index)
 {
-    if(dbg()) msg()("Setting S6 clocks...","RunModule::s6clocks");
+    if(dbg()) msg()("Setting S6 clocks...","FEC_config_module::s6clocks");
 
     bool ok;
     QByteArray datagram;
 
+    //get settings
+    int cktk = fec->hdmi[hdmi_index].hybrid[hybrid_index].GetReg("CKTK");
+    int ckbc = fec->hdmi[hdmi_index].hybrid[hybrid_index].GetReg("CKBC");
+    int ckbc_skew = fec->hdmi[hdmi_index].hybrid[hybrid_index].GetReg("CKBC_skew");
+
     // send call to s6 port
-    int send_to_port = config().commSettings().s6_port;
+    int send_to_port = fec->GetRegVal("s6_port");
 
     QString cmd, msbCounter;
     cmd = "AAAAFFFF";
@@ -1126,8 +1143,12 @@ void FEC_config_module::s6clocks(int cktk, int ckbc, int ckbc_skew)
         ////////////////////////////
         // header
         ////////////////////////////
+        QString hdmiMapString = "00000000";
+        hdmiMapString.replace(7 -  hdmi_index , 1 , QString("1") );
+        quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
+
         out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-            << (quint32) config().getHDMIChannelMap2() //[4,7]
+            << (quint32) hdmiMap //[4,7]
             << (quint32) cmd.toUInt(&ok,16); //[8,11]
 
         ////////////////////////////
@@ -1140,34 +1161,38 @@ void FEC_config_module::s6clocks(int cktk, int ckbc, int ckbc_skew)
             << (quint32) ( ckbc + (ckbc_skew*16) ); //[28,31]
 
         socket().SendDatagram(datagram, ip, send_to_port, "fec",
-                                            "RunModule::s6clocks");
+                                            "FEC_config_module::s6clocks");
 
         bool readOK = true;
         readOK = socket().waitForReadyRead("fec");
         if(readOK) {
-            if(dbg()) msg()("Processing replies...","RunModule::s6clocks");
+            if(dbg()) msg()("Processing replies...","FEC_config_module::s6clocks");
             socket().processReply("fec",ip);
         } else {
             msg()("Timout while waiting for replies from VMM",
-                    "RunModule::s6clocks", true);
-            socket().closeAndDisconnect("fec","RunModule::s6clocks");
-            exit(1);
+                    "FEC_config_module::s6clocks", true);
+            socket().closeAndDisconnect("fec","FEC_config_module::s6clocks");
+            return;
         }
 
-    socket().closeAndDisconnect("fec","RunModule::s6clocks");
+    socket().closeAndDisconnect("fec","FEC_config_module::s6clocks");
 
 }
 // ------------------------------------------------------------------------ //
-void FEC_config_module::setS6Resets(int s6_tk_pulses, bool set_s6_autoReset, bool set_s6_fecReset,
-                                    int s6_fec_periodRest)
+void FEC_config_module::setS6Resets(int hdmi_index, int hybrid_index)
 {
-    if(dbg()) msg()("Setting s6 reset settings...","RunModule::setS6Resets");
+    if(dbg()) msg()("Setting s6 reset settings...","FEC_config_module::setS6Resets");
 
     bool ok;
     QByteArray datagram;
 
     // send call to s6 port
-    int send_to_port = config().commSettings().s6_port;
+    int send_to_port = fec->GetRegVal("s6_port");
+     //get settings
+    int s6_tk_pulses = fec->hdmi[hdmi_index].hybrid[hybrid_index].GetReg("TK_Pulses");
+    bool set_s6_autoReset = false;
+    bool set_s6_fecReset = false;
+    int s6_fec_periodRest=fec->hdmi[hdmi_index].hybrid[hybrid_index].GetReg("period");
 
     // header
     QString cmd, msbCounter;
@@ -1189,8 +1214,12 @@ void FEC_config_module::setS6Resets(int s6_tk_pulses, bool set_s6_autoReset, boo
     ////////////////////////////
     // header
     ////////////////////////////
+    QString hdmiMapString = "00000000";
+    hdmiMapString.replace( 7 - hdmi_index , 1 , QString("1") );
+    quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
+
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint32) config().getHDMIChannelMap2() //[4,7]
+        << (quint32) hdmiMap //[4,7]
         << (quint32) cmd.toUInt(&ok,16); //[8,11]
 
     ////////////////////////////
@@ -1210,18 +1239,18 @@ void FEC_config_module::setS6Resets(int s6_tk_pulses, bool set_s6_autoReset, boo
 //        << (quint32)( s6_tk_pulses + s6_auto + s6_fec); //[20,23]
 
     socket().SendDatagram(datagram, ip, send_to_port, "fec",
-                                            "RunModule::setS6Resets");
+                                            "FEC_config_module::setS6Resets");
 
     bool readOK = true;
     readOK = socket().waitForReadyRead("fec");
     if(readOK) {
-        if(dbg()) msg()("Processing replies...", "RunModule::setS6Resets");
+        if(dbg()) msg()("Processing replies...", "FEC_config_module::setS6Resets");
         socket().processReply("fec", ip);
     } else {
         msg()("Timeout while waiting for replies from VMM",
-                                "RunModule::setS6Resets", true);
-        socket().closeAndDisconnect("fec","RunModule::setS6Resets");
-        exit(1);
+                                "FEC_config_module::setS6Resets", true);
+        socket().closeAndDisconnect("fec","FEC_config_module::setS6Resets");
+        return;
     }
 
     ////////////////////////////////
@@ -1233,7 +1262,7 @@ void FEC_config_module::setS6Resets(int s6_tk_pulses, bool set_s6_autoReset, boo
 //        emit s6resetStatus(true);
         socket().updateCommandCounter();
         out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16))
-            << (quint32) config().getHDMIChannelMap2()
+            << (quint32) hdmiMap
             << (quint32) cmd.toUInt(&ok,16);
 
         /////////////////////
@@ -1243,25 +1272,538 @@ void FEC_config_module::setS6Resets(int s6_tk_pulses, bool set_s6_autoReset, boo
             << (quint32) s6_fec_periodRest;
 
         socket().SendDatagram(datagram, ip, send_to_port, "fec",
-                                            "RunModule::setS6Resets");
+                                            "FEC_config_module::setS6Resets");
 
         readOK = socket().waitForReadyRead("fec");
         if(readOK) {
-            if(dbg()) msg()("Processing replies [2]...", "RunModule::setS6Resets");
+            if(dbg()) msg()("Processing replies [2]...", "FEC_config_module::setS6Resets");
             socket().processReply("fec", ip);
         } else {
             msg()("Timeout while waiting for replies from VMM [2]",
-                                "RunModule::setS6Resets", true);
-            socket().closeAndDisconnect("fec","RunModule::setS6Resets");
-            exit(1);
+                                "FEC_config_module::setS6Resets", true);
+            socket().closeAndDisconnect("fec","FEC_config_module::setS6Resets");
+            return;
         } // readok
     } //resetSeek
     else {
         msg()("Error upon resetting datastream seek. Unable to send period reset command for FEC",
-                                    "RunModule::setS6Resets");
+                                    "FEC_config_module::setS6Resets");
 //        emit s6resetStatus(false);
     }
 
-    socket().closeAndDisconnect("fec","RunModule::setS6Resets");
+    socket().closeAndDisconnect("fec","FEC_config_module::setS6Resets");
 
 }
+// ------------------------------------------------------------------------ //
+void FEC_config_module::checkLinkStatus()
+{
+    if(dbg()) msg()("Checking link status...","FEC_config_module::checkLinkStatus");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send call to vmmapp port
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+
+    // header
+    QString cmd = "BBAAFFFF";
+    QString msbCounter = "0x80000000";
+
+    QString ip = fec->GetIP();
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    socket().updateCommandCounter();
+
+    ////////////////////////////
+    // header
+    ////////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 0 , 1 , QString("1") );
+//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+//        << (quint32) chMap //[4,7]
+        << (quint32) fec->GetChMap() //[4,7]
+        << (quint32) cmd.toUInt(&ok,16); //[8,11]
+
+    ////////////////////////////
+    // command
+    ////////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 16; //[16,19]
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                            "FEC_config_module::checkLinkStatus");
+
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        emit checkLinks();
+        //if(dbg()) msg()("Processing replies...","FEC_config_module::checkLinkStatus");
+        //socket().processReply("fec", ip);
+    } else {
+        msg()("Timeout while waiting for replies from VMM",
+                "FEC_config_module::checkLinkStatus", true);
+        socket().closeAndDisconnect("fec", "FEC_config_module::checkLinkStatus");
+//        return;
+        return;
+    }
+
+    socket().closeAndDisconnect("fec", "FEC_config_module::checkLinkStatus");
+
+}
+// ------------------------------------------------------------------------ //
+void FEC_config_module::resetLinks()
+{
+//    if(dbg())
+        msg()("Resetting links...","FEC_config_module::resetLinks");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send call to vmmapp port
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+
+    QString cmd, cmdType, cmdLength, msbCounter, cmdReset;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+    cmdReset = "FF";
+
+    QString ip = fec->GetIP();
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    socket().updateCommandCounter();
+
+    ////////////////////////////
+    // header (1)
+    ////////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 0 , 1 , QString("1") );
+//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) fec->GetChMap() //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ////////////////////////////
+    // command (1)
+    ////////////////////////////
+    out << (quint32) 13 //[12,15]
+        << (quint32) cmdReset.toUInt(&ok,16); //[16,19]
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                            "FEC_config_module::resetLinks");
+
+    datagram.clear();
+    out.device()->seek(0);
+    socket().updateCommandCounter();
+    ////////////////////////////
+    // header (2)
+    ////////////////////////////
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) fec->GetChMap() //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
+
+    ////////////////////////////
+    // command (2)
+    ////////////////////////////
+    out << (quint32) 13 //[12,15]
+        << (quint32) 0; //[16,19]
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                            "FEC_config_module::resetLinks");
+
+    socket().closeAndDisconnect("fec", "FEC_config_module::resetLinks");
+
+}
+// ------------------------------------------------------------------------ //
+void FEC_config_module::resetFEC(bool do_reset)
+{
+//    if(dbg())
+        msg()("Resetting FEC...","FEC_config_module::resetFEC");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send reset call to FEC port
+    int send_to_port = fec->GetRegVal("fec_port");
+    // headers
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+
+    // setup
+    QString address = "FFFFFFFF";
+    QString value = "";
+    if(do_reset) {
+        value = "FFFF8000";
+        if(dbg()) msg()("Rebooting FEC...","FEC_config_module::resetFEC");
+    } else {
+        value = "FFFF0001";
+        if(dbg()) msg()("WarmInit FEC...","FEC_config_module::resetFEC");
+    }
+
+    QString ip = fec->GetIP();
+        datagram.clear();
+        QDataStream out (&datagram, QIODevice::WriteOnly);
+        out.device()->seek(0); //rewind
+
+        socket().updateCommandCounter();
+
+        ///////////////////////////
+        // header info
+        ///////////////////////////
+        QString chMapString = "0000000000000000";
+        chMapString.replace( 0 , 1 , QString("1") );
+    //    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+        quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+        out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+            << (quint16) 0 //[4,5]
+            << (quint16) fec->GetChMap() //[6,7]
+            << (quint8) cmd.toUInt(&ok,16) //[8]
+            << (quint8) cmdType.toUInt(&ok,16) //[9]
+            << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+        ///////////////////////////
+        // word
+        ///////////////////////////
+        out << (quint32) 0 //[12,15]
+            << (quint32) address.toUInt(&ok,16) //[16,19]
+            << (quint32) value.toUInt(&ok,16); //[20,23]
+
+        socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                                "FEC_config_module::resetFEC");
+        bool readOK = true;
+        readOK = socket().waitForReadyRead("fec");
+        if(readOK) {
+            if(dbg()) msg()("Processing replies...","FEC_config_module::resetFEC");
+            socket().processReply("fec", ip);
+        } else {
+            if(dbg()) msg()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::resetFEC",true);
+            socket().closeAndDisconnect("fec","FEC_config_module::resetFEC");
+//            exit(1);
+            return;
+        }
+
+    socket().closeAndDisconnect("fec", "FEC_config_module::resetFEC");
+}
+// ------------------------------------------------------------------------ //
+void FEC_config_module::setTriggerMode()
+{
+    if(dbg()) msg()("Setting trigger mode...","FEC_config_module::setTriggerMode");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send trigger mode to VMMAPP port
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+
+    QString ip = fec->GetIP();
+    // UPDATE COUNTER, ETC... SHOULD NOW BE DONE
+    // SOLELY IN SOCKETHANDLER TO WHICH WE PASS
+    // THE DATAGRAMS
+
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); // rewind
+
+    socket().updateCommandCounter();
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 0 , 1 , QString("1") );
+//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd         = "AA";
+    cmdType     = "AA";
+    cmdLength   = "FFFF";
+    msbCounter  = "0x80000000";
+
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) fec->GetChMap() //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ///////////////////////////
+    // trigger mode
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0; //[16,19]
+    if(fec->GetRegVal("triggermode") == 0){//external trigger
+        out << (quint32) 4; //[20,23]
+        if(dbg()) msg()("External trigger enabled","FEC_config_module::setTriggerMode");
+    } // external
+    else {
+        out << (quint32) 7; //[20,23]
+        if(dbg()) msg()("Internal trigger enabled","FEC_config_module::setTriggerMode");
+    }
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                            "FEC_config_module::setTriggerMode");
+
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::setTriggerMode");
+        socket().processReply("fec", ip);
+    }
+    else {
+        msg()("Timeout while waiting for replies from VMM",
+                    "FEC_config_module::setTriggerMode",true);
+        socket().closeAndDisconnect("fec","FEC_config_module::setTriggerMode");
+//        exit(1);
+        return;
+    }
+
+    socket().closeAndDisconnect("fec","FEC_config_module::setTriggerMode");
+}
+// ------------------------------------------------------------------------ //
+void FEC_config_module::ACQon()
+{
+    if(dbg()) msg()("Setting ACQ ON","FEC_config_module::ACQon");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send trigger mode to VMMAPP port
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+
+    QString ip = fec->GetIP();
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    socket().updateCommandCounter();
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 0 , 1 , QString("1") );
+//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd        = "AA";
+    cmdType    = "AA";
+    cmdLength  = "FFFF";
+    msbCounter = "0x80000000";
+
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0  //[4,5]
+        << (quint16) fec->GetChMap() //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ///////////////////////////
+    // ACQ on
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 15 //[16,19]
+        << (quint32) 1; //[20,23]
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                "FEC_config_module::ACQon");
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...", "FEC_config_module::ACQon");
+        socket().processReply("fec", ip);
+    } // readOK
+    else {
+        msg()("Timeout while waiting for replies from VMM","FEC_config_module::ACQon",true);
+        socket().closeAndDisconnect("fec","FEC_config_module::ACQon");
+//        exit(1);
+        return;
+    }
+
+    socket().closeAndDisconnect("fec", "FEC_config_module::ACQon");
+}
+// ------------------------------------------------------------------------ //
+void FEC_config_module::ACQoff()
+{
+    if(dbg()) msg()("Setting ACQ OFF","FEC_config_module::ACQoff");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send trigger mode to VMMAPP port
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+
+    QString ip = fec->GetIP();
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    socket().updateCommandCounter();
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 0 , 1 , QString("1") );
+//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd         = "AA";
+    cmdType     = "AA";
+    cmdLength   = "FFFF";
+    msbCounter  = "0x80000000";
+
+    //stringstream sx;
+    //sx << "AQCOFF command counter = " << socket().commandCounter();
+    //msg()(sx);sx.str("");
+
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) fec->GetChMap() //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ///////////////////////////
+    // ACQ off
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 15 //[16,19]
+        << (quint32) 0; //[20,23]
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                            "FEC_config_module::ACQoff [1]");
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::ACQoff");
+        QByteArray buffer;
+        buffer = socket().fecSocket().processReply(ip, 0, socket().commandCounter()); //.processReply("fec", ip);
+
+        //QByteArray buffer = socket().buffer("fec");
+
+        // dantrim May 26 not sure why this second word is sent -- legacy from VMM1/MCgill code?
+        //QString bin, hex;
+        //QDataStream out (&buffer, QIODevice::WriteOnly);
+        //hex = buffer.mid(12,4).toHex();
+        //quint32 tmp32 = DataHandler::ValueToReplaceHEX32(hex, 0, false);
+        //out.device()->seek(12);
+        //out << tmp32;
+        //out.device()->seek(6);
+        //out << (quint16) 2; // change to write mode ?
+        //socket().SendDatagram(buffer, ip, send_to_port, "fec",
+        //                                    "FEC_config_module::ACQoff [2]");
+    }
+    else {
+        msg()("Timeout [1] while waiting for replies from VMM",
+                "FEC_config_module::ACQoff", true);
+        socket().closeAndDisconnect("fec","FEC_config_module::ACQoff");
+//        exit(1);
+        return;
+    }
+
+    // not doing second loop
+    //readOK = socket().waitForReadyRead("fec");
+    //if(readOK) {
+    //    socket().processReply("fec", ip);
+    //}
+    //else {
+    //    msg()("Timeout [2] while waiting for replies from VMM",
+    //            "FEC_config_module::ACQoff", true);
+    //    socket().closeAndDisconnect("fec","FEC_config_module::ACQoff");
+    //    exit(1);
+    //}
+
+    socket().closeAndDisconnect("fec", "FEC_config_module::ACQoff");
+}
+// ------------------------------------------------------------------------ //
+void FEC_config_module::setMask()
+{
+    if(dbg()) msg()("Setting HDMI mask and ART...","FEC_config_module::setMask");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send call to vmmapp port
+    int send_to_port = fec->GetRegVal("vmmapp_port");
+
+    // header
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+
+   QString ip = fec->GetIP();
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    socket().updateCommandCounter();
+
+    ////////////////////////////
+    // header
+    ////////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 0 , 1 , QString("1") );
+//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) fec->GetChMap() //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ////////////////////////////
+    // command
+    ////////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 8 //[16,19]
+        << (quint32) config().getHDMIChannelMapART(); //[20,23]
+      //  << (quint32) config().getHDMIChannelMap(); //[20,23]
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec",
+                                            "FEC_config_module::setMask");
+
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::setMask");
+        socket().processReply("fec", ip);
+    } else {
+        msg()("Timeout while waiting for replies from VMM",
+                "FEC_config_module::setMask",true);
+        socket().closeAndDisconnect("fec", "FEC_config_module::setMask");
+//        exit(1);
+        return;
+    }
+
+    socket().closeAndDisconnect("fec", "FEC_config_module::setMask");
+
+}
+// ------------------------------------------------------------------------ //

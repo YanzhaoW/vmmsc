@@ -35,40 +35,58 @@
       <string>S6</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="6" column="0" colspan="3">
-       <widget class="QPushButton" name="setck_s6">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Set</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="3">
-       <widget class="QLabel" name="ckbcLabel_2">
+      <item row="5" column="0" colspan="3">
+       <widget class="QComboBox" name="ckbc_skew_s6">
         <property name="font">
          <font>
           <family>Arial</family>
-          <pointsize>8</pointsize>
+          <pointsize>9</pointsize>
          </font>
         </property>
-        <property name="text">
-         <string>CKBC skew</string>
+        <property name="currentIndex">
+         <number>0</number>
         </property>
+        <item>
+         <property name="text">
+          <string>0 ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>6.26 ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>12.52 ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>18.78 ns</string>
+         </property>
+        </item>
        </widget>
       </item>
-      <item row="7" column="2">
-       <widget class="QLabel" name="label_32">
+      <item row="7" column="1" colspan="2">
+       <widget class="QSpinBox" name="fecPeriodReset">
         <property name="font">
          <font>
-          <pointsize>8</pointsize>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
          </font>
         </property>
-        <property name="text">
-         <string>  Period</string>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="maximum">
+         <number>4096</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>4094</number>
         </property>
        </widget>
       </item>
@@ -113,37 +131,16 @@
         </item>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
-       <widget class="QLabel" name="label_34">
+      <item row="4" column="0" colspan="3">
+       <widget class="QLabel" name="ckbcLabel_2">
         <property name="font">
          <font>
+          <family>Arial</family>
           <pointsize>8</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>TK Pulses</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
-       <widget class="QSpinBox" name="s6_tkPulses">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="minimum">
-         <number>0</number>
-        </property>
-        <property name="maximum">
-         <number>7</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="value">
-         <number>2</number>
+         <string>CKBC skew</string>
         </property>
        </widget>
       </item>
@@ -200,39 +197,6 @@
         </item>
        </widget>
       </item>
-      <item row="5" column="0" colspan="3">
-       <widget class="QComboBox" name="ckbc_skew_s6">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>0 ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>6.26 ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>12.52 ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>18.78 ns</string>
-         </property>
-        </item>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="cktkLabel">
         <property name="font">
@@ -246,8 +210,32 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="1" colspan="2">
-       <widget class="QSpinBox" name="fecPeriodReset">
+      <item row="6" column="2">
+       <widget class="QLabel" name="label_32">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>  Period</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="2">
+       <widget class="QLabel" name="label_34">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>TK Pulses</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QSpinBox" name="s6_tkPulses">
         <property name="font">
          <font>
           <family>Arial</family>
@@ -258,25 +246,13 @@
          <number>0</number>
         </property>
         <property name="maximum">
-         <number>4096</number>
+         <number>7</number>
         </property>
         <property name="singleStep">
          <number>1</number>
         </property>
         <property name="value">
-         <number>4094</number>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0" colspan="3">
-       <widget class="QPushButton" name="setck_s6_resets">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Set</string>
+         <number>2</number>
         </property>
        </widget>
       </item>
@@ -296,8 +272,61 @@
       <string>Test Pulse</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="tpSkewLabel">
+      <item row="3" column="0">
+       <widget class="QComboBox" name="tpWidth">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>128x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>64x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>32x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>16x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>8x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>4x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2x25ns</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>1x25ns</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="tpWidthLabel">
         <property name="font">
          <font>
           <family>Arial</family>
@@ -305,7 +334,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Skew</string>
+         <string>Width</string>
         </property>
        </widget>
       </item>
@@ -362,8 +391,8 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="tpWidthLabel">
+      <item row="0" column="0">
+       <widget class="QLabel" name="tpSkewLabel">
         <property name="font">
          <font>
           <family>Arial</family>
@@ -371,61 +400,8 @@
          </font>
         </property>
         <property name="text">
-         <string>Width</string>
+         <string>Skew</string>
         </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QComboBox" name="tpWidth">
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <item>
-         <property name="text">
-          <string>128x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>64x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>32x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>16x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>8x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>4x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>2x25ns</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1x25ns</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="4" column="0">
@@ -462,18 +438,6 @@
           <string>Negative</string>
          </property>
         </item>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QPushButton" name="setTp_s6">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Set</string>
-        </property>
        </widget>
       </item>
      </layout>

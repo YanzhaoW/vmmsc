@@ -45,13 +45,7 @@ public:
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
 
-    bool SetIP(int fec, QStringList ip);
-    bool GetIP(int fec, QStringList &ip);
-    bool ClearIp(int fec);
-
-    bool SetHybridPos(int fec, int hdmi, int hybrid, int xaxis, int position);
-    bool GetHybridPos(int fec, int hdmi, int hybrid, int &xaxis, int &position);
-    bool ClearHybridPos(int fec, int hdmi, int hybrid);
+    void SendAll();
 
     bool CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index);
     bool CheckIP(QString ip, int fec_index);

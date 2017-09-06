@@ -22,14 +22,12 @@ FEC::FEC():
     (*RegNames)[9] ="vmmapp_port";             (*Reg)[9] = 6600;    //32 bit
     (*RegNames)[10]="s6_port";                 (*Reg)[10] = 6602;   //32 bit
     (*RegNames)[11]="evbld_mode";              (*Reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
-    (*RegNames)[12]="evbld_info";              (*Reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
-    (*RegNames)[13]="timeStampHighRes";        (*Reg)[13] = 0;   //{"0", "1", "false", "true"};
+    (*RegNames)[12]="evbld_infodata";          (*Reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
+    (*RegNames)[13]="highres";                 (*Reg)[13] = 0;   //{"0", "1", "false", "true"};
 
-    //Spartan 6 configuration (in principle, this is per hybrid, but in reality, one sets them the same for all hybrids at all hdmis at a fec
-    //test pulse: reg 0x02 ( is a 8 bit cfg register for the s6 fpga, see vmm2ckto_ddr.vhd: bit 0-2: tp length, bit 4-6: shift, bit 7: polarity)
-    (*RegNames)[14]="tpSkew";                   (*Reg)[14] = 0;   //{"0ns", "3.125ns", "6.25ns", "9.375ns", "12.5ns", "15.625ns", " 18.75ns", "21.875ns"};
-    (*RegNames)[15]="tpWidth";                  (*Reg)[15] = 0;   //{"128x25ns", "64x25ns", "32x25ns", "16x25ns", "8x25ns", "4x25ns", "2x25ns", "1x25ns"};
-    (*RegNames)[16]="tpPol";                    (*Reg)[16] = 0;   //{"0", "1", "pos" (=0), "neg" (=1)};
+    (*RegNames)[14]="triggermode";             (*Reg)[14] = 0;   // 0 for external and 1 for pulser
+    (*RegNames)[15]="res2";           (*Reg)[15] = 0;   //
+    (*RegNames)[16]="res3";                   (*Reg)[16] = 0;   //
 
     (*RegNames)[17]="sL0enaV";                  (*Reg)[17] = 0;   //{"0", "1", "false", "true"}
     (*RegNames)[18]="sL0ena";                   (*Reg)[18] = 0;   //{"0", "1", "false", "true"}
@@ -77,9 +75,13 @@ void FEC::SendAll(){
             for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
                 if (hdmi[k].GetHybrid(l)){
                     fec_conf_mod->configTP(k, l);
+                    fec_conf_mod->s6clocks(k, l);
+                    fec_conf_mod->setS6Resets(k, l);
                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                         if (hdmi[k].hybrid[l].GetVMM(m)){
                             fec_conf_mod->SendConfig(k, l, m);
+                            fec_conf_mod->setEventHeaders(k, l, m);
+                            fec_conf_mod->setTriggerAcqConstants(k, l, m);
 
                         }
                     }
@@ -90,6 +92,28 @@ void FEC::SendAll(){
 
 
 
+}
+
+// ------------------------------------------------------------------------- //
+quint16 FEC::GetChMap(){
+    QString chMapString = "0000000000000000";
+    bool ok;
+    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+        if(GetHDMI(k)){
+            for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                if (hdmi[k].GetHybrid(l)){
+                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                        if (hdmi[k].hybrid[l].GetVMM(m)){
+                            chMapString.replace(15-( k*2+m ) , 1 , QString("1") );
+                        }
+                    }
+                }
+            }
+        }
+    }
+    qDebug()<<"CHANNEL MAP: "<<chMapString;
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+    return chMap;
 }
 
 // ------------------------------------------------------------------------- //
