@@ -7,6 +7,7 @@ Hybrid::Hybrid(): vmm_act (VMMS_PER_HYBRID)
     PosX = true;
     PosNo = -1;
     ART = 0;
+    SetReg("CKBC", (std::string)"40");
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){

@@ -21,6 +21,7 @@ public:
     DAQ();
     ~DAQ();
     friend class Commandline;
+    friend class vmm_window;
     FEC fec[FECS_PER_DAQ];
 
     MessageHandler& msg() { return *vmmMessageHandler; }
@@ -50,6 +51,8 @@ public:
     bool CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index);
     bool CheckIP(QString ip, int fec_index);
 
+    void ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index);
+    void ACQHandler(bool on);
 
 private:
     std::map<int, int> *m_HybridPos = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int position>
@@ -72,6 +75,7 @@ private:
 
     MessageHandler *vmmMessageHandler;
     void SetMessageHandler();
+
 };
 
 #endif // DAQ_H

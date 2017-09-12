@@ -232,7 +232,7 @@ public:
         position->setObjectName(QStringLiteral("position"));
         position->setFont(font);
         position->setMinimum(1);
-        position->setMaximum(65534);
+        position->setMaximum(65535);
         position->setSingleStep(1);
         position->setValue(1);
 

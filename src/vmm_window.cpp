@@ -141,6 +141,15 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
     connect(root_hybrid->root_hdmi->root_fec->root_daq->ui->openConnection_2, SIGNAL(clicked()),
                                     this, SLOT(updateSettings()));
 
+    connect(ui->ApplyAll, SIGNAL(clicked()),
+                                    this, SLOT(updateSettings()));
+
+//    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
+//                                    this, SLOT( ReloadSettings() ) );
+
+    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod, SIGNAL(reloadVMM()),
+                                    this, SLOT( ReloadSettings() ));
+
 }
 
 
@@ -204,7 +213,7 @@ void vmm_window::SetToolTips()
     ui->sdck6b->setToolTip("dual clock edge serialized 6-bit enable");
     ui->sdrv->setToolTip("tristates analog outputs with token, used in analog mode");
 
-
+    ui->ApplyAll->setToolTip("Applies the settings of current VMM (except channel settings) to all activated VMMs");
 
 
 }
@@ -302,6 +311,10 @@ void vmm_window::LoadSettings()
     ui->slvsena->setChecked(VMM_Get("slvsena"));
     ui->slvs6b->setChecked(VMM_Get("slvs6b"));
 
+}
+// ------------------------------------------------------------------------- //
+void vmm_window::ReloadSettings(){
+    LoadSettings();
 }
 // ------------------------------------------------------------------------- //
 
@@ -454,6 +467,9 @@ void vmm_window::updateSettings()
     else if(QObject::sender() == ui->sL0ckinv){
         VMM_Set("sL0ckinv", !ui->sL0ckinv->isChecked());
     }
+    else if(QObject::sender() == ui->sL0dckinv){
+        VMM_Set("sL0dckinv", !ui->sL0dckinv->isChecked());
+    }
 
     else if(QObject::sender() == ui->slvsbc){
         VMM_Set("slvsbc", !ui->slvsbc->isChecked());
@@ -484,6 +500,9 @@ void vmm_window::updateSettings()
         else ui->vmm_reset->setEnabled(false);
     }
 
+    else if(QObject::sender() == ui->ApplyAll){
+        root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].ApplyVMMs(fec_index, hdmi_index, hybrid_index, vmm_index);
+    }
 
 }
 

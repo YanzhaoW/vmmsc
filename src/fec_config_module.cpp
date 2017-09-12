@@ -5,8 +5,8 @@ FEC_config_module::FEC_config_module(FEC *top, QObject *parent) :
     QObject(parent),
     m_dbg(false),
     m_msg(0),
-    m_socketHandler(0),
-    m_configHandler(0)
+    m_socketHandler(0)
+//    m_configHandler(0)
 {
 
     //    std::cout<<"FEC -ip4 orig: "<<fec->GetRegVal("ip4") <<std::endl;
@@ -20,6 +20,9 @@ void FEC_config_module::LoadMessageHandler(MessageHandler& m)
     m_msg = &m;
 }
 // ------------------------------------------------------------------------- //
+void FEC_config_module::VMMLoadEmit(){
+    emit reloadVMM();
+}
 
 void FEC_config_module::testing(){
 //        qDebug()<<"Polarity : "<<config().globalSettings().polarity;
@@ -27,18 +30,18 @@ void FEC_config_module::testing(){
          qDebug()<<"IP address: "<< fec->GetIP();
          msg()("ERROR SocketHandler instance is null", "Configuration::LoadSocket", true);
 }
-FEC_config_module& FEC_config_module::LoadConfig(ConfigHandler& config)
-{
-    m_configHandler = &config;
-    if(!m_configHandler) {
-        msg()("ERROR ConfigHandler instance is null", "Configuration::LoadConfig", true);
-//        return;
-    }
-    else if(dbg()) {
-        msg()("ConfigHandler instance loaded", "Configuration::LoadConfig");
-    }
-    return *this;
-}
+//FEC_config_module& FEC_config_module::LoadConfig(ConfigHandler& config)
+//{
+//    m_configHandler = &config;
+//    if(!m_configHandler) {
+//        msg()("ERROR ConfigHandler instance is null", "Configuration::LoadConfig", true);
+////        return;
+//    }
+//    else if(dbg()) {
+//        msg()("ConfigHandler instance loaded", "Configuration::LoadConfig");
+//    }
+//    return *this;
+//}
 // ------------------------------------------------------------------------ //
 FEC_config_module& FEC_config_module::LoadSocket(SocketHandler& socket)
 {
@@ -687,10 +690,10 @@ void FEC_config_module::fillChannelRegisters(std::vector<QString>& registers, in
         //[31] not used
 
         if(m_dbg) {
-            using boost::format;
+//            using boost::format;
             std::stringstream chan;
             chan.str("");
-            chan << " Chan["<< format("%02i") % i <<"]: " << reg.toStdString();
+//            chan << " Chan["<< format("%02i") % i <<"]: " << reg.toStdString();
             msg()(chan, "Configuration::fillChannelRegisters");
             //chan << format("%02i") % i;
             //
@@ -1045,9 +1048,6 @@ void FEC_config_module::setTriggerAcqConstants(int hdmi_index, int hybrid_index,
     int send_to_port = fec->GetRegVal("vmmapp_port");
 
     QString ip = fec->GetIP();
-    // UPDATE COUNTER, ETC... SHOULD NOW BE DONE
-    // SOLELY IN SOCKETHANDLER TO WHICH WE PASS
-    // THE DATAGRAMS
 
     socket().updateCommandCounter();
 
@@ -1230,13 +1230,6 @@ void FEC_config_module::setS6Resets(int hdmi_index, int hybrid_index)
     out << (quint32) 9 //[16,19]
         << (quint32)( s6_tk_pulses + s6_auto_reset + s6_fec_reset); //[20,23]
 
-//    int s6_auto = 0;
-//    int s6_fec = 0;
-//    if(set_s6_autoReset) s6_auto = 8;
-//    if(set_s6_fecReset) s6_fec = 16;
-
-//    out << (quint32) 9 //[16,19]
-//        << (quint32)( s6_tk_pulses + s6_auto + s6_fec); //[20,23]
 
     socket().SendDatagram(datagram, ip, send_to_port, "fec",
                                             "FEC_config_module::setS6Resets");
@@ -1319,11 +1312,6 @@ void FEC_config_module::checkLinkStatus()
     ////////////////////////////
     // header
     ////////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 0 , 1 , QString("1") );
-//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
 //        << (quint32) chMap //[4,7]
         << (quint32) fec->GetChMap() //[4,7]
@@ -1384,11 +1372,6 @@ void FEC_config_module::resetLinks()
     ////////////////////////////
     // header (1)
     ////////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 0 , 1 , QString("1") );
-//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
         << (quint16) 0 //[4,5]
         << (quint16) fec->GetChMap() //[6,7]
@@ -1469,11 +1452,6 @@ void FEC_config_module::resetFEC(bool do_reset)
         ///////////////////////////
         // header info
         ///////////////////////////
-        QString chMapString = "0000000000000000";
-        chMapString.replace( 0 , 1 , QString("1") );
-    //    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-        quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
         out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
             << (quint16) 0 //[4,5]
             << (quint16) fec->GetChMap() //[6,7]
@@ -1517,9 +1495,6 @@ void FEC_config_module::setTriggerMode()
     int send_to_port = fec->GetRegVal("vmmapp_port");
 
     QString ip = fec->GetIP();
-    // UPDATE COUNTER, ETC... SHOULD NOW BE DONE
-    // SOLELY IN SOCKETHANDLER TO WHICH WE PASS
-    // THE DATAGRAMS
 
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
@@ -1530,10 +1505,6 @@ void FEC_config_module::setTriggerMode()
     ///////////////////////////
     // header info
     ///////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 0 , 1 , QString("1") );
-//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
     QString cmd, cmdType, cmdLength, msbCounter;
     cmd         = "AA";
@@ -1582,7 +1553,7 @@ void FEC_config_module::setTriggerMode()
     socket().closeAndDisconnect("fec","FEC_config_module::setTriggerMode");
 }
 // ------------------------------------------------------------------------ //
-void FEC_config_module::ACQon()
+void FEC_config_module::ACQon(bool broadcast)
 {
     if(dbg()) msg()("Setting ACQ ON","FEC_config_module::ACQon");
 
@@ -1593,6 +1564,9 @@ void FEC_config_module::ACQon()
     int send_to_port = fec->GetRegVal("vmmapp_port");
 
     QString ip = fec->GetIP();
+    if(broadcast){
+        ip = "10.0.0.255";
+    }
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
@@ -1602,11 +1576,6 @@ void FEC_config_module::ACQon()
     ///////////////////////////
     // header info
     ///////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 0 , 1 , QString("1") );
-//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
     QString cmd, cmdType, cmdLength, msbCounter;
     cmd        = "AA";
     cmdType    = "AA";
@@ -1645,7 +1614,7 @@ void FEC_config_module::ACQon()
     socket().closeAndDisconnect("fec", "FEC_config_module::ACQon");
 }
 // ------------------------------------------------------------------------ //
-void FEC_config_module::ACQoff()
+void FEC_config_module::ACQoff(bool broadcast)
 {
     if(dbg()) msg()("Setting ACQ OFF","FEC_config_module::ACQoff");
 
@@ -1656,6 +1625,9 @@ void FEC_config_module::ACQoff()
     int send_to_port = fec->GetRegVal("vmmapp_port");
 
     QString ip = fec->GetIP();
+    if(broadcast){
+        ip = "10.0.0.255";
+    }
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
@@ -1665,11 +1637,6 @@ void FEC_config_module::ACQoff()
     ///////////////////////////
     // header info
     ///////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 0 , 1 , QString("1") );
-//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
     QString cmd, cmdType, cmdLength, msbCounter;
     cmd         = "AA";
     cmdType     = "AA";
@@ -1766,11 +1733,6 @@ void FEC_config_module::setMask()
     ////////////////////////////
     // header
     ////////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 0 , 1 , QString("1") );
-//    chMapString.replace( hdmi_index*2+vmm_index , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
         << (quint16) 0 //[4,5]
         << (quint16) fec->GetChMap() //[6,7]

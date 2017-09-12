@@ -2,7 +2,6 @@
 #define FEC_CONFIG_MODULE_H
 
 // vmm
-#include "config_handler.h"
 #include "socket_handler.h"
 #include "message_handler.h"
 
@@ -17,8 +16,6 @@ using namespace std;
 #include <QByteArray>
 #include <QProcess>
 
-// boost
-#include <boost/format.hpp>
 
 
 class FEC;
@@ -36,7 +33,7 @@ public:
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& msg() { return *m_msg; }
 
-    FEC_config_module& LoadConfig(ConfigHandler& config);
+//    FEC_config_module& LoadConfig(ConfigHandler& config);
     FEC_config_module& LoadSocket(SocketHandler& socket);
 
     void SendConfig(int hdmi_index, int hybrid_index, int vmm_index);
@@ -44,7 +41,7 @@ public:
     void fillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
     void fillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int hybrid_index, int vmm_index);
     SocketHandler& socket() { return *m_socketHandler; }
-    ConfigHandler& config() { return *m_configHandler; }
+//    ConfigHandler& config() { return *m_configHandler; }
     void testing();
     int Connect();
 
@@ -57,19 +54,22 @@ public:
     void resetLinks();
     void resetFEC(bool do_reset);
     void setTriggerMode();
-    void ACQon();
-    void ACQoff();
+    void ACQon(bool broadcast=false);
+    void ACQoff(bool broadcast=false);
     void setMask();
+
+    void VMMLoadEmit();
 
 private:
     FEC *fec;
     bool m_dbg;
 
     SocketHandler *m_socketHandler;
-    ConfigHandler *m_configHandler;
+//    ConfigHandler *m_configHandler;
     MessageHandler* m_msg;
 signals:
     void checkLinks();
+    void reloadVMM();
 
 public slots:
 };

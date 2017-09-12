@@ -49,6 +49,9 @@ private slots:
     void on_clearDebugScreenPB_clicked();
     void resetFEC();
 
+    void SetTrigMode(int mode);
+    void ACQhandler();
+
 private:
     daq_window *root_daq;
     unsigned short fec_index;

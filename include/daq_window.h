@@ -29,6 +29,7 @@ public:
     MessageHandler& msg() { return *m_msg; }
     void SetWarning(QString warning, QString bkgcol );
     void SetWarning2(QString warning, QString bkgcol );
+    std::string sendstate = "";
 
 
 private slots:
@@ -51,11 +52,24 @@ private slots:
 
     void on_Send_clicked();
 
+    void on_checkBox_stateChanged(int arg1);
+
+    void on_onACQ_clicked();
+
+    void on_offACQ_clicked();
+
+    void on_trgPulser_clicked();
+
+    void on_trgExternal_clicked();
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;
     void fecBoxLogic(bool checked, unsigned short fec);
     MessageHandler *m_msg;
+
+signals:
+    void ChangeState();
 };
 
 #endif // DAQ_WINDOW_H

@@ -14,13 +14,19 @@ VMM::VMM():
     ///Possibility to add more default values and channel deault values have to be added!!!!!
     SetRegi("gain", 2);//corrsponds to 3 mV/fC
     SetRegi("monitoring", "Pulser_DAC");
-    std::cout<<"SCMX: "<<GetRegister("scmx")<<std::endl;
-    std::cout<<"Monitoring: "<<GetRegister("monitoring")<<std::endl;
+    SetRegi("sdp_2", (std::string)"300");
+    SetRegi("sdt",(std::string)"300");
+    SetRegi("s10b",1);
+    SetRegi("s8b",1);
+
+
+//    std::cout<<"SCMX: "<<GetRegister("scmx")<<std::endl;
+//    std::cout<<"Monitoring: "<<GetRegister("monitoring")<<std::endl;
 //    Regi->ch_settings[6].VMMSCBool = 1;
 //    Regi->ch_settings[17].VMMSMXBool = 1;
 //    SetRegi("sbfm", 1);
 //    SetRegi("peaktime", 2);
-    SetRegi("sdt",(std::string)"300");
+
 //    SetRegi("monitoring",(std::string)"Pulser_DAC");
 
 }

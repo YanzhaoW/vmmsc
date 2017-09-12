@@ -5,11 +5,11 @@ FEC_config_handler::FEC_config_handler(MainWindow *top, QObject *parent) : root1
     getcwd(ExecPath,sizeof(ExecPath));
 }
 
-bool FEC_config_handler::LoadAllFECConf(const char* filename){
+bool FEC_config_handler::LoadAllFECConf(std::string filename){
     return GenericAllFECConf(1,filename);
 }
 
-bool FEC_config_handler::WriteAllFECConf(const char* filename){
+bool FEC_config_handler::WriteAllFECConf(std::string filename){
     return GenericAllFECConf(0,filename);
 }
 
@@ -43,7 +43,7 @@ bool FEC_config_handler::WriteSingleFECConf(const char* filename){//exact file n
     return WriteFECConfig(fname,daq,fec);
 }
 
-bool FEC_config_handler::GenericAllFECConf(bool load, const char* filename){
+bool FEC_config_handler::GenericAllFECConf(bool load, std::string filename){
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
         if (root1->daq_act[i]){
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){

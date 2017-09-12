@@ -17,7 +17,6 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
     ui->resetLinks->setEnabled(false);
     ui->fec_WarmInit->setEnabled(false);
     ui->fec_reset->setEnabled(false);
-    ui->setMask->setEnabled(false);
     ui->trgPulser->setEnabled(false);
     ui->trgExternal->setEnabled(false);
     ui->onACQ->setEnabled(false);
@@ -77,9 +76,6 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
                                     this, SLOT( resetFEC() ));
     connect(ui->fec_reset, SIGNAL(clicked()),
                                     this, SLOT( resetFEC() ));
-    connect(ui->setMask, SIGNAL(clicked()),
-                                    this, SLOT( updateSettings() ));
-
     connect(ui->trgPulser, SIGNAL(clicked()),
                                     this, SLOT( updateSettings() ));
     connect(ui->trgExternal, SIGNAL(clicked()),
@@ -88,6 +84,10 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
                                     this, SLOT( updateSettings() ));
     connect(ui->offACQ, SIGNAL(clicked()),
                                     this, SLOT( updateSettings() ));
+
+    connect(root_daq, SIGNAL(ChangeState()),
+                                    this, SLOT( ACQhandler() ));
+
 }
 
 fec_window::~fec_window()
@@ -95,6 +95,27 @@ fec_window::~fec_window()
     delete ui;
 }
 
+void fec_window::ACQhandler(){
+    if(root_daq->sendstate == "GlobalACQon" ){
+          ui->trgPulser->setEnabled(false);
+          ui->trgExternal->setEnabled(false);
+          ui->onACQ->setEnabled(false);
+          ui->offACQ->setEnabled(false);
+    }
+    else if(root_daq->sendstate == "GlobalACQoff" ){
+          ui->trgPulser->setEnabled(true);
+          ui->trgExternal->setEnabled(true);
+          ui->onACQ->setEnabled(true);
+          ui->offACQ->setEnabled(true);
+    }
+    else if(root_daq->sendstate == "trigPulser" ){
+        SetTrigMode(1);
+    }
+    else if(root_daq->sendstate == "trigExternal" ){
+        SetTrigMode(0);
+    }
+
+}
 
 
 void fec_window::updateSettings(){
@@ -161,10 +182,9 @@ void fec_window::updateSettings(){
     else if(QObject::sender() == root_daq->ui->openConnection_2){
         if(root_daq->ui->connectionLabel_2->text()==QString("all alive")){
             ui->linkPB->setEnabled(true);
-            ui->resetLinks->setEnabled(true);
+//            ui->resetLinks->setEnabled(true);
             ui->fec_WarmInit->setEnabled(true);
             ui->fec_reset->setEnabled(true);
-            ui->setMask->setEnabled(true);
             ui->trgPulser->setEnabled(true);
             ui->trgExternal->setEnabled(true);
             ui->onACQ->setEnabled(true);
@@ -175,7 +195,6 @@ void fec_window::updateSettings(){
             ui->resetLinks->setEnabled(false);
             ui->fec_WarmInit->setEnabled(false);
             ui->fec_reset->setEnabled(false);
-            ui->setMask->setEnabled(false);
             ui->trgPulser->setEnabled(false);
             ui->trgExternal->setEnabled(false);
             ui->onACQ->setEnabled(false);
@@ -185,43 +204,47 @@ void fec_window::updateSettings(){
     else if(QObject::sender() == ui->resetLinks){
         root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->resetLinks();
     }
-    else if(QObject::sender() == ui->setMask){
-        ui->setMask->setCheckable(true);
-        ui->setMask->setChecked(true);
-        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->setMask();
-    }
+
 
     else if(QObject::sender() == ui->trgPulser){
         ui->trgPulser->setCheckable(true);
         ui->trgPulser->setChecked(true);
         ui->trgExternal->setChecked(false);
-        Fec_Set("triggermode", 1);
-        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->setTriggerMode();
+        SetTrigMode(1);
     }
     else if(QObject::sender() == ui->trgExternal){
         ui->trgExternal->setCheckable(true);
         ui->trgExternal->setChecked(true);
         ui->trgPulser->setChecked(false);
-        Fec_Set("triggermode", 0);
-        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->setTriggerMode();
+        SetTrigMode(0);
     }
     else if(QObject::sender() == ui->onACQ){
         ui->onACQ->setCheckable(true);
         ui->onACQ->setChecked(true);
         ui->offACQ->setChecked(false);
+        root_daq->ui->Send->setEnabled(false);
+        root_daq->root_main->daq[0].SendAll();
         root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ACQon();
     }
     else if(QObject::sender() == ui->offACQ){
         ui->offACQ->setCheckable(true);
         ui->offACQ->setChecked(true);
         ui->onACQ->setChecked(false);
-        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ACQoff();
+        root_daq->ui->Send->setEnabled(true);
+         root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ACQoff();
     }
 
 
 
 
 }
+
+void fec_window::SetTrigMode(int mode){
+    Fec_Set("triggermode", mode);
+    root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->setTriggerMode();
+}
+
+
 
 void fec_window::LoadSettings(){
 
@@ -268,7 +291,7 @@ void fec_window::SetToolTips(){
 
 }
 bool fec_window::Fec_Set(const char *feature, unsigned long val){
-    root_daq->root_main->daq[0].fec[fec_index].SetReg(feature,  val );
+    root_daq->root_main->daq[0].fec[fec_index].SetReg(feature,  (unsigned long) val );
 }
 unsigned long fec_window::Fec_Get(const char *feature){
     root_daq->root_main->daq[0].fec[fec_index].GetRegVal(feature);
@@ -453,7 +476,6 @@ void fec_window::resetFEC()
 
     ui->trgExternal->setChecked(false);
     ui->trgPulser->setChecked(false);
-    ui->setMask->setChecked(false);
     ui->onACQ->setChecked(false);
     ui->offACQ->setChecked(false);
 //    ui->setTrgAcqConst->setChecked(false);

@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_FEC_config_module_t {
-    QByteArrayData data[3];
-    char stringdata0[30];
+    QByteArrayData data[4];
+    char stringdata0[40];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -31,10 +31,11 @@ static const qt_meta_stringdata_FEC_config_module_t qt_meta_stringdata_FEC_confi
     {
 QT_MOC_LITERAL(0, 0, 17), // "FEC_config_module"
 QT_MOC_LITERAL(1, 18, 10), // "checkLinks"
-QT_MOC_LITERAL(2, 29, 0) // ""
+QT_MOC_LITERAL(2, 29, 0), // ""
+QT_MOC_LITERAL(3, 30, 9) // "reloadVMM"
 
     },
-    "FEC_config_module\0checkLinks\0"
+    "FEC_config_module\0checkLinks\0\0reloadVMM"
 };
 #undef QT_MOC_LITERAL
 
@@ -44,17 +45,19 @@ static const uint qt_meta_data_FEC_config_module[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       1,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   19,    2, 0x06 /* Public */,
+       1,    0,   24,    2, 0x06 /* Public */,
+       3,    0,   25,    2, 0x06 /* Public */,
 
  // signals: parameters
+    QMetaType::Void,
     QMetaType::Void,
 
        0        // eod
@@ -67,6 +70,7 @@ void FEC_config_module::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->checkLinks(); break;
+        case 1: _t->reloadVMM(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -76,6 +80,13 @@ void FEC_config_module::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
             typedef void (FEC_config_module::*_t)();
             if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&FEC_config_module::checkLinks)) {
                 *result = 0;
+                return;
+            }
+        }
+        {
+            typedef void (FEC_config_module::*_t)();
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&FEC_config_module::reloadVMM)) {
+                *result = 1;
                 return;
             }
         }
@@ -108,13 +119,13 @@ int FEC_config_module::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 1)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 1;
+        _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 1)
+        if (_id < 2)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 1;
+        _id -= 2;
     }
     return _id;
 }
@@ -123,5 +134,11 @@ int FEC_config_module::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 void FEC_config_module::checkLinks()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, Q_NULLPTR);
+}
+
+// SIGNAL 1
+void FEC_config_module::reloadVMM()
+{
+    QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
 }
 QT_END_MOC_NAMESPACE

@@ -32,38 +32,23 @@ class Ui_vmm_window
 {
 public:
     QGridLayout *gridLayout_4;
-    QPushButton *vmm_reset;
-    QWidget *widget;
-    QGridLayout *gridLayout_3;
-    QStackedWidget *stackedWidget;
-    QWidget *stackedWidgetPage1;
-    QScrollArea *scrollArea;
-    QWidget *scrollAreaWidgetContents;
-    QWidget *gridLayoutWidget;
-    QGridLayout *gridLayout_channels;
-    QLabel *label;
     QTabWidget *tabWidget_4;
     QWidget *tabWidget_4Page1;
     QGridLayout *gridLayout_7;
+    QGroupBox *gridGroupBox_4;
+    QGridLayout *gridLayout_6;
+    QSpinBox *sdt;
+    QSpinBox *sdp_2;
+    QLabel *sdpLabel_2;
+    QLabel *sdtLabel;
+    QLabel *dacmvLabel;
+    QLabel *dacmvLabel_TP;
     QFrame *frame;
     QGridLayout *gridLayout_15;
     QPushButton *sng;
     QPushButton *sdp;
     QPushButton *sdrv;
     QPushButton *ssh;
-    QGridLayout *gridLayout_16;
-    QComboBox *sg;
-    QLabel *stcLabel;
-    QLabel *sgLabel;
-    QLabel *spgLabel;
-    QComboBox *sp;
-    QComboBox *stc;
-    QLabel *sm5_sm0Label;
-    QComboBox *sm5_sm0;
-    QGridLayout *gridLayout_13;
-    QComboBox *srat;
-    QGridLayout *gridLayout_14;
-    QLabel *sratLabel;
     QGroupBox *groupBox;
     QGridLayout *gridLayout_10;
     QPushButton *s8b;
@@ -74,33 +59,31 @@ public:
     QComboBox *sc06b;
     QLabel *sc08bLabel;
     QComboBox *sc08b;
+    QGridLayout *gridLayout_13;
+    QComboBox *srat;
+    QGridLayout *gridLayout_14;
+    QLabel *sratLabel;
     QGroupBox *groupBox1;
     QGridLayout *gridLayout_11;
     QPushButton *sdcka;
     QPushButton *sdcks;
     QPushButton *sdck6b;
-    QGroupBox *gridGroupBox_4;
-    QGridLayout *gridLayout_6;
-    QSpinBox *sdt;
-    QSpinBox *sdp_2;
-    QLabel *sdpLabel_2;
-    QLabel *sdtLabel;
-    QLabel *dacmvLabel;
-    QLabel *dacmvLabel_TP;
+    QGridLayout *gridLayout_16;
+    QLabel *sgLabel;
+    QComboBox *sp;
+    QLabel *sm5_sm0Label;
+    QLabel *spgLabel;
+    QComboBox *sg;
+    QComboBox *sm5_sm0;
+    QLabel *stcLabel;
+    QComboBox *stc;
+    QLabel *stLabel;
+    QComboBox *st;
     QWidget *tab;
     QGridLayout *gridLayout_8;
     QGridLayout *gridLayout_12;
     QComboBox *sfam;
-    QLabel *stLabel;
-    QComboBox *st;
     QLabel *sfamLabel;
-    QGridLayout *gridLayout_5;
-    QPushButton *sbft;
-    QPushButton *sfm;
-    QPushButton *sbfp;
-    QPushButton *slg;
-    QPushButton *sbfm;
-    QPushButton *sbmx;
     QPushButton *sttt;
     QComboBox *stpp;
     QComboBox *stot;
@@ -129,6 +112,24 @@ public:
     QPushButton *slvs6b;
     QLabel *stotLabel;
     QPushButton *s6b;
+    QGridLayout *gridLayout_5;
+    QPushButton *sbft;
+    QPushButton *sfm;
+    QPushButton *sbfp;
+    QPushButton *slg;
+    QPushButton *sbfm;
+    QPushButton *sbmx;
+    QWidget *widget;
+    QGridLayout *gridLayout_3;
+    QLabel *label;
+    QStackedWidget *stackedWidget;
+    QWidget *stackedWidgetPage1;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
+    QWidget *gridLayoutWidget;
+    QGridLayout *gridLayout_channels;
+    QPushButton *vmm_reset;
+    QPushButton *ApplyAll;
 
     void setupUi(QWidget *vmm_window)
     {
@@ -144,67 +145,66 @@ public:
         vmm_window->setMaximumSize(QSize(900, 99999));
         gridLayout_4 = new QGridLayout(vmm_window);
         gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
-        vmm_reset = new QPushButton(vmm_window);
-        vmm_reset->setObjectName(QStringLiteral("vmm_reset"));
-        vmm_reset->setEnabled(true);
-        QFont font;
-        font.setFamily(QStringLiteral("Arial"));
-        font.setPointSize(9);
-        vmm_reset->setFont(font);
-
-        gridLayout_4->addWidget(vmm_reset, 1, 0, 1, 1);
-
-        widget = new QWidget(vmm_window);
-        widget->setObjectName(QStringLiteral("widget"));
-        widget->setMinimumSize(QSize(500, 740));
-        gridLayout_3 = new QGridLayout(widget);
-        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
-        stackedWidget = new QStackedWidget(widget);
-        stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
-        stackedWidget->setMinimumSize(QSize(480, 700));
-        stackedWidget->setMaximumSize(QSize(480, 16777215));
-        QFont font1;
-        font1.setPointSize(10);
-        stackedWidget->setFont(font1);
-        stackedWidgetPage1 = new QWidget();
-        stackedWidgetPage1->setObjectName(QStringLiteral("stackedWidgetPage1"));
-        scrollArea = new QScrollArea(stackedWidgetPage1);
-        scrollArea->setObjectName(QStringLiteral("scrollArea"));
-        scrollArea->setGeometry(QRect(10, 34, 461, 661));
-        scrollArea->setLineWidth(3);
-        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
-        scrollArea->setWidgetResizable(true);
-        scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 445, 659));
-        scrollArea->setWidget(scrollAreaWidgetContents);
-        gridLayoutWidget = new QWidget(stackedWidgetPage1);
-        gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
-        gridLayoutWidget->setGeometry(QRect(30, 0, 411, 31));
-        gridLayout_channels = new QGridLayout(gridLayoutWidget);
-        gridLayout_channels->setObjectName(QStringLiteral("gridLayout_channels"));
-        gridLayout_channels->setContentsMargins(0, 0, 0, 0);
-        stackedWidget->addWidget(stackedWidgetPage1);
-
-        gridLayout_3->addWidget(stackedWidget, 1, 0, 1, 1);
-
-        label = new QLabel(widget);
-        label->setObjectName(QStringLiteral("label"));
-
-        gridLayout_3->addWidget(label, 0, 0, 1, 1);
-
-
-        gridLayout_4->addWidget(widget, 0, 1, 1, 1);
-
         tabWidget_4 = new QTabWidget(vmm_window);
         tabWidget_4->setObjectName(QStringLiteral("tabWidget_4"));
         tabWidget_4->setMaximumSize(QSize(320, 16777215));
+        QFont font;
+        font.setFamily(QStringLiteral("Arial"));
+        font.setPointSize(9);
         tabWidget_4->setFont(font);
         tabWidget_4Page1 = new QWidget();
         tabWidget_4Page1->setObjectName(QStringLiteral("tabWidget_4Page1"));
         gridLayout_7 = new QGridLayout(tabWidget_4Page1);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
+        gridGroupBox_4 = new QGroupBox(tabWidget_4Page1);
+        gridGroupBox_4->setObjectName(QStringLiteral("gridGroupBox_4"));
+        gridLayout_6 = new QGridLayout(gridGroupBox_4);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        sdt = new QSpinBox(gridGroupBox_4);
+        sdt->setObjectName(QStringLiteral("sdt"));
+        sdt->setFont(font);
+        sdt->setMaximum(1023);
+        sdt->setValue(300);
+
+        gridLayout_6->addWidget(sdt, 0, 1, 1, 1);
+
+        sdp_2 = new QSpinBox(gridGroupBox_4);
+        sdp_2->setObjectName(QStringLiteral("sdp_2"));
+        sdp_2->setFont(font);
+        sdp_2->setMaximum(1023);
+        sdp_2->setValue(300);
+
+        gridLayout_6->addWidget(sdp_2, 2, 1, 1, 1);
+
+        sdpLabel_2 = new QLabel(gridGroupBox_4);
+        sdpLabel_2->setObjectName(QStringLiteral("sdpLabel_2"));
+        sdpLabel_2->setFont(font);
+
+        gridLayout_6->addWidget(sdpLabel_2, 2, 0, 1, 1);
+
+        sdtLabel = new QLabel(gridGroupBox_4);
+        sdtLabel->setObjectName(QStringLiteral("sdtLabel"));
+        sdtLabel->setFont(font);
+
+        gridLayout_6->addWidget(sdtLabel, 0, 0, 1, 1);
+
+        dacmvLabel = new QLabel(gridGroupBox_4);
+        dacmvLabel->setObjectName(QStringLiteral("dacmvLabel"));
+        QFont font1;
+        font1.setPointSize(9);
+        dacmvLabel->setFont(font1);
+
+        gridLayout_6->addWidget(dacmvLabel, 0, 2, 1, 1);
+
+        dacmvLabel_TP = new QLabel(gridGroupBox_4);
+        dacmvLabel_TP->setObjectName(QStringLiteral("dacmvLabel_TP"));
+        dacmvLabel_TP->setFont(font1);
+
+        gridLayout_6->addWidget(dacmvLabel_TP, 2, 2, 1, 1);
+
+
+        gridLayout_7->addWidget(gridGroupBox_4, 7, 0, 1, 2);
+
         frame = new QFrame(tabWidget_4Page1);
         frame->setObjectName(QStringLiteral("frame"));
         frame->setFrameShape(QFrame::StyledPanel);
@@ -237,82 +237,6 @@ public:
 
 
         gridLayout_7->addWidget(frame, 2, 0, 1, 2);
-
-        gridLayout_16 = new QGridLayout();
-        gridLayout_16->setObjectName(QStringLiteral("gridLayout_16"));
-        sg = new QComboBox(tabWidget_4Page1);
-        sg->setObjectName(QStringLiteral("sg"));
-        sg->setFont(font);
-
-        gridLayout_16->addWidget(sg, 2, 1, 1, 1);
-
-        stcLabel = new QLabel(tabWidget_4Page1);
-        stcLabel->setObjectName(QStringLiteral("stcLabel"));
-        stcLabel->setFont(font);
-
-        gridLayout_16->addWidget(stcLabel, 3, 0, 1, 1);
-
-        sgLabel = new QLabel(tabWidget_4Page1);
-        sgLabel->setObjectName(QStringLiteral("sgLabel"));
-        sgLabel->setFont(font);
-
-        gridLayout_16->addWidget(sgLabel, 2, 0, 1, 1);
-
-        spgLabel = new QLabel(tabWidget_4Page1);
-        spgLabel->setObjectName(QStringLiteral("spgLabel"));
-        spgLabel->setFont(font);
-
-        gridLayout_16->addWidget(spgLabel, 0, 0, 1, 1);
-
-        sp = new QComboBox(tabWidget_4Page1);
-        sp->setObjectName(QStringLiteral("sp"));
-        sp->setFont(font);
-
-        gridLayout_16->addWidget(sp, 0, 1, 1, 1);
-
-        stc = new QComboBox(tabWidget_4Page1);
-        stc->setObjectName(QStringLiteral("stc"));
-        stc->setFont(font);
-        stc->setMaxVisibleItems(16);
-
-        gridLayout_16->addWidget(stc, 3, 1, 1, 1);
-
-        sm5_sm0Label = new QLabel(tabWidget_4Page1);
-        sm5_sm0Label->setObjectName(QStringLiteral("sm5_sm0Label"));
-        sm5_sm0Label->setFont(font);
-
-        gridLayout_16->addWidget(sm5_sm0Label, 1, 0, 1, 1);
-
-        sm5_sm0 = new QComboBox(tabWidget_4Page1);
-        sm5_sm0->setObjectName(QStringLiteral("sm5_sm0"));
-        sm5_sm0->setFont(font);
-
-        gridLayout_16->addWidget(sm5_sm0, 1, 1, 1, 1);
-
-
-        gridLayout_7->addLayout(gridLayout_16, 0, 0, 1, 2);
-
-        gridLayout_13 = new QGridLayout();
-        gridLayout_13->setObjectName(QStringLiteral("gridLayout_13"));
-        srat = new QComboBox(tabWidget_4Page1);
-        srat->setObjectName(QStringLiteral("srat"));
-        srat->setFont(font);
-
-        gridLayout_13->addWidget(srat, 0, 1, 1, 1);
-
-        gridLayout_14 = new QGridLayout();
-        gridLayout_14->setObjectName(QStringLiteral("gridLayout_14"));
-        sratLabel = new QLabel(tabWidget_4Page1);
-        sratLabel->setObjectName(QStringLiteral("sratLabel"));
-        sratLabel->setFont(font);
-
-        gridLayout_14->addWidget(sratLabel, 0, 0, 1, 1);
-
-
-        gridLayout_13->addLayout(gridLayout_14, 0, 0, 1, 1);
-
-
-        gridLayout_7->addLayout(gridLayout_13, 1, 0, 1, 2);
 
         groupBox = new QGroupBox(tabWidget_4Page1);
         groupBox->setObjectName(QStringLiteral("groupBox"));
@@ -369,6 +293,28 @@ public:
 
         gridLayout_7->addWidget(groupBox, 3, 0, 1, 2);
 
+        gridLayout_13 = new QGridLayout();
+        gridLayout_13->setObjectName(QStringLiteral("gridLayout_13"));
+        srat = new QComboBox(tabWidget_4Page1);
+        srat->setObjectName(QStringLiteral("srat"));
+        srat->setFont(font);
+
+        gridLayout_13->addWidget(srat, 0, 1, 1, 1);
+
+        gridLayout_14 = new QGridLayout();
+        gridLayout_14->setObjectName(QStringLiteral("gridLayout_14"));
+        sratLabel = new QLabel(tabWidget_4Page1);
+        sratLabel->setObjectName(QStringLiteral("sratLabel"));
+        sratLabel->setFont(font);
+
+        gridLayout_14->addWidget(sratLabel, 0, 0, 1, 1);
+
+
+        gridLayout_13->addLayout(gridLayout_14, 0, 0, 1, 1);
+
+
+        gridLayout_7->addLayout(gridLayout_13, 1, 0, 1, 2);
+
         groupBox1 = new QGroupBox(tabWidget_4Page1);
         groupBox1->setObjectName(QStringLiteral("groupBox1"));
         gridLayout_11 = new QGridLayout(groupBox1);
@@ -394,54 +340,71 @@ public:
 
         gridLayout_7->addWidget(groupBox1, 4, 0, 1, 2);
 
-        gridGroupBox_4 = new QGroupBox(tabWidget_4Page1);
-        gridGroupBox_4->setObjectName(QStringLiteral("gridGroupBox_4"));
-        gridLayout_6 = new QGridLayout(gridGroupBox_4);
-        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
-        sdt = new QSpinBox(gridGroupBox_4);
-        sdt->setObjectName(QStringLiteral("sdt"));
-        sdt->setFont(font);
-        sdt->setMaximum(1023);
-        sdt->setValue(300);
+        gridLayout_16 = new QGridLayout();
+        gridLayout_16->setObjectName(QStringLiteral("gridLayout_16"));
+        sgLabel = new QLabel(tabWidget_4Page1);
+        sgLabel->setObjectName(QStringLiteral("sgLabel"));
+        sgLabel->setFont(font);
 
-        gridLayout_6->addWidget(sdt, 0, 1, 1, 1);
+        gridLayout_16->addWidget(sgLabel, 2, 0, 1, 1);
 
-        sdp_2 = new QSpinBox(gridGroupBox_4);
-        sdp_2->setObjectName(QStringLiteral("sdp_2"));
-        sdp_2->setFont(font);
-        sdp_2->setMaximum(1023);
-        sdp_2->setValue(300);
+        sp = new QComboBox(tabWidget_4Page1);
+        sp->setObjectName(QStringLiteral("sp"));
+        sp->setFont(font);
 
-        gridLayout_6->addWidget(sdp_2, 2, 1, 1, 1);
+        gridLayout_16->addWidget(sp, 0, 1, 1, 1);
 
-        sdpLabel_2 = new QLabel(gridGroupBox_4);
-        sdpLabel_2->setObjectName(QStringLiteral("sdpLabel_2"));
-        sdpLabel_2->setFont(font);
+        sm5_sm0Label = new QLabel(tabWidget_4Page1);
+        sm5_sm0Label->setObjectName(QStringLiteral("sm5_sm0Label"));
+        sm5_sm0Label->setFont(font);
 
-        gridLayout_6->addWidget(sdpLabel_2, 2, 0, 1, 1);
+        gridLayout_16->addWidget(sm5_sm0Label, 1, 0, 1, 1);
 
-        sdtLabel = new QLabel(gridGroupBox_4);
-        sdtLabel->setObjectName(QStringLiteral("sdtLabel"));
-        sdtLabel->setFont(font);
+        spgLabel = new QLabel(tabWidget_4Page1);
+        spgLabel->setObjectName(QStringLiteral("spgLabel"));
+        spgLabel->setFont(font);
 
-        gridLayout_6->addWidget(sdtLabel, 0, 0, 1, 1);
+        gridLayout_16->addWidget(spgLabel, 0, 0, 1, 1);
 
-        dacmvLabel = new QLabel(gridGroupBox_4);
-        dacmvLabel->setObjectName(QStringLiteral("dacmvLabel"));
-        QFont font2;
-        font2.setPointSize(9);
-        dacmvLabel->setFont(font2);
+        sg = new QComboBox(tabWidget_4Page1);
+        sg->setObjectName(QStringLiteral("sg"));
+        sg->setFont(font);
 
-        gridLayout_6->addWidget(dacmvLabel, 0, 2, 1, 1);
+        gridLayout_16->addWidget(sg, 2, 1, 1, 1);
 
-        dacmvLabel_TP = new QLabel(gridGroupBox_4);
-        dacmvLabel_TP->setObjectName(QStringLiteral("dacmvLabel_TP"));
-        dacmvLabel_TP->setFont(font2);
+        sm5_sm0 = new QComboBox(tabWidget_4Page1);
+        sm5_sm0->setObjectName(QStringLiteral("sm5_sm0"));
+        sm5_sm0->setFont(font);
 
-        gridLayout_6->addWidget(dacmvLabel_TP, 2, 2, 1, 1);
+        gridLayout_16->addWidget(sm5_sm0, 1, 1, 1, 1);
+
+        stcLabel = new QLabel(tabWidget_4Page1);
+        stcLabel->setObjectName(QStringLiteral("stcLabel"));
+        stcLabel->setFont(font);
+
+        gridLayout_16->addWidget(stcLabel, 3, 0, 1, 1);
+
+        stc = new QComboBox(tabWidget_4Page1);
+        stc->setObjectName(QStringLiteral("stc"));
+        stc->setFont(font);
+        stc->setMaxVisibleItems(16);
+
+        gridLayout_16->addWidget(stc, 3, 1, 1, 1);
+
+        stLabel = new QLabel(tabWidget_4Page1);
+        stLabel->setObjectName(QStringLiteral("stLabel"));
+        stLabel->setFont(font);
+
+        gridLayout_16->addWidget(stLabel, 4, 0, 1, 1);
+
+        st = new QComboBox(tabWidget_4Page1);
+        st->setObjectName(QStringLiteral("st"));
+        st->setFont(font);
+
+        gridLayout_16->addWidget(st, 4, 1, 1, 1);
 
 
-        gridLayout_7->addWidget(gridGroupBox_4, 7, 0, 1, 2);
+        gridLayout_7->addLayout(gridLayout_16, 0, 0, 1, 2);
 
         tabWidget_4->addTab(tabWidget_4Page1, QString());
         tab = new QWidget();
@@ -456,18 +419,6 @@ public:
 
         gridLayout_12->addWidget(sfam, 1, 2, 1, 1);
 
-        stLabel = new QLabel(tab);
-        stLabel->setObjectName(QStringLiteral("stLabel"));
-        stLabel->setFont(font);
-
-        gridLayout_12->addWidget(stLabel, 2, 0, 1, 1);
-
-        st = new QComboBox(tab);
-        st->setObjectName(QStringLiteral("st"));
-        st->setFont(font);
-
-        gridLayout_12->addWidget(st, 2, 1, 1, 1);
-
         sfamLabel = new QLabel(tab);
         sfamLabel->setObjectName(QStringLiteral("sfamLabel"));
         sfamLabel->setFont(font);
@@ -476,48 +427,6 @@ public:
 
 
         gridLayout_8->addLayout(gridLayout_12, 0, 0, 1, 5);
-
-        gridLayout_5 = new QGridLayout();
-        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
-        sbft = new QPushButton(tab);
-        sbft->setObjectName(QStringLiteral("sbft"));
-        sbft->setCheckable(true);
-
-        gridLayout_5->addWidget(sbft, 0, 1, 1, 1);
-
-        sfm = new QPushButton(tab);
-        sfm->setObjectName(QStringLiteral("sfm"));
-        sfm->setCheckable(true);
-
-        gridLayout_5->addWidget(sfm, 3, 2, 1, 1);
-
-        sbfp = new QPushButton(tab);
-        sbfp->setObjectName(QStringLiteral("sbfp"));
-        sbfp->setCheckable(true);
-        sbfp->setAutoDefault(false);
-
-        gridLayout_5->addWidget(sbfp, 0, 2, 1, 1);
-
-        slg = new QPushButton(tab);
-        slg->setObjectName(QStringLiteral("slg"));
-        slg->setCheckable(true);
-
-        gridLayout_5->addWidget(slg, 3, 1, 1, 1);
-
-        sbfm = new QPushButton(tab);
-        sbfm->setObjectName(QStringLiteral("sbfm"));
-        sbfm->setCheckable(true);
-
-        gridLayout_5->addWidget(sbfm, 1, 1, 1, 1);
-
-        sbmx = new QPushButton(tab);
-        sbmx->setObjectName(QStringLiteral("sbmx"));
-        sbmx->setCheckable(true);
-
-        gridLayout_5->addWidget(sbmx, 1, 2, 1, 1);
-
-
-        gridLayout_8->addLayout(gridLayout_5, 1, 0, 1, 3);
 
         sttt = new QPushButton(tab);
         sttt->setObjectName(QStringLiteral("sttt"));
@@ -681,16 +590,113 @@ public:
 
         gridLayout_8->addWidget(s6b, 3, 1, 1, 1);
 
+        gridLayout_5 = new QGridLayout();
+        gridLayout_5->setObjectName(QStringLiteral("gridLayout_5"));
+        sbft = new QPushButton(tab);
+        sbft->setObjectName(QStringLiteral("sbft"));
+        sbft->setCheckable(true);
+
+        gridLayout_5->addWidget(sbft, 0, 1, 1, 1);
+
+        sfm = new QPushButton(tab);
+        sfm->setObjectName(QStringLiteral("sfm"));
+        sfm->setCheckable(true);
+
+        gridLayout_5->addWidget(sfm, 3, 2, 1, 1);
+
+        sbfp = new QPushButton(tab);
+        sbfp->setObjectName(QStringLiteral("sbfp"));
+        sbfp->setCheckable(true);
+        sbfp->setAutoDefault(false);
+
+        gridLayout_5->addWidget(sbfp, 0, 2, 1, 1);
+
+        slg = new QPushButton(tab);
+        slg->setObjectName(QStringLiteral("slg"));
+        slg->setCheckable(true);
+
+        gridLayout_5->addWidget(slg, 3, 1, 1, 1);
+
+        sbfm = new QPushButton(tab);
+        sbfm->setObjectName(QStringLiteral("sbfm"));
+        sbfm->setCheckable(true);
+
+        gridLayout_5->addWidget(sbfm, 1, 1, 1, 1);
+
+        sbmx = new QPushButton(tab);
+        sbmx->setObjectName(QStringLiteral("sbmx"));
+        sbmx->setCheckable(true);
+
+        gridLayout_5->addWidget(sbmx, 1, 2, 1, 1);
+
+
+        gridLayout_8->addLayout(gridLayout_5, 1, 0, 1, 5);
+
         tabWidget_4->addTab(tab, QString());
 
         gridLayout_4->addWidget(tabWidget_4, 0, 0, 1, 1);
+
+        widget = new QWidget(vmm_window);
+        widget->setObjectName(QStringLiteral("widget"));
+        widget->setMinimumSize(QSize(500, 740));
+        gridLayout_3 = new QGridLayout(widget);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        label = new QLabel(widget);
+        label->setObjectName(QStringLiteral("label"));
+
+        gridLayout_3->addWidget(label, 0, 0, 1, 1);
+
+        stackedWidget = new QStackedWidget(widget);
+        stackedWidget->setObjectName(QStringLiteral("stackedWidget"));
+        stackedWidget->setMinimumSize(QSize(480, 700));
+        stackedWidget->setMaximumSize(QSize(480, 16777215));
+        QFont font2;
+        font2.setPointSize(10);
+        stackedWidget->setFont(font2);
+        stackedWidgetPage1 = new QWidget();
+        stackedWidgetPage1->setObjectName(QStringLiteral("stackedWidgetPage1"));
+        scrollArea = new QScrollArea(stackedWidgetPage1);
+        scrollArea->setObjectName(QStringLiteral("scrollArea"));
+        scrollArea->setGeometry(QRect(10, 34, 461, 661));
+        scrollArea->setLineWidth(3);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContentsOnFirstShow);
+        scrollArea->setWidgetResizable(true);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 445, 659));
+        scrollArea->setWidget(scrollAreaWidgetContents);
+        gridLayoutWidget = new QWidget(stackedWidgetPage1);
+        gridLayoutWidget->setObjectName(QStringLiteral("gridLayoutWidget"));
+        gridLayoutWidget->setGeometry(QRect(30, 0, 411, 31));
+        gridLayout_channels = new QGridLayout(gridLayoutWidget);
+        gridLayout_channels->setObjectName(QStringLiteral("gridLayout_channels"));
+        gridLayout_channels->setContentsMargins(0, 0, 0, 0);
+        stackedWidget->addWidget(stackedWidgetPage1);
+
+        gridLayout_3->addWidget(stackedWidget, 1, 0, 1, 1);
+
+
+        gridLayout_4->addWidget(widget, 0, 1, 1, 1);
+
+        vmm_reset = new QPushButton(vmm_window);
+        vmm_reset->setObjectName(QStringLiteral("vmm_reset"));
+        vmm_reset->setEnabled(true);
+        vmm_reset->setFont(font);
+
+        gridLayout_4->addWidget(vmm_reset, 3, 0, 1, 1);
+
+        ApplyAll = new QPushButton(vmm_window);
+        ApplyAll->setObjectName(QStringLiteral("ApplyAll"));
+
+        gridLayout_4->addWidget(ApplyAll, 2, 0, 1, 1);
 
 
         retranslateUi(vmm_window);
 
         tabWidget_4->setCurrentIndex(0);
-        sg->setCurrentIndex(2);
         sp->setCurrentIndex(0);
+        sg->setCurrentIndex(2);
         stc->setCurrentIndex(0);
         st->setCurrentIndex(0);
 
@@ -701,12 +707,54 @@ public:
     void retranslateUi(QWidget *vmm_window)
     {
         vmm_window->setWindowTitle(QApplication::translate("vmm_window", "Form", 0));
-        vmm_reset->setText(QApplication::translate("vmm_window", "Hard Reset", 0));
-        label->setText(QApplication::translate("vmm_window", "Channel Settings", 0));
+        sdpLabel_2->setText(QApplication::translate("vmm_window", "Test Pulse DAC", 0));
+        sdtLabel->setText(QApplication::translate("vmm_window", "Threshold DAC", 0));
+        dacmvLabel->setText(QApplication::translate("vmm_window", "TextLabel", 0));
+        dacmvLabel_TP->setText(QApplication::translate("vmm_window", "TextLabel", 0));
         sng->setText(QApplication::translate("vmm_window", "Neighbor Trigger (sng)", 0));
         sdp->setText(QApplication::translate("vmm_window", "Disable At Peak", 0));
         sdrv->setText(QApplication::translate("vmm_window", "Analog tristates", 0));
         ssh->setText(QApplication::translate("vmm_window", "Sub Hysterisis ", 0));
+        groupBox->setTitle(QApplication::translate("vmm_window", "ADC ", 0));
+        s8b->setText(QApplication::translate("vmm_window", "8-bit Conv. Mode", 0));
+        sc010b->clear();
+        sc010b->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "200ns", 0)
+         << QApplication::translate("vmm_window", "+60ns", 0)
+        );
+        sc010bLabel->setText(QApplication::translate("vmm_window", "10b ADC", 0));
+        adcs->setText(QApplication::translate("vmm_window", "ADCs", 0));
+        sc06bLabel->setText(QApplication::translate("vmm_window", "6b ADC", 0));
+        sc06b->clear();
+        sc06b->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "Low", 0)
+         << QApplication::translate("vmm_window", "Middle", 0)
+         << QApplication::translate("vmm_window", "Up", 0)
+        );
+        sc08bLabel->setText(QApplication::translate("vmm_window", "8b ADC", 0));
+        sc08b->clear();
+        sc08b->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "100ns", 0)
+         << QApplication::translate("vmm_window", "+60ns", 0)
+        );
+        srat->clear();
+        srat->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "Timing At Peak", 0)
+         << QApplication::translate("vmm_window", "Timing At Threshold", 0)
+        );
+        sratLabel->setText(QApplication::translate("vmm_window", "SRAT Mode", 0));
+        groupBox1->setTitle(QApplication::translate("vmm_window", "Dual Clock", 0));
+        sdcka->setText(QApplication::translate("vmm_window", "Dual Clock ART", 0));
+        sdcks->setText(QApplication::translate("vmm_window", "Dual Clock Data", 0));
+        sdck6b->setText(QApplication::translate("vmm_window", "Dual Clock 6-bit", 0));
+        sgLabel->setText(QApplication::translate("vmm_window", "Gain (sg)", 0));
+        sp->clear();
+        sp->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "negative", 0)
+         << QApplication::translate("vmm_window", "positive", 0)
+        );
+        sm5_sm0Label->setText(QApplication::translate("vmm_window", "Analog (Channel) Monitor", 0));
+        spgLabel->setText(QApplication::translate("vmm_window", "Input charge polarity", 0));
         sg->clear();
         sg->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "0.5 mV/fC", 0)
@@ -718,22 +766,6 @@ public:
          << QApplication::translate("vmm_window", "12.0 mV/fC", 0)
          << QApplication::translate("vmm_window", "16.0 mV/fC", 0)
         );
-        stcLabel->setText(QApplication::translate("vmm_window", "TAC Slop Adj (stc)", 0));
-        sgLabel->setText(QApplication::translate("vmm_window", "Gain (sg)", 0));
-        spgLabel->setText(QApplication::translate("vmm_window", "Input charge polarity", 0));
-        sp->clear();
-        sp->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "negative", 0)
-         << QApplication::translate("vmm_window", "positive", 0)
-        );
-        stc->clear();
-        stc->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "60 ns", 0)
-         << QApplication::translate("vmm_window", "100 ns", 0)
-         << QApplication::translate("vmm_window", "350 ns", 0)
-         << QApplication::translate("vmm_window", "650 ns", 0)
-        );
-        sm5_sm0Label->setText(QApplication::translate("vmm_window", "Analog (Channel) Monitor", 0));
         sm5_sm0->clear();
         sm5_sm0->insertItems(0, QStringList()
          << QApplication::translate("vmm_window", "Pulser DAC", 0)
@@ -805,48 +837,13 @@ public:
          << QApplication::translate("vmm_window", "63", 0)
          << QApplication::translate("vmm_window", "64", 0)
         );
-        srat->clear();
-        srat->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Timing At Peak", 0)
-         << QApplication::translate("vmm_window", "Timing At Threshold", 0)
-        );
-        sratLabel->setText(QApplication::translate("vmm_window", "SRAT Mode", 0));
-        groupBox->setTitle(QApplication::translate("vmm_window", "ADC ", 0));
-        s8b->setText(QApplication::translate("vmm_window", "8-bit Conv. Mode", 0));
-        sc010b->clear();
-        sc010b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "200ns", 0)
-         << QApplication::translate("vmm_window", "+60ns", 0)
-        );
-        sc010bLabel->setText(QApplication::translate("vmm_window", "10b ADC", 0));
-        adcs->setText(QApplication::translate("vmm_window", "ADCs", 0));
-        sc06bLabel->setText(QApplication::translate("vmm_window", "6b ADC", 0));
-        sc06b->clear();
-        sc06b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Low", 0)
-         << QApplication::translate("vmm_window", "Middle", 0)
-         << QApplication::translate("vmm_window", "Up", 0)
-        );
-        sc08bLabel->setText(QApplication::translate("vmm_window", "8b ADC", 0));
-        sc08b->clear();
-        sc08b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "100ns", 0)
-         << QApplication::translate("vmm_window", "+60ns", 0)
-        );
-        groupBox1->setTitle(QApplication::translate("vmm_window", "Dual Clock", 0));
-        sdcka->setText(QApplication::translate("vmm_window", "Dual Clock ART", 0));
-        sdcks->setText(QApplication::translate("vmm_window", "Dual Clock Data", 0));
-        sdck6b->setText(QApplication::translate("vmm_window", "Dual Clock 6-bit", 0));
-        sdpLabel_2->setText(QApplication::translate("vmm_window", "Test Pulse DAC", 0));
-        sdtLabel->setText(QApplication::translate("vmm_window", "Threshold DAC", 0));
-        dacmvLabel->setText(QApplication::translate("vmm_window", "TextLabel", 0));
-        dacmvLabel_TP->setText(QApplication::translate("vmm_window", "TextLabel", 0));
-        tabWidget_4->setTabText(tabWidget_4->indexOf(tabWidget_4Page1), QApplication::translate("vmm_window", "General Settings", 0));
-        sfam->clear();
-        sfam->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Off", 0)
-         << QApplication::translate("vmm_window", "Timing At Threshold", 0)
-         << QApplication::translate("vmm_window", "Timing At Peak", 0)
+        stcLabel->setText(QApplication::translate("vmm_window", "TAC Slop Adj (stc)", 0));
+        stc->clear();
+        stc->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "60 ns", 0)
+         << QApplication::translate("vmm_window", "100 ns", 0)
+         << QApplication::translate("vmm_window", "350 ns", 0)
+         << QApplication::translate("vmm_window", "650 ns", 0)
         );
         stLabel->setText(QApplication::translate("vmm_window", "Peak time (st)", 0));
         st->clear();
@@ -856,13 +853,14 @@ public:
          << QApplication::translate("vmm_window", "50 ns", 0)
          << QApplication::translate("vmm_window", "25 ns", 0)
         );
+        tabWidget_4->setTabText(tabWidget_4->indexOf(tabWidget_4Page1), QApplication::translate("vmm_window", "General Settings", 0));
+        sfam->clear();
+        sfam->insertItems(0, QStringList()
+         << QApplication::translate("vmm_window", "Off", 0)
+         << QApplication::translate("vmm_window", "Timing At Threshold", 0)
+         << QApplication::translate("vmm_window", "Timing At Peak", 0)
+        );
         sfamLabel->setText(QApplication::translate("vmm_window", "ART-Mode", 0));
-        sbft->setText(QApplication::translate("vmm_window", "SBFT", 0));
-        sfm->setText(QApplication::translate("vmm_window", "Double Leak", 0));
-        sbfp->setText(QApplication::translate("vmm_window", "SBFP", 0));
-        slg->setText(QApplication::translate("vmm_window", "Leak. Curr.", 0));
-        sbfm->setText(QApplication::translate("vmm_window", "SBFM", 0));
-        sbmx->setText(QApplication::translate("vmm_window", "SBMX", 0));
         sttt->setText(QApplication::translate("vmm_window", "Direct Time", 0));
         stpp->clear();
         stpp->insertItems(0, QStringList()
@@ -896,7 +894,16 @@ public:
         slvs6b->setText(QApplication::translate("vmm_window", "6b", 0));
         stotLabel->setText(QApplication::translate("vmm_window", "Mode", 0));
         s6b->setText(QApplication::translate("vmm_window", "6-bit", 0));
+        sbft->setText(QApplication::translate("vmm_window", "SBFT", 0));
+        sfm->setText(QApplication::translate("vmm_window", "Double Leak", 0));
+        sbfp->setText(QApplication::translate("vmm_window", "SBFP", 0));
+        slg->setText(QApplication::translate("vmm_window", "Leak. Curr.", 0));
+        sbfm->setText(QApplication::translate("vmm_window", "SBFM", 0));
+        sbmx->setText(QApplication::translate("vmm_window", "SBMX", 0));
         tabWidget_4->setTabText(tabWidget_4->indexOf(tab), QApplication::translate("vmm_window", "Advanced Settings", 0));
+        label->setText(QApplication::translate("vmm_window", "Channel Settings", 0));
+        vmm_reset->setText(QApplication::translate("vmm_window", "Hard Reset", 0));
+        ApplyAll->setText(QApplication::translate("vmm_window", "Apply to all VMMs", 0));
     } // retranslateUi
 
 };

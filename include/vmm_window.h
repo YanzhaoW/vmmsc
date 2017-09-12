@@ -98,6 +98,7 @@ public slots:
     void updateChannelADCs(int);
     // VMM settings
      void updateSettings();
+     void ReloadSettings();
 
 private slots:
      void on_vmm_reset_clicked();

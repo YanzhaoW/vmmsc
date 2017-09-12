@@ -842,46 +842,6 @@
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_10">
-          <item row="3" column="0">
-           <widget class="QPushButton" name="linkPB">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Link Status</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QPushButton" name="fec_reset">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Reboot FEC</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QPushButton" name="resetLinks">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Reset Links</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="fec_WarmInit">
             <property name="enabled">
@@ -899,14 +859,42 @@
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QPushButton" name="setMask">
+           <widget class="QPushButton" name="linkPB">
             <property name="font">
              <font>
               <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>Set Mask</string>
+             <string>Link Status</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="resetLinks">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Reset Links</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="fec_reset">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Reboot FEC</string>
             </property>
            </widget>
           </item>

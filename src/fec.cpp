@@ -11,9 +11,9 @@ FEC::FEC():
     //hdmi_act[0] = 1;
 
     (*RegNames)[0] ="tp_delay";                (*Reg)[0] = 81;      //32 bit //max 50000 by gui?
-    (*RegNames)[1] ="trigger_period";          (*Reg)[1] = 262142;  //32 bit //max 7FFFFFFF = 31 bit?
+    (*RegNames)[1] ="trigger_period";          (*Reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
     (*RegNames)[2] ="acq_sync";                (*Reg)[2] = 100;     //32 bit
-    (*RegNames)[3] ="acq_window";              (*Reg)[3] = 4096;    //32 bit
+    (*RegNames)[3] ="acq_window";              (*Reg)[3] = 3900;    //32 bit
     (*RegNames)[4] ="run_mode";                (*Reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
     (*RegNames)[5] ="bcid_reset";              (*Reg)[5] = 0;       //max 65535 (16 bit)
     (*RegNames)[6] ="fec_port";                (*Reg)[6] = 6007;    //32 bit
@@ -69,7 +69,7 @@ void FEC::LoadMessageHandler(MessageHandler& m)
 void FEC::SendAll(){
     /// function to send all configurations to fec, hybrid and vmm
 
-
+    fec_conf_mod->setMask();
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
         if(GetHDMI(k)){
             for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
@@ -168,18 +168,18 @@ bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
     if (reg == 5 ){ // 16 bit values allowed for bcid_reset
         if (intValue < 65536)found = true;
     }
-    else if (reg < Reg->size() && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
+    else if (reg < Reg->size()){// && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
         if (intValue < 4294967296)found = true;
     }
-    if (reg == 11){ //evbld_mode
-        if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
-    }
-    if (reg == 12){ //evbld_info
-        if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
-    }
-    if (reg == 13){ //timeStampHighRes
-        if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
-    }
+//    if (reg == 11){ //evbld_mode
+//        if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
+//    }
+//    if (reg == 12){ //evbld_info
+//        if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
+//    }
+//    if (reg == 13){ //timeStampHighRes
+//        if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
+//    }
     return found;
 }
 

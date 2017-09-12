@@ -101,11 +101,10 @@ public:
     QPushButton *clearDebugScreenPB;
     QGroupBox *groupBox_5;
     QGridLayout *gridLayout_10;
-    QPushButton *linkPB;
-    QPushButton *fec_reset;
-    QPushButton *resetLinks;
     QPushButton *fec_WarmInit;
-    QPushButton *setMask;
+    QPushButton *linkPB;
+    QPushButton *resetLinks;
+    QPushButton *fec_reset;
 
     void setupUi(QWidget *fec_window)
     {
@@ -519,25 +518,6 @@ public:
         groupBox_5->setObjectName(QStringLiteral("groupBox_5"));
         gridLayout_10 = new QGridLayout(groupBox_5);
         gridLayout_10->setObjectName(QStringLiteral("gridLayout_10"));
-        linkPB = new QPushButton(groupBox_5);
-        linkPB->setObjectName(QStringLiteral("linkPB"));
-        linkPB->setFont(font2);
-
-        gridLayout_10->addWidget(linkPB, 3, 0, 1, 1);
-
-        fec_reset = new QPushButton(groupBox_5);
-        fec_reset->setObjectName(QStringLiteral("fec_reset"));
-        fec_reset->setEnabled(true);
-        fec_reset->setFont(font);
-
-        gridLayout_10->addWidget(fec_reset, 1, 0, 1, 1);
-
-        resetLinks = new QPushButton(groupBox_5);
-        resetLinks->setObjectName(QStringLiteral("resetLinks"));
-        resetLinks->setFont(font2);
-
-        gridLayout_10->addWidget(resetLinks, 4, 0, 1, 1);
-
         fec_WarmInit = new QPushButton(groupBox_5);
         fec_WarmInit->setObjectName(QStringLiteral("fec_WarmInit"));
         fec_WarmInit->setEnabled(true);
@@ -545,11 +525,24 @@ public:
 
         gridLayout_10->addWidget(fec_WarmInit, 0, 0, 1, 1);
 
-        setMask = new QPushButton(groupBox_5);
-        setMask->setObjectName(QStringLiteral("setMask"));
-        setMask->setFont(font2);
+        linkPB = new QPushButton(groupBox_5);
+        linkPB->setObjectName(QStringLiteral("linkPB"));
+        linkPB->setFont(font2);
 
-        gridLayout_10->addWidget(setMask, 2, 0, 1, 1);
+        gridLayout_10->addWidget(linkPB, 2, 0, 1, 1);
+
+        resetLinks = new QPushButton(groupBox_5);
+        resetLinks->setObjectName(QStringLiteral("resetLinks"));
+        resetLinks->setFont(font2);
+
+        gridLayout_10->addWidget(resetLinks, 3, 0, 1, 1);
+
+        fec_reset = new QPushButton(groupBox_5);
+        fec_reset->setObjectName(QStringLiteral("fec_reset"));
+        fec_reset->setEnabled(true);
+        fec_reset->setFont(font);
+
+        gridLayout_10->addWidget(fec_reset, 1, 0, 1, 1);
 
 
         gridLayout->addWidget(groupBox_5, 4, 0, 1, 2);
@@ -629,11 +622,10 @@ public:
         groupBox_19->setTitle(QApplication::translate("fec_window", "FEC Response", 0));
         clearDebugScreenPB->setText(QApplication::translate("fec_window", "Clear", 0));
         groupBox_5->setTitle(QString());
-        linkPB->setText(QApplication::translate("fec_window", "Link Status", 0));
-        fec_reset->setText(QApplication::translate("fec_window", "Reboot FEC", 0));
-        resetLinks->setText(QApplication::translate("fec_window", "Reset Links", 0));
         fec_WarmInit->setText(QApplication::translate("fec_window", "WarmInit FEC", 0));
-        setMask->setText(QApplication::translate("fec_window", "Set Mask", 0));
+        linkPB->setText(QApplication::translate("fec_window", "Link Status", 0));
+        resetLinks->setText(QApplication::translate("fec_window", "Reset Links", 0));
+        fec_reset->setText(QApplication::translate("fec_window", "Reboot FEC", 0));
         tabWidget1->setTabText(tabWidget1->indexOf(tab), QApplication::translate("fec_window", "Advanced", 0));
     } // retranslateUi
 

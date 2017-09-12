@@ -14,8 +14,8 @@ class FEC_config_handler : public QObject
 public:
     explicit FEC_config_handler(MainWindow *top, QObject *parent = 0);
     ~FEC_config_handler();
-    bool LoadAllFECConf(const char* filename);
-    bool WriteAllFECConf(const char* filename);
+    bool LoadAllFECConf(std::string filename);
+    bool WriteAllFECConf(std::string filename);
     bool LoadSingleFECConf(const char* filename, unsigned short daq, unsigned short fec);
     bool WriteSingleFECConf(const char* filename, unsigned short daq, unsigned short fec);
     bool LoadSingleFECConf(const char* filename);
@@ -23,7 +23,7 @@ public:
 private:
     char ExecPath[256];
     MainWindow *root1;
-    bool GenericAllFECConf(bool load, const char* filename);
+    bool GenericAllFECConf(bool load, std::string filename);
     bool GenericSingleFECConf(bool load, const char* filename, unsigned short daq, unsigned short fec);
     bool LoadFECConfig(std::string fname);
     bool WriteFECConfig(std::string filename, unsigned short daq, unsigned short fec);

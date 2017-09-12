@@ -29,6 +29,7 @@ DAQ::DAQ():
     vmmMessageHandler->setMessageSize(75);
     vmmMessageHandler->setGUI(true);
     SetMessageHandler();
+
 }
 
 
@@ -76,6 +77,40 @@ bool DAQ::CheckIP(QString ip, int fec_index){
     }
     return check;
  }
+
+
+void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index){
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if ( GetFEC(j) ){
+            for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+                if( fec[j].GetHDMI(k) ){
+                    for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                        if (fec[j].hdmi[k].GetHybrid(l)){
+                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                                if (fec[j].hdmi[k].hybrid[l].GetVMM(m) && !(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
+                                    (*fec[j].hdmi[k].hybrid[l].vmm[m].Regi->m_GlobalReg1) = (*fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].Regi->m_GlobalReg1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            fec[j].fec_conf_mod->VMMLoadEmit();//dirty trick, does not work to emit signal on daq level
+        }
+    }
+}
+
+
+void DAQ::ACQHandler(bool on){
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if ( GetFEC(j)){
+            if(on) fec[j].fec_conf_mod->ACQon(true);
+            else if(!on) fec[j].fec_conf_mod->ACQoff(true);
+            break;
+        }
+    }
+}
+
 
 void DAQ::SetMessageHandler(){
     for(int i=0; i<FECS_PER_DAQ; i++){

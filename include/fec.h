@@ -19,6 +19,7 @@ public:
     friend class fec_window;
     friend class vmm_window;
     friend class daq_window;
+    friend class DAQ;
     HDMI hdmi[HDMIS_PER_FEC];
 
     void LoadMessageHandler(MessageHandler& m);
