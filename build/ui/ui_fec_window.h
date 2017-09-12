@@ -322,7 +322,7 @@ public:
         font2.setPointSize(9);
         onACQ->setFont(font2);
         onACQ->setFocusPolicy(Qt::NoFocus);
-        onACQ->setCheckable(true);
+        onACQ->setCheckable(false);
 
         gridLayout_11->addWidget(onACQ, 2, 0, 1, 2);
 
@@ -330,7 +330,7 @@ public:
         offACQ->setObjectName(QStringLiteral("offACQ"));
         offACQ->setFont(font2);
         offACQ->setFocusPolicy(Qt::NoFocus);
-        offACQ->setCheckable(true);
+        offACQ->setCheckable(false);
 
         gridLayout_11->addWidget(offACQ, 3, 0, 1, 2);
 

@@ -97,6 +97,12 @@ fec_window::~fec_window()
 
 void fec_window::ACQhandler(){
     if(root_daq->sendstate == "GlobalACQon" ){
+          emit ui->offACQ->clicked();
+          ui->trgPulser->setChecked(false);
+          ui->trgExternal->setChecked(false);
+          ui->onACQ->setChecked(false);
+          ui->offACQ->setChecked(false);
+
           ui->trgPulser->setEnabled(false);
           ui->trgExternal->setEnabled(false);
           ui->onACQ->setEnabled(false);
@@ -183,12 +189,14 @@ void fec_window::updateSettings(){
         if(root_daq->ui->connectionLabel_2->text()==QString("all alive")){
             ui->linkPB->setEnabled(true);
 //            ui->resetLinks->setEnabled(true);
+            if(!root_daq->ui->checkBox->isChecked()){
             ui->fec_WarmInit->setEnabled(true);
             ui->fec_reset->setEnabled(true);
             ui->trgPulser->setEnabled(true);
             ui->trgExternal->setEnabled(true);
             ui->onACQ->setEnabled(true);
             ui->offACQ->setEnabled(true);
+            }
         }
         else{
             ui->linkPB->setEnabled(false);
@@ -220,6 +228,18 @@ void fec_window::updateSettings(){
     }
     else if(QObject::sender() == ui->onACQ){
         ui->onACQ->setCheckable(true);
+        if(ui->trgExternal->isChecked()){
+            emit ui->trgExternal->clicked();
+        }
+        else if(ui->trgPulser->isChecked()){
+            emit ui->trgPulser->clicked();
+        }
+        else{
+            root_daq->SetWarning2("Select Trigger Mode","red");
+            ui->onACQ->setChecked(false);
+            return;
+        }
+
         ui->onACQ->setChecked(true);
         ui->offACQ->setChecked(false);
         root_daq->ui->Send->setEnabled(false);

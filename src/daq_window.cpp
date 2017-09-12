@@ -7,16 +7,16 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     ui(new Ui::daq_window)
 {
     ui->setupUi(this);
-    ui->Send->setEnabled(false);
-    LoadMessageHandler(root_main->daq[0].msg());
-    connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
-    ui->openConnection_2->setToolTip("Open communication");
+//    ui->Send->setEnabled(false);
+//    LoadMessageHandler(root_main->daq[0].msg());
+//    connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
+//    ui->openConnection_2->setToolTip("Open communication");
 
-    ui->trgPulser->setEnabled(false);
-    ui->trgExternal->setEnabled(false);
-    ui->onACQ->setEnabled(false);
-    ui->offACQ->setEnabled(false);
-    ui->checkBox->setEnabled(false);
+//    ui->trgPulser->setEnabled(false);
+//    ui->trgExternal->setEnabled(false);
+//    ui->onACQ->setEnabled(false);
+//    ui->offACQ->setEnabled(false);
+//    ui->checkBox->setEnabled(false);
 
 }
 
@@ -107,7 +107,7 @@ void daq_window::fecBoxLogic(bool checked, unsigned short fec){
         ui->offACQ->setEnabled(false);
     }
     unsigned short NotActiveBefore = 0;
-    QList<QCheckBox*> a = ui->groupBox->findChildren<QCheckBox*>();
+    QList<QCheckBox*> a = ui->Fec_group_box->findChildren<QCheckBox*>();
     for (unsigned short i = 0; i < a.size(); i++){
         if(i<fec && !a.at(i)->isChecked()) NotActiveBefore++;
     }
@@ -119,7 +119,6 @@ void daq_window::fecBoxLogic(bool checked, unsigned short fec){
     else {
         ui->tabWidget->removeTab(fec-NotActiveBefore);
         root_main->daq[0].SetFEC(fec,false);
-//        delete fec_window(this,fec);
     }
 }
 
@@ -200,7 +199,6 @@ void daq_window::on_Button_load_clicked()
              }
         } //else file found
     } //end else not ""
-//root_main->vmmconfhandl->LoadAllVMMConf(filename);
 }
 
 void daq_window::on_Button_save_clicked()
@@ -280,6 +278,12 @@ void daq_window::on_checkBox_stateChanged(int arg1)
         emit ChangeState();
     }
     else if(!ui->checkBox->isChecked()){
+        emit ui->offACQ->clicked();
+        ui->trgPulser->setChecked(false);
+        ui->trgExternal->setChecked(false);
+        ui->onACQ->setChecked(false);
+        ui->offACQ->setChecked(false);
+
         ui->trgPulser->setEnabled(false);
         ui->trgExternal->setEnabled(false);
         ui->onACQ->setEnabled(false);
@@ -308,9 +312,21 @@ void daq_window::on_trgExternal_clicked()
 void daq_window::on_onACQ_clicked()
 {
     ui->onACQ->setCheckable(true);
+    if(ui->trgExternal->isChecked()){
+        emit ui->trgExternal->clicked();
+    }
+    else if(ui->trgPulser->isChecked()){
+        emit ui->trgPulser->clicked();
+    }
+    else{
+        SetWarning2("Select Trigger Mode","red");
+         ui->onACQ->setChecked(false);
+        return;
+    }
     ui->onACQ->setChecked(true);
     ui->offACQ->setChecked(false);
     ui->Send->setEnabled(false);
+
     root_main->daq[0].SendAll();
     root_main->daq[0].ACQHandler(true);
 }

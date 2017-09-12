@@ -35,12 +35,24 @@ class Ui_daq_window
 public:
     QWidget *centralwidget;
     QGridLayout *gridLayout_2;
+    QGroupBox *groupBox_3;
+    QGridLayout *gridLayout_6;
+    QPushButton *Button_load;
+    QLineEdit *line_configFile;
+    QPushButton *Button_save;
     QTabWidget *tabWidget_2;
     QWidget *tab;
     QGridLayout *gridLayout_5;
     QTabWidget *tabWidget;
     QGroupBox *groupBox;
     QGridLayout *gridLayout;
+    QGroupBox *groupBox_6;
+    QGridLayout *gridLayout_12;
+    QCheckBox *checkBox;
+    QPushButton *trgPulser;
+    QPushButton *offACQ;
+    QPushButton *onACQ;
+    QPushButton *trgExternal;
     QWidget *widget_2;
     QGridLayout *gridLayout_8;
     QLabel *connectionLabel_3;
@@ -49,8 +61,11 @@ public:
     QSpacerItem *verticalSpacer;
     QLabel *connectionLabel_2;
     QPushButton *reset_warnings;
-    QGroupBox *groupBox_3;
+    QGroupBox *Fec_group_box;
+    QGridLayout *gridLayout_3;
+    QWidget *widget_3;
     QGridLayout *gridLayout_7;
+    QCheckBox *Box_fec1;
     QCheckBox *Box_fec2;
     QCheckBox *Box_fec3;
     QCheckBox *Box_fec4;
@@ -58,25 +73,13 @@ public:
     QCheckBox *Box_fec6;
     QCheckBox *Box_fec7;
     QCheckBox *Box_fec8;
-    QCheckBox *Box_fec1;
-    QGroupBox *groupBox_6;
-    QGridLayout *gridLayout_12;
-    QPushButton *onACQ;
-    QPushButton *offACQ;
-    QPushButton *trgPulser;
-    QPushButton *trgExternal;
-    QCheckBox *checkBox;
+    QWidget *widget;
     QWidget *tab_3;
     QGridLayout *gridLayout_10;
     QGroupBox *groupBox_5;
     QGridLayout *gridLayout_11;
     QTextEdit *loggingScreen;
     QPushButton *logBottom;
-    QGroupBox *groupBox_31;
-    QGridLayout *gridLayout_6;
-    QPushButton *Button_load;
-    QLineEdit *line_configFile;
-    QPushButton *Button_save;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -91,6 +94,29 @@ public:
         centralwidget->setObjectName(QStringLiteral("centralwidget"));
         gridLayout_2 = new QGridLayout(centralwidget);
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        groupBox_3 = new QGroupBox(centralwidget);
+        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
+        groupBox_3->setMaximumSize(QSize(300, 70));
+        gridLayout_6 = new QGridLayout(groupBox_3);
+        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        Button_load = new QPushButton(groupBox_3);
+        Button_load->setObjectName(QStringLiteral("Button_load"));
+
+        gridLayout_6->addWidget(Button_load, 0, 1, 1, 1);
+
+        line_configFile = new QLineEdit(groupBox_3);
+        line_configFile->setObjectName(QStringLiteral("line_configFile"));
+
+        gridLayout_6->addWidget(line_configFile, 0, 0, 1, 1);
+
+        Button_save = new QPushButton(groupBox_3);
+        Button_save->setObjectName(QStringLiteral("Button_save"));
+
+        gridLayout_6->addWidget(Button_save, 0, 2, 1, 1);
+
+
+        gridLayout_2->addWidget(groupBox_3, 2, 1, 1, 1);
+
         tabWidget_2 = new QTabWidget(centralwidget);
         tabWidget_2->setObjectName(QStringLiteral("tabWidget_2"));
         tab = new QWidget();
@@ -100,13 +126,61 @@ public:
         tabWidget = new QTabWidget(tab);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
 
-        gridLayout_5->addWidget(tabWidget, 0, 2, 1, 1);
+        gridLayout_5->addWidget(tabWidget, 1, 2, 1, 1);
 
         groupBox = new QGroupBox(tab);
         groupBox->setObjectName(QStringLiteral("groupBox"));
         groupBox->setMinimumSize(QSize(100, 600));
         gridLayout = new QGridLayout(groupBox);
         gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        groupBox_6 = new QGroupBox(groupBox);
+        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
+        gridLayout_12 = new QGridLayout(groupBox_6);
+        gridLayout_12->setObjectName(QStringLiteral("gridLayout_12"));
+        checkBox = new QCheckBox(groupBox_6);
+        checkBox->setObjectName(QStringLiteral("checkBox"));
+
+        gridLayout_12->addWidget(checkBox, 0, 0, 1, 1);
+
+        trgPulser = new QPushButton(groupBox_6);
+        trgPulser->setObjectName(QStringLiteral("trgPulser"));
+        QFont font;
+        font.setPointSize(9);
+        trgPulser->setFont(font);
+        trgPulser->setFocusPolicy(Qt::NoFocus);
+        trgPulser->setCheckable(false);
+
+        gridLayout_12->addWidget(trgPulser, 1, 0, 1, 2);
+
+        offACQ = new QPushButton(groupBox_6);
+        offACQ->setObjectName(QStringLiteral("offACQ"));
+        offACQ->setFont(font);
+        offACQ->setFocusPolicy(Qt::NoFocus);
+        offACQ->setCheckable(false);
+
+        gridLayout_12->addWidget(offACQ, 4, 0, 1, 2);
+
+        onACQ = new QPushButton(groupBox_6);
+        onACQ->setObjectName(QStringLiteral("onACQ"));
+        onACQ->setFont(font);
+        onACQ->setFocusPolicy(Qt::NoFocus);
+        onACQ->setCheckable(false);
+
+        gridLayout_12->addWidget(onACQ, 3, 0, 1, 2);
+
+        trgExternal = new QPushButton(groupBox_6);
+        trgExternal->setObjectName(QStringLiteral("trgExternal"));
+        trgExternal->setFont(font);
+        trgExternal->setFocusPolicy(Qt::NoFocus);
+        trgExternal->setAutoFillBackground(false);
+        trgExternal->setCheckable(false);
+        trgExternal->setAutoDefault(false);
+
+        gridLayout_12->addWidget(trgExternal, 2, 0, 1, 2);
+
+
+        gridLayout->addWidget(groupBox_6, 2, 0, 1, 1);
+
         widget_2 = new QWidget(groupBox);
         widget_2->setObjectName(QStringLiteral("widget_2"));
         widget_2->setMaximumSize(QSize(16777215, 155));
@@ -116,10 +190,10 @@ public:
         connectionLabel_3->setObjectName(QStringLiteral("connectionLabel_3"));
         connectionLabel_3->setMinimumSize(QSize(0, 30));
         connectionLabel_3->setMaximumSize(QSize(16777215, 22));
-        QFont font;
-        font.setFamily(QStringLiteral("Arial"));
-        font.setPointSize(9);
-        connectionLabel_3->setFont(font);
+        QFont font1;
+        font1.setFamily(QStringLiteral("Arial"));
+        font1.setPointSize(9);
+        connectionLabel_3->setFont(font1);
 
         gridLayout_8->addWidget(connectionLabel_3, 3, 0, 1, 1);
 
@@ -131,10 +205,10 @@ public:
         openConnection_2 = new QPushButton(widget_2);
         openConnection_2->setObjectName(QStringLiteral("openConnection_2"));
         openConnection_2->setMinimumSize(QSize(0, 22));
-        QFont font1;
-        font1.setFamily(QStringLiteral("Arial"));
-        font1.setPointSize(8);
-        openConnection_2->setFont(font1);
+        QFont font2;
+        font2.setFamily(QStringLiteral("Arial"));
+        font2.setPointSize(8);
+        openConnection_2->setFont(font2);
 
         gridLayout_8->addWidget(openConnection_2, 0, 0, 1, 1);
 
@@ -146,7 +220,7 @@ public:
         connectionLabel_2->setObjectName(QStringLiteral("connectionLabel_2"));
         connectionLabel_2->setMinimumSize(QSize(0, 20));
         connectionLabel_2->setMaximumSize(QSize(16777215, 16777215));
-        connectionLabel_2->setFont(font);
+        connectionLabel_2->setFont(font1);
 
         gridLayout_8->addWidget(connectionLabel_2, 1, 0, 1, 1);
 
@@ -158,103 +232,67 @@ public:
 
         gridLayout->addWidget(widget_2, 0, 0, 1, 1);
 
-        groupBox_3 = new QGroupBox(groupBox);
-        groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        gridLayout_7 = new QGridLayout(groupBox_3);
+        Fec_group_box = new QGroupBox(groupBox);
+        Fec_group_box->setObjectName(QStringLiteral("Fec_group_box"));
+        gridLayout_3 = new QGridLayout(Fec_group_box);
+        gridLayout_3->setObjectName(QStringLiteral("gridLayout_3"));
+        widget_3 = new QWidget(Fec_group_box);
+        widget_3->setObjectName(QStringLiteral("widget_3"));
+        gridLayout_7 = new QGridLayout(widget_3);
         gridLayout_7->setObjectName(QStringLiteral("gridLayout_7"));
-        Box_fec2 = new QCheckBox(groupBox_3);
-        Box_fec2->setObjectName(QStringLiteral("Box_fec2"));
-
-        gridLayout_7->addWidget(Box_fec2, 1, 0, 1, 1);
-
-        Box_fec3 = new QCheckBox(groupBox_3);
-        Box_fec3->setObjectName(QStringLiteral("Box_fec3"));
-
-        gridLayout_7->addWidget(Box_fec3, 2, 0, 1, 1);
-
-        Box_fec4 = new QCheckBox(groupBox_3);
-        Box_fec4->setObjectName(QStringLiteral("Box_fec4"));
-
-        gridLayout_7->addWidget(Box_fec4, 3, 0, 1, 1);
-
-        Box_fec5 = new QCheckBox(groupBox_3);
-        Box_fec5->setObjectName(QStringLiteral("Box_fec5"));
-
-        gridLayout_7->addWidget(Box_fec5, 4, 0, 1, 1);
-
-        Box_fec6 = new QCheckBox(groupBox_3);
-        Box_fec6->setObjectName(QStringLiteral("Box_fec6"));
-
-        gridLayout_7->addWidget(Box_fec6, 5, 0, 1, 1);
-
-        Box_fec7 = new QCheckBox(groupBox_3);
-        Box_fec7->setObjectName(QStringLiteral("Box_fec7"));
-
-        gridLayout_7->addWidget(Box_fec7, 6, 0, 1, 1);
-
-        Box_fec8 = new QCheckBox(groupBox_3);
-        Box_fec8->setObjectName(QStringLiteral("Box_fec8"));
-
-        gridLayout_7->addWidget(Box_fec8, 7, 0, 1, 1);
-
-        Box_fec1 = new QCheckBox(groupBox_3);
+        Box_fec1 = new QCheckBox(widget_3);
         Box_fec1->setObjectName(QStringLiteral("Box_fec1"));
 
         gridLayout_7->addWidget(Box_fec1, 0, 0, 1, 1);
 
+        Box_fec2 = new QCheckBox(widget_3);
+        Box_fec2->setObjectName(QStringLiteral("Box_fec2"));
 
-        gridLayout->addWidget(groupBox_3, 1, 0, 1, 1);
+        gridLayout_7->addWidget(Box_fec2, 1, 0, 1, 1);
 
-        groupBox_6 = new QGroupBox(groupBox);
-        groupBox_6->setObjectName(QStringLiteral("groupBox_6"));
-        gridLayout_12 = new QGridLayout(groupBox_6);
-        gridLayout_12->setObjectName(QStringLiteral("gridLayout_12"));
-        onACQ = new QPushButton(groupBox_6);
-        onACQ->setObjectName(QStringLiteral("onACQ"));
-        QFont font2;
-        font2.setPointSize(9);
-        onACQ->setFont(font2);
-        onACQ->setFocusPolicy(Qt::NoFocus);
-        onACQ->setCheckable(true);
+        Box_fec3 = new QCheckBox(widget_3);
+        Box_fec3->setObjectName(QStringLiteral("Box_fec3"));
 
-        gridLayout_12->addWidget(onACQ, 3, 0, 1, 2);
+        gridLayout_7->addWidget(Box_fec3, 2, 0, 1, 1);
 
-        offACQ = new QPushButton(groupBox_6);
-        offACQ->setObjectName(QStringLiteral("offACQ"));
-        offACQ->setFont(font2);
-        offACQ->setFocusPolicy(Qt::NoFocus);
-        offACQ->setCheckable(true);
+        Box_fec4 = new QCheckBox(widget_3);
+        Box_fec4->setObjectName(QStringLiteral("Box_fec4"));
 
-        gridLayout_12->addWidget(offACQ, 4, 0, 1, 2);
+        gridLayout_7->addWidget(Box_fec4, 3, 0, 1, 1);
 
-        trgPulser = new QPushButton(groupBox_6);
-        trgPulser->setObjectName(QStringLiteral("trgPulser"));
-        trgPulser->setFont(font2);
-        trgPulser->setFocusPolicy(Qt::NoFocus);
-        trgPulser->setCheckable(false);
+        Box_fec5 = new QCheckBox(widget_3);
+        Box_fec5->setObjectName(QStringLiteral("Box_fec5"));
 
-        gridLayout_12->addWidget(trgPulser, 1, 0, 1, 2);
+        gridLayout_7->addWidget(Box_fec5, 4, 0, 1, 1);
 
-        trgExternal = new QPushButton(groupBox_6);
-        trgExternal->setObjectName(QStringLiteral("trgExternal"));
-        trgExternal->setFont(font2);
-        trgExternal->setFocusPolicy(Qt::NoFocus);
-        trgExternal->setAutoFillBackground(false);
-        trgExternal->setCheckable(false);
-        trgExternal->setAutoDefault(false);
+        Box_fec6 = new QCheckBox(widget_3);
+        Box_fec6->setObjectName(QStringLiteral("Box_fec6"));
 
-        gridLayout_12->addWidget(trgExternal, 2, 0, 1, 2);
+        gridLayout_7->addWidget(Box_fec6, 5, 0, 1, 1);
 
-        checkBox = new QCheckBox(groupBox_6);
-        checkBox->setObjectName(QStringLiteral("checkBox"));
+        Box_fec7 = new QCheckBox(widget_3);
+        Box_fec7->setObjectName(QStringLiteral("Box_fec7"));
 
-        gridLayout_12->addWidget(checkBox, 0, 0, 1, 1);
+        gridLayout_7->addWidget(Box_fec7, 6, 0, 1, 1);
+
+        Box_fec8 = new QCheckBox(widget_3);
+        Box_fec8->setObjectName(QStringLiteral("Box_fec8"));
+
+        gridLayout_7->addWidget(Box_fec8, 7, 0, 1, 1);
 
 
-        gridLayout->addWidget(groupBox_6, 2, 0, 1, 1);
+        gridLayout_3->addWidget(widget_3, 0, 0, 1, 1);
 
 
-        gridLayout_5->addWidget(groupBox, 0, 1, 1, 1);
+        gridLayout->addWidget(Fec_group_box, 1, 0, 1, 1);
+
+
+        gridLayout_5->addWidget(groupBox, 1, 1, 1, 1);
+
+        widget = new QWidget(tab);
+        widget->setObjectName(QStringLiteral("widget"));
+
+        gridLayout_5->addWidget(widget, 0, 1, 1, 1);
 
         tabWidget_2->addTab(tab, QString());
         tab_3 = new QWidget();
@@ -279,7 +317,7 @@ public:
 
         logBottom = new QPushButton(groupBox_5);
         logBottom->setObjectName(QStringLiteral("logBottom"));
-        logBottom->setFont(font);
+        logBottom->setFont(font1);
 
         gridLayout_11->addWidget(logBottom, 1, 0, 1, 1);
 
@@ -289,29 +327,6 @@ public:
         tabWidget_2->addTab(tab_3, QString());
 
         gridLayout_2->addWidget(tabWidget_2, 0, 1, 2, 2);
-
-        groupBox_31 = new QGroupBox(centralwidget);
-        groupBox_31->setObjectName(QStringLiteral("groupBox_31"));
-        groupBox_31->setMaximumSize(QSize(300, 70));
-        gridLayout_6 = new QGridLayout(groupBox_31);
-        gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
-        Button_load = new QPushButton(groupBox_31);
-        Button_load->setObjectName(QStringLiteral("Button_load"));
-
-        gridLayout_6->addWidget(Button_load, 0, 1, 1, 1);
-
-        line_configFile = new QLineEdit(groupBox_31);
-        line_configFile->setObjectName(QStringLiteral("line_configFile"));
-
-        gridLayout_6->addWidget(line_configFile, 0, 0, 1, 1);
-
-        Button_save = new QPushButton(groupBox_31);
-        Button_save->setObjectName(QStringLiteral("Button_save"));
-
-        gridLayout_6->addWidget(Button_save, 0, 2, 1, 1);
-
-
-        gridLayout_2->addWidget(groupBox_31, 2, 1, 1, 1);
 
         daq_window->setCentralWidget(centralwidget);
         menubar = new QMenuBar(daq_window);
@@ -334,13 +349,23 @@ public:
     void retranslateUi(QMainWindow *daq_window)
     {
         daq_window->setWindowTitle(QApplication::translate("daq_window", "MainWindow", 0));
+        groupBox_3->setTitle(QApplication::translate("daq_window", "Config file", 0));
+        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
+        Button_save->setText(QApplication::translate("daq_window", "Save", 0));
         groupBox->setTitle(QString());
+        groupBox_6->setTitle(QApplication::translate("daq_window", "ACQ", 0));
+        checkBox->setText(QApplication::translate("daq_window", " Global ACQ", 0));
+        trgPulser->setText(QApplication::translate("daq_window", "Pulser", 0));
+        offACQ->setText(QApplication::translate("daq_window", "ACQ Off", 0));
+        onACQ->setText(QApplication::translate("daq_window", "ACQ On", 0));
+        trgExternal->setText(QApplication::translate("daq_window", "External", 0));
         connectionLabel_3->setText(QString());
         Send->setText(QApplication::translate("daq_window", "Send", 0));
         openConnection_2->setText(QApplication::translate("daq_window", "Open Communication", 0));
         connectionLabel_2->setText(QApplication::translate("daq_window", "  N/A", 0));
         reset_warnings->setText(QApplication::translate("daq_window", "Reset Warnings", 0));
-        groupBox_3->setTitle(QApplication::translate("daq_window", "FEC", 0));
+        Fec_group_box->setTitle(QApplication::translate("daq_window", "FEC", 0));
+        Box_fec1->setText(QApplication::translate("daq_window", "1", 0));
         Box_fec2->setText(QApplication::translate("daq_window", "2", 0));
         Box_fec3->setText(QApplication::translate("daq_window", "3", 0));
         Box_fec4->setText(QApplication::translate("daq_window", "4", 0));
@@ -348,20 +373,10 @@ public:
         Box_fec6->setText(QApplication::translate("daq_window", "6", 0));
         Box_fec7->setText(QApplication::translate("daq_window", "7", 0));
         Box_fec8->setText(QApplication::translate("daq_window", "8", 0));
-        Box_fec1->setText(QApplication::translate("daq_window", "1", 0));
-        groupBox_6->setTitle(QApplication::translate("daq_window", "ACQ", 0));
-        onACQ->setText(QApplication::translate("daq_window", "ACQ On", 0));
-        offACQ->setText(QApplication::translate("daq_window", "ACQ Off", 0));
-        trgPulser->setText(QApplication::translate("daq_window", "Pulser", 0));
-        trgExternal->setText(QApplication::translate("daq_window", "External", 0));
-        checkBox->setText(QApplication::translate("daq_window", " Global ACQ", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
         groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
         logBottom->setText(QApplication::translate("daq_window", "Bottom", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", 0));
-        groupBox_31->setTitle(QApplication::translate("daq_window", "Config file", 0));
-        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
-        Button_save->setText(QApplication::translate("daq_window", "Save", 0));
     } // retranslateUi
 
 };
