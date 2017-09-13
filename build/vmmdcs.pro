@@ -19,8 +19,8 @@ imagepath=""
 type=""
 
 linux {
-    sourcepath="/home/daq/Tools/Readout_Software/src"
-    includepath="/home/daq/Tools/Readout_Software/include"
+    sourcepath="../src"
+    includepath="../include"
     boostinclude="/home/daq/Downloads/boost_1_60_0"
     boostlib="/home/daq/Downloads/boost_1_60_0/stage/lib"
     imagepath="../images"
