@@ -21,8 +21,8 @@ linux {
     includepath="../include"
     imagepath="../images"
 } else {
-    sourcepath="~/Tools/Readout_Software/src"
-    includepath="~/Tools/Readout_Software/include"
+    sourcepath="../src"
+    includepath="../include"
     imagepath="../images"
 }
 
@@ -45,7 +45,6 @@ CONFIG  +=c++11
 TARGET   = vmmdcs
 TEMPLATE = app
 
-LIBS += -L./objects -lMylib
 
 INCLUDEPATH += $$includepath
 DEPENDPATH  += $$includepath
