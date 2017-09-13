@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'hybrid_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.0
+** Created by: Qt User Interface Compiler version 5.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -285,78 +285,78 @@ public:
 
     void retranslateUi(QWidget *hybrid_window)
     {
-        hybrid_window->setWindowTitle(QApplication::translate("hybrid_window", "Form", 0));
-        groupBox_2->setTitle(QApplication::translate("hybrid_window", "Position", 0));
-        cktkLabel_2->setText(QApplication::translate("hybrid_window", "Axis", 0));
+        hybrid_window->setWindowTitle(QApplication::translate("hybrid_window", "Form", Q_NULLPTR));
+        groupBox_2->setTitle(QApplication::translate("hybrid_window", "Position", Q_NULLPTR));
+        cktkLabel_2->setText(QApplication::translate("hybrid_window", "Axis", Q_NULLPTR));
         Xaxis->clear();
         Xaxis->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "Y", 0)
-         << QApplication::translate("hybrid_window", "X", 0)
+         << QApplication::translate("hybrid_window", "Y", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "X", Q_NULLPTR)
         );
-        cktkLabel_3->setText(QApplication::translate("hybrid_window", "Position", 0));
-        groupBox->setTitle(QApplication::translate("hybrid_window", "VMM", 0));
-        Box_vmm1->setText(QApplication::translate("hybrid_window", "1", 0));
-        Box_vmm2->setText(QApplication::translate("hybrid_window", "2", 0));
-        groupBox_8->setTitle(QApplication::translate("hybrid_window", "S6", 0));
+        cktkLabel_3->setText(QApplication::translate("hybrid_window", "Position", Q_NULLPTR));
+        groupBox->setTitle(QApplication::translate("hybrid_window", "VMM", Q_NULLPTR));
+        Box_vmm1->setText(QApplication::translate("hybrid_window", "1", Q_NULLPTR));
+        Box_vmm2->setText(QApplication::translate("hybrid_window", "2", Q_NULLPTR));
+        groupBox_8->setTitle(QApplication::translate("hybrid_window", "S6", Q_NULLPTR));
         ckbc_skew_s6->clear();
         ckbc_skew_s6->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "0 ns", 0)
-         << QApplication::translate("hybrid_window", "6.26 ns", 0)
-         << QApplication::translate("hybrid_window", "12.52 ns", 0)
-         << QApplication::translate("hybrid_window", "18.78 ns", 0)
+         << QApplication::translate("hybrid_window", "0 ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "6.26 ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "12.52 ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "18.78 ns", Q_NULLPTR)
         );
-        ckbcLabel->setText(QApplication::translate("hybrid_window", "CKBC", 0));
+        ckbcLabel->setText(QApplication::translate("hybrid_window", "CKBC", Q_NULLPTR));
         cktk_s6->clear();
         cktk_s6->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "0 ns", 0)
-         << QApplication::translate("hybrid_window", "12.5 ns", 0)
-         << QApplication::translate("hybrid_window", "25 ns", 0)
+         << QApplication::translate("hybrid_window", "0 ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "12.5 ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "25 ns", Q_NULLPTR)
         );
-        ckbcLabel_2->setText(QApplication::translate("hybrid_window", "CKBC skew", 0));
+        ckbcLabel_2->setText(QApplication::translate("hybrid_window", "CKBC skew", Q_NULLPTR));
         ckbc_s6->clear();
         ckbc_s6->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "160MHz", 0)
-         << QApplication::translate("hybrid_window", "160MHz inv", 0)
-         << QApplication::translate("hybrid_window", "80MHz", 0)
-         << QApplication::translate("hybrid_window", "40MHz", 0)
-         << QApplication::translate("hybrid_window", "20MHz", 0)
-         << QApplication::translate("hybrid_window", "10MHz", 0)
-         << QApplication::translate("hybrid_window", "5MHz", 0)
-         << QApplication::translate("hybrid_window", "2.5MHz", 0)
+         << QApplication::translate("hybrid_window", "160MHz", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "160MHz inv", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "80MHz", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "40MHz", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "20MHz", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "10MHz", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "5MHz", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "2.5MHz", Q_NULLPTR)
         );
-        cktkLabel->setText(QApplication::translate("hybrid_window", "CKTK", 0));
-        label_32->setText(QApplication::translate("hybrid_window", "  Period", 0));
-        label_34->setText(QApplication::translate("hybrid_window", "TK Pulses", 0));
-        groupBox_3->setTitle(QApplication::translate("hybrid_window", "Test Pulse", 0));
+        cktkLabel->setText(QApplication::translate("hybrid_window", "CKTK", Q_NULLPTR));
+        label_32->setText(QApplication::translate("hybrid_window", "  Period", Q_NULLPTR));
+        label_34->setText(QApplication::translate("hybrid_window", "TK Pulses", Q_NULLPTR));
+        groupBox_3->setTitle(QApplication::translate("hybrid_window", "Test Pulse", Q_NULLPTR));
         tpWidth->clear();
         tpWidth->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "128x25ns", 0)
-         << QApplication::translate("hybrid_window", "64x25ns", 0)
-         << QApplication::translate("hybrid_window", "32x25ns", 0)
-         << QApplication::translate("hybrid_window", "16x25ns", 0)
-         << QApplication::translate("hybrid_window", "8x25ns", 0)
-         << QApplication::translate("hybrid_window", "4x25ns", 0)
-         << QApplication::translate("hybrid_window", "2x25ns", 0)
-         << QApplication::translate("hybrid_window", "1x25ns", 0)
+         << QApplication::translate("hybrid_window", "128x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "64x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "32x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "16x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "8x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "4x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "2x25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "1x25ns", Q_NULLPTR)
         );
-        tpWidthLabel->setText(QApplication::translate("hybrid_window", "Width", 0));
+        tpWidthLabel->setText(QApplication::translate("hybrid_window", "Width", Q_NULLPTR));
         tpSkew->clear();
         tpSkew->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "0ns", 0)
-         << QApplication::translate("hybrid_window", "3.125ns", 0)
-         << QApplication::translate("hybrid_window", "6.25ns", 0)
-         << QApplication::translate("hybrid_window", "9.375ns", 0)
-         << QApplication::translate("hybrid_window", "12.5ns", 0)
-         << QApplication::translate("hybrid_window", "15.625ns", 0)
-         << QApplication::translate("hybrid_window", "18.75ns", 0)
-         << QApplication::translate("hybrid_window", "21.875ns", 0)
+         << QApplication::translate("hybrid_window", "0ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "3.125ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "6.25ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "9.375ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "12.5ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "15.625ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "18.75ns", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "21.875ns", Q_NULLPTR)
         );
-        tpSkewLabel->setText(QApplication::translate("hybrid_window", "Skew", 0));
-        tpPolarityLabel->setText(QApplication::translate("hybrid_window", "Polarity", 0));
+        tpSkewLabel->setText(QApplication::translate("hybrid_window", "Skew", Q_NULLPTR));
+        tpPolarityLabel->setText(QApplication::translate("hybrid_window", "Polarity", Q_NULLPTR));
         tpPolarity->clear();
         tpPolarity->insertItems(0, QStringList()
-         << QApplication::translate("hybrid_window", "Positive", 0)
-         << QApplication::translate("hybrid_window", "Negative", 0)
+         << QApplication::translate("hybrid_window", "Positive", Q_NULLPTR)
+         << QApplication::translate("hybrid_window", "Negative", Q_NULLPTR)
         );
     } // retranslateUi
 

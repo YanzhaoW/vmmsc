@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'hdmi_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.7.0
+** Created by: Qt User Interface Compiler version 5.8.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -67,9 +67,9 @@ public:
 
     void retranslateUi(QWidget *hdmi_window)
     {
-        hdmi_window->setWindowTitle(QApplication::translate("hdmi_window", "Form", 0));
-        groupBox->setTitle(QApplication::translate("hdmi_window", "Hybrid", 0));
-        Box_hybrid1->setText(QApplication::translate("hdmi_window", "1", 0));
+        hdmi_window->setWindowTitle(QApplication::translate("hdmi_window", "Form", Q_NULLPTR));
+        groupBox->setTitle(QApplication::translate("hdmi_window", "Hybrid", Q_NULLPTR));
+        Box_hybrid1->setText(QApplication::translate("hdmi_window", "1", Q_NULLPTR));
     } // retranslateUi
 
 };
