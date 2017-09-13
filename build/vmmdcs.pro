@@ -13,32 +13,22 @@ linebreak="---------------------------------------------------------------"
 
 sourcepath=""
 includepath=""
-boostinclude=""
-boostlib=""
 imagepath=""
 type=""
 
 linux {
     sourcepath="../src"
     includepath="../include"
-    boostinclude="/home/daq/Downloads/boost_1_60_0"
-    boostlib="/home/daq/Downloads/boost_1_60_0/stage/lib"
     imagepath="../images"
 } else {
     sourcepath="~/Tools/Readout_Software/src"
     includepath="~/Tools/Readout_Software/include"
-    boostinclude="~/Downloads/boost_1_60_0"
-    boostlib="~/Downloads/boost_1_60_0/stage/lib"
     imagepath="../images"
 }
 
 message($$linebreak)
 message("qmake sourcepath:      $$sourcepath")
 message("qmake includepath:     $$includepath")
-message("qmake boostinclude:    $$boostinclude")
-message("qmake boostlib:        $$boostlib")
-message("qmake imagepath:       $$imagepath")
-message("ROOTSYS:               $(ROOTSYS)")
 message($$linebreak)
 
 #####################################################
@@ -55,31 +45,10 @@ CONFIG  +=c++11
 TARGET   = vmmdcs
 TEMPLATE = app
 
-INCLUDEPATH += $(ROOTSYS)/include
-win32:LIBS += -L$(ROOTSYS)/lib -llibCint -llibRIO -llibNet \
-       -llibHist -llibGraf -llibGraf3d -llibGpad -llibTree \
-       -llibRint -llibPostscript -llibMatrix -llibPhysics \
-       -llibGui -llibRGL -llibMathCore
-else:LIBS += -L$(ROOTSYS)/lib -lCore -lCint -lRIO -lNet \
-       -lHist -lGraf -lGraf3d -lGpad -lTree \
-       -lRint -lPostscript -lMatrix -lPhysics \
-       -lGui -lMathCore #-lRGL -lMathCore
-
-linux {
-    LIBS += -L$$boostlib -lboost_thread -lboost_filesystem -lboost_system -lrt
-
-} else {
-    LIBS +=  -L$$boostlib -lboost_thread-mt -lboost_filesystem  -lboost_system
-}
-
 LIBS += -L./objects -lMylib
 
 INCLUDEPATH += $$includepath
 DEPENDPATH  += $$includepath
-# remove monitoring INCLUDEPATH += $$includepath/monitoring
-# remove monitoring DEPENDPATH  += $$includepath/monitoring
-INCLUDEPATH += $$boostinclude
-DEPENDPATH  += $$boostinclude
 
 OBJECTS_DIR += ./objects/
 MOC_DIR     += ./moc/
@@ -96,33 +65,9 @@ linux {
 
 SOURCES += $$sourcepath/main.cpp\
            $$sourcepath/mainwindow.cpp\
-           $$sourcepath/run_module.cpp\
-           $$sourcepath/config_handler.cpp\
-           $$sourcepath/configuration_module.cpp\
            $$sourcepath/socket_handler.cpp\
            $$sourcepath/vmmsocket.cpp\
-           $$sourcepath/data_handler.cpp\
-           $$sourcepath/calibration_module.cpp\
            $$sourcepath/message_handler.cpp\
-           # remove monitoring$$sourcepath/daq_monitor.cpp\
-           ## monitoring related below
-#           $$sourcepath/monitoring/daqconfig.cpp\
-#           $$sourcepath/monitoring/srsconfig.cpp\
-#           $$sourcepath/monitoring/detectorconfig.cpp\
-#           $$sourcepath/monitoring/fecm.cpp\
-#           $$sourcepath/monitoring/chip.cpp\
-#           $$sourcepath/monitoring/multilayer.cpp\
-#           $$sourcepath/monitoring/readout.cpp\
-#           $$sourcepath/monitoring/layer.cpp\
-#           $$sourcepath/monitoring/chamberspecs.cpp\
-#           $$sourcepath/monitoring/chamber.cpp\
-#           $$sourcepath/monitoring/connectorspecs.cpp\
-#           $$sourcepath/monitoring/connector.cpp\
-#           $$sourcepath/monitoring/AsioService.cpp\
-#           $$sourcepath/monitoring/sharedmemorywriter.cpp\
-#           $$sourcepath/monitoring/createevents.cpp\
-#           $$sourcepath/monitoring/event.cpp\
-#           $$sourcepath/monitoring/coordinates.cpp \
            $$sourcepath/commandline.cpp \
            $$sourcepath/vmm_config_handler.cpp \
            $$sourcepath/daq_config_handler.cpp \
@@ -137,39 +82,15 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/hdmi_window.cpp \
             $$sourcepath/hybrid_window.cpp \
             $$sourcepath/vmm_window.cpp \
-    ../src/hybrid_config_handler.cpp \
-    ../src/fec_config_module.cpp
+            $$sourcepath/hybrid_config_handler.cpp \
+            $$sourcepath/fec_config_module.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
-            $$includepath/run_module.h\
-            $$includepath/config_handler.h\
-            $$includepath/configuration_module.h\
             $$includepath/socket_handler.h\
             $$includepath/vmmsocket.h\
-            $$includepath/data_handler.h\
-            $$includepath/calibration_module.h\
             $$includepath/message_handler.h\
-#            $$includepath/daq_monitor.h\
             $$includepath/vmm_config_handler.h\
             $$includepath/daq_config_handler.h\
-            ## monitoring related below
-#            $$includepath/monitoring/daqconfig.h\
-#            $$includepath/monitoring/srsconfig.h\
-#            $$includepath/monitoring/detectorconfig.h\
-#            $$includepath/monitoring/fecm.h\
-#            $$includepath/monitoring/chip.h\
-#            $$includepath/monitoring/multilayer.h\
-#            $$includepath/monitoring/readout.h\
-#            $$includepath/monitoring/layer.h\
-#            $$includepath/monitoring/chamberspecs.h\
-#            $$includepath/monitoring/chamber.h\
-#            $$includepath/monitoring/connectorspecs.h\
-#            $$includepath/monitoring/connector.h\
-#            $$includepath/monitoring/AsioService.h\
-#            $$includepath/monitoring/sharedmemorywriter.h\
-#            $$includepath/monitoring/createevents.h\
-#            $$includepath/monitoring/event.h\
-#            $$includepath/monitoring/coordinates.h \
             $$includepath/commandline.h \
             $$includepath/globparameter.h \
             $$includepath/fec_config_handler.h \
@@ -188,8 +109,7 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/fec_config_module.h
 
 
-FORMS    += $$sourcepath/mainwindow.ui \
-            $$sourcepath/daq_window.ui \
+FORMS    += $$sourcepath/daq_window.ui \
             $$sourcepath/vmm_window.ui \
             $$sourcepath/hybrid_window.ui \
             $$sourcepath/fec_window.ui \
@@ -197,8 +117,6 @@ FORMS    += $$sourcepath/mainwindow.ui \
 
 RESOURCES += \
     $$imagepath/icons.qrc
-#    $$sourcepath_/icons.qrc \
-#    $$sourcepath_/calibration_data.qrc
 
 DISTFILES +=
 

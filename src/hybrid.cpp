@@ -203,8 +203,7 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
         }
 
     }
-
-
+    return false;
 }
 
 unsigned short Hybrid::GetReg(std::string feature){
@@ -215,6 +214,7 @@ unsigned short Hybrid::GetReg(std::string feature){
     else{
         std::cout<<"ERROR the feature ::"<<feature<<":: does not exist"<<std::endl;
     }
+    return 0;
 }
 
 

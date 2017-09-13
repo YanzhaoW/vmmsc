@@ -36,7 +36,6 @@ void VMMSocket::LoadMessageHandler(MessageHandler& m)
 // ----------------------------------------------------------------------- //
 bool VMMSocket::bindSocket(quint16 port, QAbstractSocket::BindMode mode)
 {
-    #warning TODO check status and if already bound
     bool bind = true;
     if(m_socket) {
         bind = m_socket->bind(port, mode);

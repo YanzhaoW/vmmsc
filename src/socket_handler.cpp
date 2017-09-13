@@ -190,7 +190,6 @@ void SocketHandler::SendDatagram(const QByteArray& datagram, const QString& ip,
     VMMSocket& socket = getSocket(whichSocket.toStdString());
 
     //CHECK STATUS ENUM
-    #warning TODO add STATUS ENUM AND CHECK (FSM)
     if(!pinged()) {
         msg()("ERROR Boards are not in pinged OK state...",
                 "SocketHandler::SendDatagram", true);
@@ -204,7 +203,6 @@ void SocketHandler::SendDatagram(const QByteArray& datagram, const QString& ip,
     }
 
     // now send the data
-    bool ok;
     if(dbg()) {
         stringstream sx;
         sx << fn

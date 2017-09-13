@@ -311,10 +311,10 @@ void fec_window::SetToolTips(){
 
 }
 bool fec_window::Fec_Set(const char *feature, unsigned long val){
-    root_daq->root_main->daq[0].fec[fec_index].SetReg(feature,  (unsigned long) val );
+    return root_daq->root_main->daq[0].fec[fec_index].SetReg(feature,  (unsigned long) val );
 }
 unsigned long fec_window::Fec_Get(const char *feature){
-    root_daq->root_main->daq[0].fec[fec_index].GetRegVal(feature);
+    return root_daq->root_main->daq[0].fec[fec_index].GetRegVal(feature);
 }
 
 void fec_window::on_Box_hdmi1_clicked()
@@ -461,7 +461,6 @@ void fec_window::writeFECStatus()
 
     sizeOfPackageReceived = sizeOfPackageReceived.number(buff.size(),10);
 
-    #warning What is this check?
     if(check<1000000) {
         stringstream ss;
         ss << " ****** NEW PACKET RECEIVED ****** " << endl;
