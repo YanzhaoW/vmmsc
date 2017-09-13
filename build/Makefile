@@ -325,7 +325,6 @@ DIST          = ../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../include/hdmi_window.h \
 		../include/hybrid_window.h \
 		../include/vmm_window.h \
-		../src/hybrid_config_handler.h \
 		../include/hybrid_config_handler.h \
 		../include/fec_config_module.h ../src/main.cpp \
 		../src/mainwindow.cpp \
@@ -694,7 +693,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../images/icons.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../include/mainwindow.h ../include/run_module.h ../include/config_handler.h ../include/configuration_module.h ../include/socket_handler.h ../include/vmmsocket.h ../include/data_handler.h ../include/calibration_module.h ../include/message_handler.h ../include/vmm_config_handler.h ../include/daq_config_handler.h ../include/commandline.h ../include/globparameter.h ../include/fec_config_handler.h ../include/guicaller.h ../include/vmm.h ../include/daq.h ../include/hybrid.h ../include/hdmi.h ../include/fec.h ../include/daq_window.h ../include/fec_window.h ../include/hdmi_window.h ../include/hybrid_window.h ../include/vmm_window.h ../src/hybrid_config_handler.h ../include/hybrid_config_handler.h ../include/fec_config_module.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../include/mainwindow.h ../include/run_module.h ../include/config_handler.h ../include/configuration_module.h ../include/socket_handler.h ../include/vmmsocket.h ../include/data_handler.h ../include/calibration_module.h ../include/message_handler.h ../include/vmm_config_handler.h ../include/daq_config_handler.h ../include/commandline.h ../include/globparameter.h ../include/fec_config_handler.h ../include/guicaller.h ../include/vmm.h ../include/daq.h ../include/hybrid.h ../include/hdmi.h ../include/fec.h ../include/daq_window.h ../include/fec_window.h ../include/hdmi_window.h ../include/hybrid_window.h ../include/vmm_window.h ../include/hybrid_config_handler.h ../include/fec_config_module.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../src/main.cpp ../src/mainwindow.cpp ../src/run_module.cpp ../src/config_handler.cpp ../src/configuration_module.cpp ../src/socket_handler.cpp ../src/vmmsocket.cpp ../src/data_handler.cpp ../src/calibration_module.cpp ../src/message_handler.cpp ../src/commandline.cpp ../src/vmm_config_handler.cpp ../src/daq_config_handler.cpp ../src/fec_config_handler.cpp ../src/vmm.cpp ../src/daq.cpp ../src/hybrid.cpp ../src/hdmi.cpp ../src/fec.cpp ../src/daq_window.cpp ../src/fec_window.cpp ../src/hdmi_window.cpp ../src/hybrid_window.cpp ../src/vmm_window.cpp ../src/hybrid_config_handler.cpp ../src/fec_config_module.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../src/mainwindow.ui ../src/daq_window.ui ../src/vmm_window.ui ../src/hybrid_window.ui ../src/fec_window.ui ../src/hdmi_window.ui $(DISTDIR)/
 
@@ -1921,24 +1920,27 @@ moc/moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/mainwindow.h -o moc/moc_mainwindow.cpp
@@ -6898,24 +6900,27 @@ moc/moc_vmm_config_handler.cpp: ../include/globparameter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/vmm_config_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/vmm_config_handler.h -o moc/moc_vmm_config_handler.cpp
@@ -8109,24 +8114,27 @@ moc/moc_daq_config_handler.cpp: ../include/globparameter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/daq_config_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/daq_config_handler.h -o moc/moc_daq_config_handler.cpp
@@ -9320,24 +9328,27 @@ moc/moc_commandline.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/commandline.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/commandline.h -o moc/moc_commandline.cpp
@@ -10531,24 +10542,27 @@ moc/moc_fec_config_handler.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObje
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/fec_config_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/fec_config_handler.h -o moc/moc_fec_config_handler.cpp
@@ -10659,6 +10673,35 @@ moc/moc_daq.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../include/hdmi.h \
 		../include/hybrid.h \
 		../include/vmm.h \
+		../include/fec_config_module.h \
+		../include/socket_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../include/vmmsocket.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
 		../include/daq.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/daq.h -o moc/moc_daq.cpp
@@ -10824,6 +10867,36 @@ moc/moc_fec.cpp: ../include/globparameter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../include/fec_config_module.h \
+		../include/socket_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../include/vmmsocket.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
+		../include/fec.h \
 		../include/fec.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/fec.h -o moc/moc_fec.cpp
@@ -10983,21 +11056,23 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
@@ -11038,7 +11113,6 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -11918,8 +11992,6 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -12035,6 +12107,10 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/daq_window.h -o moc/moc_daq_window.cpp
@@ -12191,24 +12267,26 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		../include/fec_window.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
@@ -12249,7 +12327,6 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -13129,8 +13206,6 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -13246,6 +13321,10 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/fec_window.h -o moc/moc_fec_window.cpp
@@ -13398,13 +13477,13 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
@@ -13418,19 +13497,22 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
@@ -13469,7 +13551,6 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -14349,8 +14430,6 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -14466,6 +14545,10 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/hdmi_window.h -o moc/moc_hdmi_window.cpp
@@ -14614,14 +14697,14 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
@@ -14638,19 +14721,22 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
@@ -14689,7 +14775,6 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -15569,8 +15654,6 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -15686,6 +15769,10 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/hybrid_window.h -o moc/moc_hybrid_window.cpp
@@ -15858,19 +15945,22 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
@@ -15909,7 +15999,6 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -16789,8 +16878,6 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -16906,6 +16993,10 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/vmm_window.h -o moc/moc_vmm_window.cpp
@@ -18099,29 +18190,33 @@ moc/moc_hybrid_config_handler.cpp: ../include/globparameter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/hybrid_config_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/hybrid_config_handler.h -o moc/moc_hybrid_config_handler.cpp
 
-moc/moc_fec_config_module.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+moc/moc_fec_config_module.cpp: ../include/socket_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
@@ -18169,6 +18264,39 @@ moc/moc_fec_config_module.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObjec
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../include/vmmsocket.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
+		../include/fec.h \
+		../include/globparameter.h \
+		../include/hdmi.h \
+		../include/hybrid.h \
+		../include/vmm.h \
+		../include/fec_config_module.h \
 		../include/fec_config_module.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I'/home/daq/Tools/Readout_Software/build/$(ROOTSYS)/include' -I/home/daq/Tools/Readout_Software/include -I/home/daq/Downloads/boost_1_60_0 -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/fec_config_module.h -o moc/moc_fec_config_module.cpp
@@ -19401,24 +19529,27 @@ objects/main.o: ../src/main.cpp ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QA
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStyleFactory \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstylefactory.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/main.o ../src/main.cpp
@@ -20612,28 +20743,32 @@ objects/mainwindow.o: ../src/mainwindow.cpp ../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		ui/ui_mainwindow.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QToolBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtoolbar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
@@ -26096,24 +26231,27 @@ objects/commandline.o: ../src/commandline.cpp ../include/commandline.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/commandline.o ../src/commandline.cpp
 
 objects/vmm_config_handler.o: ../src/vmm_config_handler.cpp ../include/vmm_config_handler.h \
@@ -27305,24 +27443,27 @@ objects/vmm_config_handler.o: ../src/vmm_config_handler.cpp ../include/vmm_confi
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/vmm_config_handler.o ../src/vmm_config_handler.cpp
 
 objects/daq_config_handler.o: ../src/daq_config_handler.cpp ../include/daq_config_handler.h \
@@ -28514,24 +28655,27 @@ objects/daq_config_handler.o: ../src/daq_config_handler.cpp ../include/daq_confi
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/daq_config_handler.o ../src/daq_config_handler.cpp
 
 objects/fec_config_handler.o: ../src/fec_config_handler.cpp ../include/fec_config_handler.h \
@@ -29723,24 +29867,27 @@ objects/fec_config_handler.o: ../src/fec_config_handler.cpp ../include/fec_confi
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fec_config_handler.o ../src/fec_config_handler.cpp
 
 objects/vmm.o: ../src/vmm.cpp ../include/vmm.h \
@@ -29848,7 +29995,36 @@ objects/daq.o: ../src/daq.cpp ../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
-		../include/vmm.h
+		../include/vmm.h \
+		../include/fec_config_module.h \
+		../include/socket_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../include/vmmsocket.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/daq.o ../src/daq.cpp
 
 objects/hybrid.o: ../src/hybrid.cpp ../include/hybrid.h \
@@ -30010,7 +30186,36 @@ objects/fec.o: ../src/fec.cpp ../include/fec.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../include/fec_config_module.h \
+		../include/socket_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../include/vmmsocket.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fec.o ../src/fec.cpp
 
 objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
@@ -30169,20 +30374,22 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
@@ -30223,7 +30430,6 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -31103,8 +31309,6 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -31219,7 +31423,11 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/daq_window.o ../src/daq_window.cpp
 
 objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
@@ -31375,23 +31583,25 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
@@ -31432,7 +31642,6 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -32312,8 +32521,6 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -32429,6 +32636,10 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../include/fec.h \
 		../include/hdmi.h \
 		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/hdmi_window.h \
 		ui/ui_hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
@@ -32436,6 +32647,7 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		ui/ui_hybrid_window.h \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fec_window.o ../src/fec_window.cpp
@@ -32589,13 +32801,13 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
@@ -32608,19 +32820,22 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
@@ -32659,7 +32874,6 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -33539,8 +33753,6 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -33655,7 +33867,11 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/hdmi_window.o ../src/hdmi_window.cpp
 
 objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
@@ -33803,14 +34019,14 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
@@ -33826,19 +34042,22 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
@@ -33877,7 +34096,6 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -34757,8 +34975,6 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -34873,7 +35089,11 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/hybrid_window.o ../src/hybrid_window.cpp
 
 objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
@@ -35044,19 +35264,22 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/mainwindow.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QFont \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
@@ -35095,7 +35318,6 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
@@ -35975,8 +36197,6 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../include/boost/property_tree/detail/xml_parser_flags.hpp \
 		../include/boost/property_tree/detail/xml_parser_read_rapidxml.hpp \
 		../include/boost/property_tree/detail/rapidxml.hpp \
-		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
 		../include/configuration_module.h \
 		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
@@ -36091,7 +36311,11 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/vmm_window.o ../src/vmm_window.cpp
 
 objects/hybrid_config_handler.o: ../src/hybrid_config_handler.cpp ../include/hybrid_config_handler.h \
@@ -37283,27 +37507,31 @@ objects/hybrid_config_handler.o: ../src/hybrid_config_handler.cpp ../include/hyb
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHBoxLayout \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QRadioButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
-		../include/hybrid.h
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/hybrid_config_handler.o ../src/hybrid_config_handler.cpp
 
 objects/fec_config_module.o: ../src/fec_config_module.cpp ../include/fec_config_module.h \
+		../include/socket_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
@@ -37351,7 +37579,39 @@ objects/fec_config_module.o: ../src/fec_config_module.cpp ../include/fec_config_
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../include/vmmsocket.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
+		../include/fec.h \
+		../include/globparameter.h \
+		../include/hdmi.h \
+		../include/hybrid.h \
+		../include/vmm.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fec_config_module.o ../src/fec_config_module.cpp
 
 objects/qrc_icons.o: rcc/qrc_icons.cpp 

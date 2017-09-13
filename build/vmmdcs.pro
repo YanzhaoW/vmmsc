@@ -184,9 +184,8 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/hdmi_window.h \
             $$includepath/hybrid_window.h \
             $$includepath/vmm_window.h \
-    ../src/hybrid_config_handler.h \
-    ../include/hybrid_config_handler.h \
-    ../include/fec_config_module.h
+            $$includepath/hybrid_config_handler.h \
+            $$includepath/fec_config_module.h
 
 
 FORMS    += $$sourcepath/mainwindow.ui \
