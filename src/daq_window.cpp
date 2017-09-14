@@ -7,17 +7,17 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     ui(new Ui::daq_window)
 {
     ui->setupUi(this);
-//    ui->Send->setEnabled(false);
-//    LoadMessageHandler(root_main->daq[0].msg());
-//    connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
-//    ui->openConnection_2->setToolTip("Open communication");
+    ui->Send->setEnabled(false);
+    LoadMessageHandler(root_main->daq[0].msg());
+    connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
+    ui->openConnection_2->setToolTip("Open communication");
 
-//    ui->trgPulser->setEnabled(false);
-//    ui->trgExternal->setEnabled(false);
-//    ui->onACQ->setEnabled(false);
-//    ui->offACQ->setEnabled(false);
-//    ui->checkBox->setEnabled(false);
-
+    ui->trgPulser->setEnabled(false);
+    ui->trgExternal->setEnabled(false);
+    ui->onACQ->setEnabled(false);
+    ui->offACQ->setEnabled(false);
+    ui->checkBox->setEnabled(false);
+//    LoadConfig("default");
 }
 
 daq_window::~daq_window()
@@ -122,10 +122,8 @@ void daq_window::fecBoxLogic(bool checked, unsigned short fec){
     }
 }
 
-void daq_window::on_Button_load_clicked()
-{
 
-    QString text = ui->line_configFile->displayText();
+void daq_window::LoadConfig(QString text){
     std::string fname = text.toStdString();
     std::string filename = fname;
     if (fname == "") {
@@ -199,6 +197,13 @@ void daq_window::on_Button_load_clicked()
              }
         } //else file found
     } //end else not ""
+}
+
+void daq_window::on_Button_load_clicked()
+{
+    QString text = ui->line_configFile->displayText();
+    LoadConfig(text);
+
 }
 
 void daq_window::on_Button_save_clicked()

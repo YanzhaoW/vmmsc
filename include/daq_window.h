@@ -30,7 +30,7 @@ public:
     void SetWarning(QString warning, QString bkgcol );
     void SetWarning2(QString warning, QString bkgcol );
     std::string sendstate = "";
-
+    void LoadConfig(QString text);
 
 private slots:
     void on_Box_fec1_clicked();
