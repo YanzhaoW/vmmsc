@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'vmm_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -706,204 +706,204 @@ public:
 
     void retranslateUi(QWidget *vmm_window)
     {
-        vmm_window->setWindowTitle(QApplication::translate("vmm_window", "Form", Q_NULLPTR));
-        sdpLabel_2->setText(QApplication::translate("vmm_window", "Test Pulse DAC", Q_NULLPTR));
-        sdtLabel->setText(QApplication::translate("vmm_window", "Threshold DAC", Q_NULLPTR));
-        dacmvLabel->setText(QApplication::translate("vmm_window", "TextLabel", Q_NULLPTR));
-        dacmvLabel_TP->setText(QApplication::translate("vmm_window", "TextLabel", Q_NULLPTR));
-        sng->setText(QApplication::translate("vmm_window", "Neighbor Trigger (sng)", Q_NULLPTR));
-        sdp->setText(QApplication::translate("vmm_window", "Disable At Peak", Q_NULLPTR));
-        sdrv->setText(QApplication::translate("vmm_window", "Analog tristates", Q_NULLPTR));
-        ssh->setText(QApplication::translate("vmm_window", "Sub Hysterisis ", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("vmm_window", "ADC ", Q_NULLPTR));
-        s8b->setText(QApplication::translate("vmm_window", "8-bit Conv. Mode", Q_NULLPTR));
+        vmm_window->setWindowTitle(QApplication::translate("vmm_window", "Form", 0));
+        sdpLabel_2->setText(QApplication::translate("vmm_window", "Test Pulse DAC", 0));
+        sdtLabel->setText(QApplication::translate("vmm_window", "Threshold DAC", 0));
+        dacmvLabel->setText(QApplication::translate("vmm_window", "TextLabel", 0));
+        dacmvLabel_TP->setText(QApplication::translate("vmm_window", "TextLabel", 0));
+        sng->setText(QApplication::translate("vmm_window", "Neighbor Trigger (sng)", 0));
+        sdp->setText(QApplication::translate("vmm_window", "Disable At Peak", 0));
+        sdrv->setText(QApplication::translate("vmm_window", "Analog tristates", 0));
+        ssh->setText(QApplication::translate("vmm_window", "Sub Hysterisis ", 0));
+        groupBox->setTitle(QApplication::translate("vmm_window", "ADC ", 0));
+        s8b->setText(QApplication::translate("vmm_window", "8-bit Conv. Mode", 0));
         sc010b->clear();
         sc010b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "200ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "+60ns", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "200ns", 0)
+         << QApplication::translate("vmm_window", "+60ns", 0)
         );
-        sc010bLabel->setText(QApplication::translate("vmm_window", "10b ADC", Q_NULLPTR));
-        adcs->setText(QApplication::translate("vmm_window", "ADCs", Q_NULLPTR));
-        sc06bLabel->setText(QApplication::translate("vmm_window", "6b ADC", Q_NULLPTR));
+        sc010bLabel->setText(QApplication::translate("vmm_window", "10b ADC", 0));
+        adcs->setText(QApplication::translate("vmm_window", "ADCs", 0));
+        sc06bLabel->setText(QApplication::translate("vmm_window", "6b ADC", 0));
         sc06b->clear();
         sc06b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Low", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Middle", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Up", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "Low", 0)
+         << QApplication::translate("vmm_window", "Middle", 0)
+         << QApplication::translate("vmm_window", "Up", 0)
         );
-        sc08bLabel->setText(QApplication::translate("vmm_window", "8b ADC", Q_NULLPTR));
+        sc08bLabel->setText(QApplication::translate("vmm_window", "8b ADC", 0));
         sc08b->clear();
         sc08b->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "100ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "+60ns", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "100ns", 0)
+         << QApplication::translate("vmm_window", "+60ns", 0)
         );
         srat->clear();
         srat->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Timing At Peak", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Timing At Threshold", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "Timing At Peak", 0)
+         << QApplication::translate("vmm_window", "Timing At Threshold", 0)
         );
-        sratLabel->setText(QApplication::translate("vmm_window", "SRAT Mode", Q_NULLPTR));
-        groupBox1->setTitle(QApplication::translate("vmm_window", "Dual Clock", Q_NULLPTR));
-        sdcka->setText(QApplication::translate("vmm_window", "Dual Clock ART", Q_NULLPTR));
-        sdcks->setText(QApplication::translate("vmm_window", "Dual Clock Data", Q_NULLPTR));
-        sdck6b->setText(QApplication::translate("vmm_window", "Dual Clock 6-bit", Q_NULLPTR));
-        sgLabel->setText(QApplication::translate("vmm_window", "Gain (sg)", Q_NULLPTR));
+        sratLabel->setText(QApplication::translate("vmm_window", "SRAT Mode", 0));
+        groupBox1->setTitle(QApplication::translate("vmm_window", "Dual Clock", 0));
+        sdcka->setText(QApplication::translate("vmm_window", "Dual Clock ART", 0));
+        sdcks->setText(QApplication::translate("vmm_window", "Dual Clock Data", 0));
+        sdck6b->setText(QApplication::translate("vmm_window", "Dual Clock 6-bit", 0));
+        sgLabel->setText(QApplication::translate("vmm_window", "Gain (sg)", 0));
         sp->clear();
         sp->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "negative", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "positive", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "negative", 0)
+         << QApplication::translate("vmm_window", "positive", 0)
         );
-        sm5_sm0Label->setText(QApplication::translate("vmm_window", "Analog (Channel) Monitor", Q_NULLPTR));
-        spgLabel->setText(QApplication::translate("vmm_window", "Input charge polarity", Q_NULLPTR));
+        sm5_sm0Label->setText(QApplication::translate("vmm_window", "Analog (Channel) Monitor", 0));
+        spgLabel->setText(QApplication::translate("vmm_window", "Input charge polarity", 0));
         sg->clear();
         sg->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "0.5 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "1.0 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "3.0 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "4.5 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "6.0 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "9.0 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "12.0 mV/fC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "16.0 mV/fC", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "0.5 mV/fC", 0)
+         << QApplication::translate("vmm_window", "1.0 mV/fC", 0)
+         << QApplication::translate("vmm_window", "3.0 mV/fC", 0)
+         << QApplication::translate("vmm_window", "4.5 mV/fC", 0)
+         << QApplication::translate("vmm_window", "6.0 mV/fC", 0)
+         << QApplication::translate("vmm_window", "9.0 mV/fC", 0)
+         << QApplication::translate("vmm_window", "12.0 mV/fC", 0)
+         << QApplication::translate("vmm_window", "16.0 mV/fC", 0)
         );
         sm5_sm0->clear();
         sm5_sm0->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Pulser DAC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Threshold DAC", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Bandgap reference", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Temperature sensor", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "1", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "2", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "3", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "4", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "5", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "6", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "7", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "8", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "9", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "10", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "11", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "12", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "13", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "14", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "15", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "16", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "17", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "18", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "19", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "20", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "21", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "22", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "23", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "24", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "25", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "26", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "27", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "28", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "29", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "30", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "31", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "32", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "33", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "34", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "35", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "36", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "37", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "38", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "39", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "40", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "41", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "42", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "43", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "44", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "45", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "46", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "47", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "48", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "49", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "50", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "51", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "52", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "53", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "54", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "55", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "56", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "57", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "58", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "59", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "60", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "61", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "62", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "63", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "64", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "Pulser DAC", 0)
+         << QApplication::translate("vmm_window", "Threshold DAC", 0)
+         << QApplication::translate("vmm_window", "Bandgap reference", 0)
+         << QApplication::translate("vmm_window", "Temperature sensor", 0)
+         << QApplication::translate("vmm_window", "1", 0)
+         << QApplication::translate("vmm_window", "2", 0)
+         << QApplication::translate("vmm_window", "3", 0)
+         << QApplication::translate("vmm_window", "4", 0)
+         << QApplication::translate("vmm_window", "5", 0)
+         << QApplication::translate("vmm_window", "6", 0)
+         << QApplication::translate("vmm_window", "7", 0)
+         << QApplication::translate("vmm_window", "8", 0)
+         << QApplication::translate("vmm_window", "9", 0)
+         << QApplication::translate("vmm_window", "10", 0)
+         << QApplication::translate("vmm_window", "11", 0)
+         << QApplication::translate("vmm_window", "12", 0)
+         << QApplication::translate("vmm_window", "13", 0)
+         << QApplication::translate("vmm_window", "14", 0)
+         << QApplication::translate("vmm_window", "15", 0)
+         << QApplication::translate("vmm_window", "16", 0)
+         << QApplication::translate("vmm_window", "17", 0)
+         << QApplication::translate("vmm_window", "18", 0)
+         << QApplication::translate("vmm_window", "19", 0)
+         << QApplication::translate("vmm_window", "20", 0)
+         << QApplication::translate("vmm_window", "21", 0)
+         << QApplication::translate("vmm_window", "22", 0)
+         << QApplication::translate("vmm_window", "23", 0)
+         << QApplication::translate("vmm_window", "24", 0)
+         << QApplication::translate("vmm_window", "25", 0)
+         << QApplication::translate("vmm_window", "26", 0)
+         << QApplication::translate("vmm_window", "27", 0)
+         << QApplication::translate("vmm_window", "28", 0)
+         << QApplication::translate("vmm_window", "29", 0)
+         << QApplication::translate("vmm_window", "30", 0)
+         << QApplication::translate("vmm_window", "31", 0)
+         << QApplication::translate("vmm_window", "32", 0)
+         << QApplication::translate("vmm_window", "33", 0)
+         << QApplication::translate("vmm_window", "34", 0)
+         << QApplication::translate("vmm_window", "35", 0)
+         << QApplication::translate("vmm_window", "36", 0)
+         << QApplication::translate("vmm_window", "37", 0)
+         << QApplication::translate("vmm_window", "38", 0)
+         << QApplication::translate("vmm_window", "39", 0)
+         << QApplication::translate("vmm_window", "40", 0)
+         << QApplication::translate("vmm_window", "41", 0)
+         << QApplication::translate("vmm_window", "42", 0)
+         << QApplication::translate("vmm_window", "43", 0)
+         << QApplication::translate("vmm_window", "44", 0)
+         << QApplication::translate("vmm_window", "45", 0)
+         << QApplication::translate("vmm_window", "46", 0)
+         << QApplication::translate("vmm_window", "47", 0)
+         << QApplication::translate("vmm_window", "48", 0)
+         << QApplication::translate("vmm_window", "49", 0)
+         << QApplication::translate("vmm_window", "50", 0)
+         << QApplication::translate("vmm_window", "51", 0)
+         << QApplication::translate("vmm_window", "52", 0)
+         << QApplication::translate("vmm_window", "53", 0)
+         << QApplication::translate("vmm_window", "54", 0)
+         << QApplication::translate("vmm_window", "55", 0)
+         << QApplication::translate("vmm_window", "56", 0)
+         << QApplication::translate("vmm_window", "57", 0)
+         << QApplication::translate("vmm_window", "58", 0)
+         << QApplication::translate("vmm_window", "59", 0)
+         << QApplication::translate("vmm_window", "60", 0)
+         << QApplication::translate("vmm_window", "61", 0)
+         << QApplication::translate("vmm_window", "62", 0)
+         << QApplication::translate("vmm_window", "63", 0)
+         << QApplication::translate("vmm_window", "64", 0)
         );
-        stcLabel->setText(QApplication::translate("vmm_window", "TAC Slop Adj (stc)", Q_NULLPTR));
+        stcLabel->setText(QApplication::translate("vmm_window", "TAC Slop Adj (stc)", 0));
         stc->clear();
         stc->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "60 ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "100 ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "350 ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "650 ns", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "60 ns", 0)
+         << QApplication::translate("vmm_window", "100 ns", 0)
+         << QApplication::translate("vmm_window", "350 ns", 0)
+         << QApplication::translate("vmm_window", "650 ns", 0)
         );
-        stLabel->setText(QApplication::translate("vmm_window", "Peak time (st)", Q_NULLPTR));
+        stLabel->setText(QApplication::translate("vmm_window", "Peak time (st)", 0));
         st->clear();
         st->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "200 ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "100 ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "50 ns", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "25 ns", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "200 ns", 0)
+         << QApplication::translate("vmm_window", "100 ns", 0)
+         << QApplication::translate("vmm_window", "50 ns", 0)
+         << QApplication::translate("vmm_window", "25 ns", 0)
         );
-        tabWidget_4->setTabText(tabWidget_4->indexOf(tabWidget_4Page1), QApplication::translate("vmm_window", "General Settings", Q_NULLPTR));
+        tabWidget_4->setTabText(tabWidget_4->indexOf(tabWidget_4Page1), QApplication::translate("vmm_window", "General Settings", 0));
         sfam->clear();
         sfam->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "Off", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Timing At Threshold", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "Timing At Peak", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "Off", 0)
+         << QApplication::translate("vmm_window", "Timing At Threshold", 0)
+         << QApplication::translate("vmm_window", "Timing At Peak", 0)
         );
-        sfamLabel->setText(QApplication::translate("vmm_window", "ART-Mode", Q_NULLPTR));
-        sttt->setText(QApplication::translate("vmm_window", "Direct Time", Q_NULLPTR));
+        sfamLabel->setText(QApplication::translate("vmm_window", "ART-Mode", 0));
+        sttt->setText(QApplication::translate("vmm_window", "Direct Time", 0));
         stpp->clear();
         stpp->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "0", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "1", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "0", 0)
+         << QApplication::translate("vmm_window", "1", 0)
         );
         stot->clear();
         stot->insertItems(0, QStringList()
-         << QApplication::translate("vmm_window", "0", Q_NULLPTR)
-         << QApplication::translate("vmm_window", "1", Q_NULLPTR)
+         << QApplication::translate("vmm_window", "0", 0)
+         << QApplication::translate("vmm_window", "1", 0)
         );
-        ssart->setText(QApplication::translate("vmm_window", "ssart", Q_NULLPTR));
-        slvs->setText(QApplication::translate("vmm_window", "slvs", Q_NULLPTR));
-        stcr->setText(QApplication::translate("vmm_window", "stcr", Q_NULLPTR));
-        sL0dckinv->setText(QApplication::translate("vmm_window", "sL0dckinv", Q_NULLPTR));
-        s32->setText(QApplication::translate("vmm_window", "s32", Q_NULLPTR));
-        stlc->setText(QApplication::translate("vmm_window", "stlc", Q_NULLPTR));
-        srec->setText(QApplication::translate("vmm_window", "srec", Q_NULLPTR));
-        sbip->setText(QApplication::translate("vmm_window", "sbip", Q_NULLPTR));
-        sL0ckinv->setText(QApplication::translate("vmm_window", "sL0ckinv", Q_NULLPTR));
-        sfrst->setText(QApplication::translate("vmm_window", "sfrst", Q_NULLPTR));
-        nskipm_i->setText(QApplication::translate("vmm_window", "nskipm_i", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("vmm_window", "SLVS 100 Ohm termination", Q_NULLPTR));
-        slvsbc->setText(QApplication::translate("vmm_window", "bc", Q_NULLPTR));
-        slvstp->setText(QApplication::translate("vmm_window", "tp", Q_NULLPTR));
-        slvstk->setText(QApplication::translate("vmm_window", "tk", Q_NULLPTR));
-        slvsdt->setText(QApplication::translate("vmm_window", "dt", Q_NULLPTR));
-        slvsart->setText(QApplication::translate("vmm_window", "art", Q_NULLPTR));
-        slvstki->setText(QApplication::translate("vmm_window", "tki", Q_NULLPTR));
-        slvsena->setText(QApplication::translate("vmm_window", "ena", Q_NULLPTR));
-        slvs6b->setText(QApplication::translate("vmm_window", "6b", Q_NULLPTR));
-        stotLabel->setText(QApplication::translate("vmm_window", "Mode", Q_NULLPTR));
-        s6b->setText(QApplication::translate("vmm_window", "6-bit", Q_NULLPTR));
-        sbft->setText(QApplication::translate("vmm_window", "SBFT", Q_NULLPTR));
-        sfm->setText(QApplication::translate("vmm_window", "Double Leak", Q_NULLPTR));
-        sbfp->setText(QApplication::translate("vmm_window", "SBFP", Q_NULLPTR));
-        slg->setText(QApplication::translate("vmm_window", "Leak. Curr.", Q_NULLPTR));
-        sbfm->setText(QApplication::translate("vmm_window", "SBFM", Q_NULLPTR));
-        sbmx->setText(QApplication::translate("vmm_window", "SBMX", Q_NULLPTR));
-        tabWidget_4->setTabText(tabWidget_4->indexOf(tab), QApplication::translate("vmm_window", "Advanced Settings", Q_NULLPTR));
-        label->setText(QApplication::translate("vmm_window", "Channel Settings", Q_NULLPTR));
-        vmm_reset->setText(QApplication::translate("vmm_window", "Hard Reset", Q_NULLPTR));
-        ApplyAll->setText(QApplication::translate("vmm_window", "Apply to all VMMs", Q_NULLPTR));
+        ssart->setText(QApplication::translate("vmm_window", "ssart", 0));
+        slvs->setText(QApplication::translate("vmm_window", "slvs", 0));
+        stcr->setText(QApplication::translate("vmm_window", "stcr", 0));
+        sL0dckinv->setText(QApplication::translate("vmm_window", "sL0dckinv", 0));
+        s32->setText(QApplication::translate("vmm_window", "s32", 0));
+        stlc->setText(QApplication::translate("vmm_window", "stlc", 0));
+        srec->setText(QApplication::translate("vmm_window", "srec", 0));
+        sbip->setText(QApplication::translate("vmm_window", "sbip", 0));
+        sL0ckinv->setText(QApplication::translate("vmm_window", "sL0ckinv", 0));
+        sfrst->setText(QApplication::translate("vmm_window", "sfrst", 0));
+        nskipm_i->setText(QApplication::translate("vmm_window", "nskipm_i", 0));
+        groupBox_2->setTitle(QApplication::translate("vmm_window", "SLVS 100 Ohm termination", 0));
+        slvsbc->setText(QApplication::translate("vmm_window", "bc", 0));
+        slvstp->setText(QApplication::translate("vmm_window", "tp", 0));
+        slvstk->setText(QApplication::translate("vmm_window", "tk", 0));
+        slvsdt->setText(QApplication::translate("vmm_window", "dt", 0));
+        slvsart->setText(QApplication::translate("vmm_window", "art", 0));
+        slvstki->setText(QApplication::translate("vmm_window", "tki", 0));
+        slvsena->setText(QApplication::translate("vmm_window", "ena", 0));
+        slvs6b->setText(QApplication::translate("vmm_window", "6b", 0));
+        stotLabel->setText(QApplication::translate("vmm_window", "Mode", 0));
+        s6b->setText(QApplication::translate("vmm_window", "6-bit", 0));
+        sbft->setText(QApplication::translate("vmm_window", "SBFT", 0));
+        sfm->setText(QApplication::translate("vmm_window", "Double Leak", 0));
+        sbfp->setText(QApplication::translate("vmm_window", "SBFP", 0));
+        slg->setText(QApplication::translate("vmm_window", "Leak. Curr.", 0));
+        sbfm->setText(QApplication::translate("vmm_window", "SBFM", 0));
+        sbmx->setText(QApplication::translate("vmm_window", "SBMX", 0));
+        tabWidget_4->setTabText(tabWidget_4->indexOf(tab), QApplication::translate("vmm_window", "Advanced Settings", 0));
+        label->setText(QApplication::translate("vmm_window", "Channel Settings", 0));
+        vmm_reset->setText(QApplication::translate("vmm_window", "Hard Reset", 0));
+        ApplyAll->setText(QApplication::translate("vmm_window", "Apply to all VMMs", 0));
     } // retranslateUi
 
 };

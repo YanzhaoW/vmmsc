@@ -135,7 +135,7 @@ void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_ind
 
 
     QString chMapString = "0000000000000000";
-    chMapString.replace( 15 - (hdmi_index*2+vmm_index) , 1 , QString("1") );
+    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
     quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
@@ -1002,7 +1002,7 @@ void FEC_config_module::setEventHeaders(int hdmi_index, int hybrid_index, int vm
     // header info
     ///////////////////////////
     QString chMapString = "0000000000000000";
-    chMapString.replace( 15 - (hdmi_index*2+vmm_index) , 1 , QString("1") );
+    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
     quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
     out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
@@ -1059,7 +1059,7 @@ void FEC_config_module::setTriggerAcqConstants(int hdmi_index, int hybrid_index,
     // header info
     ///////////////////////////
     QString chMapString = "0000000000000000";
-    chMapString.replace( 15 - (hdmi_index*2+vmm_index) , 1 , QString("1") );
+    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
     quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
     QString cmd, cmdType, cmdLength, msbCounter;

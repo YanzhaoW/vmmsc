@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'daq_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -74,6 +74,7 @@ public:
     QCheckBox *Box_fec7;
     QCheckBox *Box_fec8;
     QWidget *widget;
+    QWidget *tab_2;
     QWidget *tab_3;
     QGridLayout *gridLayout_10;
     QGroupBox *groupBox_5;
@@ -295,6 +296,9 @@ public:
         gridLayout_5->addWidget(widget, 0, 1, 1, 1);
 
         tabWidget_2->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QStringLiteral("tab_2"));
+        tabWidget_2->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
         gridLayout_10 = new QGridLayout(tab_3);
@@ -348,35 +352,36 @@ public:
 
     void retranslateUi(QMainWindow *daq_window)
     {
-        daq_window->setWindowTitle(QApplication::translate("daq_window", "MainWindow", Q_NULLPTR));
-        groupBox_3->setTitle(QApplication::translate("daq_window", "Config file", Q_NULLPTR));
-        Button_load->setText(QApplication::translate("daq_window", "Load", Q_NULLPTR));
-        Button_save->setText(QApplication::translate("daq_window", "Save", Q_NULLPTR));
+        daq_window->setWindowTitle(QApplication::translate("daq_window", "MainWindow", 0));
+        groupBox_3->setTitle(QApplication::translate("daq_window", "Config file", 0));
+        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
+        Button_save->setText(QApplication::translate("daq_window", "Save", 0));
         groupBox->setTitle(QString());
-        groupBox_6->setTitle(QApplication::translate("daq_window", "ACQ", Q_NULLPTR));
-        checkBox->setText(QApplication::translate("daq_window", " Global ACQ", Q_NULLPTR));
-        trgPulser->setText(QApplication::translate("daq_window", "Pulser", Q_NULLPTR));
-        offACQ->setText(QApplication::translate("daq_window", "ACQ Off", Q_NULLPTR));
-        onACQ->setText(QApplication::translate("daq_window", "ACQ On", Q_NULLPTR));
-        trgExternal->setText(QApplication::translate("daq_window", "External", Q_NULLPTR));
+        groupBox_6->setTitle(QApplication::translate("daq_window", "ACQ", 0));
+        checkBox->setText(QApplication::translate("daq_window", " Global ACQ", 0));
+        trgPulser->setText(QApplication::translate("daq_window", "Pulser", 0));
+        offACQ->setText(QApplication::translate("daq_window", "ACQ Off", 0));
+        onACQ->setText(QApplication::translate("daq_window", "ACQ On", 0));
+        trgExternal->setText(QApplication::translate("daq_window", "External", 0));
         connectionLabel_3->setText(QString());
-        Send->setText(QApplication::translate("daq_window", "Send", Q_NULLPTR));
-        openConnection_2->setText(QApplication::translate("daq_window", "Open Communication", Q_NULLPTR));
-        connectionLabel_2->setText(QApplication::translate("daq_window", "  N/A", Q_NULLPTR));
-        reset_warnings->setText(QApplication::translate("daq_window", "Reset Warnings", Q_NULLPTR));
-        Fec_group_box->setTitle(QApplication::translate("daq_window", "FEC", Q_NULLPTR));
-        Box_fec1->setText(QApplication::translate("daq_window", "1", Q_NULLPTR));
-        Box_fec2->setText(QApplication::translate("daq_window", "2", Q_NULLPTR));
-        Box_fec3->setText(QApplication::translate("daq_window", "3", Q_NULLPTR));
-        Box_fec4->setText(QApplication::translate("daq_window", "4", Q_NULLPTR));
-        Box_fec5->setText(QApplication::translate("daq_window", "5", Q_NULLPTR));
-        Box_fec6->setText(QApplication::translate("daq_window", "6", Q_NULLPTR));
-        Box_fec7->setText(QApplication::translate("daq_window", "7", Q_NULLPTR));
-        Box_fec8->setText(QApplication::translate("daq_window", "8", Q_NULLPTR));
-        tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", Q_NULLPTR));
-        groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", Q_NULLPTR));
-        logBottom->setText(QApplication::translate("daq_window", "Bottom", Q_NULLPTR));
-        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", Q_NULLPTR));
+        Send->setText(QApplication::translate("daq_window", "Send", 0));
+        openConnection_2->setText(QApplication::translate("daq_window", "Open Communication", 0));
+        connectionLabel_2->setText(QApplication::translate("daq_window", "  N/A", 0));
+        reset_warnings->setText(QApplication::translate("daq_window", "Reset Warnings", 0));
+        Fec_group_box->setTitle(QApplication::translate("daq_window", "FEC", 0));
+        Box_fec1->setText(QApplication::translate("daq_window", "1", 0));
+        Box_fec2->setText(QApplication::translate("daq_window", "2", 0));
+        Box_fec3->setText(QApplication::translate("daq_window", "3", 0));
+        Box_fec4->setText(QApplication::translate("daq_window", "4", 0));
+        Box_fec5->setText(QApplication::translate("daq_window", "5", 0));
+        Box_fec6->setText(QApplication::translate("daq_window", "6", 0));
+        Box_fec7->setText(QApplication::translate("daq_window", "7", 0));
+        Box_fec8->setText(QApplication::translate("daq_window", "8", 0));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("daq_window", "Calibration", 0));
+        groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
+        logBottom->setText(QApplication::translate("daq_window", "Bottom", 0));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", 0));
     } // retranslateUi
 
 };

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'fec_window.ui'
 **
-** Created by: Qt User Interface Compiler version 5.8.0
+** Created by: Qt User Interface Compiler version 5.7.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -564,69 +564,69 @@ public:
 
     void retranslateUi(QWidget *fec_window)
     {
-        fec_window->setWindowTitle(QApplication::translate("fec_window", "Form", Q_NULLPTR));
-        groupBox->setTitle(QApplication::translate("fec_window", "HDMI", Q_NULLPTR));
-        Box_hdmi1->setText(QApplication::translate("fec_window", "1", Q_NULLPTR));
-        Box_hdmi2->setText(QApplication::translate("fec_window", "2", Q_NULLPTR));
-        Box_hdmi3->setText(QApplication::translate("fec_window", "3", Q_NULLPTR));
-        Box_hdmi4->setText(QApplication::translate("fec_window", "4", Q_NULLPTR));
-        Box_hdmi5->setText(QApplication::translate("fec_window", "5", Q_NULLPTR));
-        Box_hdmi6->setText(QApplication::translate("fec_window", "6", Q_NULLPTR));
-        Box_hdmi7->setText(QApplication::translate("fec_window", "7", Q_NULLPTR));
-        Box_hdmi8->setText(QApplication::translate("fec_window", "8", Q_NULLPTR));
-        groupBox_3->setTitle(QApplication::translate("fec_window", "IP address FEC", Q_NULLPTR));
-        ip1_2->setText(QApplication::translate("fec_window", "10", Q_NULLPTR));
-        ip3_2->setText(QApplication::translate("fec_window", "0", Q_NULLPTR));
-        ip2_2->setText(QApplication::translate("fec_window", "0", Q_NULLPTR));
-        ip4_2->setText(QApplication::translate("fec_window", "2", Q_NULLPTR));
-        groupBox_12->setTitle(QApplication::translate("fec_window", "Trigger & Acquisition", Q_NULLPTR));
-        label_20->setText(QApplication::translate("fec_window", "ACQ Sync", Q_NULLPTR));
-        trgPeriod->setText(QApplication::translate("fec_window", "61A80", Q_NULLPTR));
-        label_37->setText(QApplication::translate("fec_window", "BCID Reset", Q_NULLPTR));
-        label_22->setText(QApplication::translate("fec_window", "Trg Per", Q_NULLPTR));
-        label_21->setText(QApplication::translate("fec_window", "ACQ Win", Q_NULLPTR));
-        label_7->setText(QApplication::translate("fec_window", "TP Delay", Q_NULLPTR));
-        groupBox_6->setTitle(QApplication::translate("fec_window", "ACQ", Q_NULLPTR));
-        onACQ->setText(QApplication::translate("fec_window", "ACQ On", Q_NULLPTR));
-        offACQ->setText(QApplication::translate("fec_window", "ACQ Off", Q_NULLPTR));
-        trgExternal->setText(QApplication::translate("fec_window", "External", Q_NULLPTR));
-        trgPulser->setText(QApplication::translate("fec_window", "Pulser", Q_NULLPTR));
-        tabWidget1->setTabText(tabWidget1->indexOf(tabWidgetPage1), QApplication::translate("fec_window", "General", Q_NULLPTR));
-        groupBox_2->setTitle(QApplication::translate("fec_window", "L0 settings", Q_NULLPTR));
-        sL0enaV->setText(QApplication::translate("fec_window", "sL0enaV", Q_NULLPTR));
-        sL0ena->setText(QApplication::translate("fec_window", "sL0ena", Q_NULLPTR));
-        label_2->setText(QApplication::translate("fec_window", "l0offset", Q_NULLPTR));
-        label_3->setText(QApplication::translate("fec_window", "offset", Q_NULLPTR));
-        label_4->setText(QApplication::translate("fec_window", "rollover", Q_NULLPTR));
-        label_5->setText(QApplication::translate("fec_window", "window", Q_NULLPTR));
-        label_6->setText(QApplication::translate("fec_window", "truncate", Q_NULLPTR));
-        label_8->setText(QApplication::translate("fec_window", "nskip", Q_NULLPTR));
-        sL0cktest->setText(QApplication::translate("fec_window", "sL0cktest", Q_NULLPTR));
+        fec_window->setWindowTitle(QApplication::translate("fec_window", "Form", 0));
+        groupBox->setTitle(QApplication::translate("fec_window", "HDMI", 0));
+        Box_hdmi1->setText(QApplication::translate("fec_window", "1", 0));
+        Box_hdmi2->setText(QApplication::translate("fec_window", "2", 0));
+        Box_hdmi3->setText(QApplication::translate("fec_window", "3", 0));
+        Box_hdmi4->setText(QApplication::translate("fec_window", "4", 0));
+        Box_hdmi5->setText(QApplication::translate("fec_window", "5", 0));
+        Box_hdmi6->setText(QApplication::translate("fec_window", "6", 0));
+        Box_hdmi7->setText(QApplication::translate("fec_window", "7", 0));
+        Box_hdmi8->setText(QApplication::translate("fec_window", "8", 0));
+        groupBox_3->setTitle(QApplication::translate("fec_window", "IP address FEC", 0));
+        ip1_2->setText(QApplication::translate("fec_window", "10", 0));
+        ip3_2->setText(QApplication::translate("fec_window", "0", 0));
+        ip2_2->setText(QApplication::translate("fec_window", "0", 0));
+        ip4_2->setText(QApplication::translate("fec_window", "2", 0));
+        groupBox_12->setTitle(QApplication::translate("fec_window", "Trigger & Acquisition", 0));
+        label_20->setText(QApplication::translate("fec_window", "ACQ Sync", 0));
+        trgPeriod->setText(QApplication::translate("fec_window", "61A80", 0));
+        label_37->setText(QApplication::translate("fec_window", "BCID Reset", 0));
+        label_22->setText(QApplication::translate("fec_window", "Trg Per", 0));
+        label_21->setText(QApplication::translate("fec_window", "ACQ Win", 0));
+        label_7->setText(QApplication::translate("fec_window", "TP Delay", 0));
+        groupBox_6->setTitle(QApplication::translate("fec_window", "ACQ", 0));
+        onACQ->setText(QApplication::translate("fec_window", "ACQ On", 0));
+        offACQ->setText(QApplication::translate("fec_window", "ACQ Off", 0));
+        trgExternal->setText(QApplication::translate("fec_window", "External", 0));
+        trgPulser->setText(QApplication::translate("fec_window", "Pulser", 0));
+        tabWidget1->setTabText(tabWidget1->indexOf(tabWidgetPage1), QApplication::translate("fec_window", "General", 0));
+        groupBox_2->setTitle(QApplication::translate("fec_window", "L0 settings", 0));
+        sL0enaV->setText(QApplication::translate("fec_window", "sL0enaV", 0));
+        sL0ena->setText(QApplication::translate("fec_window", "sL0ena", 0));
+        label_2->setText(QApplication::translate("fec_window", "l0offset", 0));
+        label_3->setText(QApplication::translate("fec_window", "offset", 0));
+        label_4->setText(QApplication::translate("fec_window", "rollover", 0));
+        label_5->setText(QApplication::translate("fec_window", "window", 0));
+        label_6->setText(QApplication::translate("fec_window", "truncate", 0));
+        label_8->setText(QApplication::translate("fec_window", "nskip", 0));
+        sL0cktest->setText(QApplication::translate("fec_window", "sL0cktest", 0));
         groupBox_4->setTitle(QString());
         evbld_mode->clear();
         evbld_mode->insertItems(0, QStringList()
-         << QApplication::translate("fec_window", "Frame Cnt", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Global Frame Cnt", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Timestamp + Frame Cnt", Q_NULLPTR)
+         << QApplication::translate("fec_window", "Frame Cnt", 0)
+         << QApplication::translate("fec_window", "Global Frame Cnt", 0)
+         << QApplication::translate("fec_window", "Timestamp + Frame Cnt", 0)
         );
-        timeStampResCheckBox->setText(QApplication::translate("fec_window", "High Res.", Q_NULLPTR));
+        timeStampResCheckBox->setText(QApplication::translate("fec_window", "High Res.", 0));
         evbld_infodata->clear();
         evbld_infodata->insertItems(0, QStringList()
-         << QApplication::translate("fec_window", "HINFO+Datalength", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Trigger Cnt+Datalength", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Trigger Cnt", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Trigger Timestamp+Datalength", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Trigger Timestamp", Q_NULLPTR)
-         << QApplication::translate("fec_window", "Trigger Cnt+Trigger Timestamp", Q_NULLPTR)
+         << QApplication::translate("fec_window", "HINFO+Datalength", 0)
+         << QApplication::translate("fec_window", "Trigger Cnt+Datalength", 0)
+         << QApplication::translate("fec_window", "Trigger Cnt", 0)
+         << QApplication::translate("fec_window", "Trigger Timestamp+Datalength", 0)
+         << QApplication::translate("fec_window", "Trigger Timestamp", 0)
+         << QApplication::translate("fec_window", "Trigger Cnt+Trigger Timestamp", 0)
         );
-        groupBox_19->setTitle(QApplication::translate("fec_window", "FEC Response", Q_NULLPTR));
-        clearDebugScreenPB->setText(QApplication::translate("fec_window", "Clear", Q_NULLPTR));
+        groupBox_19->setTitle(QApplication::translate("fec_window", "FEC Response", 0));
+        clearDebugScreenPB->setText(QApplication::translate("fec_window", "Clear", 0));
         groupBox_5->setTitle(QString());
-        fec_WarmInit->setText(QApplication::translate("fec_window", "WarmInit FEC", Q_NULLPTR));
-        linkPB->setText(QApplication::translate("fec_window", "Link Status", Q_NULLPTR));
-        resetLinks->setText(QApplication::translate("fec_window", "Reset Links", Q_NULLPTR));
-        fec_reset->setText(QApplication::translate("fec_window", "Reboot FEC", Q_NULLPTR));
-        tabWidget1->setTabText(tabWidget1->indexOf(tab), QApplication::translate("fec_window", "Advanced", Q_NULLPTR));
+        fec_WarmInit->setText(QApplication::translate("fec_window", "WarmInit FEC", 0));
+        linkPB->setText(QApplication::translate("fec_window", "Link Status", 0));
+        resetLinks->setText(QApplication::translate("fec_window", "Reset Links", 0));
+        fec_reset->setText(QApplication::translate("fec_window", "Reboot FEC", 0));
+        tabWidget1->setTabText(tabWidget1->indexOf(tab), QApplication::translate("fec_window", "Advanced", 0));
     } // retranslateUi
 
 };
