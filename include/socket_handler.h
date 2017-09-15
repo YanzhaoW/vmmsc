@@ -26,6 +26,7 @@ class SocketHandler : public QObject
     Q_OBJECT;
 
     public :
+        friend class daq_window;
         explicit SocketHandler(QObject *parent = 0);
         virtual ~SocketHandler(){};
         SocketHandler& setDebug(bool dbg) { m_dbg = dbg; return *this; }
@@ -37,11 +38,6 @@ class SocketHandler : public QObject
         void setDryRun();
         bool dryrun() { return m_dryrun; }
 
-        // Load in the list of IP's
-        SocketHandler& loadIPList(const QString& iplist);
-        QStringList& idList() { return m_idlist; }
-        QStringList& ipList() { return m_iplist; }
-        bool ping();
         bool pinged() { return m_pinged; }
         bool pinged(bool val) { m_pinged= val; return m_pinged; }
 

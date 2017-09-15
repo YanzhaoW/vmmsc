@@ -355,3 +355,24 @@ void daq_window::on_offACQ_clicked()
 }
 
 
+
+void daq_window::on_Debug_pressed()
+{
+    bool dbg = false;
+    if(!ui->Debug->isChecked()){
+        dbg =true;
+        root_main->msg()("Debug enabled", "DEBUG");
+    }
+    else root_main->msg()("Debug disabled", "DEBUG");
+    root_main->socketHandle().m_dbg=dbg;
+
+    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+        if (root_main->daq_act[i]){
+            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+                if (root_main->daq[i].GetFEC(j)){
+                    root_main->daq[0].fec[j].fec_conf_mod->setDebug(dbg);
+                }
+            }
+        }
+    }
+}

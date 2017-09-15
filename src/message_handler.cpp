@@ -16,15 +16,15 @@ using namespace std;
 MessageHandler::MessageHandler(QObject* parent) :
     QObject(parent),
     m_gui(false),
-    m_size(80),
-    m_callborder(25)
+    m_size(90),
+    m_callborder(35)
 {
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (stringstream& s, string caller, bool exit)
 {
     //cout << "A" << endl;
-    if(caller.size()>25) caller.resize(25);
+    if(caller.size()>35) caller.resize(35);
     string x = s.str();
 
     size_t size = caller.size();
@@ -62,20 +62,20 @@ void MessageHandler::operator () (stringstream& s, string caller, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
-        cout << setw(25) << caller << "    " << substrings[i] << endl;
+        cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (stringstream& s, const char* call, bool exit)
 {
     //cout << "B" << endl;
     string caller(call); 
-    if(caller.size()>25) caller.resize(25);
+    if(caller.size()>35) caller.resize(35);
 
     size_t size = caller.size();
     for(int i = 0; i < (m_callborder-(int)size); i++) {
@@ -112,13 +112,13 @@ void MessageHandler::operator () (stringstream& s, const char* call, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
-        cout << setw(25) << caller << "    " << substrings[i] << endl;
+        cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (stringstream& s, bool exit)
@@ -160,19 +160,19 @@ void MessageHandler::operator () (stringstream& s, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
         cout << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (string s, string caller, bool exit)
 {
     //cout << "D" << endl;
-    if(caller.size()>25) caller.resize(25);
+    if(caller.size()>35) caller.resize(35);
     vector<string> substrings;
 
     size_t size = caller.size();
@@ -207,20 +207,20 @@ void MessageHandler::operator () (string s, string caller, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
-        cout << setw(25) << caller << "    " << substrings[i] << endl;
+        cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 } 
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (string s, const char* call, bool exit)
 {
     //cout << "E" << endl;
     string caller(call);
-    if(caller.size()>25) caller.resize(25);
+    if(caller.size()>35) caller.resize(35);
 
     size_t size = caller.size();
     for(int i = 0; i < (m_callborder-(int)size); i++) {
@@ -258,20 +258,20 @@ void MessageHandler::operator () (string s, const char* call, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
-        cout << setw(25) << caller << "    " << substrings[i] << endl;
+        cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (const char* m, const char* call, bool exit)
 {
     //cout << "F" << endl;
     string caller(call);
-    if(caller.size()>25) caller.resize(25);
+    if(caller.size()>35) caller.resize(35);
 
     size_t size = caller.size();
     for(int i = 0; i < (m_callborder-(int)size); i++) {
@@ -310,13 +310,13 @@ void MessageHandler::operator () (const char* m, const char* call, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
-        cout << setw(25) << caller << "    " << substrings[i] << endl;
+        cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (string s, bool exit)
@@ -357,13 +357,13 @@ void MessageHandler::operator () (string s, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
         cout << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }
 // ---------------------------------------------------------------------- //
 void MessageHandler::operator () (const char* msg, bool exit)
@@ -406,11 +406,11 @@ void MessageHandler::operator () (const char* msg, bool exit)
     for(int i = 0; i < (int)substrings.size(); i++) {
         if(gui()) {
             clear();
-            m_buffer << setw(25) << caller << "    " << substrings[i];
+            m_buffer << setw(35) << caller << "    " << substrings[i];
             emit logReady();
         }
         cout << caller << "    " << substrings[i] << endl;
     }
     if(exit)
-        cout << setw(25) << caller << "     >>> Exiting." << endl;
+        cout << setw(35) << caller << "     >>> Exiting." << endl;
 }

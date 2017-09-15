@@ -46,57 +46,6 @@ void SocketHandler::setDryRun()
 }
 
 // ---------------------------------------------------------------------- //
-SocketHandler& SocketHandler::loadIPList(const QString& ipstring)
-{
-    m_iplist.clear();
-    m_iplist << ipstring.split(",");
-    stringstream sx;
-    sx << "Loaded " << m_iplist.size() << " IP addresses:";
-    msg()(sx, "SocketHandler::loadIPList"); sx.str("");
-    for(const auto& ip : m_iplist) {
-        sx << "    > " << ip.toStdString() << "\n";
-        msg()(sx,"SocketHandler::loadIPList"); sx.str("");
-    }
-    return *this;
-}
-// ---------------------------------------------------------------------- //
-bool SocketHandler::ping()
-{
-    if(m_dbg) {
-        msg()("Pinging IP address...","SocketHandler::ping");
-    }
-    if(m_iplist.size()==0) {
-        stringstream sx;
-        sx << "ERROR There are no IP addresses loaded. Please use method 'loadIPList'";
-        msg()(sx,"SocketHandler::ping");
-        m_pinged = false;
-    }
-    for(const auto& ip : m_iplist) {
-        #ifdef __linux__
-        int status_code = QProcess::execute("ping", QStringList()<<"-c1"<<ip);
-        #elif __APPLE__
-        int status_code = QProcess::execute("ping", QStringList()<<"-t1"<<ip);
-        #endif
-
-        //////////////////////////////////
-        if(!dryrun()) {
-            if(status_code == 0)
-                m_pinged = true;
-            else {
-                m_pinged = false;
-                msg()("ERROR Unable to successfully ping the IP: " + ip.toStdString(),
-                        "SocketHandler::ping");
-            } 
-        }
-        else {
-            m_pinged = true;
-        }
-        //////////////////////////////////
-    }
-//    return true;
-    return m_pinged;
-}
-// ---------------------------------------------------------------------- //
 void SocketHandler::updateCommandCounter()
 {
     n_globalCommandCounter++;

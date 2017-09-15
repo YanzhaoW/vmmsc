@@ -23,25 +23,6 @@ void FEC_config_module::LoadMessageHandler(MessageHandler& m)
 void FEC_config_module::VMMLoadEmit(){
     emit reloadVMM();
 }
-
-void FEC_config_module::testing(){
-//        qDebug()<<"Polarity : "<<config().globalSettings().polarity;
-        qDebug()<<"Polarity new : "<<fec->VMM_Get(0, 0, 0,"sp");
-         qDebug()<<"IP address: "<< fec->GetIP();
-         msg()("ERROR SocketHandler instance is null", "Configuration::LoadSocket", true);
-}
-//FEC_config_module& FEC_config_module::LoadConfig(ConfigHandler& config)
-//{
-//    m_configHandler = &config;
-//    if(!m_configHandler) {
-//        msg()("ERROR ConfigHandler instance is null", "Configuration::LoadConfig", true);
-////        return;
-//    }
-//    else if(dbg()) {
-//        msg()("ConfigHandler instance loaded", "Configuration::LoadConfig");
-//    }
-//    return *this;
-//}
 // ------------------------------------------------------------------------ //
 FEC_config_module& FEC_config_module::LoadSocket(SocketHandler& socket)
 {
@@ -61,7 +42,6 @@ FEC_config_module& FEC_config_module::LoadSocket(SocketHandler& socket)
 void FEC_config_module::SendConfig(int hdmi_index, int hybrid_index, int vmm_index)
 {
     stringstream sx;
-
     // NEED TO ADD SOCKET STATE CHECK
 
     bool ok;

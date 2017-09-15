@@ -33,7 +33,6 @@ public:
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& msg() { return *m_msg; }
 
-//    FEC_config_module& LoadConfig(ConfigHandler& config);
     FEC_config_module& LoadSocket(SocketHandler& socket);
 
     void SendConfig(int hdmi_index, int hybrid_index, int vmm_index);
@@ -41,8 +40,6 @@ public:
     void fillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
     void fillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int hybrid_index, int vmm_index);
     SocketHandler& socket() { return *m_socketHandler; }
-//    ConfigHandler& config() { return *m_configHandler; }
-    void testing();
     int Connect();
 
     void configTP( int hdmi_index, int hybrid_index);

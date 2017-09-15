@@ -80,7 +80,7 @@ public:
     QGroupBox *groupBox_5;
     QGridLayout *gridLayout_11;
     QTextEdit *loggingScreen;
-    QPushButton *logBottom;
+    QPushButton *Debug;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -319,11 +319,12 @@ public:
 
         gridLayout_11->addWidget(loggingScreen, 0, 0, 1, 1);
 
-        logBottom = new QPushButton(groupBox_5);
-        logBottom->setObjectName(QStringLiteral("logBottom"));
-        logBottom->setFont(font1);
+        Debug = new QPushButton(groupBox_5);
+        Debug->setObjectName(QStringLiteral("Debug"));
+        Debug->setFont(font1);
+        Debug->setCheckable(true);
 
-        gridLayout_11->addWidget(logBottom, 1, 0, 1, 1);
+        gridLayout_11->addWidget(Debug, 1, 0, 1, 1);
 
 
         gridLayout_10->addWidget(groupBox_5, 0, 0, 1, 1);
@@ -380,7 +381,7 @@ public:
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("daq_window", "Calibration", 0));
         groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
-        logBottom->setText(QApplication::translate("daq_window", "Bottom", 0));
+        Debug->setText(QApplication::translate("daq_window", "Debug", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", 0));
     } // retranslateUi
 

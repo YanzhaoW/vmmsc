@@ -63,6 +63,8 @@ private slots:
 
     void on_trgExternal_clicked();
 
+    void on_Debug_pressed();
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;
@@ -71,6 +73,7 @@ private:
 
 signals:
     void ChangeState();
+    void SetDebug();
 };
 
 #endif // DAQ_WINDOW_H
