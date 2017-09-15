@@ -31,6 +31,7 @@ public:
     void SetWarning2(QString warning, QString bkgcol );
     std::string sendstate = "";
     void LoadConfig(QString text);
+    bool is_file_exist(const char *fileName);
 
 private slots:
     void on_Box_fec1_clicked();

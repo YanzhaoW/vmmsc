@@ -26,8 +26,8 @@ FEC::FEC():
     (*RegNames)[13]="highres";                 (*Reg)[13] = 0;   //{"0", "1", "false", "true"};
 
     (*RegNames)[14]="triggermode";             (*Reg)[14] = 0;   // 0 for external and 1 for pulser
-    (*RegNames)[15]="res2";           (*Reg)[15] = 0;   //
-    (*RegNames)[16]="res3";                   (*Reg)[16] = 0;   //
+    (*RegNames)[15]="res2";                    (*Reg)[15] = 0;   //
+    (*RegNames)[16]="res3";                    (*Reg)[16] = 0;   //
 
     (*RegNames)[17]="sL0enaV";                  (*Reg)[17] = 0;   //{"0", "1", "false", "true"}
     (*RegNames)[18]="sL0ena";                   (*Reg)[18] = 0;   //{"0", "1", "false", "true"}

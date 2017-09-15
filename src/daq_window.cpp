@@ -17,8 +17,17 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
     ui->checkBox->setEnabled(false);
-//    LoadConfig("default");
+
+    if(is_file_exist("../configs/default.txt")){
+    LoadConfig("default");
+    }
 }
+bool daq_window::is_file_exist(const char *fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 
 daq_window::~daq_window()
 {
