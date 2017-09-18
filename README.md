@@ -18,7 +18,7 @@
 * [Contact Information](#contact)
 
 ## Recommended Release
-The recommended release is **v4.0.0** which is for *VMM2* **AND** *VMM3* readout. To obtain this release do:
+The recommended release is **v1.0** which is for *VMM3* readout. To obtain this release do:
 ```
 git clone -b v4.0.0 https://:@gitlab.cern.ch:8443/NSWelectronics/vmm_readout_software.git
 ```
