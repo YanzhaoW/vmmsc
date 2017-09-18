@@ -2,12 +2,18 @@
 
 Hybrid::Hybrid(): vmm_act (VMMS_PER_HYBRID)
 {
+    LoadDefault();
     vmm_act[0] = 1;
     vmm_act[1] = 1;
     PosX = true;
     PosNo = -1;
     ART = 0;
     SetReg("CKBC", (std::string)"40");
+
+}
+
+void Hybrid::LoadDefault(){
+    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0},{"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){

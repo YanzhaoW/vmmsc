@@ -71,21 +71,14 @@ void calibration_module::readEvent()
 
     bool ok_to_read = true;
 
-//    if(!m_fileOK) ok_to_read = false;
-//    if(m_write && !m_rootFileOK) ok_to_read = false;
-//    if(!ok_to_read) return;
-
     QHostAddress vmmip;
     QByteArray datagram;
     //datagram.clear();
-
 
     while(m_DAQSocket->hasPendingDatagrams()) {
 
         datagram.resize(m_DAQSocket->pendingDatagramSize());
         m_DAQSocket->readDatagram(datagram.data(), datagram.size(), &vmmip);
-
-
             decodeAndWriteData(datagram);
 
     } // while loop
@@ -232,7 +225,7 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
                    sx << "channel          : " << channel_no << "\n"
                       << "flag             : " << flag << "\n"
                       << "threshold        : " << threshold << "\n"
-                      << "charge           : " << outCharge_ << "\n"
+                      << "adc              : " << outCharge_ << "\n"
                       << "q_1              : " << q_1.toStdString() << "\n"
                       << "q_2              : " << q_2.toStdString() << "\n"
                       << "q_final          : " << q_final.toStdString() << "\n"

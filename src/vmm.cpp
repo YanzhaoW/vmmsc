@@ -3,32 +3,7 @@
 VMM::VMM():
     Regi ( new VMM_Settings)
 {
-    //Fill default values to map for Global Register 1
-    for(std::string elem: Regi->Names_GReg1){
-        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
-    }
-    //Fill default values to map for Global Register 2
-    for(std::string elem: Regi->Names_GReg2){
-        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
-    }
-    ///Possibility to add more default values and channel deault values have to be added!!!!!
-    SetRegi("gain", 2);//corrsponds to 3 mV/fC
-    SetRegi("monitoring", "Pulser_DAC");
-    SetRegi("sdp_2", (std::string)"300");
-    SetRegi("sdt",(std::string)"300");
-    SetRegi("s10b",1);
-    SetRegi("s8b",1);
-
-
-//    std::cout<<"SCMX: "<<GetRegister("scmx")<<std::endl;
-//    std::cout<<"Monitoring: "<<GetRegister("monitoring")<<std::endl;
-//    Regi->ch_settings[6].VMMSCBool = 1;
-//    Regi->ch_settings[17].VMMSMXBool = 1;
-//    SetRegi("sbfm", 1);
-//    SetRegi("peaktime", 2);
-
-//    SetRegi("monitoring",(std::string)"Pulser_DAC");
-
+LoadDefault();
 }
 
 bool VMM::SetRegi(std::string feature, std::string val, int ch){
@@ -39,6 +14,41 @@ bool VMM::SetRegi(std::string feature, std::string val, int ch){
      }
 }
 
+void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib, int channel ){
+
+    //Fill default values of channels
+    for(int i =0; i<64; i++){
+        Regi->ch_settings[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
+    }
+
+    if(calib){
+        // allows to set different values
+        for( const auto& elem : m_calib ){
+            for(int i =0; i<64; i++){
+                if(channel == i  ||  channel == -9999){
+                    Regi->ch_settings[i].m_channel[elem.first] = elem.second;
+                }
+            }
+        }
+    }
+
+
+    //Fill default values to map for Global Register 1
+    for(std::string elem: Regi->Names_GReg1){
+        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    }
+    //Fill default values to map for Global Register 2
+    for(std::string elem: Regi->Names_GReg2){
+        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    }
+    ///Possibility to add more default values
+    SetRegi("gain", 2);//corrsponds to 3 mV/fC
+    SetRegi("monitoring", "Pulser_DAC");
+    SetRegi("sdp_2", (std::string)"300");
+    SetRegi("sdt",(std::string)"300");
+    SetRegi("s10b",1);
+    SetRegi("s8b",1);
+}
 
 bool VMM::SetRegi(std::string feature, int val, int ch){
     std::string value =std::to_string(val);

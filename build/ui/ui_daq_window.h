@@ -75,13 +75,13 @@ public:
     QCheckBox *Box_fec8;
     QWidget *widget;
     QWidget *tab_2;
+    QPushButton *Data;
     QWidget *tab_3;
     QGridLayout *gridLayout_10;
     QGroupBox *groupBox_5;
     QGridLayout *gridLayout_11;
     QTextEdit *loggingScreen;
     QPushButton *Debug;
-    QPushButton *Data;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -299,6 +299,9 @@ public:
         tabWidget_2->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
+        Data = new QPushButton(tab_2);
+        Data->setObjectName(QStringLiteral("Data"));
+        Data->setGeometry(QRect(10, 20, 161, 22));
         tabWidget_2->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
@@ -333,11 +336,6 @@ public:
         tabWidget_2->addTab(tab_3, QString());
 
         gridLayout_2->addWidget(tabWidget_2, 0, 1, 2, 2);
-
-        Data = new QPushButton(centralwidget);
-        Data->setObjectName(QStringLiteral("Data"));
-
-        gridLayout_2->addWidget(Data, 2, 2, 1, 1);
 
         daq_window->setCentralWidget(centralwidget);
         menubar = new QMenuBar(daq_window);
@@ -385,11 +383,11 @@ public:
         Box_fec7->setText(QApplication::translate("daq_window", "7", 0));
         Box_fec8->setText(QApplication::translate("daq_window", "8", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
+        Data->setText(QApplication::translate("daq_window", "Data-Acq test", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("daq_window", "Calibration", 0));
         groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
         Debug->setText(QApplication::translate("daq_window", "Debug", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", 0));
-        Data->setText(QApplication::translate("daq_window", "Data-Acq test", 0));
     } // retranslateUi
 
 };

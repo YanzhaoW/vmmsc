@@ -22,6 +22,7 @@ public:
     friend class DAQ;
     HDMI hdmi[HDMIS_PER_FEC];
 
+    void LoadDefault(bool calibration = false);
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& msg() { return *m_msg; }
     SocketHandler& socketHandle() { return *vmmSocketHandler; }

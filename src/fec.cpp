@@ -8,44 +8,8 @@ FEC::FEC():
     Reg ( new std::vector<unsigned long> (30) ),
     cchr ( new char ) //need for returning const char * in GetReg functions
 {
-    //hdmi_act[0] = 1;
+    LoadDefault();
 
-    (*RegNames)[0] ="tp_delay";                (*Reg)[0] = 81;      //32 bit //max 50000 by gui?
-    (*RegNames)[1] ="trigger_period";          (*Reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
-    (*RegNames)[2] ="acq_sync";                (*Reg)[2] = 100;     //32 bit
-    (*RegNames)[3] ="acq_window";              (*Reg)[3] = 3900;    //32 bit
-    (*RegNames)[4] ="run_mode";                (*Reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
-    (*RegNames)[5] ="bcid_reset";              (*Reg)[5] = 0;       //max 65535 (16 bit)
-    (*RegNames)[6] ="fec_port";                (*Reg)[6] = 6007;    //32 bit
-    (*RegNames)[7] ="daq_port";                (*Reg)[7] = 6006;    //32 bit
-    (*RegNames)[8] ="vmmasic_port";            (*Reg)[8] = 6603;    //32 bit
-    (*RegNames)[9] ="vmmapp_port";             (*Reg)[9] = 6600;    //32 bit
-    (*RegNames)[10]="s6_port";                 (*Reg)[10] = 6602;   //32 bit
-    (*RegNames)[11]="evbld_mode";              (*Reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
-    (*RegNames)[12]="evbld_infodata";          (*Reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
-    (*RegNames)[13]="highres";                 (*Reg)[13] = 0;   //{"0", "1", "false", "true"};
-
-    (*RegNames)[14]="triggermode";             (*Reg)[14] = 0;   // 0 for external and 1 for pulser
-    (*RegNames)[15]="res2";                    (*Reg)[15] = 0;   //
-    (*RegNames)[16]="res3";                    (*Reg)[16] = 0;   //
-
-    (*RegNames)[17]="sL0enaV";                  (*Reg)[17] = 0;   //{"0", "1", "false", "true"}
-    (*RegNames)[18]="sL0ena";                   (*Reg)[18] = 0;   //{"0", "1", "false", "true"}
-    (*RegNames)[19]="l0offset";                 (*Reg)[19] = 0;   //12 bit
-    (*RegNames)[20]="offset";                   (*Reg)[20] = 0;   //12 bit
-    (*RegNames)[21]="rollover";                 (*Reg)[21] = 0;   //12 bit
-    (*RegNames)[22]="window";                   (*Reg)[22] = 0;   //3 bit
-    (*RegNames)[23]="truncate";                 (*Reg)[23] = 0;   //6 bit
-    (*RegNames)[24]="nskip";                    (*Reg)[24] = 0;   //7 bit
-    (*RegNames)[25]="sL0cktest";                (*Reg)[25] = 0;   //{"0", "1", "false", "true"}
-    (*RegNames)[26]="ip1";                      (*Reg)[26] = 10;   //
-    (*RegNames)[27]="ip2";                      (*Reg)[27] = 0;   //
-    (*RegNames)[28]="ip3";                      (*Reg)[28] = 0;   //
-    (*RegNames)[29]="ip4";                      (*Reg)[29] = 2;   //
-
-    //cktk: reg 0x06 (8bit cfg register)
-
-    //ckbc: reg 0x07 (8bit cfg register)
     vmmSocketHandler = new SocketHandler();
     fec_conf_mod = new FEC_config_module(this);
     fec_conf_mod->LoadSocket( socketHandle() );
@@ -117,7 +81,67 @@ quint16 FEC::GetChMap(){
 
 // ------------------------------------------------------------------------- //
 
+void FEC::LoadDefault(bool calibration){
+    if(!calibration){
+        (*RegNames)[0] ="tp_delay";                (*Reg)[0] = 81;      //32 bit //max 50000 by gui?
+        (*RegNames)[1] ="trigger_period";          (*Reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
+        (*RegNames)[2] ="acq_sync";                (*Reg)[2] = 100;     //32 bit
+        (*RegNames)[3] ="acq_window";              (*Reg)[3] = 3900;    //32 bit
+        (*RegNames)[4] ="run_mode";                (*Reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
+        (*RegNames)[5] ="bcid_reset";              (*Reg)[5] = 0;       //max 65535 (16 bit)
+        (*RegNames)[6] ="fec_port";                (*Reg)[6] = 6007;    //32 bit
+        (*RegNames)[7] ="daq_port";                (*Reg)[7] = 6006;    //32 bit
+        (*RegNames)[8] ="vmmasic_port";            (*Reg)[8] = 6603;    //32 bit
+        (*RegNames)[9] ="vmmapp_port";             (*Reg)[9] = 6600;    //32 bit
+        (*RegNames)[10]="s6_port";                 (*Reg)[10] = 6602;   //32 bit
+        (*RegNames)[11]="evbld_mode";              (*Reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
+        (*RegNames)[12]="evbld_infodata";          (*Reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
+        (*RegNames)[13]="highres";                 (*Reg)[13] = 0;   //{"0", "1", "false", "true"};
 
+        (*RegNames)[14]="triggermode";             (*Reg)[14] = 0;   // 0 for external and 1 for pulser
+        (*RegNames)[15]="res2";                    (*Reg)[15] = 0;   //
+        (*RegNames)[16]="res3";                    (*Reg)[16] = 0;   //
+
+        (*RegNames)[17]="sL0enaV";                  (*Reg)[17] = 0;   //{"0", "1", "false", "true"}
+        (*RegNames)[18]="sL0ena";                   (*Reg)[18] = 0;   //{"0", "1", "false", "true"}
+        (*RegNames)[19]="l0offset";                 (*Reg)[19] = 0;   //12 bit
+        (*RegNames)[20]="offset";                   (*Reg)[20] = 0;   //12 bit
+        (*RegNames)[21]="rollover";                 (*Reg)[21] = 0;   //12 bit
+        (*RegNames)[22]="window";                   (*Reg)[22] = 0;   //3 bit
+        (*RegNames)[23]="truncate";                 (*Reg)[23] = 0;   //6 bit
+        (*RegNames)[24]="nskip";                    (*Reg)[24] = 0;   //7 bit
+        (*RegNames)[25]="sL0cktest";                (*Reg)[25] = 0;   //{"0", "1", "false", "true"}
+        (*RegNames)[26]="ip1";                      (*Reg)[26] = 10;   //
+        (*RegNames)[27]="ip2";                      (*Reg)[27] = 0;   //
+        (*RegNames)[28]="ip3";                      (*Reg)[28] = 0;   //
+        (*RegNames)[29]="ip4";                      (*Reg)[29] = 2;   //
+    }
+   else{
+        (*Reg)[0] = 81;    //tp_delay
+        (*Reg)[1] = 4094;  //trigger_period
+        (*Reg)[2] = 100; //acq_sync
+        (*Reg)[3] = 3900;//acq_window
+        (*Reg)[4] = 0;//run_mode
+        (*Reg)[5] = 0;//bcid_reset
+        (*Reg)[12] = 0;//evbld_infodata
+        (*Reg)[13] = 0;//highres
+
+        (*Reg)[14] = 0;//triggermode
+
+        (*Reg)[17] = 0;//sL0enaV
+        (*Reg)[18] = 0;//sL0ena
+        (*Reg)[19] = 0;//l0offset
+        (*Reg)[20] = 0;//offset
+        (*Reg)[21] = 0;//rollover
+        (*Reg)[22] = 0;//window
+        (*Reg)[23] = 0;//truncate
+        (*Reg)[24] = 0;//nskip
+        (*Reg)[25] = 0;//sL0cktest
+
+    }
+}
+
+// ------------------------------------------------------------------------- //
 unsigned short FEC::VMM_Get(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch){
     unsigned short setting = hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].GetRegister(feature, ch);
     return setting;

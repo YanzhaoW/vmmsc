@@ -373,6 +373,19 @@
        <attribute name="title">
         <string>Calibration</string>
        </attribute>
+       <widget class="QPushButton" name="Data">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>161</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Data-Acq test</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -425,13 +438,6 @@
         </item>
        </layout>
       </widget>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QPushButton" name="Data">
-      <property name="text">
-       <string>Data-Acq test</string>
-      </property>
      </widget>
     </item>
    </layout>

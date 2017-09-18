@@ -21,9 +21,9 @@ public:
     friend class Commandline;
 
 
-
+    void LoadDefault(bool calib = false, std::map<std::string, unsigned short> m_calib = {{"sc", 0}}, int channel =-9999 );
     struct Channel{
-        std::map<std::string, unsigned short> m_channel={{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
+        std::map<std::string, unsigned short> m_channel;
     };
 
     struct VMM_Settings{

@@ -15,6 +15,7 @@ public:
     friend class hybrid_config_handler;
     VMM vmm[VMMS_PER_HYBRID];
 
+    void LoadDefault();
     bool SetVMM(unsigned short vmm, bool OnOff);
     void SetART(bool OnOff);
     bool GetVMM(unsigned short vmm);
@@ -35,7 +36,7 @@ private:
     bool PosX; // hybrid is reading x (true) or y (false)
     unsigned short PosNo; // hybrid is number ? on its axis
     bool SetRegister(std::string feature, std::string value);
-    std::map<std::string, unsigned short> m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0},{"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    std::map<std::string, unsigned short> m_hybrid;
 };
 
 #endif // HYBRID_H
