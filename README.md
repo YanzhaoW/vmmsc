@@ -20,7 +20,7 @@
 ## Recommended Release
 The recommended release is **v1.0** which is for *VMM3* readout. To obtain this release do:
 ```
-git clone -b v4.0.0 https://:@gitlab.cern.ch:8443/NSWelectronics/vmm_readout_software.git
+git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
 ```
 and follow the installation instructions below.
 
