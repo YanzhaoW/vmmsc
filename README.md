@@ -29,8 +29,6 @@ and follow the installation instructions below.
 Here we list the (tested) software requirements.
 
 * [Qt 5.7](https://www.qt.io/qt5-7/)
-* ROOT 5.34 (will not work with ROOT >=6)
-* Boost 1.60
 * C++11 (gcc >=4.7)
 
 ## Installation
