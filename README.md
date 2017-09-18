@@ -18,9 +18,9 @@
 * [Contact Information](#contact)
 
 ## Recommended Release
-The recommended release is **v4.0.0** which is for *VMM2* **AND** *VMM3* readout. To obtain this release do:
+The recommended release is **v1.0** which is for *VMM3* readout. To obtain this release do:
 ```
-git clone -b v4.0.0 https://:@gitlab.cern.ch:8443/NSWelectronics/vmm_readout_software.git
+git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
 ```
 and follow the installation instructions below.
 
@@ -29,8 +29,6 @@ and follow the installation instructions below.
 Here we list the (tested) software requirements.
 
 * [Qt 5.7](https://www.qt.io/qt5-7/)
-* ROOT 5.34 (will not work with ROOT >=6)
-* Boost 1.60
 * C++11 (gcc >=4.7)
 
 ## Installation
