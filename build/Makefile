@@ -68,7 +68,8 @@ SOURCES       = ../src/main.cpp \
 		../src/hybrid_window.cpp \
 		../src/vmm_window.cpp \
 		../src/hybrid_config_handler.cpp \
-		../src/fec_config_module.cpp rcc/qrc_icons.cpp \
+		../src/fec_config_module.cpp \
+		../src/calibration_module.cpp rcc/qrc_icons.cpp \
 		moc/moc_mainwindow.cpp \
 		moc/moc_socket_handler.cpp \
 		moc/moc_vmmsocket.cpp \
@@ -88,7 +89,8 @@ SOURCES       = ../src/main.cpp \
 		moc/moc_hybrid_window.cpp \
 		moc/moc_vmm_window.cpp \
 		moc/moc_hybrid_config_handler.cpp \
-		moc/moc_fec_config_module.cpp
+		moc/moc_fec_config_module.cpp \
+		moc/moc_calibration_module.cpp
 OBJECTS       = objects/main.o \
 		objects/mainwindow.o \
 		objects/socket_handler.o \
@@ -110,6 +112,7 @@ OBJECTS       = objects/main.o \
 		objects/vmm_window.o \
 		objects/hybrid_config_handler.o \
 		objects/fec_config_module.o \
+		objects/calibration_module.o \
 		objects/qrc_icons.o \
 		objects/moc_mainwindow.o \
 		objects/moc_socket_handler.o \
@@ -130,7 +133,8 @@ OBJECTS       = objects/main.o \
 		objects/moc_hybrid_window.o \
 		objects/moc_vmm_window.o \
 		objects/moc_hybrid_config_handler.o \
-		objects/moc_fec_config_module.o
+		objects/moc_fec_config_module.o \
+		objects/moc_calibration_module.o
 DIST          = ../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../../../Qt5.7.0/5.7/gcc_64/mkspecs/common/unix.conf \
 		../../../Qt5.7.0/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -301,7 +305,8 @@ DIST          = ../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../include/hybrid_window.h \
 		../include/vmm_window.h \
 		../include/hybrid_config_handler.h \
-		../include/fec_config_module.h ../src/main.cpp \
+		../include/fec_config_module.h \
+		../include/calibration_module.h ../src/main.cpp \
 		../src/mainwindow.cpp \
 		../src/socket_handler.cpp \
 		../src/vmmsocket.cpp \
@@ -321,7 +326,8 @@ DIST          = ../../../Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../src/hybrid_window.cpp \
 		../src/vmm_window.cpp \
 		../src/hybrid_config_handler.cpp \
-		../src/fec_config_module.cpp
+		../src/fec_config_module.cpp \
+		../src/calibration_module.cpp
 QMAKE_TARGET  = vmmdcs
 DESTDIR       = 
 TARGET        = vmmdcs
@@ -663,8 +669,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../images/icons.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../include/mainwindow.h ../include/socket_handler.h ../include/vmmsocket.h ../include/message_handler.h ../include/vmm_config_handler.h ../include/daq_config_handler.h ../include/commandline.h ../include/globparameter.h ../include/fec_config_handler.h ../include/guicaller.h ../include/vmm.h ../include/daq.h ../include/hybrid.h ../include/hdmi.h ../include/fec.h ../include/daq_window.h ../include/fec_window.h ../include/hdmi_window.h ../include/hybrid_window.h ../include/vmm_window.h ../include/hybrid_config_handler.h ../include/fec_config_module.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../src/main.cpp ../src/mainwindow.cpp ../src/socket_handler.cpp ../src/vmmsocket.cpp ../src/message_handler.cpp ../src/commandline.cpp ../src/vmm_config_handler.cpp ../src/daq_config_handler.cpp ../src/fec_config_handler.cpp ../src/vmm.cpp ../src/daq.cpp ../src/hybrid.cpp ../src/hdmi.cpp ../src/fec.cpp ../src/daq_window.cpp ../src/fec_window.cpp ../src/hdmi_window.cpp ../src/hybrid_window.cpp ../src/vmm_window.cpp ../src/hybrid_config_handler.cpp ../src/fec_config_module.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../include/mainwindow.h ../include/socket_handler.h ../include/vmmsocket.h ../include/message_handler.h ../include/vmm_config_handler.h ../include/daq_config_handler.h ../include/commandline.h ../include/globparameter.h ../include/fec_config_handler.h ../include/guicaller.h ../include/vmm.h ../include/daq.h ../include/hybrid.h ../include/hdmi.h ../include/fec.h ../include/daq_window.h ../include/fec_window.h ../include/hdmi_window.h ../include/hybrid_window.h ../include/vmm_window.h ../include/hybrid_config_handler.h ../include/fec_config_module.h ../include/calibration_module.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../src/main.cpp ../src/mainwindow.cpp ../src/socket_handler.cpp ../src/vmmsocket.cpp ../src/message_handler.cpp ../src/commandline.cpp ../src/vmm_config_handler.cpp ../src/daq_config_handler.cpp ../src/fec_config_handler.cpp ../src/vmm.cpp ../src/daq.cpp ../src/hybrid.cpp ../src/hdmi.cpp ../src/fec.cpp ../src/daq_window.cpp ../src/fec_window.cpp ../src/hdmi_window.cpp ../src/hybrid_window.cpp ../src/vmm_window.cpp ../src/hybrid_config_handler.cpp ../src/fec_config_module.cpp ../src/calibration_module.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../src/daq_window.ui ../src/vmm_window.ui ../src/hybrid_window.ui ../src/fec_window.ui ../src/hdmi_window.ui $(DISTDIR)/
 
 
@@ -698,9 +704,9 @@ rcc/qrc_icons.cpp: ../images/icons.qrc \
 		../images/logo.png
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/rcc -name icons ../images/icons.qrc -o rcc/qrc_icons.cpp
 
-compiler_moc_header_make_all: moc/moc_mainwindow.cpp moc/moc_socket_handler.cpp moc/moc_vmmsocket.cpp moc/moc_message_handler.cpp moc/moc_vmm_config_handler.cpp moc/moc_daq_config_handler.cpp moc/moc_commandline.cpp moc/moc_fec_config_handler.cpp moc/moc_vmm.cpp moc/moc_daq.cpp moc/moc_hybrid.cpp moc/moc_hdmi.cpp moc/moc_fec.cpp moc/moc_daq_window.cpp moc/moc_fec_window.cpp moc/moc_hdmi_window.cpp moc/moc_hybrid_window.cpp moc/moc_vmm_window.cpp moc/moc_hybrid_config_handler.cpp moc/moc_fec_config_module.cpp
+compiler_moc_header_make_all: moc/moc_mainwindow.cpp moc/moc_socket_handler.cpp moc/moc_vmmsocket.cpp moc/moc_message_handler.cpp moc/moc_vmm_config_handler.cpp moc/moc_daq_config_handler.cpp moc/moc_commandline.cpp moc/moc_fec_config_handler.cpp moc/moc_vmm.cpp moc/moc_daq.cpp moc/moc_hybrid.cpp moc/moc_hdmi.cpp moc/moc_fec.cpp moc/moc_daq_window.cpp moc/moc_fec_window.cpp moc/moc_hdmi_window.cpp moc/moc_hybrid_window.cpp moc/moc_vmm_window.cpp moc/moc_hybrid_config_handler.cpp moc/moc_fec_config_module.cpp moc/moc_calibration_module.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc/moc_mainwindow.cpp moc/moc_socket_handler.cpp moc/moc_vmmsocket.cpp moc/moc_message_handler.cpp moc/moc_vmm_config_handler.cpp moc/moc_daq_config_handler.cpp moc/moc_commandline.cpp moc/moc_fec_config_handler.cpp moc/moc_vmm.cpp moc/moc_daq.cpp moc/moc_hybrid.cpp moc/moc_hdmi.cpp moc/moc_fec.cpp moc/moc_daq_window.cpp moc/moc_fec_window.cpp moc/moc_hdmi_window.cpp moc/moc_hybrid_window.cpp moc/moc_vmm_window.cpp moc/moc_hybrid_config_handler.cpp moc/moc_fec_config_module.cpp
+	-$(DEL_FILE) moc/moc_mainwindow.cpp moc/moc_socket_handler.cpp moc/moc_vmmsocket.cpp moc/moc_message_handler.cpp moc/moc_vmm_config_handler.cpp moc/moc_daq_config_handler.cpp moc/moc_commandline.cpp moc/moc_fec_config_handler.cpp moc/moc_vmm.cpp moc/moc_daq.cpp moc/moc_hybrid.cpp moc/moc_hdmi.cpp moc/moc_fec.cpp moc/moc_daq_window.cpp moc/moc_fec_window.cpp moc/moc_hdmi_window.cpp moc/moc_hybrid_window.cpp moc/moc_vmm_window.cpp moc/moc_hybrid_config_handler.cpp moc/moc_fec_config_module.cpp moc/moc_calibration_module.cpp
 moc/moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrentRun \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentrun.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentcompilertest.h \
@@ -4897,6 +4903,94 @@ moc/moc_fec_config_module.cpp: ../include/socket_handler.h \
 		../include/fec_config_module.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I/home/daq/Tools/Readout_Software/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/fec_config_module.h -o moc/moc_fec_config_module.cpp
+
+moc/moc_calibration_module.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QBitArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbitarray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFileInfo \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFileInfoList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDir \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdir.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../include/calibration_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/bin/moc
+	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I/home/daq/Tools/Readout_Software/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/calibration_module.h -o moc/moc_calibration_module.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -9436,6 +9530,93 @@ objects/fec_config_module.o: ../src/fec_config_module.cpp ../include/fec_config_
 		../include/vmm.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fec_config_module.o ../src/fec_config_module.cpp
 
+objects/calibration_module.o: ../src/calibration_module.cpp ../include/calibration_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFile \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMap \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QByteArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QBitArray \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbitarray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/QUdpSocket \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qudpsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qabstractsocket.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtNetwork/qhostaddress.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFileInfo \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFileInfoList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDir \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdir.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../include/message_handler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/calibration_module.o ../src/calibration_module.cpp
+
 objects/qrc_icons.o: rcc/qrc_icons.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/qrc_icons.o rcc/qrc_icons.cpp
 
@@ -9498,6 +9679,9 @@ objects/moc_hybrid_config_handler.o: moc/moc_hybrid_config_handler.cpp
 
 objects/moc_fec_config_module.o: moc/moc_fec_config_module.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/moc_fec_config_module.o moc/moc_fec_config_module.cpp
+
+objects/moc_calibration_module.o: moc/moc_calibration_module.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/moc_calibration_module.o moc/moc_calibration_module.cpp
 
 ####### Install
 

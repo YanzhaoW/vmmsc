@@ -81,6 +81,7 @@ public:
     QGridLayout *gridLayout_11;
     QTextEdit *loggingScreen;
     QPushButton *Debug;
+    QPushButton *Data;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -333,6 +334,11 @@ public:
 
         gridLayout_2->addWidget(tabWidget_2, 0, 1, 2, 2);
 
+        Data = new QPushButton(centralwidget);
+        Data->setObjectName(QStringLiteral("Data"));
+
+        gridLayout_2->addWidget(Data, 2, 2, 1, 1);
+
         daq_window->setCentralWidget(centralwidget);
         menubar = new QMenuBar(daq_window);
         menubar->setObjectName(QStringLiteral("menubar"));
@@ -383,6 +389,7 @@ public:
         groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
         Debug->setText(QApplication::translate("daq_window", "Debug", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_3), QApplication::translate("daq_window", "Logging", 0));
+        Data->setText(QApplication::translate("daq_window", "Data-Acq test", 0));
     } // retranslateUi
 
 };

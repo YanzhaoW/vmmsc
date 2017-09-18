@@ -427,6 +427,13 @@
       </widget>
      </widget>
     </item>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="Data">
+      <property name="text">
+       <string>Data-Acq test</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">

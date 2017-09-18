@@ -6,6 +6,7 @@
 #include <QtConcurrentRun>
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
+#include "calibration_module.h"
 
 
 // vmm
@@ -60,6 +61,7 @@ class MainWindow : public QMainWindow
         SocketHandler& socketHandle() { return *vmmSocketHandler; }
         MessageHandler& msg()         { return *vmmMessageHandler; }
 
+        calibration_module *calib = new calibration_module();
 
     
 

@@ -376,3 +376,8 @@ void daq_window::on_Debug_pressed()
         }
     }
 }
+
+void daq_window::on_Data_clicked()
+{
+    root_main->calib->connectDAQSocket();
+}

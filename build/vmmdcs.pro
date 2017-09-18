@@ -82,7 +82,8 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/hybrid_window.cpp \
             $$sourcepath/vmm_window.cpp \
             $$sourcepath/hybrid_config_handler.cpp \
-            $$sourcepath/fec_config_module.cpp
+            $$sourcepath/fec_config_module.cpp \
+    ../src/calibration_module.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
             $$includepath/socket_handler.h\
@@ -105,7 +106,8 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/hybrid_window.h \
             $$includepath/vmm_window.h \
             $$includepath/hybrid_config_handler.h \
-            $$includepath/fec_config_module.h
+            $$includepath/fec_config_module.h \
+    ../include/calibration_module.h
 
 
 FORMS    += $$sourcepath/daq_window.ui \

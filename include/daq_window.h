@@ -65,6 +65,8 @@ private slots:
 
     void on_Debug_pressed();
 
+    void on_Data_clicked();
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;
