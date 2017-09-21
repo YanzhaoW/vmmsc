@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     vmmSocketHandler(0),
     vmmMessageHandler(0),
+    calib(new calibration_module(this)),
     //thread
     daq_act (DAQS_PER_GUIWINDOW)
 {
@@ -56,4 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 
+}
+void MainWindow::ResetCalib(){
+    delete calib;
+    calib = new calibration_module(this);
 }

@@ -54,7 +54,7 @@ QT_MOC_LITERAL(21, 364, 17), // "on_offACQ_clicked"
 QT_MOC_LITERAL(22, 382, 20), // "on_trgPulser_clicked"
 QT_MOC_LITERAL(23, 403, 22), // "on_trgExternal_clicked"
 QT_MOC_LITERAL(24, 426, 16), // "on_Debug_pressed"
-QT_MOC_LITERAL(25, 443, 15) // "on_Data_clicked"
+QT_MOC_LITERAL(25, 443, 15) // "on_Data_pressed"
 
     },
     "daq_window\0ChangeState\0\0SetDebug\0"
@@ -68,7 +68,7 @@ QT_MOC_LITERAL(25, 443, 15) // "on_Data_clicked"
     "on_checkBox_stateChanged\0arg1\0"
     "on_onACQ_clicked\0on_offACQ_clicked\0"
     "on_trgPulser_clicked\0on_trgExternal_clicked\0"
-    "on_Debug_pressed\0on_Data_clicked"
+    "on_Debug_pressed\0on_Data_pressed"
 };
 #undef QT_MOC_LITERAL
 
@@ -170,7 +170,7 @@ void daq_window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 19: _t->on_trgPulser_clicked(); break;
         case 20: _t->on_trgExternal_clicked(); break;
         case 21: _t->on_Debug_pressed(); break;
-        case 22: _t->on_Data_clicked(); break;
+        case 22: _t->on_Data_pressed(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {

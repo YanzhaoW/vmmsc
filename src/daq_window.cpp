@@ -21,6 +21,7 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     if(is_file_exist("../configs/default.txt")){
     LoadConfig("default");
     }
+
 }
 bool daq_window::is_file_exist(const char *fileName)
 {
@@ -60,6 +61,29 @@ void daq_window::SetWarning2(QString warning, QString bkgcol ){
     ui->connectionLabel_3->setStyleSheet("background-color: "+bkgcol);
 }
 // ------------------------------------------------------------------------- //
+
+void daq_window::Plotter(std::vector<double> x, std::vector<double> y){
+//     generate some data:
+//    std::vector<double> x(101), y(101); // initialize with entries 0..100
+//    for (int i=0; i<101; ++i)
+//    {
+//      x[i] = i/50.0 - 1; // x goes from -1 to 1
+//      y[i] = x[i]*x[i]; // let's plot a quadratic function
+//    }
+    // create graph and assign data to it:
+    ui->customPlot->addGraph();
+    ui->customPlot->graph(0)->setData(QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(y));
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("channel");
+    ui->customPlot->yAxis->setLabel("Mean ADC");
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0, 66);
+    ui->customPlot->yAxis->setRange(220, 320);
+    ui->customPlot->replot();
+}
+
+
+
 
 void daq_window::on_Box_fec1_clicked()
 {
@@ -377,7 +401,19 @@ void daq_window::on_Debug_pressed()
     }
 }
 
-void daq_window::on_Data_clicked()
+
+void daq_window::on_Data_pressed()
 {
-    root_main->calib->connectDAQSocket();
+    if(!ui->Data->isChecked()){
+//        root_main->calib->SetRun(QString("initial"));
+        root_main->calib->StartCalib();
+//        root_main->calib->connectDAQSocket();
+//        ui->Data->setChecked(true);
+    }
+    else{
+        root_main->calib->closeDAQSocket();
+        root_main->ResetCalib();
+        for(int i=0; i<16;i++) ui->VMM_select->removeItem(0);
+    }
+//    else root_main->calib->CalibADC();
 }

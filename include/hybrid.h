@@ -13,6 +13,7 @@ public:
     friend class Commandline;
     friend class vmm;
     friend class hybrid_config_handler;
+    friend class calibration_module;
     VMM vmm[VMMS_PER_HYBRID];
 
     void LoadDefault();

@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
@@ -23,10 +24,12 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QTextEdit>
 #include <QtWidgets/QWidget>
+#include "qcustomplot.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -76,6 +79,13 @@ public:
     QWidget *widget;
     QWidget *tab_2;
     QPushButton *Data;
+    QGroupBox *groupBox_2;
+    QLabel *ADC_calib_info;
+    QSpinBox *acqSync;
+    QLabel *label_run;
+    QComboBox *VMM_select;
+    QLabel *label_vmm;
+    QCustomPlot *customPlot;
     QWidget *tab_3;
     QGridLayout *gridLayout_10;
     QGroupBox *groupBox_5;
@@ -301,7 +311,37 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         Data = new QPushButton(tab_2);
         Data->setObjectName(QStringLiteral("Data"));
-        Data->setGeometry(QRect(10, 20, 161, 22));
+        Data->setGeometry(QRect(10, 10, 161, 22));
+        Data->setCheckable(true);
+        groupBox_2 = new QGroupBox(tab_2);
+        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        groupBox_2->setGeometry(QRect(220, 10, 281, 181));
+        ADC_calib_info = new QLabel(groupBox_2);
+        ADC_calib_info->setObjectName(QStringLiteral("ADC_calib_info"));
+        ADC_calib_info->setGeometry(QRect(160, 70, 115, 20));
+        ADC_calib_info->setMinimumSize(QSize(0, 20));
+        ADC_calib_info->setMaximumSize(QSize(16777215, 16777215));
+        ADC_calib_info->setFont(font1);
+        acqSync = new QSpinBox(groupBox_2);
+        acqSync->setObjectName(QStringLiteral("acqSync"));
+        acqSync->setGeometry(QRect(210, 40, 48, 23));
+        acqSync->setFont(font1);
+        acqSync->setMinimum(1);
+        acqSync->setMaximum(10000);
+        acqSync->setSingleStep(1);
+        acqSync->setValue(300);
+        label_run = new QLabel(groupBox_2);
+        label_run->setObjectName(QStringLiteral("label_run"));
+        label_run->setGeometry(QRect(200, 20, 59, 14));
+        VMM_select = new QComboBox(groupBox_2);
+        VMM_select->setObjectName(QStringLiteral("VMM_select"));
+        VMM_select->setGeometry(QRect(20, 150, 79, 22));
+        label_vmm = new QLabel(groupBox_2);
+        label_vmm->setObjectName(QStringLiteral("label_vmm"));
+        label_vmm->setGeometry(QRect(20, 130, 91, 16));
+        customPlot = new QCustomPlot(tab_2);
+        customPlot->setObjectName(QStringLiteral("customPlot"));
+        customPlot->setGeometry(QRect(50, 210, 1391, 681));
         tabWidget_2->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
@@ -348,7 +388,7 @@ public:
 
         retranslateUi(daq_window);
 
-        tabWidget_2->setCurrentIndex(0);
+        tabWidget_2->setCurrentIndex(1);
         tabWidget->setCurrentIndex(-1);
 
 
@@ -383,7 +423,11 @@ public:
         Box_fec7->setText(QApplication::translate("daq_window", "7", 0));
         Box_fec8->setText(QApplication::translate("daq_window", "8", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
-        Data->setText(QApplication::translate("daq_window", "Data-Acq test", 0));
+        Data->setText(QApplication::translate("daq_window", "Start Calibration", 0));
+        groupBox_2->setTitle(QApplication::translate("daq_window", "ADC Calibration", 0));
+        ADC_calib_info->setText(QApplication::translate("daq_window", "Infobox", 0));
+        label_run->setText(QApplication::translate("daq_window", "#Runs", 0));
+        label_vmm->setText(QApplication::translate("daq_window", "Display VMM", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("daq_window", "Calibration", 0));
         groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
         Debug->setText(QApplication::translate("daq_window", "Debug", 0));

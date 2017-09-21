@@ -2,8 +2,9 @@
 daq 0: fecs: 1
 	fec 0: hdmis: 1
 		hdmi 7: hybrids: 1
-			hybrid 0: x 65535, vmms: 1
+			hybrid 0: x 65535, vmms: 2
 				vmm 0
+				vmm 1
 // daq general settings
 ignore16 false
 debug 0

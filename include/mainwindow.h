@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow
     friend class hdmi_window;
     friend class hybrid_window;
     friend class vmm_window;
+    friend class calibration_module;
     DAQ daq[DAQS_PER_GUIWINDOW];
     private:
         bool m_dbg;
@@ -54,6 +55,7 @@ class MainWindow : public QMainWindow
         FEC_config_handler *fecconfhandl;
         daq_window *daqwindow;
         bool dbg() { return m_dbg; }
+        void ResetCalib();
 
 
         // methods to grab the VMM tools
@@ -61,7 +63,7 @@ class MainWindow : public QMainWindow
         SocketHandler& socketHandle() { return *vmmSocketHandler; }
         MessageHandler& msg()         { return *vmmMessageHandler; }
 
-        calibration_module *calib = new calibration_module();
+        calibration_module *calib;
 
     
 

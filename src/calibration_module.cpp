@@ -1,13 +1,15 @@
-#include "../include/calibration_module.h"
-using namespace std;
+#include "calibration_module.h"
 
-calibration_module::calibration_module(QObject *parent) :
+calibration_module::calibration_module(MainWindow *top, QObject *parent) :
     QObject(parent),
+    root_main{top},
      m_DAQSocket(0),
      m_daqSocket(0),
      m_calibRun(false),
      m_msg(new MessageHandler),
-     m_ignore16(false)
+     m_ignore16(false),
+     v_calibvar(new vector<vector< vector<int> > >(16, vector< vector<int> >(64,vector<int>(0)))),
+     r_mean(new vector<result_mean>)
 {
 
 }
@@ -19,6 +21,221 @@ void calibration_module::LoadMessageHandler(MessageHandler& m)
     // remove monitoring m_daqMonitor->LoadMessageHandler(msg());
 }
 // ------------------------------------------------------------------------ //
+void calibration_module::GetActVMM(){
+    act_vmm.clear();
+//    root_main->daqwindow->ui->VMM_select->clear();
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if (root_main->daq[0].GetFEC(j) ){
+            for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+                if( root_main->daq[0].fec[j].GetHDMI(k) ){
+                    for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                        if (root_main->daq[0].fec[j].hdmi[k].GetHybrid(l)){
+                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                                if (root_main->daq[0].fec[j].hdmi[k].hybrid[l].GetVMM(m) ){
+                                    act_vmm.push_back(2*k + m);
+                                    root_main->daqwindow->ui->VMM_select->addItem(QString("VMM%0").arg(2*k + m));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    r_mean->resize(act_vmm.size());
+    connect( root_main->daqwindow->ui->VMM_select, SIGNAL(currentIndexChanged(int)),
+                                            this, SLOT(updatePlot()));
+}
+// ------------------------------------------------------------------------ //
+void calibration_module::updatePlot(){
+    if(QObject::sender() == root_main->daqwindow->ui->VMM_select){
+        PlotADC(root_main->daqwindow->ui->VMM_select->currentIndex());
+    }
+}
+
+// ------------------------------------------------------------------------ //
+
+void calibration_module::StartCalib(){
+    delete r_mean;
+    r_mean = new vector<result_mean>;
+    delete v_calibvar;
+    v_calibvar = new vector<vector< vector<int> > >(16, vector< vector<int> >(64,vector<int>(0)));
+    eventcount = 0 ;
+    GetActVMM();
+    calibrun = "initial";
+    CalibADC();
+}
+
+// ------------------------------------------------------------------------ //
+
+void calibration_module::CalibADC(){
+    emit root_main->daqwindow->ui->openConnection_2->clicked();
+    if(! (root_main->daqwindow->ui->connectionLabel_2->text()==QString("all alive"))) {
+        std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
+        return;
+    }
+    if(calibrun=="initial"){
+        std::map<std::string, unsigned short> m_high = {{"st", 1}, {"ADC0_10", 0}};
+        for(int i=0; i<act_vmm.size(); i++){
+            int hdmi =(act_vmm[i]/2) ;
+            int vmm = act_vmm[i]%2;
+            root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].LoadDefault(true, m_high );
+        }
+    }
+    root_main->daqwindow->ui->checkBox->setChecked(true);
+    emit root_main->daqwindow->ui->checkBox->stateChanged(true);
+    emit root_main->daqwindow->ui->trgPulser->clicked();
+    delete v_calibvar;
+    v_calibvar = new vector<vector< vector<int> > >(16, vector< vector<int> >(64,vector<int>(0)));
+    calibmode = "ADC";
+    emit root_main->daqwindow->ui->onACQ->clicked();
+    connectDAQSocket();
+    eventcount = 0 ;
+
+
+
+}
+
+// ------------------------------------------------------------------------ //
+void calibration_module::Counting(){
+    if(eventcount<100){
+        eventcount+=1;
+    }
+    else{
+        emit root_main->daqwindow->ui->offACQ->clicked();
+        closeDAQSocket();
+
+
+     for(int m =0; m<act_vmm.size(); m++){
+        vector<double> x1;
+        vector<double> y1;
+
+        for(unsigned int i = 0; i<64; i++){
+//            for(unsigned int i = 0; i<v_calibvar->at(act_vmm[m]).size(); i++){
+            x1.push_back(i);
+            int sum = 0;
+            for(unsigned int j = 0; j<v_calibvar->at(act_vmm[m]).at(i).size(); j++ ){
+                sum += v_calibvar->at(act_vmm[m]).at(i).at(j);
+                if(j == v_calibvar->at(act_vmm[m]).at(i).size()-1){
+                    sum=sum/v_calibvar->at(act_vmm[m]).at(i).size();
+                    y1.push_back(sum);
+                }
+            }
+            if(v_calibvar->at(act_vmm[m]).at(i).size()==0)y1.push_back(0);//if channel is dead
+        }
+        r_mean->at(m).y_fullrange.push_back(y1);
+        r_mean->at(m).channel=x1;
+     }//loop active VMMs
+        if(bincount==31){
+            if(calibrun == "singleplot"){
+                cout<<"I am here!"<<endl;
+                Calib();
+                cout<<"I am here2!"<<endl;
+                GetCalSetting();
+                 cout<<"I am here3!"<<endl;
+                calibrun = "plotting";
+                CalibADC();
+            }
+            else if(calibrun == "plotting"){
+                PlotADC(0);
+
+            }
+        }
+        else{
+            calibrun="singleplot";
+            bincount+=1;
+            std::map<std::string, unsigned short> m_high = {{"st", 1}, {"ADC0_10", bincount}};
+            for(int i=0; i<act_vmm.size(); i++){
+                int hdmi =(act_vmm[i]/2) ;
+                int vmm = act_vmm[i]%2;
+                root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].LoadDefault(true, m_high );
+            }
+            CalibADC();
+        }
+    }
+
+}
+
+void calibration_module::PlotADC(int m){
+    root_main->daqwindow->ui->customPlot->clearGraphs();
+    // give the axes some labels:
+    root_main->daqwindow->ui->customPlot->xAxis->setLabel("channel");
+    root_main->daqwindow->ui->customPlot->yAxis->setLabel("Mean ADC");
+    // set axes ranges, so we see all data:
+    root_main->daqwindow->ui->customPlot->xAxis->setRange(0, 66);
+    root_main->daqwindow->ui->customPlot->yAxis->setRange(150, 350);
+    root_main->daqwindow->ui->customPlot->legend->setVisible(true);
+    root_main->daqwindow->ui->customPlot->legend->setFont(QFont("Helvetica",9));
+    for(int i=0; i<32;i++){
+        root_main->daqwindow->ui->customPlot->addGraph();
+        root_main->daqwindow->ui->customPlot->graph(i)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(i)));
+        root_main->daqwindow->ui->customPlot->graph(i)->setPen(QPen(QColor(i*10)));
+        root_main->daqwindow->ui->customPlot->legend->removeItem(root_main->daqwindow->ui->customPlot->legend->itemCount()-1);
+    }
+    root_main->daqwindow->ui->customPlot->addGraph();
+//        int n_graph = root_main->daqwindow->ui->customPlot->graphCount();
+    root_main->daqwindow->ui->customPlot->graph(32)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).v_calval));
+    root_main->daqwindow->ui->customPlot->graph(32)->setPen(QPen(Qt::red,4,Qt::SolidLine));
+    root_main->daqwindow->ui->customPlot->graph(32)->setName("Best common value");
+    root_main->daqwindow->ui->customPlot->addGraph();
+    root_main->daqwindow->ui->customPlot->graph(33)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(32)));
+    root_main->daqwindow->ui->customPlot->graph(33)->setPen(QPen(Qt::green,4,Qt::SolidLine));
+    root_main->daqwindow->ui->customPlot->graph(33)->setName("Calibrated curve");
+
+    root_main->daqwindow->ui->customPlot->replot();
+}
+
+void calibration_module::Calib(){
+    // Function to calculate the best common ADC value for all channels
+    for(int m=0; m<act_vmm.size(); m++){
+        vector<double> sorted_0mV = r_mean->at(m).y_fullrange.at(0);
+        vector<double> sorted_31mV = r_mean->at(m).y_fullrange.at(31);
+        std::sort(sorted_0mV.begin(), sorted_0mV.end());
+        std::sort(sorted_31mV.begin(), sorted_31mV.end());
+        int state =0;
+        int check = 0;
+        while( (sorted_0mV[check-state]-sorted_31mV[63-check]) < 0 ){
+            if(state == 0){
+                state =1;
+                check+=1;
+            }
+            else if(state == 1){
+                state =0;
+            }
+
+        }
+        cout<<"Best common value "<<(sorted_0mV[check-state]+sorted_31mV[63-check])/2<<" value of high: "<< sorted_31mV[check-state]<<" value of low"<<sorted_0mV[63-check]<<endl;
+        r_mean->at(m).calib_value = (sorted_0mV[check-state]+sorted_31mV[63-check])/2;
+        for(unsigned int i =0; i<64; i++){
+            r_mean->at(m).v_calval.push_back(r_mean->at(m).calib_value);
+        }
+    }
+}
+
+void calibration_module::GetCalSetting(){
+    // function to calculate the best bin value for each channel
+    cout<<"DEBUG"<<"1 "<<act_vmm.size()<<" End size!: "<<act_vmm[0]<<"   "<<r_mean->at(0).y_fullrange.at(0).size()<<endl;
+    for(int m=0; m<act_vmm.size(); m++){
+        for(unsigned int i =0; i<64; i++){
+            unsigned int difference = 9999;
+            int bin_number = 0;
+            for(int j = 0; j<32; j++){
+                unsigned int diff = pow(pow(r_mean->at(m).calib_value - r_mean->at(m).y_fullrange.at(j).at(i),2),0.5);
+                if( diff < difference ) {
+                    difference = diff;
+                    bin_number = j;
+                }
+                if(j == 31){
+                    int hdmi =(act_vmm[m]/2) ;
+                    int vmm = act_vmm[m]%2;
+                    root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].SetRegi("ADC0_10", bin_number , i );
+                }
+            }
+        }
+    }
+    cout<<"DEBUG"<<"2"<<endl;
+
+ }
 
 void calibration_module::connectDAQSocket()
 {
@@ -27,7 +244,7 @@ void calibration_module::connectDAQSocket()
     int daqport = 6006;
 
     if(!m_DAQSocket) {
-        msg()("Initializing DAQ socket...","DataHandler::connectDAQSocket");
+        msg()("Initializing DAQ socket...","calibration_module::connectDAQSocket");
         m_DAQSocket = new QUdpSocket();
         connect(m_DAQSocket, SIGNAL(readyRead()), this, SLOT(readEvent()));
     }
@@ -35,15 +252,15 @@ void calibration_module::connectDAQSocket()
     if(m_DAQSocket->state() == QAbstractSocket::UnconnectedState) {
         if(dbg()){
             sx << "About to re-bind DAQ socket";
-            msg()(sx,"DataHandler::connectDAQSocket"); sx.str("");
+            msg()(sx,"calibration_module::connectDAQSocket"); sx.str("");
         }
         bool bnd = m_DAQSocket->bind(daqport, QUdpSocket::ShareAddress);
         if(!bnd) {
             sx << "ERROR Unable to re-bind DAQ socket to port " << daqport;
-            msg()(sx, "DataHandler::connectDAQSocket"); sx.str("");
+            msg()(sx, "calibration_module::connectDAQSocket"); sx.str("");
             if(dbg()) {
                 sx << "Closing and disconnecting DAQ socket";
-                msg()(sx,"DataHandler::connectDAQSocket"); sx.str("");
+                msg()(sx,"calibration_module::connectDAQSocket"); sx.str("");
             }
             m_DAQSocket->close();
             m_DAQSocket->disconnectFromHost();
@@ -52,7 +269,7 @@ void calibration_module::connectDAQSocket()
 
             if(dbg()) {
                 sx << "DAQ socket successfully bound to port " << daqport;
-                msg()(sx,"DataHandler::connectDAQSocket"); sx.str("");
+                msg()(sx,"calibration_module::connectDAQSocket"); sx.str("");
             }
         } // bnd ok
     }
@@ -61,7 +278,7 @@ void calibration_module::connectDAQSocket()
 void calibration_module::closeDAQSocket()
 {
     // close the socket
-    if(dbg()) msg()("Closing DAQ socket", "DataHandler::closeDAQSocket");
+    if(dbg()) msg()("Closing DAQ socket", "calibration_module::closeDAQSocket");
     m_DAQSocket->close();
     m_DAQSocket->disconnectFromHost();
 }
@@ -109,9 +326,9 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
            chipNumberStr    = datagram.mid(7,1).toHex();
            trigCountStr     = datagram.mid(8,2).toHex();
            trigTimeStampStr = datagram.mid(10,2).toHex();
-
-           //if(dbg() && verbose) {
-           if(true){
+            int chipnumber = chipNumberStr.toInt(&ok,16);
+           if(dbg()) {
+//           if(true){
                sx.str("");
                headerStr        = datagram.mid(4,4).toHex();
                fullEventDataStr = datagram.mid(12, datagram.size()).toHex();
@@ -121,16 +338,17 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
                   << "  > Data          : " << fullEventDataStr.toStdString() << "\n"
                   << "*****************************************************";
                cout << sx.str() << endl;
-               //msg()(sx,"DataHandler::decodeAndWriteData");
+               //msg()(sx,"calibration_module::decodeAndWriteData");
            } //dbg
 
            if(datagram.size()==12 && dbg()) {
                sx.str("");
                sx << "Empty event from chip #: " << chipNumberStr.toInt(&ok,16);
                cout << sx.str() << endl;
-               msg()(sx,"DataHandler::decodeAndWriteData"); sx.str("");
+               msg()(sx,"calibration_module::decodeAndWriteData"); sx.str("");
            }
-
+           if(datagram.size()==12) return;
+           if(chipnumber==act_vmm[0]) Counting();
            // data containers for this chip
            _pdo.clear();
            _tdo.clear();
@@ -162,8 +380,8 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
                        sx.str("");
                        sx << "Channel for calibration has not been set!\n"
                           << "Make sure that it is set correctly in"
-                          << " DataHandler::setCalibrationChannel";
-                       msg()(sx, "DataHandler::decodeAndWriteData"); sx.str("");
+                          << " calibration_module::setCalibrationChannel";
+                       msg()(sx, "calibration_module::decodeAndWriteData"); sx.str("");
                        _neighbor.push_back(0);
                    }
                    else {
@@ -219,6 +437,7 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
                uint gray = grayToBinary(outBCID_);
                _gray.push_back(gray);
                 verbose=true;
+
                if(dbg() && verbose) {
                //if(true) {
                    sx.str("");
@@ -233,10 +452,10 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
                       << "bcid-gray        : " << gray << "\n"
                       << "bcid             : " << outBCID_ << "\n";
                    cout << sx.str() << endl;
-                   //msg()(sx,"DataHandler::decodeAndWriteData");
+                   //msg()(sx,"calibration_module::decodeAndWriteData");
                    //msg()(" "," ");
                } // dbg
-
+                if(calibmode == QString("ADC")) (*v_calibvar)[chipnumber][channel_no].push_back(outCharge_);
                // move to next channel (8 bytes forward)
                i += 8;
            } // i
@@ -263,8 +482,8 @@ quint32 calibration_module::reverse32(QString hex)
     QString bin, tmp;
     bin = tmp.number(hex.toUInt(&ok,16),2); // convert input to binary
     if(bin.size()>32) {
-        cout << "DataHandler::reverse32    Input datagram is larger than 32 bits!" << endl;
-        cout << "DataHandler::reverse32    >>> Exiting." << endl;
+        cout << "calibration_module::reverse32    Input datagram is larger than 32 bits!" << endl;
+        cout << "calibration_module::reverse32    >>> Exiting." << endl;
         exit(1);
     }
     // turn input array into QBitArray

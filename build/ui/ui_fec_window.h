@@ -554,7 +554,7 @@ public:
 
         retranslateUi(fec_window);
 
-        tabWidget1->setCurrentIndex(0);
+        tabWidget1->setCurrentIndex(1);
         evbld_mode->setCurrentIndex(0);
         evbld_infodata->setCurrentIndex(5);
 

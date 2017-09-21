@@ -20,6 +20,7 @@ class daq_window : public QMainWindow
     friend class hdmi_window;
     friend class hybrid_window;
     friend class vmm_window;
+    friend class calibration_module;
 
 public:
     explicit daq_window(MainWindow *top, QWidget *parent = 0);
@@ -32,6 +33,8 @@ public:
     std::string sendstate = "";
     void LoadConfig(QString text);
     bool is_file_exist(const char *fileName);
+//    void Plotter(QVector<double> x, QVector<double> y);
+    void Plotter(std::vector<double> x, std::vector<double> y);
 
 private slots:
     void on_Box_fec1_clicked();
@@ -65,7 +68,7 @@ private slots:
 
     void on_Debug_pressed();
 
-    void on_Data_clicked();
+    void on_Data_pressed();
 
 private:
     MainWindow *root_main;

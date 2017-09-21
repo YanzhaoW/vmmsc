@@ -26,7 +26,8 @@ class QUdpSocket;
 
 // vmm
 #include "message_handler.h"
-
+using namespace std;
+class MainWindow;
 class VMMSocket;
 
 
@@ -35,7 +36,7 @@ class calibration_module : public QObject
 {
     Q_OBJECT
 public:
-    explicit calibration_module(QObject *parent = 0);
+    explicit calibration_module(MainWindow *top, QObject *parent = 0);
     bool dbg() { return m_dbg; }
     VMMSocket& daqSocket() { return *m_daqSocket; }
 
@@ -53,9 +54,15 @@ public:
     static QByteArray bitsToBytes(QBitArray bits);
     static QBitArray bytesToBits(QByteArray bytes);
 
+    void CalibADC();
+    void SetRun(QString run){calibrun=run;}
+    void SetMode(QString mode){calibmode= mode;}
+    void StartCalib();
+
 
 private:
-    bool m_dbg = true;
+    MainWindow *root_main;
+    bool m_dbg = false;
     QUdpSocket *m_DAQSocket;
     void decodeAndWriteData(const QByteArray& datagram);
     VMMSocket *m_daqSocket;
@@ -75,11 +82,39 @@ private:
 
      bool m_calibRun;
 
+     vector< vector< vector<int> > > *v_calibvar;
+     QString calibmode;
+     QString calibrun;
+     int eventcount = 0;
+     void Counting();
+     void Calib();
+     void GetCalSetting();
+     void PlotADC(int m);
 
+     int bincount=0;
+
+     vector<int> act_vmm;
+     void GetActVMM();
+
+     struct result_mean{
+         vector<double> channel;
+         vector<vector<double>> y_fullrange;
+         vector<double> y_calib;
+         double calib_value;
+         vector<double> v_calval;
+
+     };
+
+    vector<result_mean> *r_mean;
 signals:
 
 public slots:
     void readEvent();
+    void updatePlot();
 };
 
 #endif // CALIBRATION_MODULE_H
+
+#ifndef _MAINWINDOW_HPP
+#include "mainwindow.h"
+#endif

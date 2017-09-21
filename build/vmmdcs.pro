@@ -38,6 +38,7 @@ QT      += network
 QT      += widgets
 QT      += xml
 QT      += concurrent
+greaterThan(QT_MAJOR_VERSION, 4): QT +=widgets printsupport
 CONFIG  += console
 CONFIG  +=declarative_debug
 CONFIG  +=c++11
@@ -83,7 +84,8 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/vmm_window.cpp \
             $$sourcepath/hybrid_config_handler.cpp \
             $$sourcepath/fec_config_module.cpp \
-    ../src/calibration_module.cpp
+    ../src/calibration_module.cpp \
+    ../src/qcustomplot.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
             $$includepath/socket_handler.h\
@@ -107,7 +109,8 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/vmm_window.h \
             $$includepath/hybrid_config_handler.h \
             $$includepath/fec_config_module.h \
-    ../include/calibration_module.h
+    ../include/calibration_module.h \
+    ../include/qcustomplot.h
 
 
 FORMS    += $$sourcepath/daq_window.ui \

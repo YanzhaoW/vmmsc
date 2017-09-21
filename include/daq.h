@@ -22,6 +22,7 @@ public:
     ~DAQ();
     friend class Commandline;
     friend class vmm_window;
+    friend class calibration_module;
     FEC fec[FECS_PER_DAQ];
 
     MessageHandler& msg() { return *vmmMessageHandler; }

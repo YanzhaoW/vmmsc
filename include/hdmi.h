@@ -11,6 +11,7 @@ public:
     HDMI();
     ~HDMI();
     friend class Commandline;
+    friend class calibration_module;
     Hybrid hybrid[HYBRIDS_PER_HDMI];
 
     bool SetHybrid(unsigned short hybrid, bool OnOff);

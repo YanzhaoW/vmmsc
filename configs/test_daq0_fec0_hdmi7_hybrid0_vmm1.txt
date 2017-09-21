@@ -133,7 +133,7 @@ channel 6 sd 0
 channel 6 sl 0
 channel 6 sm 0
 channel 6 smx 0
-channel 6 st 0
+channel 6 st 1
 channel 6 sth 0
 
 channel 7 ADC0_10 0
@@ -166,7 +166,7 @@ channel 9 sd 0
 channel 9 sl 0
 channel 9 sm 0
 channel 9 smx 0
-channel 9 st 0
+channel 9 st 1
 channel 9 sth 0
 
 channel 10 ADC0_10 0
@@ -188,7 +188,7 @@ channel 11 sd 0
 channel 11 sl 0
 channel 11 sm 0
 channel 11 smx 0
-channel 11 st 0
+channel 11 st 1
 channel 11 sth 0
 
 channel 12 ADC0_10 0
@@ -210,7 +210,7 @@ channel 13 sd 0
 channel 13 sl 0
 channel 13 sm 0
 channel 13 smx 0
-channel 13 st 0
+channel 13 st 1
 channel 13 sth 0
 
 channel 14 ADC0_10 0

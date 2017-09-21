@@ -20,6 +20,7 @@ public:
     friend class vmm_window;
     friend class daq_window;
     friend class DAQ;
+    friend class calibration_module;
     HDMI hdmi[HDMIS_PER_FEC];
 
     void LoadDefault(bool calibration = false);

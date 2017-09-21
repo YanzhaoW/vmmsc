@@ -22,7 +22,7 @@ void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib
     }
 
     if(calib){
-        // allows to set different values
+        // allows to set different values from calibration for single channel or all channels at once
         for( const auto& elem : m_calib ){
             for(int i =0; i<64; i++){
                 if(channel == i  ||  channel == -9999){
