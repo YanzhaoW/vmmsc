@@ -198,7 +198,7 @@ void calibration_module::PlotADC(int m){
     root_main->daqwindow->ui->customPlot->graph(n_graph)->setPen(QPen(Qt::red,4,Qt::SolidLine));
     root_main->daqwindow->ui->customPlot->graph(n_graph)->setName("Best common value");
     root_main->daqwindow->ui->customPlot->addGraph();
-    root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(bincount)));
+    root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(number_bits)));
     root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setPen(QPen(Qt::green,4,Qt::SolidLine));
     root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setName("Calibrated curve");
 
@@ -242,10 +242,10 @@ void calibration_module::GetCalSetting(){
 //    }
     for(int m=0; m<act_vmm.size(); m++){
         for(unsigned int i =0; i<64; i++){
-            unsigned int difference = 9999;
+            double difference = 9999.;
             int bin_number = 0;
             for(int j = 0; j<number_bits; j++){
-                unsigned int diff = pow(pow(r_mean->at(m).calib_value - r_mean->at(m).y_fullrange.at(j).at(i),2),0.5);
+                double diff = pow(pow(r_mean->at(m).calib_value - r_mean->at(m).y_fullrange.at(j).at(i),2),0.5);
                 if( diff < difference ) {
                     difference = diff;
                     bin_number = j;
@@ -253,6 +253,7 @@ void calibration_module::GetCalSetting(){
                 if(j == number_bits-1){
                     int hdmi =(act_vmm[m]/2) ;
                     int vmm = act_vmm[m]%2;
+                    cout<<"HERE:: "<<difference<<" Bin: "<< bin_number<<endl;
                     string regi = "ADC0_10";
                     if(calibmode == "TDC") regi = "ADC0_8";
                     root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].SetRegi(regi, bin_number , i );
