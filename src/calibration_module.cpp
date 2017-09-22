@@ -236,9 +236,6 @@ void calibration_module::GetCalSetting(){
     // function to calculate the best bin value for each channel
     if(calibrun=="writeconfig")root_main->daqwindow->LoadConfig("Calib_config");
 
-//        root_main->daqwindow->ui->line_configFile->setText("Calib_config");
-//        emit root_main->daqwindow->ui->Button_load->clicked();
-//        root_main->daqwindow->ui->line_configFile->setText("");
 //    }
     for(int m=0; m<act_vmm.size(); m++){
         for(unsigned int i =0; i<64; i++){
@@ -253,7 +250,6 @@ void calibration_module::GetCalSetting(){
                 if(j == number_bits-1){
                     int hdmi =(act_vmm[m]/2) ;
                     int vmm = act_vmm[m]%2;
-                    cout<<"HERE:: "<<difference<<" Bin: "<< bin_number<<endl;
                     string regi = "ADC0_10";
                     if(calibmode == "TDC") regi = "ADC0_8";
                     root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].SetRegi(regi, bin_number , i );
