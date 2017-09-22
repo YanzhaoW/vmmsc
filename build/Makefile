@@ -931,12 +931,12 @@ moc/moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcu
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../include/mainwindow.h \
 		../include/socket_handler.h \
 		../include/vmmsocket.h \
 		../include/commandline.h \
 		../include/vmm.h \
 		../include/globparameter.h \
-		../include/mainwindow.h \
 		../include/vmm_config_handler.h \
 		../include/hybrid_config_handler.h \
 		../include/daq_config_handler.h \
@@ -975,66 +975,7 @@ moc/moc_mainwindow.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcu
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -1505,66 +1446,7 @@ moc/moc_vmm_config_handler.cpp: ../include/globparameter.h \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -1836,66 +1718,7 @@ moc/moc_daq_config_handler.cpp: ../include/globparameter.h \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -2167,66 +1990,7 @@ moc/moc_commandline.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -2498,66 +2262,7 @@ moc/moc_fec_config_handler.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObje
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -3006,72 +2711,8 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -3124,8 +2765,10 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -3133,8 +2776,10 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -3181,6 +2826,7 @@ moc/moc_daq_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindo
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -3332,77 +2978,13 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		../include/fec_window.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -3455,8 +3037,10 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -3464,8 +3048,10 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -3512,6 +3098,7 @@ moc/moc_fec_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -3663,89 +3250,19 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/hybrid_window.h \
 		ui/ui_hybrid_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
 		../include/hdmi_window.h \
 		../include/fec_window.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -3798,8 +3315,10 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -3807,8 +3326,10 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -3855,6 +3376,7 @@ moc/moc_hdmi_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -4006,89 +3528,19 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_hybrid_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
 		../include/hybrid_window.h \
 		../include/hdmi_window.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/fec_window.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -4141,8 +3593,10 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -4150,8 +3604,10 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -4198,6 +3654,7 @@ moc/moc_hybrid_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -4349,89 +3806,19 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
 		../include/hybrid_window.h \
 		ui/ui_hybrid_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
 		../include/vmm_window.h \
 		../include/hdmi_window.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/fec_window.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -4484,8 +3871,10 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -4493,8 +3882,10 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -4541,6 +3932,7 @@ moc/moc_vmm_window.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -4854,66 +4246,7 @@ moc/moc_hybrid_config_handler.cpp: ../include/globparameter.h \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -5095,6 +4428,190 @@ moc/moc_calibration_module.cpp: ../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObje
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../include/mainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrentRun \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentrun.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentcompilertest.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrent_global.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentrunbase.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuture.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfutureinterface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrunnable.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qexception.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qresultstore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthreadpool.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentstoredfunctioncall.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFuture \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrent \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrentDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtCore \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtCoreDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpauseanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariantanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeasingcurve.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextcodec.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qendian.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlibraryinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatetime.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbuffer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qloggingcategory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qresource.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsavefile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsettings.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstandardpaths.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstorageinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonvalue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedmemory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsignalmapper.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsocketnotifier.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemsemaphore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtranslator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qwineventnotifier.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedatabase.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimetype.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfactoryinterface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlibrary.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpluginloader.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/quuid.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracttransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventtransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfinalstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhistorystate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsignaltransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstatemachine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuturewatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qreadwritelock.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsemaphore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthreadstorage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qwaitcondition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydataops.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydatapointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraymatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcollator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcommandlineoption.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcommandlineparser.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcryptographichash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qelapsedtimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimeline.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimezone.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversionnumber.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qxmlstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtcoreversion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentexception.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentfilter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentfilterkernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentiteratekernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentmedian.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentthreadengine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentmapkernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentreducekernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentfunctionwrappers.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentversion.h \
+		../include/calibration_module.h \
+		../include/socket_handler.h \
+		../include/vmmsocket.h \
+		../include/commandline.h \
+		../include/vmm.h \
+		../include/globparameter.h \
+		../include/vmm_config_handler.h \
+		../include/hybrid_config_handler.h \
+		../include/daq_config_handler.h \
+		../include/fec_config_handler.h \
+		../include/daq_window.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		../include/fec_window.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		ui/ui_fec_window.h \
+		ui/ui_daq_window.h \
+		../include/daq.h \
+		../include/fec.h \
+		../include/hdmi.h \
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/calibration_module.h \
 		../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/daq/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I/home/daq/Tools/Readout_Software/build -I/home/daq/Tools/Readout_Software/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtPrintSupport -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtNetwork -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtXml -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtConcurrent -I/home/daq/Qt5.7.0/5.7/gcc_64/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../include/calibration_module.h -o moc/moc_calibration_module.cpp
@@ -5585,7 +5102,484 @@ compiler_uic_make_all: ui/ui_daq_window.h ui/ui_vmm_window.h ui/ui_hybrid_window
 compiler_uic_clean:
 	-$(DEL_FILE) ui/ui_daq_window.h ui/ui_vmm_window.h ui/ui_hybrid_window.h ui/ui_fec_window.h ui/ui_hdmi_window.h
 ui/ui_daq_window.h: ../src/daq_window.ui \
-		../../../Qt5.7.0/5.7/gcc_64/bin/uic
+		../../../Qt5.7.0/5.7/gcc_64/bin/uic \
+		../include/qcustomplot.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QSharedPointer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QTimer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QPainter \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpainter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QPaintEvent \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfiledevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QMouseEvent \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QWheelEvent \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QPixmap \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDateTime \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatetime.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMultiMap \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFlags \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStack \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QCache \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMargins \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLContext \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglcontext.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QSurfaceFormat \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qsurfaceformat.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglversionfunctions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QOpenGLFramebufferObject \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglframebufferobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QOffscreenSurface \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qoffscreensurface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qsurface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QWindow \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QEvent \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QRect \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtOpenGL/QGLPixelBuffer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qglpixelbuffer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qgl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintengine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qglcolormap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtOpenGL/qtopenglglobal.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtNumeric \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/QtPrintSupport \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/QtPrintSupportDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtCore \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtCoreDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpauseanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariantanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeasingcurve.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextcodec.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qendian.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlibraryinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbuffer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdir.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QStringList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qloggingcategory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qresource.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsavefile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsettings.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstandardpaths.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstorageinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonvalue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedmemory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsignalmapper.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsocketnotifier.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemsemaphore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtranslator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qwineventnotifier.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedatabase.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimetype.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfactoryinterface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlibrary.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpluginloader.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/quuid.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracttransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventtransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfinalstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhistorystate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsignaltransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstatemachine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qexception.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuture.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfutureinterface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrunnable.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qresultstore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuturewatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qreadwritelock.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsemaphore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthreadpool.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthreadstorage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qwaitcondition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydataops.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydatapointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbitarray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraymatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcollator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcommandlineoption.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcommandlineparser.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcryptographichash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qelapsedtimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimeline.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimezone.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversionnumber.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qxmlstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtcoreversion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QtGui \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QtGuiDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qaccessible.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qaccessiblebridge.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qaccessibleobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qaccessibleplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qbitmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qiconengine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qiconengineplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qimageiohandler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qimagereader.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qimagewriter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qmovie.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpicture.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpictureformatplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmapcache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qstandarditemmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qclipboard.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qdrag.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qgenericplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qgenericpluginfactory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QPaintDeviceWindow \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevicewindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QPaintDevice \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QImage \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrasterwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qscreen.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QList \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QSize \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QSizeF \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QTransform \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qsessionmanager.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qstylehints.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qgenericmatrix.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix4x4.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector3d.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector4d.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qquaternion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglbuffer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengldebug.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglextrafunctions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglfunctions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglpaintdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglpixeltransferoptions.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QSharedDataPointer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglshaderprogram.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengltexture.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengltimerquery.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglvertexarrayobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qbackingstore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpagedpaintdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpagelayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpagesize.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpdfwriter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qabstracttextdocumentlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qglyphrun.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrawfont.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontdatabase.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qstatictext.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qsyntaxhighlighter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocumentfragment.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocumentwriter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtexttable.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qdesktopservices.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtguiversion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QtWidgets \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QtWidgetsDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaccessiblewidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcolordialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qerrormessage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qfiledialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qfilesystemmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qfontdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qinputdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmessagebox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qprogressdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwizard.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicseffect.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsanchorlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsitem.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicslayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicslayoutitem.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsgridlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsitemanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicslinearlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsproxywidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicswidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicstransform.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QVector3D \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/QMatrix4x4 \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgraphicsview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcolumnview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdatawidgetmapper.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdirmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qfileiconprovider.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qitemdelegate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qitemeditorfactory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlistview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlistwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleditemdelegate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtableview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtablewidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtreeview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtreewidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtreewidgetitemiterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qformlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLayout \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgesture.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgesturerecognizer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qshortcut.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedlayout.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtooltip.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwhatsthis.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidgetaction.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qkeyeventtransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmouseeventtransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcommonstyle.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdrawutil.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qproxystyle.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCommonStyle \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstylefactory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstylepainter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcolormap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcompleter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscroller.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollerProperties \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollerproperties.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QMetaType \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsystemtrayicon.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qundogroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qundostack.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qundoview.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcalendarwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcommandlinkbutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdatetimeedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdial.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdialogbuttonbox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdockwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qfocusframe.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qfontcombobox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qkeysequenceedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlcdnumber.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmdiarea.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmdisubwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qplaintextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qprogressbar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qradiobutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollbar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizegrip.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsplashscreen.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsplitter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextbrowser.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtoolbar.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtoolbox.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtoolbutton.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtwidgetsversion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qabstractprintdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qtprintsupportglobal.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qpagesetupdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qprintdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qprintpreviewdialog.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qprintengine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qprinter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qprinterinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPair \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qprintpreviewwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtPrintSupport/qtprintsupportversion.h
 	/home/daq/Qt5.7.0/5.7/gcc_64/bin/uic ../src/daq_window.ui -o ui/ui_daq_window.h
 
 ui/ui_vmm_window.h: ../src/vmm_window.ui \
@@ -5879,61 +5873,7 @@ objects/main.o: ../src/main.cpp ../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QA
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -6205,66 +6145,7 @@ objects/mainwindow.o: ../src/mainwindow.cpp ../include/mainwindow.h \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -6735,66 +6616,7 @@ objects/commandline.o: ../src/commandline.cpp ../include/commandline.h \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -7064,66 +6886,7 @@ objects/vmm_config_handler.o: ../src/vmm_config_handler.cpp ../include/vmm_confi
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -7393,66 +7156,7 @@ objects/daq_config_handler.o: ../src/daq_config_handler.cpp ../include/daq_confi
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -7722,66 +7426,7 @@ objects/fec_config_handler.o: ../src/fec_config_handler.cpp ../include/fec_confi
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -8223,71 +7868,7 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -8340,8 +7921,10 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -8349,8 +7932,10 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -8397,6 +7982,7 @@ objects/daq_window.o: ../src/daq_window.cpp ../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -8547,76 +8133,12 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -8669,8 +8191,10 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -8678,8 +8202,10 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -8726,6 +8252,7 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -8777,16 +8304,10 @@ objects/fec_window.o: ../src/fec_window.cpp ../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess \
 		../include/hdmi_window.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/hybrid_window.h \
 		ui/ui_hybrid_window.h \
 		../include/vmm_window.h \
-		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h
+		ui/ui_vmm_window.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/fec_window.o ../src/fec_window.cpp
 
 objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
@@ -8888,88 +8409,18 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/hybrid_window.h \
 		ui/ui_hybrid_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
 		../include/fec_window.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -9022,8 +8473,10 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -9031,8 +8484,10 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -9079,6 +8534,7 @@ objects/hdmi_window.o: ../src/hdmi_window.cpp ../include/hdmi_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -9229,88 +8685,18 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_hybrid_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
 		../include/vmm_window.h \
 		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
 		../include/hdmi_window.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/fec_window.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -9363,8 +8749,10 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -9372,8 +8760,10 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -9420,6 +8810,7 @@ objects/hybrid_window.o: ../src/hybrid_window.cpp ../include/hybrid_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -9570,88 +8961,18 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
 		ui/ui_vmm_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFrame \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QScrollArea \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStackedWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstackedwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
 		../include/hybrid_window.h \
 		ui/ui_hybrid_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
 		../include/hdmi_window.h \
 		ui/ui_hdmi_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QVBoxLayout \
 		../include/fec_window.h \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		../include/daq_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/message_handler.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
@@ -9704,8 +9025,10 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
@@ -9713,8 +9036,10 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
@@ -9761,6 +9086,7 @@ objects/vmm_window.o: ../src/vmm_window.cpp ../include/vmm_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
@@ -10072,66 +9398,7 @@ objects/hybrid_config_handler.o: ../src/hybrid_config_handler.cpp ../include/hyb
 		../include/fec_window.h \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
 		ui/ui_fec_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QCheckBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcheckbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QComboBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qcombobox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGridLayout \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QGroupBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgroupbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpinBox \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qspinbox.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTabWidget \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QTextEdit \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtextedit.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextdocument.h \
 		ui/ui_daq_window.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMenuBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenubar.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmenu.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QSpacerItem \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QStatusBar \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstatusbar.h \
 		../include/daq.h \
 		../include/fec.h \
 		../include/hdmi.h \
@@ -10309,7 +9576,190 @@ objects/calibration_module.o: ../src/calibration_module.cpp ../include/calibrati
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
 		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
 		../include/message_handler.h \
-		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../include/mainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrentRun \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentrun.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentcompilertest.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrent_global.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentrunbase.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuture.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfutureinterface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrunnable.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qexception.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qresultstore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthreadpool.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentstoredfunctioncall.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QFuture \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrent \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/QtConcurrentDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtCore \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QtCoreDepends \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qparallelanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpauseanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpropertyanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariantanimation.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeasingcurve.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsequentialanimationgroup.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextcodec.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qendian.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlibraryinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatetime.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbuffer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdatastream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdiriterator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfileselector.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfilesystemwatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlockfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qloggingcategory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocess.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qresource.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsavefile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsettings.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstandardpaths.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstorageinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporarydir.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QScopedPointer \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtemporaryfile.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qurl.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qurlquery.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qidentityproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsortfilterproxymodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlistmodel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonarray.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonvalue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsondocument.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qjsonobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracteventdispatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractnativeeventfilter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmath.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetaobject.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedata.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectcleanuphandler.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedmemory.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsignalmapper.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsocketnotifier.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemsemaphore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtranslator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qwineventnotifier.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimedatabase.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmimetype.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfactoryinterface.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlibrary.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qplugin.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpluginloader.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/quuid.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstracttransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventtransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfinalstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhistorystate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsignaltransition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstate.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstatemachine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuturesynchronizer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfuturewatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qreadwritelock.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsemaphore.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthreadstorage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qwaitcondition.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydataops.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydatapointer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraymatcher.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcache.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcollator.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcommandlineoption.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcommandlineparser.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcryptographichash.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qelapsedtimer.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qline.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlinkedlist.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmargins.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmessageauthenticationcode.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qqueue.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrect.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsize.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedvaluerollback.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstack.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextboundaryfinder.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimeline.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimezone.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversionnumber.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qxmlstream.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtcoreversion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentexception.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentfilter.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentfilterkernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentiteratekernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentmedian.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentthreadengine.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentmapkernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentreducekernel.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentfunctionwrappers.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtConcurrent/qtconcurrentversion.h \
+		../include/socket_handler.h \
+		../include/vmmsocket.h \
+		../include/commandline.h \
+		../include/vmm.h \
+		../include/globparameter.h \
+		../include/vmm_config_handler.h \
+		../include/hybrid_config_handler.h \
+		../include/daq_config_handler.h \
+		../include/fec_config_handler.h \
+		../include/daq_window.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qwindowdefs_win.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpaintdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpalette.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qcolor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrgb.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qrgba64.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qbrush.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qmatrix.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpolygon.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qregion.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtransform.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpainterpath.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qimage.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixelformat.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpixmap.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfont.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontmetrics.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qfontinfo.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qsizepolicy.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qcursor.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qkeysequence.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qevent.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvector2d.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtouchdevice.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
+		../include/fec_window.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QWidget \
+		ui/ui_fec_window.h \
+		ui/ui_daq_window.h \
+		../include/daq.h \
+		../include/fec.h \
+		../include/hdmi.h \
+		../include/hybrid.h \
+		../include/fec_config_module.h \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDataStream \
+		../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QProcess
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects/calibration_module.o ../src/calibration_module.cpp
 
 objects/qcustomplot.o: ../src/qcustomplot.cpp ../include/qcustomplot.h \

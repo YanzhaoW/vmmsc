@@ -373,175 +373,160 @@
        <attribute name="title">
         <string>Calibration</string>
        </attribute>
-       <widget class="QPushButton" name="Data">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>161</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Start Calibration</string>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QGroupBox" name="Calib_Settings">
-        <property name="geometry">
-         <rect>
-          <x>220</x>
-          <y>10</y>
-          <width>271</width>
-          <height>181</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Settings</string>
-        </property>
-        <widget class="QSpinBox" name="Runs">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>100</y>
-           <width>48</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="minimum">
-          <number>1</number>
-         </property>
-         <property name="maximum">
-          <number>10000</number>
-         </property>
-         <property name="singleStep">
-          <number>1</number>
-         </property>
-         <property name="value">
-          <number>10</number>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_run">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>80</y>
-           <width>59</width>
-           <height>14</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>#Runs</string>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="VMM_select">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>150</y>
-           <width>79</width>
-           <height>22</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_vmm">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>130</y>
-           <width>91</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Display VMM</string>
-         </property>
-        </widget>
-        <widget class="QTextEdit" name="InfoScreen">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>20</y>
-           <width>131</width>
-           <height>160</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-        </widget>
-        <zorder>Runs</zorder>
-        <zorder>label_run</zorder>
-        <zorder>VMM_select</zorder>
-        <zorder>label_vmm</zorder>
-        <zorder>InfoScreen</zorder>
-        <zorder>label_type</zorder>
-        <zorder>Calib_type</zorder>
-        <zorder>label_type</zorder>
-        <zorder>Calib_type</zorder>
-        <zorder>label_type</zorder>
-        <zorder>Calib_type</zorder>
-       </widget>
-       <widget class="QCustomPlot" name="customPlot" native="true">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>210</y>
-          <width>1391</width>
-          <height>681</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_type">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>60</y>
-          <width>101</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Calibration Type</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="Calib_type">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>80</y>
-          <width>79</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string>ADC</string>
-         </property>
+       <layout class="QGridLayout" name="gridLayout_9">
+        <item row="0" column="2">
+         <widget class="QGroupBox" name="Calib_Settings">
+          <property name="title">
+           <string>Settings</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="5" column="0">
+            <widget class="QComboBox" name="VMM_select"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_vmm">
+             <property name="text">
+              <string>Display VMM</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" rowspan="6">
+            <widget class="QTextEdit" name="InfoScreen">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_run">
+             <property name="text">
+              <string>#Runs</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_type">
+             <property name="text">
+              <string>Calibration Type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QSpinBox" name="Runs">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>10000</number>
+             </property>
+             <property name="singleStep">
+              <number>1</number>
+             </property>
+             <property name="value">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QComboBox" name="Calib_type">
+             <item>
+              <property name="text">
+               <string>ADC</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TDC</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>TDC</string>
-         </property>
+        <item row="0" column="0">
+         <widget class="QPushButton" name="Data">
+          <property name="minimumSize">
+           <size>
+            <width>170</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Start Calibration</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
-       </widget>
-       <zorder>Data</zorder>
-       <zorder>Calib_Settings</zorder>
-       <zorder>customPlot</zorder>
-       <zorder>InfoScreen</zorder>
-       <zorder>InfoScreen</zorder>
-       <zorder>label_type</zorder>
-       <zorder>Calib_type</zorder>
+        <item row="0" column="4">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>1500</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Maximum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>70</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="0" colspan="3">
+         <widget class="QCustomPlot" name="customPlot" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>1400</width>
+            <height>720</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>700</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">

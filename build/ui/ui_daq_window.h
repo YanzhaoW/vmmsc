@@ -78,16 +78,21 @@ public:
     QCheckBox *Box_fec8;
     QWidget *widget;
     QWidget *tab_2;
-    QPushButton *Data;
+    QGridLayout *gridLayout_9;
     QGroupBox *Calib_Settings;
-    QSpinBox *Runs;
-    QLabel *label_run;
+    QGridLayout *gridLayout_4;
     QComboBox *VMM_select;
     QLabel *label_vmm;
     QTextEdit *InfoScreen;
-    QCustomPlot *customPlot;
+    QLabel *label_run;
     QLabel *label_type;
+    QSpinBox *Runs;
     QComboBox *Calib_type;
+    QPushButton *Data;
+    QSpacerItem *horizontalSpacer;
+    QSpacerItem *horizontalSpacer_2;
+    QCustomPlot *customPlot;
+    QSpacerItem *horizontalSpacer_3;
     QWidget *tab_3;
     QGridLayout *gridLayout_10;
     QGroupBox *groupBox_5;
@@ -311,56 +316,82 @@ public:
         tabWidget_2->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QStringLiteral("tab_2"));
-        Data = new QPushButton(tab_2);
-        Data->setObjectName(QStringLiteral("Data"));
-        Data->setGeometry(QRect(10, 10, 161, 22));
-        Data->setCheckable(true);
+        gridLayout_9 = new QGridLayout(tab_2);
+        gridLayout_9->setObjectName(QStringLiteral("gridLayout_9"));
         Calib_Settings = new QGroupBox(tab_2);
         Calib_Settings->setObjectName(QStringLiteral("Calib_Settings"));
-        Calib_Settings->setGeometry(QRect(220, 10, 271, 181));
+        gridLayout_4 = new QGridLayout(Calib_Settings);
+        gridLayout_4->setObjectName(QStringLiteral("gridLayout_4"));
+        VMM_select = new QComboBox(Calib_Settings);
+        VMM_select->setObjectName(QStringLiteral("VMM_select"));
+
+        gridLayout_4->addWidget(VMM_select, 5, 0, 1, 1);
+
+        label_vmm = new QLabel(Calib_Settings);
+        label_vmm->setObjectName(QStringLiteral("label_vmm"));
+
+        gridLayout_4->addWidget(label_vmm, 4, 0, 1, 1);
+
+        InfoScreen = new QTextEdit(Calib_Settings);
+        InfoScreen->setObjectName(QStringLiteral("InfoScreen"));
+        InfoScreen->setFont(font);
+
+        gridLayout_4->addWidget(InfoScreen, 0, 1, 6, 1);
+
+        label_run = new QLabel(Calib_Settings);
+        label_run->setObjectName(QStringLiteral("label_run"));
+
+        gridLayout_4->addWidget(label_run, 2, 0, 1, 1);
+
+        label_type = new QLabel(Calib_Settings);
+        label_type->setObjectName(QStringLiteral("label_type"));
+
+        gridLayout_4->addWidget(label_type, 0, 0, 1, 1);
+
         Runs = new QSpinBox(Calib_Settings);
         Runs->setObjectName(QStringLiteral("Runs"));
-        Runs->setGeometry(QRect(10, 100, 48, 23));
         Runs->setFont(font1);
         Runs->setMinimum(1);
         Runs->setMaximum(10000);
         Runs->setSingleStep(1);
         Runs->setValue(10);
-        label_run = new QLabel(Calib_Settings);
-        label_run->setObjectName(QStringLiteral("label_run"));
-        label_run->setGeometry(QRect(10, 80, 59, 14));
-        VMM_select = new QComboBox(Calib_Settings);
-        VMM_select->setObjectName(QStringLiteral("VMM_select"));
-        VMM_select->setGeometry(QRect(10, 150, 79, 22));
-        label_vmm = new QLabel(Calib_Settings);
-        label_vmm->setObjectName(QStringLiteral("label_vmm"));
-        label_vmm->setGeometry(QRect(10, 130, 91, 16));
-        InfoScreen = new QTextEdit(Calib_Settings);
-        InfoScreen->setObjectName(QStringLiteral("InfoScreen"));
-        InfoScreen->setGeometry(QRect(140, 20, 131, 160));
-        InfoScreen->setFont(font);
-        Runs->raise();
-        label_run->raise();
-        VMM_select->raise();
-        label_vmm->raise();
-        InfoScreen->raise();
+
+        gridLayout_4->addWidget(Runs, 3, 0, 1, 1);
+
+        Calib_type = new QComboBox(Calib_Settings);
+        Calib_type->setObjectName(QStringLiteral("Calib_type"));
+
+        gridLayout_4->addWidget(Calib_type, 1, 0, 1, 1);
+
+
+        gridLayout_9->addWidget(Calib_Settings, 0, 2, 1, 1);
+
+        Data = new QPushButton(tab_2);
+        Data->setObjectName(QStringLiteral("Data"));
+        Data->setMinimumSize(QSize(170, 0));
+        Data->setCheckable(true);
+
+        gridLayout_9->addWidget(Data, 0, 0, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(1500, 40, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+        gridLayout_9->addItem(horizontalSpacer, 0, 4, 1, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(70, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
+
+        gridLayout_9->addItem(horizontalSpacer_2, 0, 1, 1, 1);
+
         customPlot = new QCustomPlot(tab_2);
         customPlot->setObjectName(QStringLiteral("customPlot"));
-        customPlot->setGeometry(QRect(50, 210, 1391, 681));
-        label_type = new QLabel(tab_2);
-        label_type->setObjectName(QStringLiteral("label_type"));
-        label_type->setGeometry(QRect(50, 60, 101, 16));
-        Calib_type = new QComboBox(tab_2);
-        Calib_type->setObjectName(QStringLiteral("Calib_type"));
-        Calib_type->setGeometry(QRect(50, 80, 79, 22));
+        customPlot->setMinimumSize(QSize(1400, 720));
+
+        gridLayout_9->addWidget(customPlot, 1, 0, 1, 3);
+
+        horizontalSpacer_3 = new QSpacerItem(700, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+        gridLayout_9->addItem(horizontalSpacer_3, 0, 3, 1, 1);
+
         tabWidget_2->addTab(tab_2, QString());
-        Data->raise();
-        Calib_Settings->raise();
-        customPlot->raise();
-        InfoScreen->raise();
-        InfoScreen->raise();
-        label_type->raise();
-        Calib_type->raise();
         tab_3 = new QWidget();
         tab_3->setObjectName(QStringLiteral("tab_3"));
         gridLayout_10 = new QGridLayout(tab_3);
@@ -441,16 +472,16 @@ public:
         Box_fec7->setText(QApplication::translate("daq_window", "7", 0));
         Box_fec8->setText(QApplication::translate("daq_window", "8", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("daq_window", "VMM Slow Control", 0));
-        Data->setText(QApplication::translate("daq_window", "Start Calibration", 0));
         Calib_Settings->setTitle(QApplication::translate("daq_window", "Settings", 0));
-        label_run->setText(QApplication::translate("daq_window", "#Runs", 0));
         label_vmm->setText(QApplication::translate("daq_window", "Display VMM", 0));
+        label_run->setText(QApplication::translate("daq_window", "#Runs", 0));
         label_type->setText(QApplication::translate("daq_window", "Calibration Type", 0));
         Calib_type->clear();
         Calib_type->insertItems(0, QStringList()
          << QApplication::translate("daq_window", "ADC", 0)
          << QApplication::translate("daq_window", "TDC", 0)
         );
+        Data->setText(QApplication::translate("daq_window", "Start Calibration", 0));
         tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("daq_window", "Calibration", 0));
         groupBox_5->setTitle(QApplication::translate("daq_window", "Logging", 0));
         Debug->setText(QApplication::translate("daq_window", "Debug", 0));
