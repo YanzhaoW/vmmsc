@@ -67,14 +67,14 @@ To open the slow control use the following command:
 
 ## Installing Qt
 
-If you do not have Qt on your system or you do, but not a recent enough version as required for **vmm_readout_software**, then you will
+If you do not have Qt on your system or you do, but not a recent enough version as required for the **VMM Software**, then you will
 have to install Qt from the main [Qt pages](https://www.qt.io/qt5-7/). 
 
 The full installation procedure of Qt takes less than 1 hour on a machine with adequate internet connection.
 
 Detailed instructions on how to download, setup the installation, and install Qt are described in this set of
 [Qt installation slides](https://twiki.cern.ch/twiki/pub/Atlas/NSWVmmDaqSoftware/qt_installation_PDF.pdf). Please
-use these instructions to setup Qt for use with **vmm_readout_software**.
+use these instructions to setup Qt for use with **VMM Software**.
 
 ## Contact
 
