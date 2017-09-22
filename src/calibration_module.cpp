@@ -152,7 +152,7 @@ void calibration_module::Counting(){
                 root_main->daqwindow->ui->InfoScreen->setReadOnly(true);
                 root_main->daqwindow->ui->InfoScreen->clear();
                 root_main->daqwindow->ui->InfoScreen->setTextColor(Qt::black);
-                root_main->daqwindow->ui->InfoScreen->append("Bets common values:");
+                root_main->daqwindow->ui->InfoScreen->append("Best common values:");
                 for(int i=0; i<act_vmm.size(); i++) root_main->daqwindow->ui->InfoScreen->append(QString("VMM%0  : %1").arg(act_vmm[i]).arg(r_mean->at(i).calib_value));
                 calibrun = "writeconfig";
                 GetCalSetting();
