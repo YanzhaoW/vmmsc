@@ -92,6 +92,7 @@ private:
      void PlotADC(int m);
 
      int bincount=0;
+     int number_bits = 32;
 
      vector<int> act_vmm;
      void GetActVMM();

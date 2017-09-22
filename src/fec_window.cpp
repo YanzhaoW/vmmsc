@@ -22,6 +22,8 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
 
+    ui->debugScreen->setReadOnly(true);
+
 
 
 //    connect(ui->setEvbld, SIGNAL(pressed()),

@@ -389,54 +389,23 @@
          <bool>true</bool>
         </property>
        </widget>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="Calib_Settings">
         <property name="geometry">
          <rect>
           <x>220</x>
           <y>10</y>
-          <width>281</width>
+          <width>271</width>
           <height>181</height>
          </rect>
         </property>
         <property name="title">
-         <string>ADC Calibration</string>
+         <string>Settings</string>
         </property>
-        <widget class="QLabel" name="ADC_calib_info">
+        <widget class="QSpinBox" name="Runs">
          <property name="geometry">
           <rect>
-           <x>160</x>
-           <y>70</y>
-           <width>115</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Arial</family>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Infobox</string>
-         </property>
-        </widget>
-        <widget class="QSpinBox" name="acqSync">
-         <property name="geometry">
-          <rect>
-           <x>210</x>
-           <y>40</y>
+           <x>10</x>
+           <y>100</y>
            <width>48</width>
            <height>23</height>
           </rect>
@@ -457,14 +426,14 @@
           <number>1</number>
          </property>
          <property name="value">
-          <number>300</number>
+          <number>10</number>
          </property>
         </widget>
         <widget class="QLabel" name="label_run">
          <property name="geometry">
           <rect>
-           <x>200</x>
-           <y>20</y>
+           <x>10</x>
+           <y>80</y>
            <width>59</width>
            <height>14</height>
           </rect>
@@ -476,7 +445,7 @@
         <widget class="QComboBox" name="VMM_select">
          <property name="geometry">
           <rect>
-           <x>20</x>
+           <x>10</x>
            <y>150</y>
            <width>79</width>
            <height>22</height>
@@ -486,7 +455,7 @@
         <widget class="QLabel" name="label_vmm">
          <property name="geometry">
           <rect>
-           <x>20</x>
+           <x>10</x>
            <y>130</y>
            <width>91</width>
            <height>16</height>
@@ -496,6 +465,32 @@
           <string>Display VMM</string>
          </property>
         </widget>
+        <widget class="QTextEdit" name="InfoScreen">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>20</y>
+           <width>131</width>
+           <height>160</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+        </widget>
+        <zorder>Runs</zorder>
+        <zorder>label_run</zorder>
+        <zorder>VMM_select</zorder>
+        <zorder>label_vmm</zorder>
+        <zorder>InfoScreen</zorder>
+        <zorder>label_type</zorder>
+        <zorder>Calib_type</zorder>
+        <zorder>label_type</zorder>
+        <zorder>Calib_type</zorder>
+        <zorder>label_type</zorder>
+        <zorder>Calib_type</zorder>
        </widget>
        <widget class="QCustomPlot" name="customPlot" native="true">
         <property name="geometry">
@@ -507,6 +502,46 @@
          </rect>
         </property>
        </widget>
+       <widget class="QLabel" name="label_type">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>60</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Calibration Type</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="Calib_type">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>80</y>
+          <width>79</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>ADC</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TDC</string>
+         </property>
+        </item>
+       </widget>
+       <zorder>Data</zorder>
+       <zorder>Calib_Settings</zorder>
+       <zorder>customPlot</zorder>
+       <zorder>InfoScreen</zorder>
+       <zorder>InfoScreen</zorder>
+       <zorder>label_type</zorder>
+       <zorder>Calib_type</zorder>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">

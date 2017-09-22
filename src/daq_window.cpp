@@ -412,6 +412,7 @@ void daq_window::on_Data_pressed()
     }
     else{
         root_main->calib->closeDAQSocket();
+         emit ui->offACQ->clicked();
         root_main->ResetCalib();
         for(int i=0; i<16;i++) ui->VMM_select->removeItem(0);
     }

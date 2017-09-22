@@ -56,11 +56,20 @@ void calibration_module::updatePlot(){
 // ------------------------------------------------------------------------ //
 
 void calibration_module::StartCalib(){
+    root_main->daqwindow->ui->line_configFile->setText("Calib_config");
+    emit root_main->daqwindow->ui->Button_save->clicked();
+    root_main->daqwindow->ui->line_configFile->setText("");
+
     delete r_mean;
     r_mean = new vector<result_mean>;
     delete v_calibvar;
     v_calibvar = new vector<vector< vector<int> > >(16, vector< vector<int> >(64,vector<int>(0)));
     eventcount = 0 ;
+    if(root_main->daqwindow->ui->Calib_type->currentIndex() == 0) calibmode = "ADC";
+    else if(root_main->daqwindow->ui->Calib_type->currentIndex() == 1){
+        calibmode = "TDC";
+        number_bits = 8;
+    }
     GetActVMM();
     calibrun = "initial";
     CalibADC();
@@ -72,10 +81,15 @@ void calibration_module::CalibADC(){
     emit root_main->daqwindow->ui->openConnection_2->clicked();
     if(! (root_main->daqwindow->ui->connectionLabel_2->text()==QString("all alive"))) {
         std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
+        root_main->daqwindow->ui->InfoScreen->setTextColor(Qt::red);
+        root_main->daqwindow->ui->InfoScreen->append(QString("Communication couldn't be established! \n exit calibration"));
+        root_main->daqwindow->ui->Data->setChecked(true);
+        root_main->ResetCalib();
         return;
     }
     if(calibrun=="initial"){
         std::map<std::string, unsigned short> m_high = {{"st", 1}, {"ADC0_10", 0}};
+        if(calibmode == "TDC") m_high = {{"st", 1}, {"ADC0_8", 0}};
         for(int i=0; i<act_vmm.size(); i++){
             int hdmi =(act_vmm[i]/2) ;
             int vmm = act_vmm[i]%2;
@@ -87,7 +101,7 @@ void calibration_module::CalibADC(){
     emit root_main->daqwindow->ui->trgPulser->clicked();
     delete v_calibvar;
     v_calibvar = new vector<vector< vector<int> > >(16, vector< vector<int> >(64,vector<int>(0)));
-    calibmode = "ADC";
+
     emit root_main->daqwindow->ui->onACQ->clicked();
     connectDAQSocket();
     eventcount = 0 ;
@@ -98,7 +112,7 @@ void calibration_module::CalibADC(){
 
 // ------------------------------------------------------------------------ //
 void calibration_module::Counting(){
-    if(eventcount<100){
+    if(eventcount<root_main->daqwindow->ui->Runs->value()){
         eventcount+=1;
     }
     else{
@@ -126,25 +140,29 @@ void calibration_module::Counting(){
         r_mean->at(m).y_fullrange.push_back(y1);
         r_mean->at(m).channel=x1;
      }//loop active VMMs
-        if(bincount==31){
+        if(bincount==number_bits-1){
             if(calibrun == "singleplot"){
-                cout<<"I am here!"<<endl;
                 Calib();
-                cout<<"I am here2!"<<endl;
                 GetCalSetting();
-                 cout<<"I am here3!"<<endl;
                 calibrun = "plotting";
                 CalibADC();
             }
             else if(calibrun == "plotting"){
                 PlotADC(0);
-
+                root_main->daqwindow->ui->InfoScreen->setReadOnly(true);
+                root_main->daqwindow->ui->InfoScreen->clear();
+                root_main->daqwindow->ui->InfoScreen->setTextColor(Qt::black);
+                root_main->daqwindow->ui->InfoScreen->append("Bets common values:");
+                for(int i=0; i<act_vmm.size(); i++) root_main->daqwindow->ui->InfoScreen->append(QString("VMM%0  : %1").arg(act_vmm[i]).arg(r_mean->at(i).calib_value));
+                calibrun = "writeconfig";
+                GetCalSetting();
             }
         }
         else{
             calibrun="singleplot";
             bincount+=1;
             std::map<std::string, unsigned short> m_high = {{"st", 1}, {"ADC0_10", bincount}};
+            if(calibmode == "TDC") m_high = {{"st", 1}, {"ADC0_8", bincount}};
             for(int i=0; i<act_vmm.size(); i++){
                 int hdmi =(act_vmm[i]/2) ;
                 int vmm = act_vmm[i]%2;
@@ -161,26 +179,28 @@ void calibration_module::PlotADC(int m){
     // give the axes some labels:
     root_main->daqwindow->ui->customPlot->xAxis->setLabel("channel");
     root_main->daqwindow->ui->customPlot->yAxis->setLabel("Mean ADC");
+     if(calibmode == "TDC") root_main->daqwindow->ui->customPlot->yAxis->setLabel("Mean TDC");
     // set axes ranges, so we see all data:
     root_main->daqwindow->ui->customPlot->xAxis->setRange(0, 66);
     root_main->daqwindow->ui->customPlot->yAxis->setRange(150, 350);
+    if(calibmode == "TDC") root_main->daqwindow->ui->customPlot->yAxis->setRange(40, 250);
     root_main->daqwindow->ui->customPlot->legend->setVisible(true);
     root_main->daqwindow->ui->customPlot->legend->setFont(QFont("Helvetica",9));
-    for(int i=0; i<32;i++){
+    for(int i=0; i<number_bits;i++){
         root_main->daqwindow->ui->customPlot->addGraph();
         root_main->daqwindow->ui->customPlot->graph(i)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(i)));
         root_main->daqwindow->ui->customPlot->graph(i)->setPen(QPen(QColor(i*10)));
         root_main->daqwindow->ui->customPlot->legend->removeItem(root_main->daqwindow->ui->customPlot->legend->itemCount()-1);
     }
+    int n_graph = root_main->daqwindow->ui->customPlot->graphCount();
     root_main->daqwindow->ui->customPlot->addGraph();
-//        int n_graph = root_main->daqwindow->ui->customPlot->graphCount();
-    root_main->daqwindow->ui->customPlot->graph(32)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).v_calval));
-    root_main->daqwindow->ui->customPlot->graph(32)->setPen(QPen(Qt::red,4,Qt::SolidLine));
-    root_main->daqwindow->ui->customPlot->graph(32)->setName("Best common value");
+    root_main->daqwindow->ui->customPlot->graph(n_graph)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).v_calval));
+    root_main->daqwindow->ui->customPlot->graph(n_graph)->setPen(QPen(Qt::red,4,Qt::SolidLine));
+    root_main->daqwindow->ui->customPlot->graph(n_graph)->setName("Best common value");
     root_main->daqwindow->ui->customPlot->addGraph();
-    root_main->daqwindow->ui->customPlot->graph(33)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(32)));
-    root_main->daqwindow->ui->customPlot->graph(33)->setPen(QPen(Qt::green,4,Qt::SolidLine));
-    root_main->daqwindow->ui->customPlot->graph(33)->setName("Calibrated curve");
+    root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setData(QVector<double>::fromStdVector(r_mean->at(m).channel), QVector<double>::fromStdVector(r_mean->at(m).y_fullrange.at(bincount)));
+    root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setPen(QPen(Qt::green,4,Qt::SolidLine));
+    root_main->daqwindow->ui->customPlot->graph(n_graph+1)->setName("Calibrated curve");
 
     root_main->daqwindow->ui->customPlot->replot();
 }
@@ -189,7 +209,7 @@ void calibration_module::Calib(){
     // Function to calculate the best common ADC value for all channels
     for(int m=0; m<act_vmm.size(); m++){
         vector<double> sorted_0mV = r_mean->at(m).y_fullrange.at(0);
-        vector<double> sorted_31mV = r_mean->at(m).y_fullrange.at(31);
+        vector<double> sorted_31mV = r_mean->at(m).y_fullrange.at(number_bits-1);
         std::sort(sorted_0mV.begin(), sorted_0mV.end());
         std::sort(sorted_31mV.begin(), sorted_31mV.end());
         int state =0;
@@ -214,26 +234,39 @@ void calibration_module::Calib(){
 
 void calibration_module::GetCalSetting(){
     // function to calculate the best bin value for each channel
-    cout<<"DEBUG"<<"1 "<<act_vmm.size()<<" End size!: "<<act_vmm[0]<<"   "<<r_mean->at(0).y_fullrange.at(0).size()<<endl;
+    if(calibrun=="writeconfig")root_main->daqwindow->LoadConfig("Calib_config");
+
+//        root_main->daqwindow->ui->line_configFile->setText("Calib_config");
+//        emit root_main->daqwindow->ui->Button_load->clicked();
+//        root_main->daqwindow->ui->line_configFile->setText("");
+//    }
     for(int m=0; m<act_vmm.size(); m++){
         for(unsigned int i =0; i<64; i++){
             unsigned int difference = 9999;
             int bin_number = 0;
-            for(int j = 0; j<32; j++){
+            for(int j = 0; j<number_bits; j++){
                 unsigned int diff = pow(pow(r_mean->at(m).calib_value - r_mean->at(m).y_fullrange.at(j).at(i),2),0.5);
                 if( diff < difference ) {
                     difference = diff;
                     bin_number = j;
                 }
-                if(j == 31){
+                if(j == number_bits-1){
                     int hdmi =(act_vmm[m]/2) ;
                     int vmm = act_vmm[m]%2;
-                    root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].SetRegi("ADC0_10", bin_number , i );
+                    string regi = "ADC0_10";
+                    if(calibmode == "TDC") regi = "ADC0_8";
+                    root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].SetRegi(regi, bin_number , i );
                 }
             }
         }
     }
-    cout<<"DEBUG"<<"2"<<endl;
+    if(calibrun=="writeconfig"){
+        root_main->daqwindow->ui->line_configFile->setText("Calib_config");
+        emit root_main->daqwindow->ui->Button_save->clicked();
+        root_main->daqwindow->ui->line_configFile->setText("");
+        root_main->daqwindow->LoadConfig("Calib_config");
+    }
+
 
  }
 
@@ -456,6 +489,7 @@ void calibration_module::decodeAndWriteData(const QByteArray& datagram)
                    //msg()(" "," ");
                } // dbg
                 if(calibmode == QString("ADC")) (*v_calibvar)[chipnumber][channel_no].push_back(outCharge_);
+                if(calibmode == QString("TDC")) (*v_calibvar)[chipnumber][channel_no].push_back(outTac_);
                // move to next channel (8 bytes forward)
                i += 8;
            } // i
