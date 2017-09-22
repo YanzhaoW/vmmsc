@@ -1,4 +1,4 @@
-# NSW Electronics - Readout Software
+# VMM3 Slow Control and Calibration Software
 
 # Contents
 
@@ -36,11 +36,11 @@ There are a few steps that need to be taken in order for you to obtain, install,
 
 ### Obtain the software
 
-The nominal use case is to check out the [recommended tag](#recommended-release) of the software.
+The nominal use case is to check out the current version of the software.
 To do this, run the following command from a terminal in a directory where you would like the DAQ software to reside:
 
 ```
-git clone -b <name-of-tag> https://gitlab.cern.ch/NSWelectronics/vmm_readout_software.git
+git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
 ```
 
 where `<name-of-tag>` should be replaced by the desired release name.
