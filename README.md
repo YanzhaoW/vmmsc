@@ -7,15 +7,8 @@
 * [Installation](#installation)
   * [Obtain the software](#obtain-the-software)
   * [Compiling the software](#compile-the-software)
-  * [Run the DAQ](#run-the-daq)
- 
-  * [On a CERN Linux PC](#installation-on-a-cern-linux-machine)
-  * [ROOT](#installing-root)
   * [Qt](#installing-qt)
-  * [Boost](#installing-boost)
-     * [Step-by-step](#steps-to-install-boost)
-* [Useful Links](#useful-links)
-* [Contact Information](#contact)
+ * [Contact Information](#contact)
 
 ## Recommended Release
 The recommended release is **v1.0** which is for *VMM3* readout. To obtain this release do:
