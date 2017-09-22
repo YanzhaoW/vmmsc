@@ -8,7 +8,7 @@
   * [Obtain the software](#obtain-the-software)
   * [Compiling the software](#compile-the-software)
   * [Qt](#installing-qt)
- * [Contact Information](#contact)
+* [Contact Information](#contact)
 
 ## Recommended Release
 The recommended release is **v1.0** which is for *VMM3* slow control and calibration. To obtain this release do:
