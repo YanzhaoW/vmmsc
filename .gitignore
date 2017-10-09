@@ -35,6 +35,7 @@
 configs/*
 !configs/default*
 !configs/Calib*
+!configs/examples*
 
 attic/
 
