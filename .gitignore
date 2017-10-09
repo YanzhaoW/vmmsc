@@ -32,7 +32,7 @@
 *.app
 
 !configs/
-configs/
+configs/*
 !configs/Calib*
 !congigs/default*
 
