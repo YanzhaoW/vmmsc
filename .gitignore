@@ -31,7 +31,11 @@
 *.out
 *.app
 
+!configs/
 configs/
+!configs/Calib*
+!congigs/default*
+
 attic/
 
 !/build
