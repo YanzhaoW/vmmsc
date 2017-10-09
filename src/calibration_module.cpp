@@ -24,6 +24,7 @@ void calibration_module::LoadMessageHandler(MessageHandler& m)
 void calibration_module::GetActVMM(){
     act_vmm.clear();
 //    root_main->daqwindow->ui->VMM_select->clear();
+
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if (root_main->daq[0].GetFEC(j) ){
             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
@@ -73,7 +74,7 @@ void calibration_module::StartCalib(){
     GetActVMM();
     calibrun = "initial";
     CalibADC();
-}
+ }
 
 // ------------------------------------------------------------------------ //
 
@@ -105,6 +106,7 @@ void calibration_module::CalibADC(){
     emit root_main->daqwindow->ui->onACQ->clicked();
     connectDAQSocket();
     eventcount = 0 ;
+
 
 
 

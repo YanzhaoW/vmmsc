@@ -1138,7 +1138,8 @@ void FEC_config_module::s6clocks(int hdmi_index, int hybrid_index)
             << (quint32) 6 //[16,19]
             << (quint32) (cktk*16) //[20,23]
             << (quint32) 7 //[24,27]
-            << (quint32) ( ckbc + (ckbc_skew*16) ); //[28,31]
+            //<< (quint32) ( ckbc + (ckbc_skew*16) ); //[28,31]
+            << (quint32) ( ckbc + (ckbc_skew*16) + 192); //[28,31] // +192 added for VMM3 to make ckbc high very short. Implemented in firmware: highest bits "11" 18.75 ns long high, "10"/"01" 25%/75% duty cycle, "00" is 50% duty cycle. From George: ckbc must be shorter than 20 ns and longer than 12.5 ns. With this hack, the ckbc of higher than 40 MHz will not work.
 
         socket().SendDatagram(datagram, ip, send_to_port, "fec",
                                             "FEC_config_module::s6clocks");

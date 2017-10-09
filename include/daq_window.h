@@ -70,6 +70,7 @@ private slots:
 
     void on_Data_pressed();
 
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;

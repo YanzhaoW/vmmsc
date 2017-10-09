@@ -246,7 +246,7 @@ QByteArray VMMSocket::processReply(const QString &ip_to_check, quint32 cmd_delay
             if(ip != ip_to_check) {
                 sx.str("");
                 sx << "VMM with IP [" << ip.toStdString() << " has sent a reply"
-                   << " at command " << cmd_cnt_to_check << " to a command not"
+                   << " at command " << cmd_cnt_to_check << " to a command"
                    << " not sent to it! Out of sync.";
                 msg()(sx, "VMMSocket::processReply",true);
                 //debug

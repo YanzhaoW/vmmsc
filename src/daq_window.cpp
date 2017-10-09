@@ -418,3 +418,4 @@ void daq_window::on_Data_pressed()
     }
 //    else root_main->calib->CalibADC();
 }
+
