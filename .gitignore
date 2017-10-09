@@ -33,7 +33,7 @@
 
 !configs/
 configs/*
-!congigs/defaul*
+!configs/default*
 !configs/Calib*
 
 attic/
