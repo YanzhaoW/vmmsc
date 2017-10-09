@@ -33,13 +33,13 @@
 
 !configs/
 configs/*
+!congigs/defaul*
 !configs/Calib*
-!congigs/default*
 
 attic/
 
-!/build
-/build/*
-!/build/vmmdcs.pro
+!build
+build/*
+!build/vmmdcs.pro
 
 

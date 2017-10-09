@@ -1,0 +1,16 @@
+daq 0
+fec 0
+hdmi 7
+hybrid 0
+
+CKBC 4
+CKBC_skew 0
+CKTK 0
+TK_Pulses 2
+TP_pol 0
+TP_skew 0
+TP_width 0
+Xaxis 0
+period 4094
+position 65535
+
