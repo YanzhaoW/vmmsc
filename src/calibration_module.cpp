@@ -49,7 +49,7 @@ void calibration_module::GetActVMM(){
 }
 // ------------------------------------------------------------------------ //
 void calibration_module::updatePlot(){
-    if(QObject::sender() == root_main->daqwindow->ui->VMM_select){
+    if(QObject::sender() == root_main->daqwindow->ui->VMM_select && root_main->daqwindow->ui->VMM_select->currentIndex() != -1){
         PlotADC(root_main->daqwindow->ui->VMM_select->currentIndex());
     }
 }
@@ -58,7 +58,7 @@ void calibration_module::updatePlot(){
 
 void calibration_module::StartCalib(){
     root_main->daqwindow->ui->line_configFile->setText("Calib_config");
-    emit root_main->daqwindow->ui->Button_save->clicked();
+    emit root_main->daqwindow->ui->Button_save->clicked();usleep(1000);
     root_main->daqwindow->ui->line_configFile->setText("");
 
     delete r_mean;
@@ -79,7 +79,7 @@ void calibration_module::StartCalib(){
 // ------------------------------------------------------------------------ //
 
 void calibration_module::CalibADC(){
-    emit root_main->daqwindow->ui->openConnection_2->clicked();
+    emit root_main->daqwindow->ui->openConnection_2->clicked();usleep(1000);
     if(! (root_main->daqwindow->ui->connectionLabel_2->text()==QString("all alive"))) {
         std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
         root_main->daqwindow->ui->InfoScreen->setTextColor(Qt::red);
@@ -99,11 +99,11 @@ void calibration_module::CalibADC(){
     }
     root_main->daqwindow->ui->checkBox->setChecked(true);
     emit root_main->daqwindow->ui->checkBox->stateChanged(true);
-    emit root_main->daqwindow->ui->trgPulser->clicked();
+    emit root_main->daqwindow->ui->trgPulser->clicked();usleep(1000);
     delete v_calibvar;
     v_calibvar = new vector<vector< vector<int> > >(16, vector< vector<int> >(64,vector<int>(0)));
 
-    emit root_main->daqwindow->ui->onACQ->clicked();
+    emit root_main->daqwindow->ui->onACQ->clicked();usleep(1000);
     connectDAQSocket();
     eventcount = 0 ;
 
@@ -118,7 +118,7 @@ void calibration_module::Counting(){
         eventcount+=1;
     }
     else{
-        emit root_main->daqwindow->ui->offACQ->clicked();
+        emit root_main->daqwindow->ui->offACQ->clicked();usleep(1000);
         closeDAQSocket();
 
 
@@ -147,7 +147,7 @@ void calibration_module::Counting(){
                 Calib();
                 GetCalSetting();
                 calibrun = "plotting";
-                CalibADC();
+                usleep(1000);CalibADC();usleep(1000);
             }
             else if(calibrun == "plotting"){
                 PlotADC(0);
@@ -170,7 +170,7 @@ void calibration_module::Counting(){
                 int vmm = act_vmm[i]%2;
                 root_main->daq[0].fec[0].hdmi[hdmi].hybrid[0].vmm[vmm].LoadDefault(true, m_high );
             }
-            CalibADC();
+            usleep(1000);CalibADC();usleep(1000);
         }
     }
 
@@ -261,7 +261,7 @@ void calibration_module::GetCalSetting(){
     }
     if(calibrun=="writeconfig"){
         root_main->daqwindow->ui->line_configFile->setText("Calib_config");
-        emit root_main->daqwindow->ui->Button_save->clicked();
+        emit root_main->daqwindow->ui->Button_save->clicked();usleep(1000);
         root_main->daqwindow->ui->line_configFile->setText("");
         root_main->daqwindow->LoadConfig("Calib_config");
     }
