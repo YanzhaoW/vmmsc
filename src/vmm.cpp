@@ -154,7 +154,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
             std::string gain[8] = {"0.5", "1", "3", "4.5", "6", "9", "12", "16"};
             for(unsigned int i=0 ; i<sizeof(gain)/sizeof(*gain); i++){
                 unsigned short bin_val=i;
-                m_gain.insert(BiPair(gain[i], bin_val));
+//                m_gain.insert(BiPair(gain[i], bin_val));// had to remove this option since it interferes with the indexing option needed by the GUI
                 m_gain.insert(BiPair(std::to_string(i), bin_val));
             }
             if(m_gain.find(val)!=m_gain.end()){

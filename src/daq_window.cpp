@@ -12,6 +12,11 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
     ui->openConnection_2->setToolTip("Open communication");
 
+    connect(ui->selectDir, SIGNAL(clicked()),
+                                    this, SLOT(selectOutputDirectory()));
+    ui->selectDir->setToolTip("Opens file browser to select config file");
+    ui->Button_load->setToolTip("Loading config file");
+    ui->Button_save->setToolTip("Saving settings into config file");
     ui->trgPulser->setEnabled(false);
     ui->trgExternal->setEnabled(false);
     ui->onACQ->setEnabled(false);
@@ -63,13 +68,7 @@ void daq_window::SetWarning2(QString warning, QString bkgcol ){
 // ------------------------------------------------------------------------- //
 
 void daq_window::Plotter(std::vector<double> x, std::vector<double> y){
-//     generate some data:
-//    std::vector<double> x(101), y(101); // initialize with entries 0..100
-//    for (int i=0; i<101; ++i)
-//    {
-//      x[i] = i/50.0 - 1; // x goes from -1 to 1
-//      y[i] = x[i]*x[i]; // let's plot a quadratic function
-//    }
+
     // create graph and assign data to it:
     ui->customPlot->addGraph();
     ui->customPlot->graph(0)->setData(QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(y));
@@ -417,4 +416,34 @@ void daq_window::on_Data_pressed()
         for(int i=0; i<16;i++) ui->VMM_select->removeItem(0);
     }
 //    else root_main->calib->CalibADC();
+}
+
+
+
+
+void daq_window::selectOutputDirectory()
+{
+    stringstream sx;
+
+    QFileDialog getdir;
+//    getdir.setProxyModel();
+    QString dirStr = QFileDialog::getOpenFileName(this,
+                        tr("Select config file"), "../configs",
+                               tr("Text (*.txt)") );
+    if(dirStr=="") return;
+    if(!dirStr.contains("/configs/")){
+        qDebug()<< "Config file not located in config folder/subfolder  -- Abort";
+        ui->line_configFile->setText("ERROR: config file not in config folder");
+        return;
+    }
+   QString fname = dirStr.split("/").last();
+   if(fname.contains("_daq0_")){
+       fname = fname.split("_daq0_").first();
+   }
+
+
+    ui->line_configFile->setText(fname);
+    emit ui->Button_load->clicked();
+
+
 }

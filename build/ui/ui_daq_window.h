@@ -40,9 +40,10 @@ public:
     QGridLayout *gridLayout_2;
     QGroupBox *groupBox_3;
     QGridLayout *gridLayout_6;
+    QPushButton *Button_save;
     QPushButton *Button_load;
     QLineEdit *line_configFile;
-    QPushButton *Button_save;
+    QPushButton *selectDir;
     QTabWidget *tabWidget_2;
     QWidget *tab;
     QGridLayout *gridLayout_5;
@@ -115,23 +116,32 @@ public:
         gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
         groupBox_3 = new QGroupBox(centralwidget);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
-        groupBox_3->setMaximumSize(QSize(300, 70));
+        groupBox_3->setMaximumSize(QSize(400, 70));
         gridLayout_6 = new QGridLayout(groupBox_3);
         gridLayout_6->setObjectName(QStringLiteral("gridLayout_6"));
+        Button_save = new QPushButton(groupBox_3);
+        Button_save->setObjectName(QStringLiteral("Button_save"));
+
+        gridLayout_6->addWidget(Button_save, 1, 4, 1, 1);
+
         Button_load = new QPushButton(groupBox_3);
         Button_load->setObjectName(QStringLiteral("Button_load"));
 
-        gridLayout_6->addWidget(Button_load, 0, 1, 1, 1);
+        gridLayout_6->addWidget(Button_load, 1, 3, 1, 1);
 
         line_configFile = new QLineEdit(groupBox_3);
         line_configFile->setObjectName(QStringLiteral("line_configFile"));
 
-        gridLayout_6->addWidget(line_configFile, 0, 0, 1, 1);
+        gridLayout_6->addWidget(line_configFile, 1, 1, 1, 1);
 
-        Button_save = new QPushButton(groupBox_3);
-        Button_save->setObjectName(QStringLiteral("Button_save"));
+        selectDir = new QPushButton(groupBox_3);
+        selectDir->setObjectName(QStringLiteral("selectDir"));
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/images/directory.png"), QSize(), QIcon::Normal, QIcon::Off);
+        selectDir->setIcon(icon);
+        selectDir->setIconSize(QSize(18, 20));
 
-        gridLayout_6->addWidget(Button_save, 0, 2, 1, 1);
+        gridLayout_6->addWidget(selectDir, 1, 2, 1, 1);
 
 
         gridLayout_2->addWidget(groupBox_3, 2, 1, 1, 1);
@@ -437,7 +447,7 @@ public:
 
         retranslateUi(daq_window);
 
-        tabWidget_2->setCurrentIndex(1);
+        tabWidget_2->setCurrentIndex(0);
         tabWidget->setCurrentIndex(-1);
 
 
@@ -448,8 +458,9 @@ public:
     {
         daq_window->setWindowTitle(QApplication::translate("daq_window", "MainWindow", 0));
         groupBox_3->setTitle(QApplication::translate("daq_window", "Config file", 0));
-        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
         Button_save->setText(QApplication::translate("daq_window", "Save", 0));
+        Button_load->setText(QApplication::translate("daq_window", "Load", 0));
+        selectDir->setText(QString());
         groupBox->setTitle(QString());
         groupBox_6->setTitle(QApplication::translate("daq_window", "ACQ", 0));
         checkBox->setText(QApplication::translate("daq_window", " Global ACQ", 0));

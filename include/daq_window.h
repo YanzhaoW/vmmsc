@@ -69,6 +69,9 @@ private slots:
     void on_Debug_pressed();
 
     void on_Data_pressed();
+public slots:
+    // select the output directory
+    void selectOutputDirectory();
 
 private:
     MainWindow *root_main;
