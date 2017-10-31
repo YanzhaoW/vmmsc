@@ -73,6 +73,7 @@ public slots:
     // select the output directory
     void selectOutputDirectory();
 
+
 private:
     MainWindow *root_main;
     Ui::daq_window *ui;

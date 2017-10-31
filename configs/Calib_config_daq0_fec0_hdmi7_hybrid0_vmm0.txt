@@ -31,7 +31,7 @@ sdcks 0
 sdp 0
 sdp_2 300
 sdrv 0
-sdt 300
+sdt 260
 sfa 0
 sfam 0
 sfm 0

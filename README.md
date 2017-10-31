@@ -8,10 +8,10 @@
   * [Obtain the software](#obtain-the-software)
   * [Compiling the software](#compile-the-software)
   * [Qt](#installing-qt)
- * [Contact Information](#contact)
+* [Contact Information](#contact)
 
 ## Recommended Release
-The recommended release is **v1.0** which is for *VMM3* readout. To obtain this release do:
+The recommended release is **v1.0** which is for *VMM3* slow control and calibration. To obtain this release do:
 ```
 git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
 ```
@@ -25,12 +25,12 @@ Here we list the (tested) software requirements.
 * C++11 (gcc >=4.7)
 
 ## Installation
-There are a few steps that need to be taken in order for you to obtain, install, and get the DAQ software running. These are discussed here.
+There are a few steps that need to be taken in order for you to obtain, install, and get the software running. These are discussed here.
 
 ### Obtain the software
 
 The nominal use case is to check out the current version of the software.
-To do this, run the following command from a terminal in a directory where you would like the DAQ software to reside:
+To do this, run the following command from a terminal in a directory where you would like the software to reside:
 
 ```
 git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
@@ -67,14 +67,14 @@ To open the slow control use the following command:
 
 ## Installing Qt
 
-If you do not have Qt on your system or you do, but not the correct version as required for **vmm_readout_software**, then you will
+If you do not have Qt on your system or you do, but not a recent enough version as required for the **VMM Software**, then you will
 have to install Qt from the main [Qt pages](https://www.qt.io/qt5-7/). 
 
 The full installation procedure of Qt takes less than 1 hour on a machine with adequate internet connection.
 
 Detailed instructions on how to download, setup the installation, and install Qt are described in this set of
 [Qt installation slides](https://twiki.cern.ch/twiki/pub/Atlas/NSWVmmDaqSoftware/qt_installation_PDF.pdf). Please
-use these instructions to setup Qt for use with **vmm_readout_software**.
+use these instructions to setup Qt for use with **VMM Software**.
 
 ## Contact
 
