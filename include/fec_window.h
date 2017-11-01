@@ -57,6 +57,9 @@ private:
     unsigned short fec_index;
     Ui::fec_window *ui;
 
+    QString linkstate;
+
+    void DisplayDebugScreen(QString text);
     void hdmiBoxLogic(bool checked, unsigned short hdmi);
     void updateWindow();
     void LoadSettings();

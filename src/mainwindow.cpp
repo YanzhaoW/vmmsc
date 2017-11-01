@@ -62,3 +62,8 @@ void MainWindow::ResetCalib(){
     delete calib;
     calib = new calibration_module(this);
 }
+
+void MainWindow::ResetAll(){// for test purpose, not functioning correctly
+//    delete daq_act;
+    daq_act[DAQS_PER_GUIWINDOW];
+}

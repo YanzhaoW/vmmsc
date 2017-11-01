@@ -455,7 +455,6 @@ void fec_window::writeFECStatus()
     buff.resize(root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->socket().fecSocket().pendingDatagramSize() );
     root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->socket().fecSocket().readDatagram(buff.data(), buff.size());
     if(buff.size()==0) return;
-
     bool ok;
     QString sizeOfPackageReceived, datagramCheck;
     datagramCheck = buff.mid(0,4).toHex();
@@ -477,14 +476,29 @@ void fec_window::writeFECStatus()
                 ss << " Data, " << i << ": " << bin.number(tmp32,16).toStdString() << endl;
             }
         } // i
-        ui->debugScreen->append(QString::fromStdString(ss.str()));
-        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        linkstate = QString::fromStdString(ss.str());
+        DisplayDebugScreen(QString::fromStdString(ss.str()));
+
+//        ui->debugScreen->append(QString::fromStdString(ss.str()));
+//        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     }
+}
+
+
+void fec_window::DisplayDebugScreen(QString text){
+    ui->debugScreen->append(text);
+    ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+//    qDebug()<<text;
+    std::cout<<text.toStdString()<<std::endl;
+
+//    qDebug()<<linkstate;
 }
 
 void fec_window::on_clearDebugScreenPB_clicked()
 {
     ui->debugScreen->clear();
+//     ui->debugScreen->append(linkstate);
+//        qDebug()<<linkstate;
 }
 
 // ------------------------------------------------------------------------- //

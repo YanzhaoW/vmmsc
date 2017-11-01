@@ -56,7 +56,7 @@ class MainWindow : public QMainWindow
         daq_window *daqwindow;
         bool dbg() { return m_dbg; }
         void ResetCalib();
-
+        void ResetAll();
 
         // methods to grab the VMM tools
         //////////////////////////////////////////////////////
