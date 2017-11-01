@@ -6,11 +6,14 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     m_msg(0),
     ui(new Ui::daq_window)
 {
+
     ui->setupUi(this);
     ui->Send->setEnabled(false);
     LoadMessageHandler(root_main->daq[0].msg());
     connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
     ui->openConnection_2->setToolTip("Open communication");
+
+//    this->setStyleSheet("QMainWindow {background: 'lightgray';}");
 
     connect(ui->selectDir, SIGNAL(clicked()),
                                     this, SLOT(selectOutputDirectory()));

@@ -88,8 +88,6 @@ void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_ind
                         if (fec[j].hdmi[k].GetHybrid(l)){
                             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                                 if (fec[j].hdmi[k].hybrid[l].GetVMM(m) && !(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
-                                    std::cout<<"DEBUG: "<<"gain_set: "<<fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].Regi->m_GlobalReg1->at("gain")<<std::endl;
-                                    std::cout<<"DEBUG: "<<"gain_get: "<<fec[j].hdmi[k].hybrid[l].vmm[m].Regi->m_GlobalReg1->at("gain")<<std::endl;
                                     (*fec[j].hdmi[k].hybrid[l].vmm[m].Regi->m_GlobalReg1) = (*fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].Regi->m_GlobalReg1);
                                 }
                             }

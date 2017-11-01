@@ -12,7 +12,7 @@ fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
     updateWindow();
     SetToolTips();
     LoadSettings();
-
+//    this->setStyleSheet("QWidget {background: 'white';}");
     ui->linkPB->setEnabled(false);
     ui->resetLinks->setEnabled(false);
     ui->fec_WarmInit->setEnabled(false);
