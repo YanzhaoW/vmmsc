@@ -55,9 +55,13 @@ make -j10
 The executable will now be located in
 VMM-software-RD51/build
 
-To open the slow control use the following command:
+To open the slow control on linux use the following command:
 ```
 ./vmmdcs
+```
+On macOS use this command:
+```
+./vmmdcs.app/Contents/MacOS/vmmdcs
 ```
 
  The vmmdcs.pro file is set up to point to the include paths / dependencies based
