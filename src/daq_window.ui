@@ -13,7 +13,7 @@
   <property name="minimumSize">
    <size>
     <width>1500</width>
-    <height>1100</height>
+    <height>1000</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -27,55 +27,6 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="2" column="1">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="maximumSize">
-       <size>
-        <width>400</width>
-        <height>70</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Config file</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="1" column="4">
-        <widget class="QPushButton" name="Button_save">
-         <property name="text">
-          <string>Save</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QPushButton" name="Button_load">
-         <property name="text">
-          <string>Load</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="line_configFile"/>
-       </item>
-       <item row="1" column="2">
-        <widget class="QPushButton" name="selectDir">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../images/icons.qrc">
-           <normaloff>:/images/directory.png</normaloff>:/images/directory.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>18</width>
-           <height>20</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="0" column="1" rowspan="2" colspan="2">
      <widget class="QTabWidget" name="tabWidget_2">
       <property name="currentIndex">
@@ -99,6 +50,12 @@
            <size>
             <width>100</width>
             <height>600</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="title">
@@ -373,6 +330,49 @@
                   </widget>
                  </item>
                 </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Config file</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_6">
+              <item row="0" column="0">
+               <widget class="QLineEdit" name="line_configFile"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="selectDir">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="../images/icons.qrc">
+                  <normaloff>:/images/directory.png</normaloff>:/images/directory.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>18</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QPushButton" name="Button_load">
+                <property name="text">
+                 <string>Load</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QPushButton" name="Button_save">
+                <property name="text">
+                 <string>Save</string>
+                </property>
                </widget>
               </item>
              </layout>
