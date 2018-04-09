@@ -298,6 +298,7 @@ void FEC_config_module::fillGlobalRegisters(std::vector<QString>& global, int hd
     sequence++;
 
     //[22,29] not used
+    sequence+=8;
 
     // reset (1)
     // [30]
