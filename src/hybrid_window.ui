@@ -488,6 +488,46 @@
              <string>21.875ns</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>25ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>28.125ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>31.25ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>34.375ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>37.5ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>40.625ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>43.75ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>46.875ns</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="0" column="0">

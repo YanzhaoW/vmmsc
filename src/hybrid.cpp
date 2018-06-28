@@ -167,7 +167,7 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
         }
         else if(feature=="TP_skew"){
             InMap m_val;
-            std::string v_val[8] = {"0", "3.125", "6.25", "9.375", "12.5", "15.625", "18.75", "21.875"};
+            std::string v_val[18] = {"0", "3.125", "6.25", "9.375", "12.5", "15.625", "18.75", "21.875", "25", "28.125", "31.25", "34.375", "37.5", "40.625", "43.75", "46.875"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));
