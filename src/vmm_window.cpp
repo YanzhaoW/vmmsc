@@ -1,4 +1,5 @@
 #include "vmm_window.h"
+#include <unistd.h>
 
 vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm, QWidget *parent) :
     QWidget(parent),
@@ -1063,6 +1064,7 @@ void vmm_window::on_vmm_reset_clicked()
     VMM_Set("reset1", 1);
     VMM_Set("reset2", 1);
     root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
+    sleep(1);
     VMM_Set("reset1", 0);
     VMM_Set("reset2", 0);
     root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
