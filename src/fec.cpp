@@ -1,4 +1,5 @@
 #include "fec.h"
+#include <unistd.h>
 
 FEC::FEC():
     hdmi_act (HDMIS_PER_FEC),
@@ -43,6 +44,7 @@ void FEC::SendAll(){
                     fec_conf_mod->setS6Resets(k, l);
                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                         if (hdmi[k].hybrid[l].GetVMM(m)){
+                            //sleep(1);
                             fec_conf_mod->SendConfig(k, l, m);
                             fec_conf_mod->setEventHeaders(k, l, m);
                             fec_conf_mod->setTriggerAcqConstants(k, l, m);

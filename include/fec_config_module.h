@@ -50,6 +50,8 @@ public:
     void checkLinkStatus();
     void resetLinks();
     void resetFEC(bool do_reset);
+    void readSysReg();
+    void writeFECip();
     void setTriggerMode();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);

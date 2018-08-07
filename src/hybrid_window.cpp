@@ -22,6 +22,8 @@ hybrid_window::hybrid_window(hdmi_window *top, unsigned short fec, unsigned shor
                                     this, SLOT(updateSettings()));
     connect(ui->ckbc_skew_s6, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(updateSettings()));
+    connect(ui->ckdt_s6, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(updateSettings()));
     connect(ui->s6_tkPulses, SIGNAL(valueChanged(int)),
                                     this, SLOT(updateSettings()));
     connect(ui->fecPeriodReset, SIGNAL(valueChanged(int)),
@@ -89,6 +91,7 @@ void hybrid_window::LoadSettings(){
     ui->cktk_s6->setCurrentIndex(Hybrid_Get("CKTK"));
     ui->ckbc_s6->setCurrentIndex(Hybrid_Get("CKBC"));
     ui->ckbc_skew_s6->setCurrentIndex(Hybrid_Get("CKBC_skew"));
+    ui->ckdt_s6->setCurrentIndex(Hybrid_Get("CKDT"));
     ui->s6_tkPulses->setValue(Hybrid_Get("TK_Pulses"));
     ui->fecPeriodReset->setValue(Hybrid_Get("period"));
     ui->tpSkew->setCurrentIndex(Hybrid_Get("TP_skew"));
@@ -137,6 +140,9 @@ void hybrid_window::updateSettings(){
     }
     else if(QObject::sender() == ui->ckbc_skew_s6){
         Hybrid_Set("CKBC_skew", ui->ckbc_skew_s6->currentIndex());
+    }
+    else if(QObject::sender() == ui->ckdt_s6){
+        Hybrid_Set("CKDT", ui->ckdt_s6->currentIndex());
     }
     else if(QObject::sender() == ui->s6_tkPulses){
         Hybrid_Set("TK_Pulses", ui->s6_tkPulses->value());

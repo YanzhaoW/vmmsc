@@ -184,7 +184,7 @@ void calibration_module::PlotADC(int m){
      if(calibmode == "TDC") root_main->daqwindow->ui->customPlot->yAxis->setLabel("Mean TDC");
     // set axes ranges, so we see all data:
     root_main->daqwindow->ui->customPlot->xAxis->setRange(0, 66);
-    root_main->daqwindow->ui->customPlot->yAxis->setRange(150, 350);
+    root_main->daqwindow->ui->customPlot->yAxis->setRange(150, 450);
     if(calibmode == "TDC") root_main->daqwindow->ui->customPlot->yAxis->setRange(40, 250);
     root_main->daqwindow->ui->customPlot->legend->setVisible(true);
     root_main->daqwindow->ui->customPlot->legend->setFont(QFont("Helvetica",9));

@@ -1,6 +1,6 @@
 daq 0
 fec 0
-hdmi 3
+hdmi 2
 hybrid 0
 
 CKBC 4

@@ -9,11 +9,12 @@ Hybrid::Hybrid(): vmm_act (VMMS_PER_HYBRID)
     PosNo = -1;
     ART = 0;
     SetReg("CKBC", (std::string)"40");
+    SetReg("CKDT", (std::string)"40");
 
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0},{"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){
@@ -71,7 +72,7 @@ bool Hybrid::SetReg(std::string feature, int val){
 
 
 bool Hybrid::SetRegister(std::string feature, std::string value){
-//{"Xaxis",0}, {"position", 65534}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0},{"TK_Pulses",2},{"period",4094}
+//{"Xaxis",0}, {"position", 65534}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0}, {"CKDT",1} ,{"TK_Pulses",2},{"period",4094}
     typedef std::map<std::string, unsigned short> InMap;
     typedef std::pair<std::string, unsigned short> BiPair;
     std::cout<<"feature "<<feature<<" set to "<<value<<std::endl;
@@ -130,6 +131,21 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
         if(feature=="CKBC_skew"){
             InMap m_val;
             std::string v_val[4] = {"0", "6.26", "12.52", "18.78"};
+            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
+                unsigned short bin_val=i;
+                m_val.insert(BiPair(v_val[i], bin_val));
+                m_val.insert(BiPair(std::to_string(i), bin_val));
+            }
+            if(m_val.find(value)!=m_val.end()){
+              m_hybrid[feature] = m_val[value];
+              return true;
+            }
+            else return false;
+        }
+
+        if(feature=="CKDT"){
+            InMap m_val;
+            std::string v_val[5] = {"10", "40", "80", "160", "160 (will be 200)"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));
