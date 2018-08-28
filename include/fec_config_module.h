@@ -56,7 +56,7 @@ public:
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
     void setMask();
-
+    int ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan);
     void VMMLoadEmit();
 
 private:

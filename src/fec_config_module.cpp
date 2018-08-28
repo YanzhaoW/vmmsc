@@ -1878,7 +1878,7 @@ void FEC_config_module::setMask()
     bool ok;
     QByteArray datagram;
 
-    // send call to vmmapp port
+    // send call to VMMAPP port
     int send_to_port = fec->GetRegVal("vmmapp_port");
 
     // header
@@ -1931,5 +1931,183 @@ void FEC_config_module::setMask()
 
     socket().closeAndDisconnect("fec", "FEC_config_module::setMask");
 
+}
+// ------------------------------------------------------------------------ //
+int FEC_config_module::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan)
+{
+    if(dbg()) msg()("Setting/reading i2c on hybrid...","FEC_config_module::ReadADC");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send call to i2c port
+    int send_to_port = fec->GetRegVal("i2c_port");
+
+    //header
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+
+    //I2C address of ADC: 1001000/1001001
+    int i2c_addr = 0;
+    if (vmm_index % 2 == 0) i2c_addr = 72;
+    else i2c_addr = 73;
+
+
+    QString ip = fec->GetIP();
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    socket().updateCommandCounter();
+
+    QString hdmiMapString = "00000000";
+    hdmiMapString.replace(7 -  hdmi_index , 1 , QString("1") );
+    quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint8) hdmiMap//146 //[6] Subaddress: enable MUX channels
+        << (quint8) ((i2c_addr << 1) | 0) //i2c_addr*2 + 0 //[7] ADC I2C address, last bit: read/not write (1 = read); ADC Addresses: 1001000/1001001 + read/write
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    // calculate channel to read
+    // ch 0: tdo        pattern 100 = 4
+    // ch 1: pdo        patterm 101 = 5
+    // ch 2: Mo         patterm 110 = 6
+    // ch 3: not used   pattern 111 = 7
+    // => adc_chan + 4
+
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
+        << (quint32) (1*65536) +                      (1*32768 + (adc_chan+4)*4096 + 2*512 + 1*256) +                 131; //=116099; //[20,23] //goes to sc_data to ADC, must be 3 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
+        // is 00000001 (point to conversion register) 11000101 (start conversion, channel 1, range +-2V, single shot) 10000011 (LSB of conversion register to be written)
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
+
+    bool readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::ReadADC");
+        socket().processReply("fec", ip);
+    } else {
+        msg()("Timeout while waiting for replies from VMM",
+                "FEC_config_module::ReadADC",true);
+        socket().closeAndDisconnect("fec", "FEC_config_module::ReadADC");
+//        exit(1);
+        return 0;
+    }
+
+    //////////////////////////////////////////////////////////////////
+    // 2nd i2c command: set address pointer to converstion register //
+    //////////////////////////////////////////////////////////////////
+    datagram.clear();
+    out.device()->seek(0); //rewind
+
+
+    socket().updateCommandCounter();
+
+    ////////////////////////////
+    // header
+    ////////////////////////////
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint8) hdmiMap//146 //[6] Subaddress: enable MUX channels
+        << (quint8) ((i2c_addr << 1) | 0) //[7] ADC I2C address, last bit: read/not write (1 = read); ADC Addresses: 1001000/1001001 + read/write
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ////////////////////////////
+    // word
+    ////////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
+        << (quint32) 0; //[20,23] //goes to sc_data to ADC, must be 2 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
+
+    socket().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
+
+    readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::ReadADC");
+        socket().processReply("fec",ip);
+    } else {
+        msg()("Timeout while waiting for replies from VMM",
+                "FEC_config_module::ReadADC", true);
+        socket().closeAndDisconnect("fec","FEC_config_module::ReadADC");
+//        exit(1);
+        return 0;
+    }
+    ///////////////////////////////////////////////////////////
+    // 3rd i2c command: read converions result form register //
+    ///////////////////////////////////////////////////////////
+    datagram.clear();
+    out.device()->seek(0); //rewind
+
+
+    socket().updateCommandCounter();
+
+    ////////////////////////////
+    // header
+    ////////////////////////////
+    out << (quint32)(socket().commandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint8) hdmiMap//146 //[6] Subaddress: enable MUX channels
+        << (quint8) ((i2c_addr << 1) | 1) //[7] ADC I2C address, last bit: read/not write (1 = read); ADC Addresses: 1001000/1001001 + read/write
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ////////////////////////////
+    // word
+    ////////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
+        << (quint32) 11141120;//65535;//11141120; //7121558; //[20,23] //goes to sc_data to ADC, must be 3 bytes
+        // can be anytinh here but needs to be 3 byte long
+    socket().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
+
+    readOK = true;
+    readOK = socket().waitForReadyRead("fec");
+
+    QByteArray read_datagram;
+    int ADCresult_int_bare = 0;
+    while(socket().fecSocket().hasPendingDatagrams()) {
+
+        read_datagram.resize(socket().fecSocket().pendingDatagramSize());
+        socket().fecSocket().readDatagram(read_datagram.data(), read_datagram.size());
+
+
+        QString ADCresult = read_datagram.mid(22,2).toHex();
+        ADCresult_int_bare = ADCresult.toInt(&ok,16) >> 4; //bit shift
+    } // while loop
+
+    if(readOK) {
+        if(dbg()) msg()("Processing replies...","FEC_config_module::ReadADC");
+        socket().processReply("fec",ip);
+    } else {
+        msg()("Timeout while waiting for replies from VMM",
+                "FEC_config_module::ReadADC", true);
+        socket().closeAndDisconnect("fec","FEC_config_module::ReadADC");
+//        exit(1);
+        return 0;
+    }
+    socket().closeAndDisconnect("fec", "FEC_config_module::ReadADC");
+
+    //calculate level in mV from bare ADC result: 0-2047: pos (0 mV - 2047 mV), 2048-4094:neg(not possible)
+    int ADCresult_int = ADCresult_int_bare; //easy in this case
+    return ADCresult_int;
 }
 // ------------------------------------------------------------------------ //

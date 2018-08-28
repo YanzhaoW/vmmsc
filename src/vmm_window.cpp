@@ -11,6 +11,7 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
     ui(new Ui::vmm_window)
 {
     ui->setupUi(this);
+    ui->ADCresult->setReadOnly(true);
 
 //    ui->stackedWidgetPage1->setStyleSheet("QTabBar::tab { height: 18px; width: 100px; }");
 //    ui->stackedWidgetPage1->setTabText(0,"Channel Registers");
@@ -21,6 +22,7 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
     SetToolTips();
     LoadSettings();
     ui->vmm_reset->setEnabled(false);
+    ui->ReadADC->setEnabled(false);
     //connect the settings from the GUI
     // General Settings
     connect(ui->sdt, SIGNAL(valueChanged(int)),
@@ -497,8 +499,12 @@ void vmm_window::updateSettings()
         VMM_Set("slvs6b", !ui->slvs6b->isChecked());
     }
     else if(QObject::sender() == root_hybrid->root_hdmi->root_fec->root_daq->ui->openConnection_2){
-        if(root_hybrid->root_hdmi->root_fec->root_daq->ui->connectionLabel_2->text()==QString("all alive")) ui->vmm_reset->setEnabled(true);
-        else ui->vmm_reset->setEnabled(false);
+        if(root_hybrid->root_hdmi->root_fec->root_daq->ui->connectionLabel_2->text()==QString("all alive")){
+            ui->vmm_reset->setEnabled(true);
+            ui->ReadADC->setEnabled(true);}
+        else {
+            ui->vmm_reset->setEnabled(false);
+            ui->ReadADC->setEnabled(false);}
     }
 
     else if(QObject::sender() == ui->ApplyAll){
@@ -1069,4 +1075,13 @@ void vmm_window::on_vmm_reset_clicked()
     VMM_Set("reset2", 0);
     root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
 
+}
+
+void vmm_window::on_ReadADC_clicked()
+{
+    int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | preparte to read other channels
+
+    int adc_result = root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ReadADC(hdmi_index, hybrid_index, vmm_index, adc_chan);
+    QString text = QString::number(adc_result);
+    ui->ADCresult->setText(text);
 }
