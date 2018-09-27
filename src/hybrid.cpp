@@ -1,13 +1,13 @@
 #include "hybrid.h"
 
-Hybrid::Hybrid(): vmm_act (VMMS_PER_HYBRID)
+Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
 {
     LoadDefault();
-    vmm_act[0] = 1;
-    vmm_act[1] = 1;
-    PosX = true;
-    PosNo = -1;
-    ART = 0;
+    m_vmmActs[0] = 1;
+    m_vmmActs[1] = 1;
+    m_posX = true;
+    m_posNo = -1;
+    m_art = 0;
     SetReg("CKBC", (std::string)"40");
     SetReg("CKDT", (std::string)"40");
 
@@ -18,38 +18,38 @@ void Hybrid::LoadDefault(){
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){
-    if (vmm < VMMS_PER_HYBRID) {vmm_act[vmm] = OnOff; return true;}
+    if (vmm < VMMS_PER_HYBRID) {m_vmmActs[vmm] = OnOff; return true;}
     else {return false;}
 }
 
 void Hybrid::SetART(bool OnOff){
-    ART = OnOff;
+    m_art = OnOff;
 }
 
 bool Hybrid::GetVMM(unsigned short vmm){
-    if (vmm < VMMS_PER_HYBRID) {return vmm_act[vmm];}
+    if (vmm < VMMS_PER_HYBRID) {return m_vmmActs[vmm];}
     else {return false;}
 }
 
 bool Hybrid::GetART(){
-    return ART;
+    return m_art;
 }
 
 void Hybrid::SetPosX(bool IsX){
-    PosX = IsX;
+    m_posX = IsX;
 }
 
 bool Hybrid::SetPosNo(unsigned short PosNr){
     if(false) return false; //TODO: check if this number is already given to another hybrid on the same axis
-    else {PosNo=PosNr;return true;}
+    else {m_posNo=PosNr;return true;}
 }
 
 bool Hybrid::GetPosX(){
-    return PosX;
+    return m_posX;
 }
 
 unsigned short Hybrid::GetPosNo(){
-    return PosNo;
+    return m_posNo;
 }
 
 

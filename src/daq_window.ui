@@ -27,8 +27,14 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="1" rowspan="2" colspan="2">
+    <item row="0" column="1">
      <widget class="QTabWidget" name="tabWidget_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -69,7 +75,7 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="0" column="0">
-               <widget class="QCheckBox" name="checkBox">
+               <widget class="QCheckBox" name="checkBoxGlobalDAQ">
                 <property name="text">
                  <string> Global ACQ</string>
                 </property>
@@ -387,51 +393,95 @@
        </layout>
       </widget>
       <widget class="QWidget" name="tab_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
        <attribute name="title">
         <string>Calibration</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_9">
-        <item row="0" column="2">
-         <widget class="QGroupBox" name="Calib_Settings">
-          <property name="title">
-           <string>Settings</string>
+        <item row="0" column="1" colspan="2">
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
           </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="5" column="0">
-            <widget class="QComboBox" name="VMM_select"/>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_vmm">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Run Setting</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="pushButtonTakeData">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>25</height>
+              </size>
+             </property>
              <property name="text">
-              <string>Display VMM</string>
+              <string>Take Data</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
-           <item row="0" column="1" rowspan="6">
-            <widget class="QTextEdit" name="InfoScreen">
-             <property name="font">
-              <font>
-               <pointsize>9</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
+           <item row="1" column="0">
             <widget class="QLabel" name="label_run">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>25</height>
+              </size>
+             </property>
              <property name="text">
               <string>#Runs</string>
              </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_type">
-             <property name="text">
-              <string>Calibration Type</string>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="1" column="1">
             <widget class="QSpinBox" name="Runs">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>25</height>
+              </size>
+             </property>
              <property name="font">
               <font>
                <family>Arial</family>
@@ -452,8 +502,260 @@
              </property>
             </widget>
            </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="pushButtonStoreCorrections">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Set Corrections</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="comboBoxRunMode">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>25</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>automatic calibration</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>user settings</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="7" column="1" colspan="6">
+         <widget class="QFrame" name="framePlots">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>1</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>1400</width>
+            <height>900</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_13" rowstretch="1,1" columnstretch="1,1,1,1" rowminimumheight="300,300" columnminimumwidth="300,300,300,300">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
+           <item row="0" column="0">
+            <widget class="QCustomPlot" name="customPlot1" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QCustomPlot" name="customPlot2" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QCustomPlot" name="customPlot3" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="3">
+            <widget class="QCustomPlot" name="customPlot4" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="0">
-            <widget class="QComboBox" name="Calib_type">
+            <widget class="QCustomPlot" name="customPlot5" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QCustomPlot" name="customPlot6" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QCustomPlot" name="customPlot7" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3">
+            <widget class="QCustomPlot" name="customPlot8" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>200</width>
+               <height>200</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QGroupBox" name="Calib_Settings">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Calibration/Plot Settings</string>
+          </property>
+          <layout class="QFormLayout" name="formLayout_2">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_type">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Data type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="comboBoxCalibrationType">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>25</height>
+              </size>
+             </property>
              <item>
               <property name="text">
                <string>ADC</string>
@@ -464,84 +766,123 @@
                <string>TDC</string>
               </property>
              </item>
+             <item>
+              <property name="text">
+               <string>time (BCID/TDC)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Threshold</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_vmm">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Display FEC</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>BCID Filter</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEditBCID">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="sizeIncrement">
+              <size>
+               <width>1</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QComboBox" name="comboBoxFec">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>25</height>
+              </size>
+             </property>
             </widget>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QPushButton" name="Data">
+        <item row="0" column="4" colspan="3">
+         <widget class="QTextEdit" name="InfoScreen">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
            <size>
-            <width>170</width>
-            <height>0</height>
+            <width>0</width>
+            <height>120</height>
            </size>
           </property>
-          <property name="text">
-           <string>Start Calibration</string>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>120</height>
+           </size>
           </property>
-          <property name="checkable">
-           <bool>true</bool>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
           </property>
          </widget>
-        </item>
-        <item row="0" column="4">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>1500</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="1">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Maximum</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>70</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QCustomPlot" name="customPlot" native="true">
-          <property name="minimumSize">
-           <size>
-            <width>1400</width>
-            <height>720</height>
-           </size>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>700</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>
@@ -606,7 +947,7 @@
      <x>0</x>
      <y>0</y>
      <width>1500</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

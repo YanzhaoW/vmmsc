@@ -7,7 +7,7 @@ vmm 0
 convtime_10 0
 convtime_6 0
 convtime_8 0
-gain 4
+gain 2
 monitoring 64
 nskipm_i 0
 peaktime 0
@@ -22,7 +22,7 @@ sL0dckinv 0
 sbfm 0
 sbfp 0
 sbft 0
-sbip 1
+sbip 0
 sbmx 0
 scmx 0
 sdck6b 0
@@ -31,7 +31,7 @@ sdcks 0
 sdp 0
 sdp_2 300
 sdrv 0
-sdt 240
+sdt 300
 sfa 0
 sfam 0
 sfm 0
@@ -59,7 +59,7 @@ stot 0
 stpp 0
 sttt 0
 
-channel 0 ADC0_10 0
+channel 0 ADC0_10 31
 channel 0 ADC0_6 0
 channel 0 ADC0_8 0
 channel 0 sc 0
@@ -67,32 +67,32 @@ channel 0 sd 0
 channel 0 sl 0
 channel 0 sm 0
 channel 0 smx 0
-channel 0 st 0
+channel 0 st 1
 channel 0 sth 0
 
-channel 1 ADC0_10 0
+channel 1 ADC0_10 31
 channel 1 ADC0_6 0
-channel 1 ADC0_8 2
+channel 1 ADC0_8 0
 channel 1 sc 0
 channel 1 sd 0
 channel 1 sl 0
 channel 1 sm 0
 channel 1 smx 0
-channel 1 st 0
+channel 1 st 1
 channel 1 sth 0
 
-channel 2 ADC0_10 10
+channel 2 ADC0_10 31
 channel 2 ADC0_6 0
-channel 2 ADC0_8 2
+channel 2 ADC0_8 0
 channel 2 sc 0
 channel 2 sd 0
 channel 2 sl 0
 channel 2 sm 0
 channel 2 smx 0
-channel 2 st 0
+channel 2 st 1
 channel 2 sth 0
 
-channel 3 ADC0_10 0
+channel 3 ADC0_10 31
 channel 3 ADC0_6 0
 channel 3 ADC0_8 0
 channel 3 sc 0
@@ -100,21 +100,21 @@ channel 3 sd 0
 channel 3 sl 0
 channel 3 sm 0
 channel 3 smx 0
-channel 3 st 0
+channel 3 st 1
 channel 3 sth 0
 
-channel 4 ADC0_10 0
+channel 4 ADC0_10 31
 channel 4 ADC0_6 0
-channel 4 ADC0_8 1
+channel 4 ADC0_8 0
 channel 4 sc 0
 channel 4 sd 0
 channel 4 sl 0
 channel 4 sm 0
 channel 4 smx 0
-channel 4 st 0
+channel 4 st 1
 channel 4 sth 0
 
-channel 5 ADC0_10 19
+channel 5 ADC0_10 31
 channel 5 ADC0_6 0
 channel 5 ADC0_8 0
 channel 5 sc 0
@@ -122,10 +122,10 @@ channel 5 sd 0
 channel 5 sl 0
 channel 5 sm 0
 channel 5 smx 0
-channel 5 st 0
+channel 5 st 1
 channel 5 sth 0
 
-channel 6 ADC0_10 0
+channel 6 ADC0_10 31
 channel 6 ADC0_6 0
 channel 6 ADC0_8 0
 channel 6 sc 0
@@ -133,21 +133,21 @@ channel 6 sd 0
 channel 6 sl 0
 channel 6 sm 0
 channel 6 smx 0
-channel 6 st 0
+channel 6 st 1
 channel 6 sth 0
 
-channel 7 ADC0_10 20
+channel 7 ADC0_10 31
 channel 7 ADC0_6 0
-channel 7 ADC0_8 5
+channel 7 ADC0_8 0
 channel 7 sc 0
 channel 7 sd 0
 channel 7 sl 0
 channel 7 sm 0
 channel 7 smx 0
-channel 7 st 0
+channel 7 st 1
 channel 7 sth 0
 
-channel 8 ADC0_10 0
+channel 8 ADC0_10 31
 channel 8 ADC0_6 0
 channel 8 ADC0_8 0
 channel 8 sc 0
@@ -155,10 +155,10 @@ channel 8 sd 0
 channel 8 sl 0
 channel 8 sm 0
 channel 8 smx 0
-channel 8 st 0
+channel 8 st 1
 channel 8 sth 0
 
-channel 9 ADC0_10 0
+channel 9 ADC0_10 31
 channel 9 ADC0_6 0
 channel 9 ADC0_8 0
 channel 9 sc 0
@@ -166,10 +166,10 @@ channel 9 sd 0
 channel 9 sl 0
 channel 9 sm 0
 channel 9 smx 0
-channel 9 st 0
+channel 9 st 1
 channel 9 sth 0
 
-channel 10 ADC0_10 20
+channel 10 ADC0_10 31
 channel 10 ADC0_6 0
 channel 10 ADC0_8 0
 channel 10 sc 0
@@ -177,10 +177,10 @@ channel 10 sd 0
 channel 10 sl 0
 channel 10 sm 0
 channel 10 smx 0
-channel 10 st 0
+channel 10 st 1
 channel 10 sth 0
 
-channel 11 ADC0_10 4
+channel 11 ADC0_10 31
 channel 11 ADC0_6 0
 channel 11 ADC0_8 0
 channel 11 sc 0
@@ -188,10 +188,10 @@ channel 11 sd 0
 channel 11 sl 0
 channel 11 sm 0
 channel 11 smx 0
-channel 11 st 0
+channel 11 st 1
 channel 11 sth 0
 
-channel 12 ADC0_10 0
+channel 12 ADC0_10 31
 channel 12 ADC0_6 0
 channel 12 ADC0_8 0
 channel 12 sc 0
@@ -199,10 +199,10 @@ channel 12 sd 0
 channel 12 sl 0
 channel 12 sm 0
 channel 12 smx 0
-channel 12 st 0
+channel 12 st 1
 channel 12 sth 0
 
-channel 13 ADC0_10 0
+channel 13 ADC0_10 31
 channel 13 ADC0_6 0
 channel 13 ADC0_8 0
 channel 13 sc 0
@@ -210,10 +210,10 @@ channel 13 sd 0
 channel 13 sl 0
 channel 13 sm 0
 channel 13 smx 0
-channel 13 st 0
+channel 13 st 1
 channel 13 sth 0
 
-channel 14 ADC0_10 1
+channel 14 ADC0_10 31
 channel 14 ADC0_6 0
 channel 14 ADC0_8 0
 channel 14 sc 0
@@ -221,10 +221,10 @@ channel 14 sd 0
 channel 14 sl 0
 channel 14 sm 0
 channel 14 smx 0
-channel 14 st 0
+channel 14 st 1
 channel 14 sth 0
 
-channel 15 ADC0_10 6
+channel 15 ADC0_10 31
 channel 15 ADC0_6 0
 channel 15 ADC0_8 0
 channel 15 sc 0
@@ -232,21 +232,21 @@ channel 15 sd 0
 channel 15 sl 0
 channel 15 sm 0
 channel 15 smx 0
-channel 15 st 0
+channel 15 st 1
 channel 15 sth 0
 
-channel 16 ADC0_10 2
+channel 16 ADC0_10 31
 channel 16 ADC0_6 0
-channel 16 ADC0_8 5
+channel 16 ADC0_8 0
 channel 16 sc 0
 channel 16 sd 0
 channel 16 sl 0
 channel 16 sm 0
 channel 16 smx 0
-channel 16 st 0
+channel 16 st 1
 channel 16 sth 0
 
-channel 17 ADC0_10 0
+channel 17 ADC0_10 31
 channel 17 ADC0_6 0
 channel 17 ADC0_8 0
 channel 17 sc 0
@@ -254,10 +254,10 @@ channel 17 sd 0
 channel 17 sl 0
 channel 17 sm 0
 channel 17 smx 0
-channel 17 st 0
+channel 17 st 1
 channel 17 sth 0
 
-channel 18 ADC0_10 1
+channel 18 ADC0_10 31
 channel 18 ADC0_6 0
 channel 18 ADC0_8 0
 channel 18 sc 0
@@ -265,10 +265,10 @@ channel 18 sd 0
 channel 18 sl 0
 channel 18 sm 0
 channel 18 smx 0
-channel 18 st 0
+channel 18 st 1
 channel 18 sth 0
 
-channel 19 ADC0_10 5
+channel 19 ADC0_10 31
 channel 19 ADC0_6 0
 channel 19 ADC0_8 0
 channel 19 sc 0
@@ -276,10 +276,10 @@ channel 19 sd 0
 channel 19 sl 0
 channel 19 sm 0
 channel 19 smx 0
-channel 19 st 0
+channel 19 st 1
 channel 19 sth 0
 
-channel 20 ADC0_10 20
+channel 20 ADC0_10 31
 channel 20 ADC0_6 0
 channel 20 ADC0_8 0
 channel 20 sc 0
@@ -287,10 +287,10 @@ channel 20 sd 0
 channel 20 sl 0
 channel 20 sm 0
 channel 20 smx 0
-channel 20 st 0
+channel 20 st 1
 channel 20 sth 0
 
-channel 21 ADC0_10 4
+channel 21 ADC0_10 31
 channel 21 ADC0_6 0
 channel 21 ADC0_8 0
 channel 21 sc 0
@@ -298,10 +298,10 @@ channel 21 sd 0
 channel 21 sl 0
 channel 21 sm 0
 channel 21 smx 0
-channel 21 st 0
+channel 21 st 1
 channel 21 sth 0
 
-channel 22 ADC0_10 22
+channel 22 ADC0_10 31
 channel 22 ADC0_6 0
 channel 22 ADC0_8 0
 channel 22 sc 0
@@ -309,10 +309,10 @@ channel 22 sd 0
 channel 22 sl 0
 channel 22 sm 0
 channel 22 smx 0
-channel 22 st 0
+channel 22 st 1
 channel 22 sth 0
 
-channel 23 ADC0_10 27
+channel 23 ADC0_10 31
 channel 23 ADC0_6 0
 channel 23 ADC0_8 0
 channel 23 sc 0
@@ -320,10 +320,10 @@ channel 23 sd 0
 channel 23 sl 0
 channel 23 sm 0
 channel 23 smx 0
-channel 23 st 0
+channel 23 st 1
 channel 23 sth 0
 
-channel 24 ADC0_10 4
+channel 24 ADC0_10 31
 channel 24 ADC0_6 0
 channel 24 ADC0_8 0
 channel 24 sc 0
@@ -331,10 +331,10 @@ channel 24 sd 0
 channel 24 sl 0
 channel 24 sm 0
 channel 24 smx 0
-channel 24 st 0
+channel 24 st 1
 channel 24 sth 0
 
-channel 25 ADC0_10 1
+channel 25 ADC0_10 31
 channel 25 ADC0_6 0
 channel 25 ADC0_8 0
 channel 25 sc 0
@@ -342,21 +342,21 @@ channel 25 sd 0
 channel 25 sl 0
 channel 25 sm 0
 channel 25 smx 0
-channel 25 st 0
+channel 25 st 1
 channel 25 sth 0
 
-channel 26 ADC0_10 17
+channel 26 ADC0_10 31
 channel 26 ADC0_6 0
-channel 26 ADC0_8 4
+channel 26 ADC0_8 0
 channel 26 sc 0
 channel 26 sd 0
 channel 26 sl 0
 channel 26 sm 0
 channel 26 smx 0
-channel 26 st 0
+channel 26 st 1
 channel 26 sth 0
 
-channel 27 ADC0_10 0
+channel 27 ADC0_10 31
 channel 27 ADC0_6 0
 channel 27 ADC0_8 0
 channel 27 sc 0
@@ -364,10 +364,10 @@ channel 27 sd 0
 channel 27 sl 0
 channel 27 sm 0
 channel 27 smx 0
-channel 27 st 0
+channel 27 st 1
 channel 27 sth 0
 
-channel 28 ADC0_10 0
+channel 28 ADC0_10 31
 channel 28 ADC0_6 0
 channel 28 ADC0_8 0
 channel 28 sc 0
@@ -375,21 +375,21 @@ channel 28 sd 0
 channel 28 sl 0
 channel 28 sm 0
 channel 28 smx 0
-channel 28 st 0
+channel 28 st 1
 channel 28 sth 0
 
-channel 29 ADC0_10 4
+channel 29 ADC0_10 31
 channel 29 ADC0_6 0
-channel 29 ADC0_8 1
+channel 29 ADC0_8 0
 channel 29 sc 0
 channel 29 sd 0
 channel 29 sl 0
 channel 29 sm 0
 channel 29 smx 0
-channel 29 st 0
+channel 29 st 1
 channel 29 sth 0
 
-channel 30 ADC0_10 22
+channel 30 ADC0_10 31
 channel 30 ADC0_6 0
 channel 30 ADC0_8 0
 channel 30 sc 0
@@ -397,32 +397,32 @@ channel 30 sd 0
 channel 30 sl 0
 channel 30 sm 0
 channel 30 smx 0
-channel 30 st 0
+channel 30 st 1
 channel 30 sth 0
 
-channel 31 ADC0_10 15
+channel 31 ADC0_10 31
 channel 31 ADC0_6 0
-channel 31 ADC0_8 7
+channel 31 ADC0_8 0
 channel 31 sc 0
 channel 31 sd 0
 channel 31 sl 0
 channel 31 sm 0
 channel 31 smx 0
-channel 31 st 0
+channel 31 st 1
 channel 31 sth 0
 
-channel 32 ADC0_10 1
+channel 32 ADC0_10 31
 channel 32 ADC0_6 0
-channel 32 ADC0_8 3
+channel 32 ADC0_8 0
 channel 32 sc 0
 channel 32 sd 0
 channel 32 sl 0
 channel 32 sm 0
 channel 32 smx 0
-channel 32 st 0
+channel 32 st 1
 channel 32 sth 0
 
-channel 33 ADC0_10 15
+channel 33 ADC0_10 31
 channel 33 ADC0_6 0
 channel 33 ADC0_8 0
 channel 33 sc 0
@@ -430,335 +430,335 @@ channel 33 sd 0
 channel 33 sl 0
 channel 33 sm 0
 channel 33 smx 0
-channel 33 st 0
+channel 33 st 1
 channel 33 sth 0
 
-channel 34 ADC0_10 3
+channel 34 ADC0_10 31
 channel 34 ADC0_6 0
-channel 34 ADC0_8 7
+channel 34 ADC0_8 0
 channel 34 sc 0
 channel 34 sd 0
 channel 34 sl 0
 channel 34 sm 0
 channel 34 smx 0
-channel 34 st 0
+channel 34 st 1
 channel 34 sth 0
 
-channel 35 ADC0_10 6
+channel 35 ADC0_10 31
 channel 35 ADC0_6 0
-channel 35 ADC0_8 3
+channel 35 ADC0_8 0
 channel 35 sc 0
 channel 35 sd 0
 channel 35 sl 0
 channel 35 sm 0
 channel 35 smx 0
-channel 35 st 0
+channel 35 st 1
 channel 35 sth 0
 
-channel 36 ADC0_10 16
+channel 36 ADC0_10 31
 channel 36 ADC0_6 0
-channel 36 ADC0_8 3
+channel 36 ADC0_8 0
 channel 36 sc 0
 channel 36 sd 0
 channel 36 sl 0
 channel 36 sm 0
 channel 36 smx 0
-channel 36 st 0
+channel 36 st 1
 channel 36 sth 0
 
-channel 37 ADC0_10 6
+channel 37 ADC0_10 31
 channel 37 ADC0_6 0
-channel 37 ADC0_8 3
+channel 37 ADC0_8 0
 channel 37 sc 0
 channel 37 sd 0
 channel 37 sl 0
 channel 37 sm 0
 channel 37 smx 0
-channel 37 st 0
+channel 37 st 1
 channel 37 sth 0
 
-channel 38 ADC0_10 3
+channel 38 ADC0_10 31
 channel 38 ADC0_6 0
-channel 38 ADC0_8 1
+channel 38 ADC0_8 0
 channel 38 sc 0
 channel 38 sd 0
 channel 38 sl 0
 channel 38 sm 0
 channel 38 smx 0
-channel 38 st 0
+channel 38 st 1
 channel 38 sth 0
 
-channel 39 ADC0_10 0
+channel 39 ADC0_10 31
 channel 39 ADC0_6 0
-channel 39 ADC0_8 5
+channel 39 ADC0_8 0
 channel 39 sc 0
 channel 39 sd 0
 channel 39 sl 0
 channel 39 sm 0
 channel 39 smx 0
-channel 39 st 0
+channel 39 st 1
 channel 39 sth 0
 
-channel 40 ADC0_10 3
+channel 40 ADC0_10 31
 channel 40 ADC0_6 0
-channel 40 ADC0_8 3
+channel 40 ADC0_8 0
 channel 40 sc 0
 channel 40 sd 0
 channel 40 sl 0
 channel 40 sm 0
 channel 40 smx 0
-channel 40 st 0
+channel 40 st 1
 channel 40 sth 0
 
-channel 41 ADC0_10 15
+channel 41 ADC0_10 31
 channel 41 ADC0_6 0
-channel 41 ADC0_8 3
+channel 41 ADC0_8 0
 channel 41 sc 0
 channel 41 sd 0
 channel 41 sl 0
 channel 41 sm 0
 channel 41 smx 0
-channel 41 st 0
+channel 41 st 1
 channel 41 sth 0
 
-channel 42 ADC0_10 27
+channel 42 ADC0_10 31
 channel 42 ADC0_6 0
-channel 42 ADC0_8 5
+channel 42 ADC0_8 0
 channel 42 sc 0
 channel 42 sd 0
 channel 42 sl 0
 channel 42 sm 0
 channel 42 smx 0
-channel 42 st 0
+channel 42 st 1
 channel 42 sth 0
 
-channel 43 ADC0_10 27
+channel 43 ADC0_10 31
 channel 43 ADC0_6 0
-channel 43 ADC0_8 3
+channel 43 ADC0_8 0
 channel 43 sc 0
 channel 43 sd 0
 channel 43 sl 0
 channel 43 sm 0
 channel 43 smx 0
-channel 43 st 0
+channel 43 st 1
 channel 43 sth 0
 
-channel 44 ADC0_10 14
+channel 44 ADC0_10 31
 channel 44 ADC0_6 0
-channel 44 ADC0_8 3
+channel 44 ADC0_8 0
 channel 44 sc 0
 channel 44 sd 0
 channel 44 sl 0
 channel 44 sm 0
 channel 44 smx 0
-channel 44 st 0
+channel 44 st 1
 channel 44 sth 0
 
-channel 45 ADC0_10 5
+channel 45 ADC0_10 31
 channel 45 ADC0_6 0
-channel 45 ADC0_8 6
+channel 45 ADC0_8 0
 channel 45 sc 0
 channel 45 sd 0
 channel 45 sl 0
 channel 45 sm 0
 channel 45 smx 0
-channel 45 st 0
+channel 45 st 1
 channel 45 sth 0
 
-channel 46 ADC0_10 15
+channel 46 ADC0_10 31
 channel 46 ADC0_6 0
-channel 46 ADC0_8 6
+channel 46 ADC0_8 0
 channel 46 sc 0
 channel 46 sd 0
 channel 46 sl 0
 channel 46 sm 0
 channel 46 smx 0
-channel 46 st 0
+channel 46 st 1
 channel 46 sth 0
 
-channel 47 ADC0_10 4
+channel 47 ADC0_10 31
 channel 47 ADC0_6 0
-channel 47 ADC0_8 3
+channel 47 ADC0_8 0
 channel 47 sc 0
 channel 47 sd 0
 channel 47 sl 0
 channel 47 sm 0
 channel 47 smx 0
-channel 47 st 0
+channel 47 st 1
 channel 47 sth 0
 
-channel 48 ADC0_10 5
+channel 48 ADC0_10 31
 channel 48 ADC0_6 0
-channel 48 ADC0_8 5
+channel 48 ADC0_8 0
 channel 48 sc 0
 channel 48 sd 0
 channel 48 sl 0
 channel 48 sm 0
 channel 48 smx 0
-channel 48 st 0
+channel 48 st 1
 channel 48 sth 0
 
-channel 49 ADC0_10 4
+channel 49 ADC0_10 31
 channel 49 ADC0_6 0
-channel 49 ADC0_8 6
+channel 49 ADC0_8 0
 channel 49 sc 0
 channel 49 sd 0
 channel 49 sl 0
 channel 49 sm 0
 channel 49 smx 0
-channel 49 st 0
+channel 49 st 1
 channel 49 sth 0
 
-channel 50 ADC0_10 15
+channel 50 ADC0_10 31
 channel 50 ADC0_6 0
-channel 50 ADC0_8 7
+channel 50 ADC0_8 0
 channel 50 sc 0
 channel 50 sd 0
 channel 50 sl 0
 channel 50 sm 0
 channel 50 smx 0
-channel 50 st 0
+channel 50 st 1
 channel 50 sth 0
 
-channel 51 ADC0_10 20
+channel 51 ADC0_10 31
 channel 51 ADC0_6 0
-channel 51 ADC0_8 7
+channel 51 ADC0_8 0
 channel 51 sc 0
 channel 51 sd 0
 channel 51 sl 0
 channel 51 sm 0
 channel 51 smx 0
-channel 51 st 0
+channel 51 st 1
 channel 51 sth 0
 
-channel 52 ADC0_10 23
+channel 52 ADC0_10 31
 channel 52 ADC0_6 0
-channel 52 ADC0_8 6
+channel 52 ADC0_8 0
 channel 52 sc 0
 channel 52 sd 0
 channel 52 sl 0
 channel 52 sm 0
 channel 52 smx 0
-channel 52 st 0
+channel 52 st 1
 channel 52 sth 0
 
-channel 53 ADC0_10 15
+channel 53 ADC0_10 31
 channel 53 ADC0_6 0
-channel 53 ADC0_8 6
+channel 53 ADC0_8 0
 channel 53 sc 0
 channel 53 sd 0
 channel 53 sl 0
 channel 53 sm 0
 channel 53 smx 0
-channel 53 st 0
+channel 53 st 1
 channel 53 sth 0
 
-channel 54 ADC0_10 26
+channel 54 ADC0_10 31
 channel 54 ADC0_6 0
-channel 54 ADC0_8 6
+channel 54 ADC0_8 0
 channel 54 sc 0
 channel 54 sd 0
 channel 54 sl 0
 channel 54 sm 0
 channel 54 smx 0
-channel 54 st 0
+channel 54 st 1
 channel 54 sth 0
 
-channel 55 ADC0_10 0
+channel 55 ADC0_10 31
 channel 55 ADC0_6 0
-channel 55 ADC0_8 6
+channel 55 ADC0_8 0
 channel 55 sc 0
 channel 55 sd 0
 channel 55 sl 0
 channel 55 sm 0
 channel 55 smx 0
-channel 55 st 0
+channel 55 st 1
 channel 55 sth 0
 
-channel 56 ADC0_10 15
+channel 56 ADC0_10 31
 channel 56 ADC0_6 0
-channel 56 ADC0_8 2
+channel 56 ADC0_8 0
 channel 56 sc 0
 channel 56 sd 0
 channel 56 sl 0
 channel 56 sm 0
 channel 56 smx 0
-channel 56 st 0
+channel 56 st 1
 channel 56 sth 0
 
-channel 57 ADC0_10 27
+channel 57 ADC0_10 31
 channel 57 ADC0_6 0
-channel 57 ADC0_8 5
+channel 57 ADC0_8 0
 channel 57 sc 0
 channel 57 sd 0
 channel 57 sl 0
 channel 57 sm 0
 channel 57 smx 0
-channel 57 st 0
+channel 57 st 1
 channel 57 sth 0
 
-channel 58 ADC0_10 27
+channel 58 ADC0_10 31
 channel 58 ADC0_6 0
-channel 58 ADC0_8 6
+channel 58 ADC0_8 0
 channel 58 sc 0
 channel 58 sd 0
 channel 58 sl 0
 channel 58 sm 0
 channel 58 smx 0
-channel 58 st 0
+channel 58 st 1
 channel 58 sth 0
 
-channel 59 ADC0_10 15
+channel 59 ADC0_10 31
 channel 59 ADC0_6 0
-channel 59 ADC0_8 6
+channel 59 ADC0_8 0
 channel 59 sc 0
 channel 59 sd 0
 channel 59 sl 0
 channel 59 sm 0
 channel 59 smx 0
-channel 59 st 0
+channel 59 st 1
 channel 59 sth 0
 
-channel 60 ADC0_10 15
+channel 60 ADC0_10 31
 channel 60 ADC0_6 0
-channel 60 ADC0_8 7
+channel 60 ADC0_8 0
 channel 60 sc 0
 channel 60 sd 0
 channel 60 sl 0
 channel 60 sm 0
 channel 60 smx 0
-channel 60 st 0
+channel 60 st 1
 channel 60 sth 0
 
-channel 61 ADC0_10 7
+channel 61 ADC0_10 31
 channel 61 ADC0_6 0
-channel 61 ADC0_8 7
+channel 61 ADC0_8 0
 channel 61 sc 0
 channel 61 sd 0
 channel 61 sl 0
 channel 61 sm 0
 channel 61 smx 0
-channel 61 st 0
+channel 61 st 1
 channel 61 sth 0
 
-channel 62 ADC0_10 23
+channel 62 ADC0_10 31
 channel 62 ADC0_6 0
-channel 62 ADC0_8 6
+channel 62 ADC0_8 0
 channel 62 sc 0
 channel 62 sd 0
 channel 62 sl 0
 channel 62 sm 0
 channel 62 smx 0
-channel 62 st 0
+channel 62 st 1
 channel 62 sth 0
 
-channel 63 ADC0_10 4
+channel 63 ADC0_10 31
 channel 63 ADC0_6 0
-channel 63 ADC0_8 7
+channel 63 ADC0_8 0
 channel 63 sc 0
 channel 63 sd 0
 channel 63 sl 0
 channel 63 sm 0
 channel 63 smx 0
-channel 63 st 0
+channel 63 st 1
 channel 63 sth 0

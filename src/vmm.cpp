@@ -1,7 +1,7 @@
 #include "vmm.h"
 
 VMM::VMM():
-    Regi ( new VMM_Settings)
+    m_vmmSettings ( new VMMSettings)
 {
 LoadDefault();
 }
@@ -18,7 +18,7 @@ void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib
 
     //Fill default values of channels
     for(int i =0; i<64; i++){
-        Regi->ch_settings[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
+        m_vmmSettings->m_channels[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
     }
 
     if(calib){
@@ -26,7 +26,7 @@ void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib
         for( const auto& elem : m_calib ){
             for(int i =0; i<64; i++){
                 if(channel == i  ||  channel == -9999){
-                    Regi->ch_settings[i].m_channel[elem.first] = elem.second;
+                    m_vmmSettings->m_channels[i].m_channel[elem.first] = elem.second;
                 }
             }
         }
@@ -34,12 +34,12 @@ void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib
 
 
     //Fill default values to map for Global Register 1
-    for(std::string elem: Regi->Names_GReg1){
-        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    for(std::string elem: m_vmmSettings->m_names_GReg1){
+        m_vmmSettings->m_globalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
     }
     //Fill default values to map for Global Register 2
-    for(std::string elem: Regi->Names_GReg2){
-        Regi->m_GlobalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    for(std::string elem: m_vmmSettings->m_names_GReg2){
+        m_vmmSettings->m_globalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
     }
     ///Possibility to add more default values
     SetRegi("gain", 2);//corrsponds to 3 mV/fC
@@ -81,7 +81,7 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
                 if(i>=7) bin_val=1;
         m_bin.insert(BiPair(bools[i], bin_val));
     }
-std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
+std::cout<<"register: "<<feature<<" value: "<<val<<std::endl;
     if(ch==-9999){
 
         if(feature == "monitoring"){
@@ -94,15 +94,15 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_mon.insert(BiPair(std::to_string(i+63), bin_val+63));
             }
             if(m_mon.find(val)!=m_mon.end()){
-                Regi->m_GlobalReg1->at("monitoring") = m_mon[val];
-                Regi->m_GlobalReg1->at("scmx") = 0;
+                m_vmmSettings->m_globalReg1->at("monitoring") = m_mon[val];
+                m_vmmSettings->m_globalReg1->at("scmx") = 0;
                 return true;
             }
             else{
-                for(unsigned short i=0; i<64;i++){ //ATTENTION: here starting with Channel 0 to 63 and not with 1
+                 for(unsigned short i=0; i<64;i++){ //ATTENTION: here starting with Channel 0 to 63 and not with 1
                     if(val == std::to_string(i) ){
-                        Regi->m_GlobalReg1->at("monitoring") = i;
-                        Regi->m_GlobalReg1->at("scmx") = 1;
+                        m_vmmSettings->m_globalReg1->at("monitoring") = i;
+                        m_vmmSettings->m_globalReg1->at("scmx") = 1;
                         return true;
                     }
                 }
@@ -127,7 +127,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
             m_sfam.insert(BiPair("1", 1 ));
 
              if(m_sfam.find(val)!=m_sfam.end()){
-               Regi->m_GlobalReg1->at(feature) = m_sfam[val];
+               m_vmmSettings->m_globalReg1->at(feature) = m_sfam[val];
                return true;
              }
              return false;
@@ -143,7 +143,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_peakt.insert(BiPair(std::to_string(i), bin_val));
             }
             if(m_peakt.find(val)!=m_peakt.end()){
-              Regi->m_GlobalReg1->at(feature) = m_peakt[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_peakt[val];
               return true;
             }
             return false;
@@ -158,7 +158,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_gain.insert(BiPair(std::to_string(i), bin_val));
             }
             if(m_gain.find(val)!=m_gain.end()){
-              Regi->m_GlobalReg1->at(feature) = m_gain[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_gain[val];
               return true;
             }
             return false;
@@ -173,7 +173,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), bin_val));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
               return true;
             }
             return false;
@@ -185,7 +185,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), i));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
               return true;
             }
             return false;
@@ -196,7 +196,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), i));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
               return true;
             }
             return false;
@@ -209,7 +209,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
             m_val.insert(BiPair("1", 1 ));//sc110b
 
             if(m_val.find(val)!=m_val.end()){
-              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
               return true;
             }
             return false;
@@ -222,7 +222,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
             m_val.insert(BiPair("0", 0 ));//sc08b
 
             if(m_val.find(val)!=m_val.end()){
-              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
               return true;
             }
             return false;
@@ -237,15 +237,15 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
             m_val.insert(BiPair("2", 2 ));
 
             if(m_val.find(val)!=m_val.end()){
-              Regi->m_GlobalReg1->at(feature) = m_val[val];
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
               return true;
             }
             return false;
         }
         //filling the settings which are booleans
-        else if(Regi->m_GlobalReg1->find(feature)!=Regi->m_GlobalReg1->end()){
+        else if(m_vmmSettings->m_globalReg1->find(feature)!=m_vmmSettings->m_globalReg1->end()){
             if(m_bin.find(val)!=m_bin.end()){
-                Regi->m_GlobalReg1->at(feature) = m_bin[val];
+                m_vmmSettings->m_globalReg1->at(feature) = m_bin[val];
                 return true;
             }
         }
@@ -260,7 +260,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), i));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->ch_settings[ch].m_channel[feature] = m_val[val];
+              m_vmmSettings->m_channels[ch].m_channel[feature] = m_val[val];
               return true;
             }
             return false;
@@ -271,7 +271,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), i));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->ch_settings[ch].m_channel[feature] = m_val[val];
+              m_vmmSettings->m_channels[ch].m_channel[feature] = m_val[val];
               return true;
             }
             return false;
@@ -282,7 +282,7 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), i));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->ch_settings[ch].m_channel[feature]= m_val[val];
+              m_vmmSettings->m_channels[ch].m_channel[feature]= m_val[val];
               return true;
             }
             return false;
@@ -293,14 +293,14 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
                 m_val.insert(BiPair(std::to_string(i), i ));
             }
             if(m_val.find(val)!=m_val.end()){
-              Regi->ch_settings[ch].m_channel[feature] = m_val[val];
+              m_vmmSettings->m_channels[ch].m_channel[feature] = m_val[val];
               return true;
             }
             return false;
         }
 
-        else if(Regi->ch_settings[ch].m_channel.find(feature)!=Regi->ch_settings[ch].m_channel.end()){
-            Regi->ch_settings[ch].m_channel[feature]= m_bin[val];
+        else if(m_vmmSettings->m_channels[ch].m_channel.find(feature)!=m_vmmSettings->m_channels[ch].m_channel.end()){
+            m_vmmSettings->m_channels[ch].m_channel[feature]= m_bin[val];
             return true;
         }
 
@@ -313,32 +313,33 @@ std::cout<<"reigster: "<<feature<<" value: "<<val<<std::endl;
 unsigned short VMM::GetRegister( std::string feature, int ch ){
     if(ch==-9999){
         if(feature == "monitoring"){
-            if(Regi->m_GlobalReg1->at("scmx")==0){
-                return (Regi->m_GlobalReg1->at("monitoring")-63);
+            if(m_vmmSettings->m_globalReg1->at("scmx")==0){
+                return (m_vmmSettings->m_globalReg1->at("monitoring")-63);
             }
-            else if(Regi->m_GlobalReg1->at("scmx")==1){
-                return Regi->m_GlobalReg1->at("monitoring");
+            else if(m_vmmSettings->m_globalReg1->at("scmx")==1){
+                return m_vmmSettings->m_globalReg1->at("monitoring");
             }
             else{
                 std::cout<<"ERROR in feature ::"<<feature<<std::endl;
             }
         }
 
-        else if(Regi->m_GlobalReg1->find(feature)!=Regi->m_GlobalReg1->end()){
-            return Regi->m_GlobalReg1->at(feature);
+        else if(m_vmmSettings->m_globalReg1->find(feature)!=m_vmmSettings->m_globalReg1->end()){
+            return m_vmmSettings->m_globalReg1->at(feature);
         }
         else{
             std::cout<<"ERROR the feature ::"<<feature<<":: does not exist"<<std::endl;
         }
     }
     else if(ch>=0 && ch<64){
-        if(Regi->ch_settings[ch].m_channel.find(feature)!=Regi->ch_settings[ch].m_channel.end()){
-            return Regi->ch_settings[ch].m_channel[feature];
+        if(m_vmmSettings->m_channels[ch].m_channel.find(feature)!=m_vmmSettings->m_channels[ch].m_channel.end()){
+            return m_vmmSettings->m_channels[ch].m_channel[feature];
         }
         else{
            std::cout<<"ERROR the feature "<<feature<<" does not exist in Channel settings"<<std::endl;
         }
     }
+    return 0;
 }
 
 VMM::~VMM(){

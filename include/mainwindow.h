@@ -25,48 +25,47 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     friend class Commandline;
-    friend class VMM_config_handler;
-    friend class hybrid_config_handler;
-    friend class DAQ_config_handler;
-    friend class FEC_config_handler;
-    friend class daq_window;
-    friend class fec_window;
-    friend class hdmi_window;
-    friend class hybrid_window;
-    friend class vmm_window;
-    friend class calibration_module;
-    DAQ daq[DAQS_PER_GUIWINDOW];
-    private:
-        bool m_dbg;
-         QFuture<int> f1;
+    friend class VMMConfigHandler;
+    friend class HybridConfigHandler;
+    friend class DAQConfigHandler;
+    friend class FECConfigHandler;
+    friend class DAQWindow;
+    friend class FECWindow;
+    friend class HDMIWindow;
+    friend class HybridWindow;
+    friend class VMMWindow;
+    friend class CalibrationModule;
+    DAQ m_daqs[DAQS_PER_GUIWINDOW];
 
-        std::vector<bool> daq_act;//binary to store which fecs are activated
 
-        SocketHandler *vmmSocketHandler;
-        MessageHandler *vmmMessageHandler;
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+    Commandline *m_commandLine;
+    VMMConfigHandler *m_vmmConfigHandler;
+    HybridConfigHandler *m_hybridConfigHandler;
+    DAQConfigHandler *m_daqConfigHandler;
+    FECConfigHandler *m_fecConfigHandler;
+    DAQWindow *m_daqWindow;
+    bool IsDbgActive() { return m_dbg; }
+    void ResetAll();
 
-    public:
-        explicit MainWindow(QWidget *parent = 0);
-        ~MainWindow();
-        Commandline *b;
-        VMM_config_handler *vmmconfhandl;
-        hybrid_config_handler *hybridconfhandl;
-        DAQ_config_handler *daqconfhandl;
-        FEC_config_handler *fecconfhandl;
-        daq_window *daqwindow;
-        bool dbg() { return m_dbg; }
-        void ResetCalib();
-        void ResetAll();
+    // methods to grab the VMM tools
+    //////////////////////////////////////////////////////
+    SocketHandler& GetSocketHandler() { return *m_socketHandler; }
+    MessageHandler& GetMessageHandler()         { return *m_messageHandler; }
 
-        // methods to grab the VMM tools
-        //////////////////////////////////////////////////////
-        SocketHandler& socketHandle() { return *vmmSocketHandler; }
-        MessageHandler& msg()         { return *vmmMessageHandler; }
-
-        calibration_module *calib;
+    CalibrationModule *m_calib;
 
     
+private:
+    bool m_dbg;
+    QFuture<int> m_future1;
 
+    std::vector<bool> m_daq_act;//binary to store which fecs are activated
+
+    SocketHandler *m_socketHandler;
+    MessageHandler *m_messageHandler;
     
 
 

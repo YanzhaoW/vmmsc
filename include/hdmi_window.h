@@ -6,33 +6,33 @@
 #include "ui_hdmi_window.h"
 #include "hybrid_window.h"
 
-class fec_window;
+class FECWindow;
 
 namespace Ui {
 class hdmi_window;
 }
 
-class hdmi_window : public QWidget
+class HDMIWindow : public QWidget
 {
     Q_OBJECT
-    friend class hybrid_window;
-    friend class vmm_window;
-    friend class fec_window;
+    friend class HybridWindow;
+    friend class VMMWindow;
+    friend class FECWindow;
 
 public:
-    explicit hdmi_window(fec_window *top, unsigned short fec = 0, unsigned short hdmi = 0, QWidget *parent = 0);
-    ~hdmi_window();
+    explicit HDMIWindow(FECWindow *top, unsigned short fec = 0, unsigned short hdmi = 0, QWidget *parent = 0);
+    ~HDMIWindow();
 
 private slots:
     void on_Box_hybrid1_clicked();
 
 private:
-    fec_window *root_fec;
-    unsigned short fec_index;
-    unsigned short hdmi_index;
-    Ui::hdmi_window *ui;
-    void hybridBoxLogic(bool checked, unsigned short hybrid);
-    void updateWindow();
+    FECWindow *m_fecWindow;
+    unsigned short m_fecIndex;
+    unsigned short m_hdmiIndex;
+    Ui::hdmi_window *m_ui;
+    void HybridBoxLogic(bool checked, unsigned short hybrid);
+    void UpdateWindow();
 
 };
 

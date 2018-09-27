@@ -1,8 +1,8 @@
 daq 0
 fec 0
-hdmi 0
+hdmi 1
 hybrid 0
-vmm 0
+vmm 1
 
 convtime_10 0
 convtime_6 0

@@ -22,12 +22,12 @@ class MessageHandler : public QObject
     public :
         explicit MessageHandler(QObject *parent = 0);
         virtual ~MessageHandler(){};
-        void setGUI(bool set) { m_gui = set; }
-        bool gui() { return m_gui; }
-        void setMessageSize(unsigned int size) { m_size = size; }
+        void SetGUI(bool set) { m_gui = set; }
+        bool GetGUI() { return m_gui; }
+        void SetMessageSize(unsigned int size) { m_size = size; }
 
-        std::string buffer() { return m_buffer.str(); }
-        void clear() { m_buffer.str(""); }
+        std::string GetBuffer() { return m_buffer.str(); }
+        void ClearBuffer() { m_buffer.str(""); }
 
         /// operators
         void operator () (std::stringstream& s, std::string caller,
@@ -58,7 +58,7 @@ class MessageHandler : public QObject
         std::stringstream m_buffer;
 
     signals :
-        void logReady();
+        void on_log_ready();
 
     public slots :
 

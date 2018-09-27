@@ -1,6 +1,6 @@
 daq 0
 fec 0
-hdmi 0
+hdmi 4
 hybrid 0
 vmm 0
 

@@ -8,12 +8,12 @@
 
 class MainWindow;
 
-class VMM_config_handler : public QObject
+class VMMConfigHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit VMM_config_handler(MainWindow *top, QObject *parent = 0);
-    ~VMM_config_handler();
+    explicit VMMConfigHandler(MainWindow *top, QObject *parent = 0);
+    ~VMMConfigHandler();
     friend class Commandline;
     bool LoadAllVMMConf(std::string filename);
     bool WriteAllVMMConf(std::string filename);
@@ -23,8 +23,8 @@ public:
     bool WriteSingleVMMConf(const char* filename);
 
 private:
-    char ExecPath[256];
-    MainWindow *root1;
+    char m_execPath[256];
+    MainWindow *m_mainWindow;
     bool GenericAllVMMConf(bool load, std::string filename);
     bool GenericSingleVMMConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm);
     bool LoadVMMConfig(std::string fname);

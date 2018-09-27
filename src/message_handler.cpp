@@ -60,10 +60,10 @@ void MessageHandler::operator () (stringstream& s, string caller, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
@@ -110,10 +110,10 @@ void MessageHandler::operator () (stringstream& s, const char* call, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
@@ -158,10 +158,10 @@ void MessageHandler::operator () (stringstream& s, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << caller << "    " << substrings[i] << endl;
     }
@@ -205,10 +205,10 @@ void MessageHandler::operator () (string s, string caller, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
@@ -256,10 +256,10 @@ void MessageHandler::operator () (string s, const char* call, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
@@ -308,10 +308,10 @@ void MessageHandler::operator () (const char* m, const char* call, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << setw(35) << caller << "    " << substrings[i] << endl;
     }
@@ -355,10 +355,10 @@ void MessageHandler::operator () (string s, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << caller << "    " << substrings[i] << endl;
     }
@@ -404,10 +404,10 @@ void MessageHandler::operator () (const char* msg, bool exit)
     } // k
 
     for(int i = 0; i < (int)substrings.size(); i++) {
-        if(gui()) {
-            clear();
+        if(GetGUI()) {
+            ClearBuffer();
             m_buffer << setw(35) << caller << "    " << substrings[i];
-            emit logReady();
+            emit on_log_ready();
         }
         cout << caller << "    " << substrings[i] << endl;
     }

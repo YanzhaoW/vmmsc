@@ -1,10 +1,10 @@
 daq 0
-fec 0
+fec 1
 
 tp_delay 81
-trigger_period 8190
+trigger_period 4094
 acq_sync 100
-acq_window 7060
+acq_window 3900
 run_mode pulser
 bcid_reset 0
 fec_port 6007
@@ -12,10 +12,10 @@ daq_port 6006
 vmmasic_port 6603
 vmmapp_port 6600
 s6_port 6602
-evbld_mode Global_Frame_Cnt
-evbld_infodata Trigger_Timestamp
+evbld_mode Frame_Cnt
+evbld_infodata HINFO+Datalength
 highres false
-triggermode 1
+triggermode 0
 res2 0
 res3 0
 sL0enaV 0
@@ -30,5 +30,5 @@ sL0cktest 0
 ip1 10
 ip2 0
 ip3 0
-ip4 2
+ip4 3
 i2c_port 6604

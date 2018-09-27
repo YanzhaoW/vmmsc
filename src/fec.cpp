@@ -2,52 +2,62 @@
 #include <unistd.h>
 
 FEC::FEC():
-    hdmi_act (HDMIS_PER_FEC),
+    m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
-    vmmSocketHandler(0),
-    RegNames ( new std::vector<const char*> (31) ),
-    Reg ( new std::vector<unsigned long> (31) ),
-    cchr ( new char ) //need for returning const char * in GetReg functions
+    m_socketHandler(0),
+    m_regNames ( new std::vector<const char*> (31) ),
+    m_reg ( new std::vector<unsigned long> (31) ),
+    m_chr ( new char ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
 
-    vmmSocketHandler = new SocketHandler();
-    fec_conf_mod = new FEC_config_module(this);
-    fec_conf_mod->LoadSocket( socketHandle() );
+    m_socketHandler = new SocketHandler();
+    m_fecConfigModule = new FECConfigModule(this);
+    m_fecConfigModule->LoadSocket( GetSocketHandler() );
 }
 
 QString FEC::GetIP(){
     QString ip;
-    ip = QString("%1.%2.%3.%4").arg(Reg->at(26)).arg(Reg->at(27)).arg(Reg->at(28)).arg(Reg->at(29));
+    ip = QString("%1.%2.%3.%4").arg(m_reg->at(26)).arg(m_reg->at(27)).arg(m_reg->at(28)).arg(m_reg->at(29));
     return ip;
+}
+
+void FEC::SetFirmwareVersion(QString version)
+{
+    m_firmwareVersion = version;
+}
+
+QString FEC::GetFirmwareVersion()
+{
+    return m_firmwareVersion;
 }
 
 // ------------------------------------------------------------------------ //
 void FEC::LoadMessageHandler(MessageHandler& m)
 {
     m_msg = &m;
-    fec_conf_mod->LoadMessageHandler( m );
-    vmmSocketHandler->LoadMessageHandler( m );
+    m_fecConfigModule->LoadMessageHandler( m );
+    m_socketHandler->LoadMessageHandler( m );
 }
 // ------------------------------------------------------------------------- //
 
 void FEC::SendAll(){
     /// function to send all configurations to fec, hybrid and vmm
 
-    fec_conf_mod->setMask();
+    m_fecConfigModule->SetMask();
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
         if(GetHDMI(k)){
             for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                if (hdmi[k].GetHybrid(l)){
-                    fec_conf_mod->configTP(k, l);
-                    fec_conf_mod->s6clocks(k, l);
-                    fec_conf_mod->setS6Resets(k, l);
+                if (m_hdmis[k].GetHybrid(l)){
+                    m_fecConfigModule->ConfigTP(k, l);
+                    m_fecConfigModule->SetS6clocks(k, l);
+                    m_fecConfigModule->SetS6Resets(k, l);
                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                        if (hdmi[k].hybrid[l].GetVMM(m)){
+                        if (m_hdmis[k].m_hybrids[l].GetVMM(m)){
                             //sleep(1);
-                            fec_conf_mod->SendConfig(k, l, m);
-                            fec_conf_mod->setEventHeaders(k, l, m);
-                            fec_conf_mod->setTriggerAcqConstants(k, l, m);
+                            m_fecConfigModule->SendConfig(k, l, m);
+                            m_fecConfigModule->SetEventHeaders(k, l, m);
+                            m_fecConfigModule->SetTriggerAcqConstants(k, l, m);
 
                         }
                     }
@@ -67,9 +77,9 @@ quint16 FEC::GetChMap(){
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
         if(GetHDMI(k)){
             for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                if (hdmi[k].GetHybrid(l)){
+                if (m_hdmis[k].GetHybrid(l)){
                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                        if (hdmi[k].hybrid[l].GetVMM(m)){
+                        if (m_hdmis[k].m_hybrids[l].GetVMM(m)){
                             chMapString.replace(15-( k*2+m ) , 1 , QString("1") );
                         }
                     }
@@ -85,81 +95,81 @@ quint16 FEC::GetChMap(){
 
 void FEC::LoadDefault(bool calibration){
     if(!calibration){
-        (*RegNames)[0] ="tp_delay";                (*Reg)[0] = 81;      //32 bit //max 50000 by gui?
-        (*RegNames)[1] ="trigger_period";          (*Reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
-        (*RegNames)[2] ="acq_sync";                (*Reg)[2] = 100;     //32 bit
-        (*RegNames)[3] ="acq_window";              (*Reg)[3] = 3900;    //32 bit
-        (*RegNames)[4] ="run_mode";                (*Reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
-        (*RegNames)[5] ="bcid_reset";              (*Reg)[5] = 0;       //max 65535 (16 bit)
-        (*RegNames)[6] ="fec_port";                (*Reg)[6] = 6007;    //32 bit
-        (*RegNames)[7] ="daq_port";                (*Reg)[7] = 6006;    //32 bit
-        (*RegNames)[8] ="vmmasic_port";            (*Reg)[8] = 6603;    //32 bit
-        (*RegNames)[9] ="vmmapp_port";             (*Reg)[9] = 6600;    //32 bit
-        (*RegNames)[10]="s6_port";                 (*Reg)[10] = 6602;   //32 bit
-        (*RegNames)[11]="evbld_mode";              (*Reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
-        (*RegNames)[12]="evbld_infodata";          (*Reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
-        (*RegNames)[13]="highres";                 (*Reg)[13] = 0;   //{"0", "1", "false", "true"};
+        (*m_regNames)[0] ="tp_delay";                (*m_reg)[0] = 81;      //32 bit //max 50000 by gui?
+        (*m_regNames)[1] ="trigger_period";          (*m_reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
+        (*m_regNames)[2] ="acq_sync";                (*m_reg)[2] = 100;     //32 bit
+        (*m_regNames)[3] ="acq_window";              (*m_reg)[3] = 3900;    //32 bit
+        (*m_regNames)[4] ="run_mode";                (*m_reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
+        (*m_regNames)[5] ="bcid_reset";              (*m_reg)[5] = 0;       //max 65535 (16 bit)
+        (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
+        (*m_regNames)[7] ="daq_port";                (*m_reg)[7] = 6006;    //32 bit
+        (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
+        (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
+        (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
+        (*m_regNames)[11]="evbld_mode";              (*m_reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
+        (*m_regNames)[12]="evbld_infodata";          (*m_reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
+        (*m_regNames)[13]="highres";                 (*m_reg)[13] = 0;   //{"0", "1", "false", "true"};
 
-        (*RegNames)[14]="triggermode";             (*Reg)[14] = 0;   // 0 for external and 1 for pulser
-        (*RegNames)[15]="res2";                    (*Reg)[15] = 0;   //
-        (*RegNames)[16]="res3";                    (*Reg)[16] = 0;   //
+        (*m_regNames)[14]="triggermode";             (*m_reg)[14] = 0;   // 0 for external and 1 for pulser
+        (*m_regNames)[15]="res2";                    (*m_reg)[15] = 0;   //
+        (*m_regNames)[16]="res3";                    (*m_reg)[16] = 0;   //
 
-        (*RegNames)[17]="sL0enaV";                  (*Reg)[17] = 0;   //{"0", "1", "false", "true"}
-        (*RegNames)[18]="sL0ena";                   (*Reg)[18] = 0;   //{"0", "1", "false", "true"}
-        (*RegNames)[19]="l0offset";                 (*Reg)[19] = 0;   //12 bit
-        (*RegNames)[20]="offset";                   (*Reg)[20] = 0;   //12 bit
-        (*RegNames)[21]="rollover";                 (*Reg)[21] = 0;   //12 bit
-        (*RegNames)[22]="window";                   (*Reg)[22] = 0;   //3 bit
-        (*RegNames)[23]="truncate";                 (*Reg)[23] = 0;   //6 bit
-        (*RegNames)[24]="nskip";                    (*Reg)[24] = 0;   //7 bit
-        (*RegNames)[25]="sL0cktest";                (*Reg)[25] = 0;   //{"0", "1", "false", "true"}
-        (*RegNames)[26]="ip1";                      (*Reg)[26] = 10;   //
-        (*RegNames)[27]="ip2";                      (*Reg)[27] = 0;   //
-        (*RegNames)[28]="ip3";                      (*Reg)[28] = 0;   //
-        (*RegNames)[29]="ip4";                      (*Reg)[29] = 2;   //
+        (*m_regNames)[17]="sL0enaV";                  (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
+        (*m_regNames)[18]="sL0ena";                   (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
+        (*m_regNames)[19]="l0offset";                 (*m_reg)[19] = 0;   //12 bit
+        (*m_regNames)[20]="offset";                   (*m_reg)[20] = 0;   //12 bit
+        (*m_regNames)[21]="rollover";                 (*m_reg)[21] = 0;   //12 bit
+        (*m_regNames)[22]="window";                   (*m_reg)[22] = 0;   //3 bit
+        (*m_regNames)[23]="truncate";                 (*m_reg)[23] = 0;   //6 bit
+        (*m_regNames)[24]="nskip";                    (*m_reg)[24] = 0;   //7 bit
+        (*m_regNames)[25]="sL0cktest";                (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
+        (*m_regNames)[26]="ip1";                      (*m_reg)[26] = 10;   //
+        (*m_regNames)[27]="ip2";                      (*m_reg)[27] = 0;   //
+        (*m_regNames)[28]="ip3";                      (*m_reg)[28] = 0;   //
+        (*m_regNames)[29]="ip4";                      (*m_reg)[29] = 2;   //
 
-        (*RegNames)[30]="i2c_port";                 (*Reg)[30] = 6604;   //32 bit
+        (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
     }
    else{
-        (*Reg)[0] = 81;    //tp_delay
-        (*Reg)[1] = 4094;  //trigger_period
-        (*Reg)[2] = 100; //acq_sync
-        (*Reg)[3] = 3900;//acq_window
-        (*Reg)[4] = 0;//run_mode
-        (*Reg)[5] = 0;//bcid_reset
-        (*Reg)[12] = 0;//evbld_infodata
-        (*Reg)[13] = 0;//highres
+        (*m_reg)[0] = 81;    //tp_delay
+        (*m_reg)[1] = 4094;  //trigger_period
+        (*m_reg)[2] = 100; //acq_sync
+        (*m_reg)[3] = 3900;//acq_window
+        (*m_reg)[4] = 0;//run_mode
+        (*m_reg)[5] = 0;//bcid_reset
+        (*m_reg)[12] = 0;//evbld_infodata
+        (*m_reg)[13] = 0;//highres
 
-        (*Reg)[14] = 0;//triggermode
+        (*m_reg)[14] = 0;//triggermode
 
-        (*Reg)[17] = 0;//sL0enaV
-        (*Reg)[18] = 0;//sL0ena
-        (*Reg)[19] = 0;//l0offset
-        (*Reg)[20] = 0;//offset
-        (*Reg)[21] = 0;//rollover
-        (*Reg)[22] = 0;//window
-        (*Reg)[23] = 0;//truncate
-        (*Reg)[24] = 0;//nskip
-        (*Reg)[25] = 0;//sL0cktest
+        (*m_reg)[17] = 0;//sL0enaV
+        (*m_reg)[18] = 0;//sL0ena
+        (*m_reg)[19] = 0;//l0offset
+        (*m_reg)[20] = 0;//offset
+        (*m_reg)[21] = 0;//rollover
+        (*m_reg)[22] = 0;//window
+        (*m_reg)[23] = 0;//truncate
+        (*m_reg)[24] = 0;//nskip
+        (*m_reg)[25] = 0;//sL0cktest
 
     }
 }
 
 // ------------------------------------------------------------------------- //
-unsigned short FEC::VMM_Get(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch){
-    unsigned short setting = hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].GetRegister(feature, ch);
+unsigned short FEC::GetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch){
+    unsigned short setting = m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].GetRegister(feature, ch);
     return setting;
 }
 
-bool FEC::VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch){
-    if(hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].SetRegi(feature, value, ch)){
+bool FEC::SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch){
+    if(m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
      return true;
     }
     else return false;
 }
 
-bool FEC::VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch){
-    if(hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].SetRegi(feature, value, ch)){
+bool FEC::SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch){
+    if(m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
      return true;
     }
     else return false;
@@ -167,18 +177,18 @@ bool FEC::VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string f
 
 
 bool FEC::SetHDMI(unsigned short hdmi, bool OnOff){
-    if (hdmi < HDMIS_PER_FEC) {hdmi_act[hdmi] = OnOff; return true;}
+    if (hdmi < HDMIS_PER_FEC) {m_hdmiActs[hdmi] = OnOff; return true;}
     else {return false;}
 }
 
 bool FEC::GetHDMI(unsigned short hdmi){
-    if (hdmi < HDMIS_PER_FEC) {return hdmi_act[hdmi];}
+    if (hdmi < HDMIS_PER_FEC) {return m_hdmiActs[hdmi];}
     else {return false;}
 }
 
 bool FEC::Set(unsigned short reg, unsigned long val){
 
-    if (reg < Reg->size() ) { (*Reg)[reg] = val; std::cout << "Register " << reg << " set to " << val << " ." << std::endl; return true;}
+    if (reg < m_reg->size() ) { (*m_reg)[reg] = val; std::cout << "Register " << reg << " set to " << val << " ." << std::endl; return true;}
     else {std::cout << "ERROR register " << reg << " does not exist." << std::endl;return false;}
 }
 
@@ -196,7 +206,7 @@ bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
     if (reg == 5 ){ // 16 bit values allowed for bcid_reset
         if (intValue < 65536)found = true;
     }
-    else if (reg < Reg->size()){// && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
+    else if (reg < m_reg->size()){// && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
         if (intValue < 4294967296)found = true;
     }
 //    if (reg == 11){ //evbld_mode
@@ -213,8 +223,8 @@ bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
 
 bool FEC::SetReg(const char *reg, bool val){ //set a register, name and bool given
     const char *chr =  val ? "true" : "false";// convert bool to const char * to check if in allowed value list
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             if (CheckAllowedVal(i, chr)){
                 Set(i,val); return true;
             }
@@ -233,8 +243,8 @@ bool FEC::SetReg(int regnum, bool val){
 
 bool FEC::SetReg(const char *reg, unsigned long val){
     std::stringstream str1;str1 << val;const char * chr = str1.str().c_str(); // convert int to const char * to check if in allowed value list
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             if (CheckAllowedVal(i, chr)){
                 Set(i,val); return true;
             }
@@ -252,8 +262,8 @@ bool FEC::SetReg(int regnum, unsigned long val){
 }
 
 bool FEC::SetReg(const char *reg, const char *val){
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             if (CheckAllowedVal(i, val)){
                 Set(i,FindVecEntry(i,val)); return true;
             }
@@ -308,8 +318,8 @@ unsigned long FEC::FindVecEntry(unsigned short regnum, const char *val){
 }
 
 const char * FEC::GetReg(const char *reg){
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             const char *chr = GetReg((int)i);
             return chr;
         }
@@ -319,33 +329,33 @@ const char * FEC::GetReg(const char *reg){
 
 const char * FEC::GetReg(int regnum){
     if (regnum == 4){// give the name of the value
-        if ((*Reg)[4] == 0 || (*Reg)[4] == 2 ) return "pulser";
-        else if ((*Reg)[4] == 1 || (*Reg)[4] == 3) return "external";
+        if ((*m_reg)[4] == 0 || (*m_reg)[4] == 2 ) return "pulser";
+        else if ((*m_reg)[4] == 1 || (*m_reg)[4] == 3) return "external";
         else return "ERROR";
     }
-    else if (abs(regnum) < (*Reg).size() && regnum != 4 && regnum != 11 && regnum != 12 && regnum != 13){ //need to convert number to const char *
-        std::stringstream str1;str1 << (*Reg)[regnum];
-        std::strcpy(cchr,str1.str().c_str());
-        return cchr;
+    else if (abs(regnum) < (*m_reg).size() && regnum != 4 && regnum != 11 && regnum != 12 && regnum != 13){ //need to convert number to const char *
+        std::stringstream str1;str1 << (*m_reg)[regnum];
+        std::strcpy(m_chr,str1.str().c_str());
+        return m_chr;
     }
     else if (regnum == 11){
-        if ((*Reg)[11] == 0) return "Frame_Cnt";
-        else if ((*Reg)[11] == 1) return "Global_Frame_Cnt";
-        else if ((*Reg)[11] == 2) return "Timestamp+Frame_Cnt";
+        if ((*m_reg)[11] == 0) return "Frame_Cnt";
+        else if ((*m_reg)[11] == 1) return "Global_Frame_Cnt";
+        else if ((*m_reg)[11] == 2) return "Timestamp+Frame_Cnt";
         else return "ERROR";
     }
     else if (regnum == 12){
-        if ((*Reg)[12] == 0) return "HINFO+Datalength";
-        else if ((*Reg)[12] == 1) return "Trigger_Cnt+Datalength";
-        else if ((*Reg)[12] == 2) return "Trigger_Cnt";
-        else if ((*Reg)[12] == 3) return "Trigger_Timestamp+Datalength";
-        else if ((*Reg)[12] == 4) return "Trigger_Timestamp";
-        else if ((*Reg)[12] == 5) return "Trigger_Cnt+Trigger_Timestamp";
+        if ((*m_reg)[12] == 0) return "HINFO+Datalength";
+        else if ((*m_reg)[12] == 1) return "Trigger_Cnt+Datalength";
+        else if ((*m_reg)[12] == 2) return "Trigger_Cnt";
+        else if ((*m_reg)[12] == 3) return "Trigger_Timestamp+Datalength";
+        else if ((*m_reg)[12] == 4) return "Trigger_Timestamp";
+        else if ((*m_reg)[12] == 5) return "Trigger_Cnt+Trigger_Timestamp";
         else return "ERROR";
     }
     else if (regnum == 13){// give the name of the value
-        if ((*Reg)[13] == 0 || (*Reg)[13] == 2 ) return "false";
-        else if ((*Reg)[13] == 1 || (*Reg)[13] == 3) return "true";
+        if ((*m_reg)[13] == 0 || (*m_reg)[13] == 2 ) return "false";
+        else if ((*m_reg)[13] == 1 || (*m_reg)[13] == 3) return "true";
         else return "ERROR";
     }
     else return "ERROR";
@@ -353,15 +363,15 @@ const char * FEC::GetReg(int regnum){
 
 
 unsigned long FEC::GetRegVal(int regnum){
-    if (abs(regnum) < (*Reg).size() ){
-        return (*Reg)[regnum];
+    if (abs(regnum) < (*m_reg).size() ){
+        return (*m_reg)[regnum];
     }
     else return -1;
 }
 
 unsigned long FEC::GetRegVal(const char *reg){
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             return GetRegVal((int)i);
             std::cout<<"Position: "<<i<<std::endl;
         }
@@ -370,21 +380,21 @@ unsigned long FEC::GetRegVal(const char *reg){
 }
 
 const char * FEC::GetRegName(unsigned short regnum){
-    if(regnum < (*RegNames).size()){return (*RegNames)[regnum];}
+    if(regnum < (*m_regNames).size()){return (*m_regNames)[regnum];}
     return "failure";
 }
 
 unsigned short FEC::GetRegNumber(const char *reg){
     unsigned short regnum = -1;
-    for (unsigned short i = 0; i < (*RegNames).size(); i++)
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++)
     {
-        if (reg == (*RegNames)[i]) {regnum = i;}
+        if (reg == (*m_regNames)[i]) {regnum = i;}
     }
     return regnum;
 }
 
 unsigned short FEC::GetRegSize(){
-    return Reg->size();
+    return m_reg->size();
 }
 
 bool FEC::ConstCharStar_comp(const char *ccs1, const char *ccs2){
@@ -402,15 +412,15 @@ bool FEC::ConstCharStar_comp(const char *ccs1, const char *ccs2){
 
 FEC::~FEC()
 {
-    if( RegNames != NULL ){
-        delete RegNames;}
-    RegNames = NULL;
+    if( m_regNames != NULL ){
+        delete m_regNames;}
+    m_regNames = NULL;
 
-    if( Reg != NULL ){
-        delete Reg;}
-    Reg = NULL;
+    if( m_reg != NULL ){
+        delete m_reg;}
+    m_reg = NULL;
 
-    if( cchr != NULL ){
-        delete cchr;}
-    cchr = NULL;
+    if( m_chr != NULL ){
+        delete m_chr;}
+    m_chr = NULL;
 }

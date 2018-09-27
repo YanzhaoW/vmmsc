@@ -10,12 +10,12 @@
 
 class MainWindow;
 
-class hybrid_config_handler : public QObject
+class HybridConfigHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit hybrid_config_handler(MainWindow *top, QObject *parent = 0);
-    ~hybrid_config_handler();
+    explicit HybridConfigHandler(MainWindow *top, QObject *parent = 0);
+    ~HybridConfigHandler();
     friend class Commandline;
     bool LoadAllHybridConf(std::string filename);
     bool WriteAllHybridConf(std::string filename);
@@ -25,8 +25,8 @@ public:
     bool WriteSingleHybridConf(const char* filename);
 
 private:
-    char ExecPath[256];
-    MainWindow *root1;
+    char m_execPath[256];
+    MainWindow *m_mainWindow;
     bool GenericAllHybridConf(bool load, std::string filename);
     bool GenericSingleHybridConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid);
     bool LoadHybridConfig(std::string fname);

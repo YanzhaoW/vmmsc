@@ -12,7 +12,7 @@ class Commandline: public QObject
     Q_OBJECT
     friend class MainWindow;
     friend class VMM;
-    friend class VMM_config_handler;
+    friend class VMMConfigHandler;
 
     public:
         Commandline(MainWindow *top, int value, QObject* parent = 0);
@@ -21,9 +21,9 @@ class Commandline: public QObject
         int EndCommandline();
 
     private:
-    MainWindow *root1;
-    int index;
-    bool running;
+    MainWindow *m_mainWindow;
+    int m_index;
+    bool m_running;
 
 
 };

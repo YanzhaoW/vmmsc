@@ -13,28 +13,27 @@ class daq_window;
 }
 
 
-class daq_window : public QMainWindow
+class DAQWindow : public QMainWindow
 {
     Q_OBJECT
-    friend class fec_window;
-    friend class hdmi_window;
-    friend class hybrid_window;
-    friend class vmm_window;
-    friend class calibration_module;
+    friend class FECWindow;
+    friend class HDMIWindow;
+    friend class HybridWindow;
+    friend class VMMWindow;
+    friend class CalibrationModule;
 
 public:
-    explicit daq_window(MainWindow *top, QWidget *parent = 0);
-    ~daq_window();
+    explicit DAQWindow(MainWindow *top, QWidget *parent = 0);
+    ~DAQWindow();
 
     void LoadMessageHandler(MessageHandler& m);
-    MessageHandler& msg() { return *m_msg; }
+    MessageHandler& GetMessageHandler() { return *m_msg; }
     void SetWarning(QString warning, QString bkgcol );
     void SetWarning2(QString warning, QString bkgcol );
-    std::string sendstate = "";
+
     void LoadConfig(QString text);
-    bool is_file_exist(const char *fileName);
-//    void Plotter(QVector<double> x, QVector<double> y);
-    void Plotter(std::vector<double> x, std::vector<double> y);
+    bool FileExists(const char *fileName);
+    //void PlotXY(std::vector<double> x, std::vector<double> y);
 
 private slots:
     void on_Box_fec1_clicked();
@@ -50,13 +49,13 @@ private slots:
     void on_Button_save_clicked();
 
     void on_openConnection_2_clicked();
-    void readLog();
+    void on_readLog();
 
     void on_reset_warnings_clicked();
 
     void on_Send_clicked();
 
-    void on_checkBox_stateChanged(int arg1);
+    void on_checkBoxGlobalDAQ_stateChanged();
 
     void on_onACQ_clicked();
 
@@ -68,17 +67,25 @@ private slots:
 
     void on_Debug_pressed();
 
-    void on_Data_pressed();
+    void on_pushButtonTakeData_pressed();
+
+    void on_pushButtonStoreCorrections_pressed();
+
+    void on_comboBoxRunMode_currentIndexChanged(int index);
+
+    void on_comboBoxCalibrationType_currentIndexChanged(int index);
+
 public slots:
     // select the output directory
-    void selectOutputDirectory();
+    void on_output_directory_select();
 
 
 private:
-    MainWindow *root_main;
+    MainWindow *m_mainWindow;
     Ui::daq_window *ui;
     void fecBoxLogic(bool checked, unsigned short fec);
     MessageHandler *m_msg;
+    std::string m_sendstate = "";
 
 signals:
     void ChangeState();

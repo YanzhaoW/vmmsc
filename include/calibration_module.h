@@ -16,6 +16,7 @@
 #include <QFileInfoList>
 #include <QDir>
 #include <QThread>
+#include <QJsonObject>
 
 class QByteArray;
 class QBitArray;
@@ -23,95 +24,166 @@ class QUdpSocket;
 
 // std/stl
 #include <iostream>
-
+#include "globparameter.h"
 // vmm
 #include "message_handler.h"
+
+
 using namespace std;
 class MainWindow;
-class VMMSocket;
+class QCustomPlot;
 
 
 
-class calibration_module : public QObject
+class CalibrationModule : public QObject
 {
     Q_OBJECT
 public:
-    explicit calibration_module(MainWindow *top, QObject *parent = 0);
-    bool dbg() { return m_dbg; }
-    VMMSocket& daqSocket() { return *m_daqSocket; }
+    explicit CalibrationModule(MainWindow *top, QObject *parent = nullptr);
+    bool IsDbgActive() { return m_dbg; }
 
-    void LoadMessageHandler(MessageHandler& msg);
-    MessageHandler& msg() { return *m_msg; }
-    bool ignore16() { return m_ignore16; }
-
-
-    void connectDAQSocket();
-    void closeDAQSocket();
-    bool calibRun() { return m_calibRun; }
-
-    static quint32 reverse32(QString hex);
-    static uint grayToBinary(uint num);
-    static QByteArray bitsToBytes(QBitArray bits);
-    static QBitArray bytesToBits(QByteArray bytes);
-
-    void CalibADC();
-    void SetRun(QString run){calibrun=run;}
-    void SetMode(QString mode){calibmode= mode;}
-    void StartCalib();
+    void LoadMessageHandler(MessageHandler& GetMessageHandler);
+    MessageHandler& GetMessageHandler() { return *m_msg; }
+    bool Ignore16() { return m_ignore16; }
 
 
+    void ConnectDAQSocket();
+    void CloseDAQSocket();
+    void TakeData();
+    void DoCalibrationStep();
+
+    void SetCorrections();
+    void GetActiveVMMs();
+
+
+    bool m_dataAvailable = false;
 private:
-    MainWindow *root_main;
+
+    MainWindow *m_mainWindow;
     bool m_dbg = false;
-    QUdpSocket *m_DAQSocket;
-    void decodeAndWriteData(const QByteArray& datagram);
-    VMMSocket *m_daqSocket;
+    QUdpSocket *m_udpSocket;
+
+    QString m_calibMode;
+    QString m_runMode;
+    QString m_plotType;
+    QVector< QCustomPlot * > plotVector;
+    //QString m_calibRun;
+    int m_eventcount = 0;
+    int m_errorcount = 0;
+    vector<int> m_vmmActs;
+    std::map<QString, QString> mapIPFirmware;
+    std::map<QString, int> mapIPFecId;
+
+    void startReceiver();
+    void stopReceiver();
+    bool CheckModes();
+    bool IsCalibration();
+    //void PlotCalibration();
+    void PlotData();
+    void CalibrateThreshold(bool modeThreshold);
+    void FitTimeData();
+    void AccumulateData();
+    void CalculateCorrections();
+
+    void InitializeDataStructures();
+    void GetSettings();
+    int GetFEC(int vmmId);
+    int GetHDMI(int vmmId);
+    int GetVMM(int vmmId);
+
+
+
+    int Receive_VMM2(const char* buffer, int size, int fecId);
+    int Receive_VMM3(const char* buffer, int size, int fecId);
+    int Parse_VMM2(uint32_t data1, uint32_t data2, uint32_t vmmid, int fecId);
+    int Parse_VMM3(uint32_t data1, uint16_t data2, int fecId);
+
+    uint32_t Reversebits32(uint32_t x);
+    uint16_t Reversebits16(uint16_t x);
+    uint32_t Gray2bin32(uint32_t num);
+
+
+
+    bool m_isCalibratedADC = false;
+    bool m_isCalibratedTDC = false;
+    bool m_isCalibratedTime = false;
+    bool m_isCalibratedThreshold = false;
+
     MessageHandler *m_msg;
+
+    uint32_t m_lastUdpTimeStamp=0;
+
+    struct SRSHeader_VMM2 {
+        uint32_t m_frameCounter{ 0 };   /// frame counter packet field
+        uint32_t m_dataId { 0 }; /// data type identifier packet field
+        uint32_t m_udpTimeStamp; /// Transmission time for UDP packet
+    };
+
+    struct SRSHeader_VMM3 {
+        uint32_t m_frameCounter { 0 };   /// frame counter packet field
+        uint32_t m_dataId { 0 }; /// data type identifier packet field + ID of the FEC card (0-255)
+        uint32_t m_udpTimeStamp { 0 };   /// Transmission time for UDP packet
+        uint32_t m_offsetOverflow { 0 }; /// offset overflow in last frame (1 bit per VMM)
+    };
+
+    struct CommonData_VMM3 {
+        uint32_t m_dataId { 0 }; /// data type identifier packet field + ID of the FEC card (0-255)
+        uint8_t m_fecId { 255 };
+        uint64_t m_lastFrameCounter { 0 };
+        bool m_fcIsInitialized { false };
+        uint64_t m_frameCounter { 0 };   /// frame counter packet field
+        uint32_t m_udpTimeStamp { 0 };   /// Transmission time for UDP packet
+        uint32_t m_offsetOverflow { 0 }; /// offset overflow in last frame (1 bit per VMM)
+    };
+
+    // bytes
+    static const int m_SRSHeaderSize_VMM3 { 16 };
+    static const int m_SRSHeaderSize_VMM2 { 12 };
+    static const int m_hitAndMarkerSize_VMM3 { 6 };
+    static const int m_hitSize_VMM2 { 8 };
+    static const int m_data1Size { 4 };
+    static const int m_JumboFrameSize { 9000 };
+
+    static const int m_maxHits_VMM2 { static_cast<int>(m_JumboFrameSize / m_hitSize_VMM2) };
+    static const int m_maxHits_VMM3 { static_cast<int>(m_JumboFrameSize / m_hitAndMarkerSize_VMM3) };
+    /// Maximum capacity of data array
+    // static const int m_maxHits { (int) (m_JumboFrameSize / m_hitAndMarkerSize) };
+
+    /// Holds data common to all readouts in a packet
+    CommonData_VMM3 m_commonData;
+
+    int m_numHits = 0;
+    int m_bitCount=0;
+    int m_number_bits = 0;
+    const static int m_number_bits_adc = 32;
+    const static int m_number_bits_tdc = 16;
+    const static int m_number_bits_threshold = 32;
+    const static int m_number_bits_time = 16;
+
+    double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
+    double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
+    std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
+    std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_x;
+    std::vector<double> m_y;
+
+    std::vector<double> m_calVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<int> m_bitVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_offset_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_slope_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
     bool m_ignore16;
-    // event data OTF
-    std::vector<int> _pdo;
-    std::vector<int> _tdo;
-    std::vector<int> _bcid;
-    std::vector<int> _gray;
-    std::vector<int> _channelNo;
-    std::vector<int> _flag;
-    std::vector<int> _thresh;
-    std::vector<int> _neighbor;
+    std::vector<int> m_BCID;
+    QJsonObject * m_jsonObject;
 
-     int m_channel_for_calib;
 
-     bool m_calibRun;
-
-     vector< vector< vector<int> > > *v_calibvar;
-     QString calibmode;
-     QString calibrun;
-     int eventcount = 0;
-     void Counting();
-     void Calib();
-     void GetCalSetting();
-     void PlotADC(int m);
-
-     int bincount=0;
-     int number_bits = 32;
-
-     vector<int> act_vmm;
-     void GetActVMM();
-
-     struct result_mean{
-         vector<double> channel;
-         vector<vector<double>> y_fullrange;
-         vector<double> y_calib;
-         double calib_value;
-         vector<double> v_calval;
-
-     };
-
-    vector<result_mean> *r_mean;
 signals:
 
 public slots:
     void readEvent();
     void updatePlot();
+    void Receive(const char* buffer, int size, QString ip);
 };
 
 #endif // CALIBRATION_MODULE_H

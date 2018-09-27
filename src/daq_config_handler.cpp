@@ -1,33 +1,33 @@
 #include "daq_config_handler.h"
 
-DAQ_config_handler::DAQ_config_handler(MainWindow *top, QObject *parent) : root1{top}, QObject(parent)
+DAQConfigHandler::DAQConfigHandler(MainWindow *top, QObject *parent) :QObject(parent), m_mainWindow{top}
 {
-    getcwd(ExecPath,sizeof(ExecPath));
+    getcwd(m_execPath,sizeof(m_execPath));
 }
 
-bool DAQ_config_handler::LoadDAQConf(const char* filename){
+bool DAQConfigHandler::LoadDAQConf(const char* filename){
     //add config path before file name
-    std::string fname = ExecPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return LoadDAQConfig(fname);
 }
 
-bool DAQ_config_handler::WriteDAQConf(const char* filename){
-    std::string fname = ExecPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+bool DAQConfigHandler::WriteDAQConf(const char* filename){
+    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return WriteDAQConfig(fname);
 }
 
-bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ configuration from file
+bool DAQConfigHandler::LoadDAQConfig(std::string fname){ //load the DAQ configuration from file
     ////***************RESET before loading config file*******************////
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-//        root1->daq_act={false};
+//        rootWindow->daq_act={false};
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                root1->daq[i].SetFEC(j, false);
+                m_mainWindow->m_daqs[i].SetFEC(j, false);
                     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-                       root1->daq[i].fec[j].SetHDMI(k, false);
+                       m_mainWindow->m_daqs[i].m_fecs[j].SetHDMI(k, false);
                             for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                                root1->daq[i].fec[j].hdmi[k].SetHybrid(l, false);
+                                m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].SetHybrid(l, false);
                                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                        root1->daq[i].fec[j].hdmi[k].hybrid[l].SetVMM(m, false);
+                                        m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].SetVMM(m, false);
                                     }
                                 }
                             }
@@ -56,7 +56,7 @@ bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ config
                     std::istringstream iss(line);
                     iss >> word; if(word!= "fec") {std::cout  << "Syntax error in file, looking for \"fec\" in line "<< line << std::endl;return false;}
                     iss >> val; std::string fecnrst = val.substr(0, val.size()-1); unsigned short fecnr = atoi(fecnrst.c_str()); if(fecnr != i) {std::cout  << "Syntax error in file, expecting "<< i << " instead of " << fecnr << " in line "<< line << std::endl;return false;}
-                    root1->daq[0].SetFEC(fecnr,true); std::cout << "Setting fec " << fecnr << " active" << std::endl;
+                    m_mainWindow->m_daqs[0].SetFEC(fecnr,true); std::cout << "Setting fec " << fecnr << " active" << std::endl;
                     iss >> word; if(word!= "hdmis:") {std::cout  << "Syntax error in file, looking for \"hdmis:\" in line "<< line << std::endl;return false;}
                     iss >> val; unsigned short hdmis = atoi(val.c_str());
                     for (unsigned short j = 0; j < hdmis; j++){
@@ -64,7 +64,7 @@ bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ config
                         std::istringstream iss(line);
                         iss >> word; if(word!= "hdmi") {std::cout  << "Syntax error in file, looking for \"hdmi\" (" << j+1 << "th hdmi, you have set "<<hdmis<<" hdmis) in line "<< line << std::endl;return false;}
                         iss >> val; std::string hdminrst = val.substr(0, val.size()-1);
-                        unsigned short hdminr = atoi(hdminrst.c_str()); root1->daq[0].fec[fecnr].SetHDMI(hdminr,true); std::cout << "Setting hdmi " << hdminr << " on fec " << fecnr << " active" << std::endl;
+                        unsigned short hdminr = atoi(hdminrst.c_str()); m_mainWindow->m_daqs[0].m_fecs[fecnr].SetHDMI(hdminr,true); std::cout << "Setting hdmi " << hdminr << " on fec " << fecnr << " active" << std::endl;
                         iss >> word; if(word!= "hybrids:") {std::cout  << "Syntax error in file, looking for \"hybrids:\" in line "<< line << std::endl;return false;}
                         iss >> val; unsigned short hybrids = atoi(val.c_str());
                         for (unsigned short k = 0; k < hybrids; k++){
@@ -72,21 +72,21 @@ bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ config
                             std::istringstream iss(line);
                             iss >> word; if(word!= "hybrid") {std::cout  << "Syntax error in file, looking for \"hybrid\" in line "<< line << std::endl;return false;}
                             iss >> val; std::string hybridnrst = val.substr(0, val.size()-1); unsigned short hybridnr = atoi(hybridnrst.c_str()); if(hybridnr != k) {std::cout  << "Syntax error in file, expecting "<< k << " instead of " << hybridnr << " in line "<< line << std::endl;return false;}
-                            root1->daq[0].fec[fecnr].hdmi[hdminr].SetHybrid(k,true);
+                            m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].SetHybrid(k,true);
                             iss >> val; if(val[0]!= 'x' && val[0] != 'y') {std::cout  << "Syntax error in file, looking for \"x\" or \"y\" in line "<< line << ", got " << val << std::endl;return false;}
-                            else if (val == "x"){ root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetPosX(true);}
-                            else if (val == "y"){ root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetPosX(false);}
-                            iss >> val; std::string posnrst = val.substr(0, val.size()-1); root1->daq[0].fec[i].hdmi[hdminr].hybrid[k].SetPosNo(atoi(posnrst.c_str()));
+                            else if (val == "x"){ m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetPosX(true);}
+                            else if (val == "y"){ m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetPosX(false);}
+                            iss >> val; std::string posnrst = val.substr(0, val.size()-1); m_mainWindow->m_daqs[0].m_fecs[i].m_hdmis[hdminr].m_hybrids[k].SetPosNo(atoi(posnrst.c_str()));
                             iss >> word; if(word!= "vmms:") {std::cout  << "Syntax error in file, looking for \"vmms:\" in line "<< line << std::endl;return false;}
                             iss >> val; unsigned short vmms = atoi(val.c_str());
                             std::cout<<"No. VMMS: "<<vmms<<std::endl;
                             for (unsigned short l = 0; l < vmms; l++){
-                                //root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(l,true);
+                                //rootWindow->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(l,true);
                                 std::getline (f,line);
                                 std::istringstream iss(line);
                                 iss >> word; if(word!= "vmm") {std::cout  << "Syntax error in file, looking for \"vmm\" in line "<< line << std::endl;return false;}
                                 iss >> val; std::string vmminrst = val.substr(0, val.size());
-                                unsigned short vmminr = atoi(vmminrst.c_str()); root1->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(vmminr,true); std::cout << "Setting vmm " << vmminr << " on hybrid " << hybridnr << " active" << std::endl;
+                                unsigned short vmminr = atoi(vmminrst.c_str()); m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetVMM(vmminr,true); std::cout << "Setting vmm " << vmminr << " on hybrid " << hybridnr << " active" << std::endl;
 
 
                             }
@@ -96,16 +96,16 @@ bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ config
             }
             else {std::cout << "Syntax error in file, looking for \"fecs\" after daq "<< daq << std::endl;return false;}
 //            for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-//                if (root1->daq_act[i]){
+//                if (rootWindow->daq_act[i]){
 //                    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-//                        if (root1->daq[i].GetFEC(j)){
+//                        if (rootWindow->daq[i].GetFEC(j)){
 //                            for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-//                                if(root1->daq[i].fec[j].GetHDMI(k)){
+//                                if(rootWindow->daq[i].fec[j].GetHDMI(k)){
 //                                    for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-//                                        if (root1->daq[i].fec[j].hdmi[k].GetHybrid(l)){
+//                                        if (rootWindow->daq[i].fec[j].hdmi[k].GetHybrid(l)){
 //                                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-//                                                if (root1->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)){
-//                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo()<< ", " <<root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosX() << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
+//                                                if (rootWindow->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)){
+//                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << rootWindow->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo()<< ", " <<rootWindow->daq[i].fec[j].hdmi[k].hybrid[l].GetPosX() << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
 //                                                }
 //                                            }
 //                                        }
@@ -124,41 +124,41 @@ bool DAQ_config_handler::LoadDAQConfig(std::string fname){ //load the DAQ config
             }
         }
         else {
-            for (unsigned short i = 0; i < root1->daq[0].GetRegSize();i++){
-                 if ( word == root1->daq[0].GetRegName(i) ){
+            for (unsigned short i = 0; i < m_mainWindow->m_daqs[0].GetRegSize();i++){
+                 if ( word == m_mainWindow->m_daqs[0].GetRegName(i) ){
                      iss >> val;
                      a = val.c_str();
                      const char * reg = word.c_str();
-                     root1->daq[0].SetReg(reg, a);
+                     m_mainWindow->m_daqs[0].SetReg(reg, a);
                  }
             }
         }
         if( (f.fail()) ) {return false;}
     }
-    f.close(); //TODO:UpdateGUI:root1->updateConfigState();
+    f.close(); //TODO:UpdateGUI:rootWindow->updateConfigState();
     return true;
 }
 
-bool DAQ_config_handler::WriteDAQConfig(std::string fname){
+bool DAQConfigHandler::WriteDAQConfig(std::string fname){
     std::ofstream f; f.open(fname,std::ofstream::out);
     if(!f.is_open()) {return false;}
     // write conneted hardware and vmm position map
     f << "//Conneted hardware and vmm position map. No comment in the following lines, take care of syntax!" << std::endl;
     for (unsigned short i = 0; i < DAQS_PER_GUIWINDOW; i++){
-        if (root1->daq_act[i]) {
+        if (m_mainWindow->m_daq_act[i]) {
             unsigned short countFECS = 0;
             for (unsigned short j = 0; j < FECS_PER_DAQ; j++){
-                if (root1->daq[i].GetFEC(j)){
+                if (m_mainWindow->m_daqs[i].GetFEC(j)){
                     countFECS ++;
                 }
             }
             f << "daq " << i << ": fecs: "<< countFECS << std::endl;
             for (unsigned short j = 0; j < FECS_PER_DAQ; j++){
-                if (root1->daq[i].GetFEC(j)){
+                if (m_mainWindow->m_daqs[i].GetFEC(j)){
                     unsigned short countHDMIS = 0;
                     bool HDMI_act[HDMIS_PER_FEC] = {false};
                     for (unsigned short k = 0; k < HDMIS_PER_FEC; k++){
-                        if (root1->daq[i].fec[j].GetHDMI(k)){
+                        if (m_mainWindow->m_daqs[i].m_fecs[j].GetHDMI(k)){
                             countHDMIS++;
                             HDMI_act[k] = true;
                         }
@@ -168,29 +168,29 @@ bool DAQ_config_handler::WriteDAQConfig(std::string fname){
                         if (HDMI_act[k]){
                             unsigned short countHybrids = 0;
                             for (unsigned short l = 0; l < HYBRIDS_PER_HDMI; l++){
-                                if (root1->daq[i].fec[j].hdmi[k].GetHybrid(l)){
+                                if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].GetHybrid(l)){
                                     countHybrids++;
                                 }
                             }
                             f << "\t\thdmi "<< k << ": hybrids: " << countHybrids<< std::endl;
                             for (unsigned short l = 0; l < HYBRIDS_PER_HDMI; l++){
-                                if (root1->daq[i].fec[j].hdmi[k].GetHybrid(l)){
+                                if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].GetHybrid(l)){
                                     unsigned short countVMMS = 0;
                                     for (unsigned short m = 0; m < VMMS_PER_HYBRID; m++){
-                                        if (root1->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)){
+                                        if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)){
                                             countVMMS++;
                                         }
                                     }
-                                    if (root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosX()){
-                                        f << "\t\t\thybrid "<< l << ": x " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
-                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo() << " on x axis has " << countVMMS << " active VMMS" << std::endl;
+                                    if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosX()){
+                                        f << "\t\t\thybrid "<< l << ": x " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
+                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << " on x axis has " << countVMMS << " active VMMS" << std::endl;
                                     }
                                     else {
-                                        f << "\t\t\thybrid "<< l << ": y " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
-                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << root1->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo() << " on y axis has " << countVMMS << " active VMMS" << std::endl;
+                                        f << "\t\t\thybrid "<< l << ": y " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
+                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << " on y axis has " << countVMMS << " active VMMS" << std::endl;
                                     }
                                     for (unsigned short m = 0; m < VMMS_PER_HYBRID; m++){
-                                       if (root1->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)) f << "\t\t\t\tvmm "<< m<< std::endl;
+                                       if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)) f << "\t\t\t\tvmm "<< m<< std::endl;
                                     }
                                 } //end if hybrid
                             }
@@ -202,12 +202,12 @@ bool DAQ_config_handler::WriteDAQConfig(std::string fname){
     }
     // daq general settings
     f << "// daq general settings" << std::endl;
-    for(unsigned short i=0;i<root1->daq[0].GetRegSize() ;i++){
-        const char *chr = root1->daq[0].GetReg(root1->daq[0].GetRegName(i));
+    for(unsigned short i=0;i<m_mainWindow->m_daqs[0].GetRegSize() ;i++){
+        const char *chr = m_mainWindow->m_daqs[0].GetReg(m_mainWindow->m_daqs[0].GetRegName(i));
         std::stringstream str;
         str << chr;
-        f << root1->daq[0].GetRegName(i) << " " << str.str() << std::endl;
-        std::cout << "Writing reg " << root1->daq[0].GetRegName(i) << " value: " << chr << std::endl;
+        f << m_mainWindow->m_daqs[0].GetRegName(i) << " " << str.str() << std::endl;
+        std::cout << "Writing reg " << m_mainWindow->m_daqs[0].GetRegName(i) << " value: " << chr << std::endl;
         if(f.fail()) {return false;}
     }
     f << "\n";
@@ -218,6 +218,6 @@ bool DAQ_config_handler::WriteDAQConfig(std::string fname){
     return true;
 }
 
-DAQ_config_handler::~DAQ_config_handler(){
+DAQConfigHandler::~DAQConfigHandler(){
 
 }

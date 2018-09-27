@@ -1,22 +1,22 @@
 #include "daq_window.h"
 
-daq_window::daq_window(MainWindow *top, QWidget *parent) :
+DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     QMainWindow(parent),
-    root_main{top},
-    m_msg(0),
-    ui(new Ui::daq_window)
+    m_mainWindow{top},
+    ui(new Ui::daq_window),
+    m_msg(0)
 {
 
     ui->setupUi(this);
     ui->Send->setEnabled(false);
-    LoadMessageHandler(root_main->daq[0].msg());
-    connect(m_msg, SIGNAL(logReady()), this, SLOT(readLog()));
+    LoadMessageHandler(m_mainWindow->m_daqs[0].GetMessageHandler());
+    connect(m_msg, SIGNAL(logReady()), this, SLOT(on_readLog()));
     ui->openConnection_2->setToolTip("Open communication");
 
-//    this->setStyleSheet("QMainWindow {background: 'lightgray';}");
+    //    this->setStyleSheet("QMainWindow {background: 'lightgray';}");
 
     connect(ui->selectDir, SIGNAL(clicked()),
-                                    this, SLOT(selectOutputDirectory()));
+            this, SLOT(on_output_directory_select()));
     ui->selectDir->setToolTip("Opens file browser to select config file");
     ui->Button_load->setToolTip("Loading config file");
     ui->Button_save->setToolTip("Saving settings into config file");
@@ -24,118 +24,119 @@ daq_window::daq_window(MainWindow *top, QWidget *parent) :
     ui->trgExternal->setEnabled(false);
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
-    ui->checkBox->setEnabled(false);
+    ui->checkBoxGlobalDAQ->setEnabled(false);
 
-    if(is_file_exist("../configs/default.txt")){
-    LoadConfig("default");
+    if(FileExists("../configs/default.txt")){
+        LoadConfig("default");
     }
 
 }
-bool daq_window::is_file_exist(const char *fileName)
+bool DAQWindow::FileExists(const char *fileName)
 {
     std::ifstream infile(fileName);
     return infile.good();
 }
 
 
-daq_window::~daq_window()
+DAQWindow::~DAQWindow()
 {
     delete ui;
 }
 // ------------------------------------------------------------------------ //
-void daq_window::LoadMessageHandler(MessageHandler& m)
+void DAQWindow::LoadMessageHandler(MessageHandler& m)
 {
     m_msg = &m;
 }
 // ------------------------------------------------------------------------- //
-void daq_window::readLog()
+void DAQWindow::on_readLog()
 {
-    string buff = msg().buffer();
+    string buff = GetMessageHandler().GetBuffer();
     ui->loggingScreen->append(QString::fromStdString(buff));
     //ui->loggingScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-    msg().clear();
+    GetMessageHandler().ClearBuffer();
 }
 // ------------------------------------------------------------------------- //
-void daq_window::SetWarning(QString warning, QString bkgcol ){
+void DAQWindow::SetWarning(QString warning, QString bkgcol ){
 
     ui->connectionLabel_2->setWordWrap(true);
     ui->connectionLabel_2->setText( warning );
     ui->connectionLabel_2->setStyleSheet("background-color: "+bkgcol);
 }
 // ------------------------------------------------------------------------- //
-void daq_window::SetWarning2(QString warning, QString bkgcol ){
+void DAQWindow::SetWarning2(QString warning, QString bkgcol ){
     ui->connectionLabel_3->setWordWrap(true);
     ui->connectionLabel_3->setText( warning );
     ui->connectionLabel_3->setStyleSheet("background-color: "+bkgcol);
 }
 // ------------------------------------------------------------------------- //
 
-void daq_window::Plotter(std::vector<double> x, std::vector<double> y){
+/*
+void DAQWindow::PlotXY(std::vector<double> x, std::vector<double> y){
 
     // create graph and assign data to it:
-    ui->customPlot->addGraph();
-    ui->customPlot->graph(0)->setData(QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(y));
+    ui->customPlot1->addGraph();
+    ui->customPlot1->graph(0)->setData(QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(y));
     // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("channel");
-    ui->customPlot->yAxis->setLabel("Mean ADC");
+    ui->customPlot1->xAxis->setLabel("channel");
+    ui->customPlot1->yAxis->setLabel("Mean ADC");
     // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0, 66);
-    ui->customPlot->yAxis->setRange(220, 320);
-    ui->customPlot->replot();
+    ui->customPlot1->xAxis->setRange(0, 66);
+    ui->customPlot1->yAxis->setRange(220, 320);
+    ui->customPlot1->replot();
 }
+*/
 
 
 
-
-void daq_window::on_Box_fec1_clicked()
+void DAQWindow::on_Box_fec1_clicked()
 {
     if (ui->Box_fec1->isChecked()){
         fecBoxLogic(true,0);
     }
     else {fecBoxLogic(false,0);}
 }
-void daq_window::on_Box_fec2_clicked()
+void DAQWindow::on_Box_fec2_clicked()
 {
     if (ui->Box_fec2->isChecked()){
         fecBoxLogic(true,1);
     }
     else {fecBoxLogic(false,1);}
 }
-void daq_window::on_Box_fec3_clicked()
+void DAQWindow::on_Box_fec3_clicked()
 {
     if (ui->Box_fec3->isChecked()){fecBoxLogic(true,2);}
     else {fecBoxLogic(false,2);}
 }
-void daq_window::on_Box_fec4_clicked()
+void DAQWindow::on_Box_fec4_clicked()
 {
     if (ui->Box_fec4->isChecked()){fecBoxLogic(true,3);}
     else {fecBoxLogic(false,3);}
 }
-void daq_window::on_Box_fec5_clicked()
+void DAQWindow::on_Box_fec5_clicked()
 {
     if (ui->Box_fec5->isChecked()){fecBoxLogic(true,4);}
     else {fecBoxLogic(false,4);}
 }
-void daq_window::on_Box_fec6_clicked()
+void DAQWindow::on_Box_fec6_clicked()
 {
     if (ui->Box_fec6->isChecked()){fecBoxLogic(true,5);}
     else {fecBoxLogic(false,5);}
 }
-void daq_window::on_Box_fec7_clicked()
+void DAQWindow::on_Box_fec7_clicked()
 {
     if (ui->Box_fec7->isChecked()){fecBoxLogic(true,6);}
     else {fecBoxLogic(false,6);}
 }
-void daq_window::on_Box_fec8_clicked()
+void DAQWindow::on_Box_fec8_clicked()
 {
     if (ui->Box_fec8->isChecked()){fecBoxLogic(true,7);}
     else {fecBoxLogic(false,7);}
 }
-void daq_window::fecBoxLogic(bool checked, unsigned short fec){
+void DAQWindow::fecBoxLogic(bool checked, unsigned short fec){
     if(checked) {
         ui->Send->setEnabled(false);
-        ui->checkBox->setChecked(false);
-        ui->checkBox->setEnabled(false);
+        ui->checkBoxGlobalDAQ->setChecked(false);
+        ui->checkBoxGlobalDAQ->setEnabled(false);
         ui->trgPulser->setEnabled(false);
         ui->trgExternal->setEnabled(false);
         ui->onACQ->setEnabled(false);
@@ -147,18 +148,18 @@ void daq_window::fecBoxLogic(bool checked, unsigned short fec){
         if(i<fec && !a.at(i)->isChecked()) NotActiveBefore++;
     }
     if (checked){
-        ui->tabWidget->insertTab(fec-NotActiveBefore, new fec_window(this,fec), QString(" FEC %0").arg(fec+1));
+        ui->tabWidget->insertTab(fec-NotActiveBefore, new FECWindow(this,fec), QString(" FEC %0").arg(fec+1));
         ui->tabWidget->setCurrentIndex(fec-NotActiveBefore);
-        root_main->daq[0].SetFEC(fec,true);
+        m_mainWindow->m_daqs[0].SetFEC(fec,true);
     }
     else {
         ui->tabWidget->removeTab(fec-NotActiveBefore);
-        root_main->daq[0].SetFEC(fec,false);
+        m_mainWindow->m_daqs[0].SetFEC(fec,false);
     }
 }
 
 
-void daq_window::LoadConfig(QString text){
+void DAQWindow::LoadConfig(QString text){
     std::string fname = text.toStdString();
     std::string filename = fname;
     if (fname == "") {
@@ -167,33 +168,33 @@ void daq_window::LoadConfig(QString text){
     }
     else {
         fname+=".txt";
-        bool found = root_main->daqconfhandl->LoadDAQConf(fname.c_str());
+        bool found = m_mainWindow->m_daqConfigHandler->LoadDAQConf(fname.c_str());
         if (!found){
             std::cout << "File not found" << std::endl;
             ui->line_configFile->insert("ERROR: not found");
         }
 
         else {
-            root_main->vmmconfhandl->LoadAllVMMConf(filename);
-            root_main->hybridconfhandl->LoadAllHybridConf(filename);
-            root_main->fecconfhandl->LoadAllFECConf(filename);
+            m_mainWindow->m_vmmConfigHandler->LoadAllVMMConf(filename);
+            m_mainWindow->m_hybridConfigHandler->LoadAllHybridConf(filename);
+            m_mainWindow->m_fecConfigHandler->LoadAllFECConf(filename);
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
 
-                    if (j==0) {ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
-                    if (j==1 ){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
-                    if (j==2 ){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
-                    if (j==3 ){ui->Box_fec4->setChecked(false);on_Box_fec4_clicked();}
-                    if (j==4 ){ui->Box_fec5->setChecked(false);on_Box_fec5_clicked();}
-                    if (j==5 ){ui->Box_fec6->setChecked(false);on_Box_fec6_clicked();}
-                    if (j==6 ){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
-                    if (j==7 ){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
+                if (j==0) {ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
+                if (j==1 ){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
+                if (j==2 ){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
+                if (j==3 ){ui->Box_fec4->setChecked(false);on_Box_fec4_clicked();}
+                if (j==4 ){ui->Box_fec5->setChecked(false);on_Box_fec5_clicked();}
+                if (j==5 ){ui->Box_fec6->setChecked(false);on_Box_fec6_clicked();}
+                if (j==6 ){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
+                if (j==7 ){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
             }
-            root_main->daqconfhandl->LoadDAQConf(fname.c_str());
+            m_mainWindow->m_daqConfigHandler->LoadDAQConf(fname.c_str());
             std::cout << "loading file " << fname << std::endl;
             for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-                if (root_main->daq_act[i]){
+                if (m_mainWindow->m_daq_act[i]){
                     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                        if (root_main->daq[i].GetFEC(j)){
+                        if (m_mainWindow->m_daqs[i].GetFEC(j)){
                             if (j==0 && !ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(true);on_Box_fec1_clicked();}
                             if (j==1 && !ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(true);on_Box_fec2_clicked();}
                             if (j==2 && !ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(true);on_Box_fec3_clicked();}
@@ -203,12 +204,12 @@ void daq_window::LoadConfig(QString text){
                             if (j==6 && !ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(true);on_Box_fec7_clicked();}
                             if (j==7 && !ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(true);on_Box_fec8_clicked();}
                             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-                                if(root_main->daq[i].fec[j].GetHDMI(k)){
+                                if(m_mainWindow->m_daqs[i].m_fecs[j].GetHDMI(k)){
                                     for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                                        if (root_main->daq[i].fec[j].hdmi[k].GetHybrid(l)){
+                                        if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].GetHybrid(l)){
                                             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                                if (root_main->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)){
-                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << root_main->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo()<< ", " <<root_main->daq[i].fec[j].hdmi[k].hybrid[l].GetPosX() << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
+                                                if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)){
+                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo()<< ", " <<m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosX() << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
                                                 }
                                             }
                                         }
@@ -228,19 +229,19 @@ void daq_window::LoadConfig(QString text){
                         }
                     }
                 }
-             }
+            }
         } //else file found
     } //end else not ""
 }
 
-void daq_window::on_Button_load_clicked()
+void DAQWindow::on_Button_load_clicked()
 {
     QString text = ui->line_configFile->displayText();
     LoadConfig(text);
 
 }
 
-void daq_window::on_Button_save_clicked()
+void DAQWindow::on_Button_save_clicked()
 {
     QString text = ui->line_configFile->displayText();
     std::string fname = text.toStdString();
@@ -249,37 +250,37 @@ void daq_window::on_Button_save_clicked()
         ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
-        root_main->vmmconfhandl->WriteAllVMMConf(fname);
-        root_main->hybridconfhandl->WriteAllHybridConf(fname);
-        root_main->fecconfhandl->WriteAllFECConf(fname);
+        m_mainWindow->m_vmmConfigHandler->WriteAllVMMConf(fname);
+        m_mainWindow->m_hybridConfigHandler->WriteAllHybridConf(fname);
+        m_mainWindow->m_fecConfigHandler->WriteAllFECConf(fname);
         fname+=".txt";
-        root_main->daqconfhandl->WriteDAQConf(fname.c_str());
+        m_mainWindow->m_daqConfigHandler->WriteDAQConf(fname.c_str());
         std::cout << "loading file " << fname << std::endl;
     }
 }
 
-void daq_window::on_openConnection_2_clicked()
+void DAQWindow::on_openConnection_2_clicked()
 {
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (root_main->daq_act[i]){
+        if (m_mainWindow->m_daq_act[i]){
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                if (root_main->daq[i].GetFEC(j)){
+                if (m_mainWindow->m_daqs[i].GetFEC(j)){
 
-                    if(root_main->daq[i].fec[j].fec_conf_mod->Connect()==1){
+                    if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
                         SetWarning("all alive","green");
-                         ui->Send->setEnabled(true);
-                         ui->checkBox->setEnabled(true);
+                        ui->Send->setEnabled(true);
+                        ui->checkBoxGlobalDAQ->setEnabled(true);
                     }
                     else{
 
                         SetWarning("ping failed", "red");
-                         ui->Send->setEnabled(false);
-                         ui->checkBox->setChecked(false);
-                         ui->checkBox->setEnabled(false);
-                         ui->trgPulser->setEnabled(false);
-                         ui->trgExternal->setEnabled(false);
-                         ui->onACQ->setEnabled(false);
-                         ui->offACQ->setEnabled(false);
+                        ui->Send->setEnabled(false);
+                        ui->checkBoxGlobalDAQ->setChecked(false);
+                        ui->checkBoxGlobalDAQ->setEnabled(false);
+                        ui->trgPulser->setEnabled(false);
+                        ui->trgExternal->setEnabled(false);
+                        ui->onACQ->setEnabled(false);
+                        ui->offACQ->setEnabled(false);
                         return;
                     }
 
@@ -292,31 +293,31 @@ void daq_window::on_openConnection_2_clicked()
 
 }
 
-void daq_window::on_reset_warnings_clicked()
+void DAQWindow::on_reset_warnings_clicked()
 {
     SetWarning2("","light");
 }
 
-void daq_window::on_Send_clicked()
+void DAQWindow::on_Send_clicked()
 {
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (root_main->daq_act[i]){
-            root_main->daq[i].SendAll();
+        if (m_mainWindow->m_daq_act[i]){
+            m_mainWindow->m_daqs[i].SendAll();
         }
     }
 }
 
-void daq_window::on_checkBox_stateChanged(int arg1)
+void DAQWindow::on_checkBoxGlobalDAQ_stateChanged()
 {
-    if(ui->checkBox->isChecked()){
+    if(ui->checkBoxGlobalDAQ->isChecked()){
         ui->trgPulser->setEnabled(true);
         ui->trgExternal->setEnabled(true);
         ui->onACQ->setEnabled(true);
         ui->offACQ->setEnabled(true);
-        sendstate = "GlobalACQon";
+        m_sendstate = "GlobalACQon";
         emit ChangeState();
     }
-    else if(!ui->checkBox->isChecked()){
+    else if(!ui->checkBoxGlobalDAQ->isChecked()){
         emit ui->offACQ->clicked();
         ui->trgPulser->setChecked(false);
         ui->trgExternal->setChecked(false);
@@ -327,28 +328,29 @@ void daq_window::on_checkBox_stateChanged(int arg1)
         ui->trgExternal->setEnabled(false);
         ui->onACQ->setEnabled(false);
         ui->offACQ->setEnabled(false);
-        sendstate = "GlobalACQoff";
+        m_sendstate = "GlobalACQoff";
         emit ChangeState();
     }
 }
-void daq_window::on_trgPulser_clicked()
+void DAQWindow::on_trgPulser_clicked()
 {
     ui->trgPulser->setCheckable(true);
     ui->trgPulser->setChecked(true);
     ui->trgExternal->setChecked(false);
-    sendstate = "trigPulser";
+    m_sendstate = "trigPulser";
     emit ChangeState();
 }
 
-void daq_window::on_trgExternal_clicked()
+void DAQWindow::on_trgExternal_clicked()
 {
     ui->trgExternal->setCheckable(true);
     ui->trgExternal->setChecked(true);
     ui->trgPulser->setChecked(false);
-    sendstate = "trigExternal";
+    m_sendstate = "trigExternal";
     emit ChangeState();
 }
-void daq_window::on_onACQ_clicked()
+
+void DAQWindow::on_onACQ_clicked()
 {
     ui->onACQ->setCheckable(true);
     if(ui->trgExternal->isChecked()){
@@ -359,43 +361,43 @@ void daq_window::on_onACQ_clicked()
     }
     else{
         SetWarning2("Select Trigger Mode","red");
-         ui->onACQ->setChecked(false);
+        ui->onACQ->setChecked(false);
         return;
     }
     ui->onACQ->setChecked(true);
     ui->offACQ->setChecked(false);
     ui->Send->setEnabled(false);
 
-    root_main->daq[0].SendAll();
-    root_main->daq[0].ACQHandler(true);
+    m_mainWindow->m_daqs[0].SendAll();
+    m_mainWindow->m_daqs[0].ACQHandler(true);
 }
 
-void daq_window::on_offACQ_clicked()
+void DAQWindow::on_offACQ_clicked()
 {
     ui->offACQ->setCheckable(true);
     ui->offACQ->setChecked(true);
     ui->onACQ->setChecked(false);
     ui->Send->setEnabled(true);
-    root_main->daq[0].ACQHandler(false);
+    m_mainWindow->m_daqs[0].ACQHandler(false);
 }
 
 
 
-void daq_window::on_Debug_pressed()
+void DAQWindow::on_Debug_pressed()
 {
     bool dbg = false;
     if(!ui->Debug->isChecked()){
         dbg =true;
-        root_main->msg()("Debug enabled", "DEBUG");
+        m_mainWindow->GetMessageHandler()("Debug enabled", "DEBUG");
     }
-    else root_main->msg()("Debug disabled", "DEBUG");
-    root_main->socketHandle().m_dbg=dbg;
+    else m_mainWindow->GetMessageHandler()("Debug disabled", "DEBUG");
+    m_mainWindow->GetSocketHandler().m_dbg=dbg;
 
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (root_main->daq_act[i]){
+        if (m_mainWindow->m_daq_act[i]){
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                if (root_main->daq[i].GetFEC(j)){
-                    root_main->daq[0].fec[j].fec_conf_mod->setDebug(dbg);
+                if (m_mainWindow->m_daqs[i].GetFEC(j)){
+                    m_mainWindow->m_daqs[0].m_fecs[j].m_fecConfigModule->SetDebugMode(dbg);
                 }
             }
         }
@@ -403,49 +405,97 @@ void daq_window::on_Debug_pressed()
 }
 
 
-void daq_window::on_Data_pressed()
-{
-    if(!ui->Data->isChecked()){
-//        root_main->calib->SetRun(QString("initial"));
-        root_main->calib->StartCalib();
-//        root_main->calib->connectDAQSocket();
-//        ui->Data->setChecked(true);
-    }
-    else{
-        root_main->calib->closeDAQSocket();
-         emit ui->offACQ->clicked();
-        root_main->ResetCalib();
-        for(int i=0; i<16;i++) ui->VMM_select->removeItem(0);
-    }
-//    else root_main->calib->CalibADC();
-}
 
 
-
-
-void daq_window::selectOutputDirectory()
+void DAQWindow::on_output_directory_select()
 {
     stringstream sx;
 
     QFileDialog getdir;
-//    getdir.setProxyModel();
+    //    getdir.setProxyModel();
     QString dirStr = QFileDialog::getOpenFileName(this,
-                        tr("Select config file"), "../configs",
-                               tr("Text (*.txt)") );
+                                                  tr("Select config file"), "../configs",
+                                                  tr("Text (*.txt)") );
     if(dirStr=="") return;
     if(!dirStr.contains("/configs/")){
         qDebug()<< "Config file not located in config folder/subfolder  -- Abort";
         ui->line_configFile->setText("ERROR: config file not in config folder");
         return;
     }
-   QString fname = dirStr.split("/").last();
-   if(fname.contains("_daq0_")){
-       fname = fname.split("_daq0_").first();
-   }
+    QString fname = dirStr.split("/").last();
+    if(fname.contains("_daq0_")){
+        fname = fname.split("_daq0_").first();
+    }
 
 
     ui->line_configFile->setText(fname);
     emit ui->Button_load->clicked();
 
 
+}
+
+
+
+void DAQWindow::on_pushButtonTakeData_pressed()
+{
+    if(ui->connectionLabel_2->text()==QString("all alive")){
+        if(!ui->pushButtonTakeData->isChecked()){
+            ui->pushButtonTakeData->setCheckable(true);
+            m_mainWindow->m_calib->TakeData();
+        }
+        /*
+        else{
+            m_mainWindow->m_calib->CloseDAQSocket();
+            emit ui->offACQ->clicked();
+            ui->comboBoxFec->clear();
+        }
+        */
+    }
+    else
+    {
+        ui->pushButtonTakeData->setChecked(false);
+        ui->pushButtonTakeData->setCheckable(false);
+    }
+}
+
+
+
+
+void DAQWindow::on_pushButtonStoreCorrections_pressed()
+{
+    m_mainWindow->m_calib->SetCorrections();
+
+}
+
+
+
+
+void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
+{
+    m_mainWindow->m_calib->m_dataAvailable = false;
+    ui->comboBoxCalibrationType->setCurrentIndex(-1);
+    ui->comboBoxCalibrationType->clear();
+    if(index == 0)
+    {
+        ui->comboBoxCalibrationType->addItem("ADC");
+        ui->comboBoxCalibrationType->addItem("TDC");
+        ui->comboBoxCalibrationType->addItem("Time (BCID/TDC)");
+        ui->comboBoxCalibrationType->addItem("Threshold");
+    }
+    if(index == 1)
+    {
+        ui->comboBoxCalibrationType->addItem("ADC");
+        ui->comboBoxCalibrationType->addItem("TDC");
+        ui->comboBoxCalibrationType->addItem("BCID");
+        ui->comboBoxCalibrationType->addItem("Time (BCID/TDC)");
+        ui->comboBoxCalibrationType->addItem("Channels");
+        ui->comboBoxCalibrationType->addItem("Threshold");
+        ui->comboBoxCalibrationType->addItem("Pedestal");
+
+    }
+}
+
+void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
+{
+   m_mainWindow->m_calib->m_dataAvailable = false;
 }

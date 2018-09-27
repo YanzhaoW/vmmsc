@@ -6,36 +6,36 @@
 #include "ui_hybrid_window.h"
 #include "vmm_window.h"
 
-class hdmi_window;
+class HDMIWindow;
 
 namespace Ui {
 class hybrid_window;
 }
 
-class hybrid_window : public QWidget
+class HybridWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit hybrid_window(hdmi_window *top, unsigned short fec = 0, unsigned short hdmi = 0, unsigned short hybrid = 0, QWidget *parent = 0);
-    ~hybrid_window();
-    friend class vmm_window;
+    explicit HybridWindow(HDMIWindow *top, unsigned short fec = 0, unsigned short hdmi = 0, unsigned short hybrid = 0, QWidget *parent = 0);
+    ~HybridWindow();
+    friend class VMMWindow;
 
 private slots:
     void on_Box_vmm1_clicked();
     void on_Box_vmm2_clicked();
-    void updateSettings();
+    void onUpdateSettings();
 private:
-    hdmi_window *root_hdmi;
-    unsigned short fec_index;
-    unsigned short hdmi_index;
-    unsigned short hybrid_index;
-    Ui::hybrid_window *ui;
-    void vmmBoxLogic(bool checked, unsigned short vmm);
-    void updateWindow();
+    HDMIWindow *m_hdmiWindow;
+    unsigned short m_fecIndex;
+    unsigned short m_hdmiIndex;
+    unsigned short m_hybridIndex;
+    Ui::hybrid_window *m_ui;
+    void VMMBoxLogic(bool checked, unsigned short vmm);
+    void UpdateWindow();
     void LoadSettings();
-    bool Hybrid_Set(std::string feature, unsigned short val);
-    unsigned short Hybrid_Get(std::string feature);
+    bool SetHybrid(std::string feature, unsigned short val);
+    unsigned short GetHybrid(std::string feature);
 };
 
 #endif // HYBRID_WINDOW_H

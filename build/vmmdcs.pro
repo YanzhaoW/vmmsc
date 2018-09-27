@@ -1,10 +1,3 @@
-#
-# project file for vmmdcs
-#
-# daniel.joseph.antrim@cern.ch
-# July 2016
-#
-
 #####################################################
 # directory and machine specific items here
 #####################################################
@@ -83,20 +76,20 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/hybrid_window.cpp \
             $$sourcepath/vmm_window.cpp \
             $$sourcepath/hybrid_config_handler.cpp \
-            $$sourcepath/fec_config_module.cpp \
-    ../src/calibration_module.cpp \
-    ../src/qcustomplot.cpp
+            $$sourcepath/calibration_module.cpp \
+            $$sourcepath/qcustomplot.cpp \
+            $$sourcepath/fec_config_module.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
             $$includepath/socket_handler.h\
             $$includepath/vmmsocket.h\
             $$includepath/message_handler.h\
             $$includepath/vmm_config_handler.h\
+            $$includepath/calibration_module.h\
             $$includepath/daq_config_handler.h\
             $$includepath/commandline.h \
             $$includepath/globparameter.h \
-            $$includepath/fec_config_handler.h \
-            $$includepath/guicaller.h \
+            $$includepath/qcustomplot.h \
             $$includepath/vmm.h \
             $$includepath/daq.h \
             $$includepath/hybrid.h \
@@ -108,9 +101,10 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/hybrid_window.h \
             $$includepath/vmm_window.h \
             $$includepath/hybrid_config_handler.h \
-            $$includepath/fec_config_module.h \
-    ../include/calibration_module.h \
-    ../include/qcustomplot.h
+            $$includepath/fec_config_handler.h \
+            $$includepath/fec_config_module.h
+
+
 
 
 FORMS    += $$sourcepath/daq_window.ui \

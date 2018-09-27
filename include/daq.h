@@ -14,6 +14,7 @@
 #include "fec.h"
 #include "message_handler.h"
 
+
 class DAQ: public QObject
 {
     Q_OBJECT
@@ -21,11 +22,11 @@ public:
     DAQ();
     ~DAQ();
     friend class Commandline;
-    friend class vmm_window;
-    friend class calibration_module;
-    FEC fec[FECS_PER_DAQ];
+    friend class VMMWindow;
+    friend class CalibrationModule;
+    FEC m_fecs[FECS_PER_DAQ];
 
-    MessageHandler& msg() { return *vmmMessageHandler; }
+    MessageHandler& GetMessageHandler() { return *m_messageHandler; }
 
     bool SetFEC(unsigned short FEC, bool OnOff);
     bool GetFEC(unsigned short FEC);
@@ -56,9 +57,9 @@ public:
     void ACQHandler(bool on);
 
 private:
-    std::map<int, int> *m_HybridPos = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int position>
-    std::map<int, int> *m_HybridAxis = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int Xaxis> 0 for Y axis and 1 for Xaxis
-    std::map<int, QStringList> m_FecIPs; // map<int number of fec, QStringList corresponding IP>
+    std::map<int, int> *m_hybridPos = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int position>
+    std::map<int, int> *m_hybridAxis = new std::map<int, int>; // map< int FEC*100 + hdmi*10 + hybrid, int Xaxis> 0 for Y axis and 1 for Xaxis
+    std::map<int, QStringList> m_fecIPs; // map<int number of fec, QStringList corresponding IP>
 
     bool SetText(unsigned short reg, const char * text);
     bool Set(unsigned short reg, unsigned short val);
@@ -66,15 +67,15 @@ private:
     // helper functions
     unsigned short FindVecEntry(unsigned short regval, const char *val);
     bool ConstCharStar_comp(const char *ccs1, const char *ccs2);
-    std::vector<const char*> *RegNames;
-    std::vector<unsigned short> *Reg;
-    std::vector<std::string> *RegText;
-    std::vector<std::vector<const char*> > *RegVals;
+    std::vector<const char*> *m_regNames;
+    std::vector<unsigned short> *m_reg;
+    std::vector<std::string> *m_regText;
+    std::vector<std::vector<const char*> > *m_regVals;
 
-    std::vector<bool> fec_act;//binary to store which fecs are activated
-    char *cchr;
+    std::vector<bool> m_fecActs;//binary to store which fecs are activated
+    char *m_chr;
 
-    MessageHandler *vmmMessageHandler;
+    MessageHandler *m_messageHandler;
     void SetMessageHandler();
 
 };

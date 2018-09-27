@@ -11,10 +11,10 @@ public:
     Hybrid();
     ~Hybrid();
     friend class Commandline;
-    friend class vmm;
-    friend class hybrid_config_handler;
-    friend class calibration_module;
-    VMM vmm[VMMS_PER_HYBRID];
+    friend class VMM;
+    friend class HybridConfigHandler;
+    friend class CalibrationModule;
+    VMM m_vmms[VMMS_PER_HYBRID];
 
     void LoadDefault();
     bool SetVMM(unsigned short vmm, bool OnOff);
@@ -31,11 +31,11 @@ public:
     bool SetReg(std::string feature, int val);
     unsigned short GetReg(std::string feature);
 private:
-    std::vector<bool> vmm_act;//binary to store which vmms are activated
-    bool ART; // binary to store if ART is active
+    std::vector<bool> m_vmmActs;//binary to store which vmms are activated
+    bool m_art; // binary to store if ART is active
 
-    bool PosX; // hybrid is reading x (true) or y (false)
-    unsigned short PosNo; // hybrid is number ? on its axis
+    bool m_posX; // hybrid is reading x (true) or y (false)
+    unsigned short m_posNo; // hybrid is number ? on its axis
     bool SetRegister(std::string feature, std::string value);
     std::map<std::string, unsigned short> m_hybrid;
 };

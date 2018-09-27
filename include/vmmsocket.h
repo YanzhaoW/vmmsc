@@ -19,16 +19,16 @@ class VMMSocket : public QObject
         explicit VMMSocket(QObject *parent = 0);
         virtual ~VMMSocket(){};
 
-        VMMSocket& setDebug(bool dbg) { m_dbg = dbg; return *this; }
-        bool dbg() { return m_dbg; }
+        VMMSocket& SetDebugMode(bool dbg) { m_dbg = dbg; return *this; }
+        bool IsDbgActive() { return m_dbg; }
 
-        void LoadMessageHandler(MessageHandler& msg);
-        MessageHandler& msg() { return *m_msg; }
+        void LoadMessageHandler(MessageHandler& GetMessageHandler);
+        MessageHandler& GetMessageHandler() { return *m_msg; }
 
-        void setName(std::string n = "") { m_name = n; }
-        std::string getName() { return m_name; }
-        void setBindingPort(quint16 port) { m_bindingPort = port; }
-        quint16 getBindingPort() { return m_bindingPort; }
+        void SetName(std::string n = "") { m_name = n; }
+        std::string GetName() { return m_name; }
+        void SetBindingPort(quint16 port) { m_bindingPort = port; }
+        quint16 GetBindingPort() { return m_bindingPort; }
 
         // QUdpMethods
         virtual bool hasPendingDatagrams();
@@ -36,22 +36,22 @@ class VMMSocket : public QObject
         virtual quint64 readDatagram(char* databuffer, quint64 maxSize,
                 QHostAddress* address = 0, quint16* port = 0);
 
-        bool bindSocket(quint16 port = 0,
+        bool BindSocket(quint16 port = 0,
             QAbstractSocket::BindMode mode = QAbstractSocket::DefaultForPlatform);
-        bool isBound();
-        quint64 writeDatagram(const QByteArray& data, const QHostAddress& host,
+        bool IsBound();
+        quint64 WriteDatagram(const QByteArray& data, const QHostAddress& host,
                     quint16 port);
 
         // dummy function to send string datagram to specific port on local host
         void TestUDP();
 
-        bool checkAndReconnect(std::string fromWhere="");
-        void closeAndDisconnect(std::string fromWhere="");
+        bool CheckAndReconnect(std::string fromWhere="");
+        void CloseAndDisconnect(std::string fromWhere="");
 
 
-        QUdpSocket& socket() { return *m_socket; }
-        QByteArray buffer() { return m_buffer; }
-        QByteArray processReply(const QString &ip_sent_to, quint32 cmd_delay = 0,
+        QUdpSocket& GetSocket() { return *m_socket; }
+        QByteArray GetBuffer() { return m_buffer; }
+        QByteArray ProcessReply(const QString &ip_sent_to, quint32 cmd_delay = 0,
                                 quint32 count = 0);
 
         void Print();
@@ -69,6 +69,6 @@ class VMMSocket : public QObject
         quint16 m_bindingPort;
         QUdpSocket *m_socket;
         QByteArray m_buffer;
-
+        char* ip_address;
 
 }; // class VMMSocket

@@ -20,55 +20,56 @@ using namespace std;
 
 class FEC;
 
-class FEC_config_module : public QObject
+class FECConfigModule : public QObject
 {
     Q_OBJECT
 public:
-    explicit FEC_config_module(FEC *top, QObject *parent = 0);
-    FEC_config_module& setDebug(bool dbg) { m_dbg = dbg; return *this; }
-    bool dbg() { return m_dbg; }
+    explicit FECConfigModule(FEC *top, QObject *parent = 0);
+    FECConfigModule& SetDebugMode(bool dbg) { m_dbg = dbg; return *this; }
+    bool IsDbgEnabled() { return m_dbg; }
 
     friend class FEC;
 
     void LoadMessageHandler(MessageHandler& m);
-    MessageHandler& msg() { return *m_msg; }
+    MessageHandler& GetMessageHandler() { return *m_messageHandler; }
 
-    FEC_config_module& LoadSocket(SocketHandler& socket);
+    FECConfigModule& LoadSocket(SocketHandler& GetSocketHandler);
 
     void SendConfig(int hdmi_index, int hybrid_index, int vmm_index);
-    void fillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
-    void fillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
-    void fillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int hybrid_index, int vmm_index);
-    SocketHandler& socket() { return *m_socketHandler; }
+    void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
+    void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
+    void FillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int hybrid_index, int vmm_index);
+
+    SocketHandler& GetSocketHandler() { return *m_socketHandler; }
     int Connect();
 
-    void configTP( int hdmi_index, int hybrid_index);
-    void setS6Resets(int hdmi_index, int hybrid_index);
-    void s6clocks(int hdmi_index, int hybrid_index);
-    void setTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
-    void setEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
-    void checkLinkStatus();
-    void resetLinks();
-    void resetFEC(bool do_reset);
-    void readSysReg();
-    void writeFECip();
-    void setTriggerMode();
+    void ConfigTP( int hdmi_index, int hybrid_index);
+    void SetS6Resets(int hdmi_index, int hybrid_index);
+    void SetS6clocks(int hdmi_index, int hybrid_index);
+    void SetTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
+    void SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
+    void CheckLinkStatus();
+    void ResetLinks();
+    void ResetFEC(bool do_reset);
+    void ReadSystemRegisters(QMap<QString, QString>& registers);
+    void writeFECip(int FECip);
+    void SetTriggerMode();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
-    void setMask();
+    void SetMask();
     int ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan);
     void VMMLoadEmit();
 
 private:
-    FEC *fec;
+    FEC *m_fec;
     bool m_dbg;
 
     SocketHandler *m_socketHandler;
 //    ConfigHandler *m_configHandler;
-    MessageHandler* m_msg;
+    MessageHandler* m_messageHandler;
 signals:
-    void checkLinks();
-    void reloadVMM();
+    void CheckLinks();
+    void ReloadVMM();
 
 public slots:
 };

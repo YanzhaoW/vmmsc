@@ -11,14 +11,14 @@ public:
     HDMI();
     ~HDMI();
     friend class Commandline;
-    friend class calibration_module;
-    Hybrid hybrid[HYBRIDS_PER_HDMI];
+    friend class CalibrationModule;
+    Hybrid m_hybrids[HYBRIDS_PER_HDMI];
 
-    bool SetHybrid(unsigned short hybrid, bool OnOff);
-    bool GetHybrid(unsigned short hybrid);
+    bool SetHybrid(unsigned short m_hybrids, bool OnOff);
+    bool GetHybrid(unsigned short m_hybrids);
 
 private:
-    std::vector<bool> hybrid_act;//binary to store which hybrids are activated
+    std::vector<bool> m_hybridAct;//binary to store which hybrids are activated
 };
 
 #endif // HDMI_H

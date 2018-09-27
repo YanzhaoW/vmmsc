@@ -31,7 +31,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="fecTabWidget">
      <property name="minimumSize">
       <size>
        <width>155</width>
@@ -45,7 +45,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -120,6 +120,100 @@
          </layout>
         </widget>
        </item>
+       <item row="7" column="0">
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>ACQ</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_11">
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="onACQ">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text">
+             <string>ACQ On</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QPushButton" name="offACQ">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text">
+             <string>ACQ Off</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QPushButton" name="trgExternal">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>External</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoDefault">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QPushButton" name="trgPulser">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text">
+             <string>Pulser</string>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButtonFECIP">
+         <property name="text">
+          <string>Set FEC IP</string>
+         </property>
+        </widget>
+       </item>
        <item row="4" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="maximumSize">
@@ -146,6 +240,9 @@
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="0" column="2">
@@ -162,6 +259,9 @@
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -177,6 +277,9 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -384,93 +487,6 @@
             </property>
             <property name="value">
              <number>81</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QGroupBox" name="groupBox_6">
-         <property name="title">
-          <string>ACQ</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_11">
-          <item row="2" column="0" colspan="2">
-           <widget class="QPushButton" name="onACQ">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="text">
-             <string>ACQ On</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QPushButton" name="offACQ">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="text">
-             <string>ACQ Off</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QPushButton" name="trgExternal">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>External</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="autoDefault">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="trgPulser">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="focusPolicy">
-             <enum>Qt::NoFocus</enum>
-            </property>
-            <property name="text">
-             <string>Pulser</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -786,6 +802,13 @@
             </item>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="firmware_version">
+            <property name="text">
+             <string>Firmware version</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -815,7 +838,7 @@
            </font>
           </property>
          </widget>
-         <widget class="QPushButton" name="clearDebugScreenPB">
+         <widget class="QPushButton" name="clearDebugScreen">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -895,6 +918,17 @@
             </property>
             <property name="text">
              <string>Reboot FEC</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QPushButton" name="readSystemParams">
+            <property name="toolTip">
+             <string>Read out system parameters of the FEC</string>
+            </property>
+            <property name="text">
+             <string>Read System
+Parameters</string>
             </property>
            </widget>
           </item>

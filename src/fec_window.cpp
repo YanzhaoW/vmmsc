@@ -2,258 +2,258 @@
 #include "hdmi_window.h" // has NOT to be included here. If included in header file: compiler error in mainwindow.h:61:9: error: ‘daq_window’ does not name a type
 
 
-fec_window::fec_window(daq_window *top, unsigned short fec, QWidget *parent) :
+FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     QWidget(parent),
-    root_daq{top},
-    fec_index{fec},
-    ui(new Ui::fec_window)
+    m_daqWindow{top},
+    m_fecIndex{fec},
+    m_ui(new Ui::fec_window)
 {
-    ui->setupUi(this);
-    updateWindow();
+    m_ui->setupUi(this);
+    UpdateWindow();
     SetToolTips();
     LoadSettings();
-//    this->setStyleSheet("QWidget {background: 'white';}");
-    ui->linkPB->setEnabled(false);
-    ui->resetLinks->setEnabled(false);
-    ui->fec_WarmInit->setEnabled(false);
-    ui->fec_reset->setEnabled(false);
-    ui->trgPulser->setEnabled(false);
-    ui->trgExternal->setEnabled(false);
-    ui->onACQ->setEnabled(false);
-    ui->offACQ->setEnabled(false);
+    //    this->setStyleSheet("QWidget {background: 'white';}");
+    m_ui->linkPB->setEnabled(false);
+    m_ui->resetLinks->setEnabled(false);
+    m_ui->fec_WarmInit->setEnabled(false);
+    m_ui->fec_reset->setEnabled(false);
+    m_ui->trgPulser->setEnabled(false);
+    m_ui->trgExternal->setEnabled(false);
+    m_ui->onACQ->setEnabled(false);
+    m_ui->offACQ->setEnabled(false);
 
-    ui->debugScreen->setReadOnly(true);
+    m_ui->debugScreen->setReadOnly(true);
 
 
 
-//    connect(ui->setEvbld, SIGNAL(pressed()),
-//                                            this, SLOT(updateSettings()));
-    connect(ui->evbld_mode, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->evbld_infodata, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->timeStampResCheckBox, SIGNAL(stateChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->trgPeriod, SIGNAL(textChanged(QString)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->pulserDelay, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->bcid_reset, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->acqSync, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->acqWindow, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
+    //    connect(ui->setEvbld, SIGNAL(pressed()),
+    //                                            this, SLOT(updateSettings()));
+    connect(m_ui->evbld_mode, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->evbld_infodata, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->timeStampResCheckBox, SIGNAL(stateChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->trgPeriod, SIGNAL(textChanged(QString)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->pulserDelay, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->bcid_reset, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->acqSync, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->acqWindow, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
 
     //L0
-    connect(ui->L0BCoffset, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->L0_offset, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->L0_rollover, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->L0_window, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->L0_truncate, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->L0_nskip, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sL0enaV, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sL0ena, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sL0cktest, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->L0BCoffset, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->L0_offset, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->L0_rollover, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->L0_window, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->L0_truncate, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->L0_nskip, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->sL0enaV, SIGNAL(pressed()),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->sL0ena, SIGNAL(pressed()),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->sL0cktest, SIGNAL(pressed()),
+            this, SLOT(onUpdateSettings()));
 
-    connect(ui->linkPB, SIGNAL(clicked()),
-                                    this, SLOT(checkLinkStatus()));
-    connect(root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod, SIGNAL(checkLinks()),
-                                    this, SLOT(writeFECStatus()));
+    connect(m_ui->linkPB, SIGNAL(clicked()),
+            this, SLOT(onCheckLinkStatus()));
+    connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
+            this, SLOT(onWriteFECStatus()));
 
-    connect(root_daq->ui->openConnection_2, SIGNAL(clicked()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->resetLinks, SIGNAL(clicked()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->fec_WarmInit, SIGNAL(clicked()),
-                                    this, SLOT( resetFEC() ));
-    connect(ui->fec_reset, SIGNAL(clicked()),
-                                    this, SLOT( resetFEC() ));
-    connect(ui->trgPulser, SIGNAL(clicked()),
-                                    this, SLOT( updateSettings() ));
-    connect(ui->trgExternal, SIGNAL(clicked()),
-                                    this, SLOT( updateSettings() ));
-    connect(ui->onACQ, SIGNAL(clicked()),
-                                    this, SLOT( updateSettings() ));
-    connect(ui->offACQ, SIGNAL(clicked()),
-                                    this, SLOT( updateSettings() ));
+    connect(m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->resetLinks, SIGNAL(clicked()),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
+            this, SLOT( onResetFEC() ));
+    connect(m_ui->fec_reset, SIGNAL(clicked()),
+            this, SLOT( onResetFEC() ));
+    connect(m_ui->trgPulser, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->trgExternal, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->onACQ, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->offACQ, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
 
-    connect(root_daq, SIGNAL(ChangeState()),
-                                    this, SLOT( ACQhandler() ));
+    connect(m_daqWindow, SIGNAL(ChangeState()),
+            this, SLOT( onACQHandler() ));
 
 }
 
-fec_window::~fec_window()
+FECWindow::~FECWindow()
 {
-    delete ui;
+    delete m_ui;
 }
 
-void fec_window::ACQhandler(){
-    if(root_daq->sendstate == "GlobalACQon" ){
-          emit ui->offACQ->clicked();
-          ui->trgPulser->setChecked(false);
-          ui->trgExternal->setChecked(false);
-          ui->onACQ->setChecked(false);
-          ui->offACQ->setChecked(false);
+void FECWindow::onACQHandler(){
+    if(m_daqWindow->m_sendstate == "GlobalACQon" ){
+        emit m_ui->offACQ->clicked();
+        m_ui->trgPulser->setChecked(false);
+        m_ui->trgExternal->setChecked(false);
+        m_ui->onACQ->setChecked(false);
+        m_ui->offACQ->setChecked(false);
 
-          ui->trgPulser->setEnabled(false);
-          ui->trgExternal->setEnabled(false);
-          ui->onACQ->setEnabled(false);
-          ui->offACQ->setEnabled(false);
+        m_ui->trgPulser->setEnabled(false);
+        m_ui->trgExternal->setEnabled(false);
+        m_ui->onACQ->setEnabled(false);
+        m_ui->offACQ->setEnabled(false);
     }
-    else if(root_daq->sendstate == "GlobalACQoff" ){
-          ui->trgPulser->setEnabled(true);
-          ui->trgExternal->setEnabled(true);
-          ui->onACQ->setEnabled(true);
-          ui->offACQ->setEnabled(true);
+    else if(m_daqWindow->m_sendstate == "GlobalACQoff" ){
+        m_ui->trgPulser->setEnabled(true);
+        m_ui->trgExternal->setEnabled(true);
+        m_ui->onACQ->setEnabled(true);
+        m_ui->offACQ->setEnabled(true);
     }
-    else if(root_daq->sendstate == "trigPulser" ){
-        SetTrigMode(1);
+    else if(m_daqWindow->m_sendstate == "trigPulser" ){
+        onSetTriggerMode(1);
     }
-    else if(root_daq->sendstate == "trigExternal" ){
-        SetTrigMode(0);
+    else if(m_daqWindow->m_sendstate == "trigExternal" ){
+        onSetTriggerMode(0);
     }
 
 }
 
 
-void fec_window::updateSettings(){
+void FECWindow::onUpdateSettings(){
 
-//    if(QObject::sender() == ui->setEvbld){
-//        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->testing();
-//    }
-    if(QObject::sender() == ui->evbld_mode){
-        Fec_Set("evbld_mode",  ui->evbld_mode->currentIndex() );
+    //    if(QObject::sender() == ui->setEvbld){
+    //        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->testing();
+    //    }
+    if(QObject::sender() == m_ui->evbld_mode){
+        SetFec("evbld_mode",  m_ui->evbld_mode->currentIndex() );
     }
-    else if(QObject::sender() == ui->evbld_infodata){
-        Fec_Set("evbld_infodata",  ui->evbld_infodata->currentIndex() );
+    else if(QObject::sender() == m_ui->evbld_infodata){
+        SetFec("evbld_infodata",  m_ui->evbld_infodata->currentIndex() );
     }
-    else if(QObject::sender() == ui->timeStampResCheckBox){
-        Fec_Set("highres",  ui->timeStampResCheckBox->isChecked() );
+    else if(QObject::sender() == m_ui->timeStampResCheckBox){
+        SetFec("highres",  m_ui->timeStampResCheckBox->isChecked() );
     }
-    else if(QObject::sender() == ui->trgPeriod){
-            QString val_trg = ui->trgPeriod->text();
-            bool ok;
-            int value = val_trg.toInt(&ok,16);
-        Fec_Set("trigger_period", value );
+    else if(QObject::sender() == m_ui->trgPeriod){
+        QString val_trg = m_ui->trgPeriod->text();
+        bool ok;
+        int value = val_trg.toInt(&ok,16);
+        SetFec("trigger_period", value );
     }
-    else if(QObject::sender() == ui->pulserDelay){
-        Fec_Set("tp_delay",  ui->pulserDelay->value() );
+    else if(QObject::sender() == m_ui->pulserDelay){
+        SetFec("tp_delay",  m_ui->pulserDelay->value() );
     }
-    else if(QObject::sender() == ui->bcid_reset){
-        Fec_Set("bcid_reset",  ui->bcid_reset->value() );
+    else if(QObject::sender() == m_ui->bcid_reset){
+        SetFec("bcid_reset",  m_ui->bcid_reset->value() );
     }
-    else if(QObject::sender() == ui->acqSync){
-        Fec_Set("acq_sync",  ui->acqSync->value() );
+    else if(QObject::sender() == m_ui->acqSync){
+        SetFec("acq_sync",  m_ui->acqSync->value() );
     }
-    else if(QObject::sender() == ui->acqWindow){
-        Fec_Set("acq_window",  ui->acqWindow->value() );
+    else if(QObject::sender() == m_ui->acqWindow){
+        SetFec("acq_window",  m_ui->acqWindow->value() );
     }
 
     //L0
-    else if(QObject::sender() == ui->L0BCoffset){
-        Fec_Set("l0offset",  ui->L0BCoffset->value() );
+    else if(QObject::sender() == m_ui->L0BCoffset){
+        SetFec("l0offset",  m_ui->L0BCoffset->value() );
     }
-    else if(QObject::sender() == ui->L0_offset){
-        Fec_Set("offset",  ui->L0_offset->value() );
+    else if(QObject::sender() == m_ui->L0_offset){
+        SetFec("offset",  m_ui->L0_offset->value() );
     }
-    else if(QObject::sender() == ui->L0_rollover){
-        Fec_Set("rollover",  ui->L0_rollover->value() );
+    else if(QObject::sender() == m_ui->L0_rollover){
+        SetFec("rollover",  m_ui->L0_rollover->value() );
     }
-    else if(QObject::sender() == ui->L0_window){
-        Fec_Set("window",  ui->L0_window->value() );
+    else if(QObject::sender() == m_ui->L0_window){
+        SetFec("window",  m_ui->L0_window->value() );
     }
-    else if(QObject::sender() == ui->L0_truncate){
-        Fec_Set("truncate",  ui->L0_truncate->value() );
+    else if(QObject::sender() == m_ui->L0_truncate){
+        SetFec("truncate",  m_ui->L0_truncate->value() );
     }
-    else if(QObject::sender() == ui->L0_nskip){
-        Fec_Set("nskip",  ui->L0_nskip->value() );
+    else if(QObject::sender() == m_ui->L0_nskip){
+        SetFec("nskip",  m_ui->L0_nskip->value() );
     }
-    else if(QObject::sender() == ui->sL0enaV){
-        Fec_Set("sL0enaV", !ui->sL0enaV->isChecked());
+    else if(QObject::sender() == m_ui->sL0enaV){
+        SetFec("sL0enaV", !m_ui->sL0enaV->isChecked());
     }
-    else if(QObject::sender() == ui->sL0ena){
-        Fec_Set("sL0ena", !ui->sL0ena->isChecked());
+    else if(QObject::sender() == m_ui->sL0ena){
+        SetFec("sL0ena", !m_ui->sL0ena->isChecked());
     }
-    else if(QObject::sender() == ui->sL0cktest){
-        Fec_Set("sL0cktest", !ui->sL0cktest->isChecked());
+    else if(QObject::sender() == m_ui->sL0cktest){
+        SetFec("sL0cktest", !m_ui->sL0cktest->isChecked());
     }
-    else if(QObject::sender() == root_daq->ui->openConnection_2){
-        if(root_daq->ui->connectionLabel_2->text()==QString("all alive")){
-            ui->linkPB->setEnabled(true);
-//            ui->resetLinks->setEnabled(true);
-            if(!root_daq->ui->checkBox->isChecked()){
-            ui->fec_WarmInit->setEnabled(true);
-            ui->fec_reset->setEnabled(true);
-            ui->trgPulser->setEnabled(true);
-            ui->trgExternal->setEnabled(true);
-            ui->onACQ->setEnabled(true);
-            ui->offACQ->setEnabled(true);
+    else if(QObject::sender() == m_daqWindow->ui->openConnection_2){
+        if(m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
+            m_ui->linkPB->setEnabled(true);
+            //            ui->resetLinks->setEnabled(true);
+            if(!m_daqWindow->ui->checkBoxGlobalDAQ->isChecked()){
+                m_ui->fec_WarmInit->setEnabled(true);
+                m_ui->fec_reset->setEnabled(true);
+                m_ui->trgPulser->setEnabled(true);
+                m_ui->trgExternal->setEnabled(true);
+                m_ui->onACQ->setEnabled(true);
+                m_ui->offACQ->setEnabled(true);
             }
         }
         else{
-            ui->linkPB->setEnabled(false);
-            ui->resetLinks->setEnabled(false);
-            ui->fec_WarmInit->setEnabled(false);
-            ui->fec_reset->setEnabled(false);
-            ui->trgPulser->setEnabled(false);
-            ui->trgExternal->setEnabled(false);
-            ui->onACQ->setEnabled(false);
-            ui->offACQ->setEnabled(false);
-            }
-    }
-    else if(QObject::sender() == ui->resetLinks){
-        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->resetLinks();
-    }
-
-
-    else if(QObject::sender() == ui->trgPulser){
-        ui->trgPulser->setCheckable(true);
-        ui->trgPulser->setChecked(true);
-        ui->trgExternal->setChecked(false);
-        SetTrigMode(1);
-    }
-    else if(QObject::sender() == ui->trgExternal){
-        ui->trgExternal->setCheckable(true);
-        ui->trgExternal->setChecked(true);
-        ui->trgPulser->setChecked(false);
-        SetTrigMode(0);
-    }
-    else if(QObject::sender() == ui->onACQ){
-        ui->onACQ->setCheckable(true);
-        if(ui->trgExternal->isChecked()){
-            emit ui->trgExternal->clicked();
+            m_ui->linkPB->setEnabled(false);
+            m_ui->resetLinks->setEnabled(false);
+            m_ui->fec_WarmInit->setEnabled(false);
+            m_ui->fec_reset->setEnabled(false);
+            m_ui->trgPulser->setEnabled(false);
+            m_ui->trgExternal->setEnabled(false);
+            m_ui->onACQ->setEnabled(false);
+            m_ui->offACQ->setEnabled(false);
         }
-        else if(ui->trgPulser->isChecked()){
-            emit ui->trgPulser->clicked();
+    }
+    else if(QObject::sender() == m_ui->resetLinks){
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetLinks();
+    }
+
+
+    else if(QObject::sender() == m_ui->trgPulser){
+        m_ui->trgPulser->setCheckable(true);
+        m_ui->trgPulser->setChecked(true);
+        m_ui->trgExternal->setChecked(false);
+        onSetTriggerMode(1);
+    }
+    else if(QObject::sender() == m_ui->trgExternal){
+        m_ui->trgExternal->setCheckable(true);
+        m_ui->trgExternal->setChecked(true);
+        m_ui->trgPulser->setChecked(false);
+        onSetTriggerMode(0);
+    }
+    else if(QObject::sender() == m_ui->onACQ){
+        m_ui->onACQ->setCheckable(true);
+        if(m_ui->trgExternal->isChecked()){
+            emit m_ui->trgExternal->clicked();
+        }
+        else if(m_ui->trgPulser->isChecked()){
+            emit m_ui->trgPulser->clicked();
         }
         else{
-            root_daq->SetWarning2("Select Trigger Mode","red");
-            ui->onACQ->setChecked(false);
+            m_daqWindow->SetWarning2("Select Trigger Mode","red");
+            m_ui->onACQ->setChecked(false);
             return;
         }
 
-        ui->onACQ->setChecked(true);
-        ui->offACQ->setChecked(false);
-        root_daq->ui->Send->setEnabled(false);
-        root_daq->root_main->daq[0].SendAll();
-        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ACQon();
+        m_ui->onACQ->setChecked(true);
+        m_ui->offACQ->setChecked(false);
+        m_daqWindow->ui->Send->setEnabled(false);
+        m_daqWindow->m_mainWindow->m_daqs[0].SendAll();
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ACQon();
     }
-    else if(QObject::sender() == ui->offACQ){
-        ui->offACQ->setCheckable(true);
-        ui->offACQ->setChecked(true);
-        ui->onACQ->setChecked(false);
-        root_daq->ui->Send->setEnabled(true);
-         root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ACQoff();
+    else if(QObject::sender() == m_ui->offACQ){
+        m_ui->offACQ->setCheckable(true);
+        m_ui->offACQ->setChecked(true);
+        m_ui->onACQ->setChecked(false);
+        m_daqWindow->ui->Send->setEnabled(true);
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
     }
 
 
@@ -261,199 +261,199 @@ void fec_window::updateSettings(){
 
 }
 
-void fec_window::SetTrigMode(int mode){
-    Fec_Set("triggermode", mode);
-    root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->setTriggerMode();
+void FECWindow::onSetTriggerMode(int mode){
+    SetFec("triggermode", mode);
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SetTriggerMode();
 }
 
 
 
-void fec_window::LoadSettings(){
+void FECWindow::LoadSettings(){
 
-    QString ip =  QString("%1.%2.%3.%4").arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ));
+    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
 
-    while( !root_daq->root_main->daq[0].CheckIP( ip, fec_index ) ){
-        root_daq->root_main->daq[0].fec[fec_index].SetReg( "ip4",(unsigned long) root_daq->root_main->daq[0].fec[fec_index].GetRegVal( "ip4" )+1 );
-        ip =  QString("%1.%2.%3.%4").arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ));
+    while( !m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ) ){
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg( "ip4",(unsigned long) m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetRegVal( "ip4" )+1 );
+        ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
     }
 
-    ui->ip1_2->setText( root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" ) );
-    ui->ip2_2->setText( root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" ) );
-    ui->ip3_2->setText( root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" ) );
-    ui->ip4_2->setText( root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ) );
+    m_ui->ip1_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" ) );
+    m_ui->ip2_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" ) );
+    m_ui->ip3_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" ) );
+    m_ui->ip4_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ) );
 
-    ui->pulserDelay->setValue( Fec_Get( "tp_delay" ) );
-    ui->trgPeriod->setText( QString::number( Fec_Get( "trigger_period" ), 16 ) );
-    ui->bcid_reset->setValue( Fec_Get( "bcid_reset" ) );
-    ui->acqSync->setValue( Fec_Get( "acq_sync" ) );
-    ui->acqWindow->setValue( Fec_Get( "acq_window" ) );
+    m_ui->pulserDelay->setValue( GetFec( "tp_delay" ) );
+    m_ui->trgPeriod->setText( QString::number( GetFec( "trigger_period" ), 16 ) );
+    m_ui->bcid_reset->setValue( GetFec( "bcid_reset" ) );
+    m_ui->acqSync->setValue( GetFec( "acq_sync" ) );
+    m_ui->acqWindow->setValue( GetFec( "acq_window" ) );
 
-    ui->evbld_mode->setCurrentIndex( Fec_Get( "evbld_mode" ) );
-    ui->evbld_infodata->setCurrentIndex( Fec_Get( "evbld_infodata" ) );
-    ui->timeStampResCheckBox->setChecked( Fec_Get( "highres" ) );
+    m_ui->evbld_mode->setCurrentIndex( GetFec( "evbld_mode" ) );
+    m_ui->evbld_infodata->setCurrentIndex( GetFec( "evbld_infodata" ) );
+    m_ui->timeStampResCheckBox->setChecked( GetFec( "highres" ) );
 
     //L0
-    ui->L0BCoffset->setValue( Fec_Get( "l0offset" ) );
-    ui->L0_offset->setValue( Fec_Get( "offset" ) );
-    ui->L0_rollover->setValue( Fec_Get( "rollover" ) );
-    ui->L0_window->setValue( Fec_Get( "window" ) );
-    ui->L0_truncate->setValue( Fec_Get( "truncate" ) );
-    ui->L0_nskip->setValue( Fec_Get( "nskip" ) );
-    ui->sL0enaV->setChecked( Fec_Get( "sL0enaV" ) );
-    ui->sL0ena->setChecked( Fec_Get( "sL0ena" ) );
-    ui->sL0cktest->setChecked( Fec_Get( "sL0cktest" ) );
+    m_ui->L0BCoffset->setValue( GetFec( "l0offset" ) );
+    m_ui->L0_offset->setValue( GetFec( "offset" ) );
+    m_ui->L0_rollover->setValue( GetFec( "rollover" ) );
+    m_ui->L0_window->setValue( GetFec( "window" ) );
+    m_ui->L0_truncate->setValue( GetFec( "truncate" ) );
+    m_ui->L0_nskip->setValue( GetFec( "nskip" ) );
+    m_ui->sL0enaV->setChecked( GetFec( "sL0enaV" ) );
+    m_ui->sL0ena->setChecked( GetFec( "sL0ena" ) );
+    m_ui->sL0cktest->setChecked( GetFec( "sL0cktest" ) );
 
 
 }
 
-void fec_window::SetToolTips(){
-    ui->sL0enaV->setToolTip("disable mixed signal functions when L0 enabled");
-    ui->sL0ena->setToolTip("enable L0 core / reset core & gate clk if 0");
-    ui->sL0cktest->setToolTip("enable clocks when L0 core disabled (test)");
+void FECWindow::SetToolTips(){
+    m_ui->sL0enaV->setToolTip("disable mixed signal functions when L0 enabled");
+    m_ui->sL0ena->setToolTip("enable L0 core / reset core & gate clk if 0");
+    m_ui->sL0cktest->setToolTip("enable clocks when L0 core disabled (test)");
 
 }
-bool fec_window::Fec_Set(const char *feature, unsigned long val){
-    return root_daq->root_main->daq[0].fec[fec_index].SetReg(feature,  (unsigned long) val );
+bool FECWindow::SetFec(const char *feature, unsigned long val){
+    return m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg(feature,  (unsigned long) val );
 }
-unsigned long fec_window::Fec_Get(const char *feature){
-    return root_daq->root_main->daq[0].fec[fec_index].GetRegVal(feature);
+unsigned long FECWindow::GetFec(const char *feature){
+    return m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetRegVal(feature);
 }
 
-void fec_window::on_Box_hdmi1_clicked()
+void FECWindow::on_Box_hdmi1_clicked()
 {
     std::cout << " Box_hdmi1 clicked" << std::endl;
-    if (ui->Box_hdmi1->isChecked()){hdmiBoxLogic(true,0);}
-    else {hdmiBoxLogic(false,0);}
+    if (m_ui->Box_hdmi1->isChecked()){HDMIBoxLogic(true,0);}
+    else {HDMIBoxLogic(false,0);}
 }
-void fec_window::on_Box_hdmi2_clicked()
+void FECWindow::on_Box_hdmi2_clicked()
 {
-    if (ui->Box_hdmi2->isChecked()){hdmiBoxLogic(true,1);}
-    else {hdmiBoxLogic(false,1);}
+    if (m_ui->Box_hdmi2->isChecked()){HDMIBoxLogic(true,1);}
+    else {HDMIBoxLogic(false,1);}
 }
-void fec_window::on_Box_hdmi3_clicked()
+void FECWindow::on_Box_hdmi3_clicked()
 {
-    if (ui->Box_hdmi3->isChecked()){hdmiBoxLogic(true,2);}
-    else {hdmiBoxLogic(false,2);}
+    if (m_ui->Box_hdmi3->isChecked()){HDMIBoxLogic(true,2);}
+    else {HDMIBoxLogic(false,2);}
 }
-void fec_window::on_Box_hdmi4_clicked()
+void FECWindow::on_Box_hdmi4_clicked()
 {
-    if (ui->Box_hdmi4->isChecked()){hdmiBoxLogic(true,3);}
-    else {hdmiBoxLogic(false,3);}
+    if (m_ui->Box_hdmi4->isChecked()){HDMIBoxLogic(true,3);}
+    else {HDMIBoxLogic(false,3);}
 }
-void fec_window::on_Box_hdmi5_clicked()
+void FECWindow::on_Box_hdmi5_clicked()
 {
-    if (ui->Box_hdmi5->isChecked()){hdmiBoxLogic(true,4);}
-    else {hdmiBoxLogic(false,4);}
+    if (m_ui->Box_hdmi5->isChecked()){HDMIBoxLogic(true,4);}
+    else {HDMIBoxLogic(false,4);}
 }
-void fec_window::on_Box_hdmi6_clicked()
+void FECWindow::on_Box_hdmi6_clicked()
 {
-    if (ui->Box_hdmi6->isChecked()){hdmiBoxLogic(true,5);}
-    else {hdmiBoxLogic(false,5);}
+    if (m_ui->Box_hdmi6->isChecked()){HDMIBoxLogic(true,5);}
+    else {HDMIBoxLogic(false,5);}
 }
-void fec_window::on_Box_hdmi7_clicked()
+void FECWindow::on_Box_hdmi7_clicked()
 {
-    if (ui->Box_hdmi7->isChecked()){hdmiBoxLogic(true,6);}
-    else {hdmiBoxLogic(false,6);}
+    if (m_ui->Box_hdmi7->isChecked()){HDMIBoxLogic(true,6);}
+    else {HDMIBoxLogic(false,6);}
 }
-void fec_window::on_Box_hdmi8_clicked()
+void FECWindow::on_Box_hdmi8_clicked()
 {
-    if (ui->Box_hdmi8->isChecked()){hdmiBoxLogic(true,7);}
-    else {hdmiBoxLogic(false,7);}
+    if (m_ui->Box_hdmi8->isChecked()){HDMIBoxLogic(true,7);}
+    else {HDMIBoxLogic(false,7);}
 }
-void fec_window::hdmiBoxLogic(bool checked, unsigned short hdmi){
+void FECWindow::HDMIBoxLogic(bool checked, unsigned short hdmi){
     unsigned short NotActiveBefore = 0;
-    QList<QCheckBox*> a = ui->groupBox->findChildren<QCheckBox*>();
+    QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
     for (unsigned short i = 0; i < a.size(); i++){
         if(i<hdmi && !a.at(i)->isChecked()) NotActiveBefore++;
     }
     if (checked){
-        ui->tabWidget->insertTab(hdmi-NotActiveBefore, new hdmi_window(this,fec_index,hdmi), QString(" HDMI %0").arg(hdmi+1));
-        ui->tabWidget->setCurrentIndex(hdmi-NotActiveBefore);
-        root_daq->root_main->daq[0].fec[fec_index].SetHDMI(hdmi, true);
+        m_ui->tabWidget->insertTab(hdmi-NotActiveBefore, new HDMIWindow(this,m_fecIndex,hdmi), QString(" HDMI %0").arg(hdmi+1));
+        m_ui->tabWidget->setCurrentIndex(hdmi-NotActiveBefore);
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHDMI(hdmi, true);
 
     }
     else {
-        ui->tabWidget->removeTab(hdmi-NotActiveBefore);
-        root_daq->root_main->daq[0].fec[fec_index].SetHDMI(hdmi, false);
+        m_ui->tabWidget->removeTab(hdmi-NotActiveBefore);
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHDMI(hdmi, false);
     }
 }
 
 
-void fec_window::updateWindow(){
+void FECWindow::UpdateWindow(){
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-        if(root_daq->root_main->daq[0].fec[fec_index].GetHDMI(k)){
-            if (k == 0 && !ui->Box_hdmi1->isChecked()){ui->Box_hdmi1->setChecked(true); on_Box_hdmi1_clicked();}
-            if (k == 1 && !ui->Box_hdmi2->isChecked()){ui->Box_hdmi2->setChecked(true); on_Box_hdmi2_clicked();}
-            if (k == 2 && !ui->Box_hdmi3->isChecked()){ui->Box_hdmi3->setChecked(true); on_Box_hdmi3_clicked();}
-            if (k == 3 && !ui->Box_hdmi4->isChecked()){ui->Box_hdmi4->setChecked(true); on_Box_hdmi4_clicked();}
-            if (k == 4 && !ui->Box_hdmi5->isChecked()){ui->Box_hdmi5->setChecked(true); on_Box_hdmi5_clicked();}
-            if (k == 5 && !ui->Box_hdmi6->isChecked()){ui->Box_hdmi6->setChecked(true); on_Box_hdmi6_clicked();}
-            if (k == 6 && !ui->Box_hdmi7->isChecked()){ui->Box_hdmi7->setChecked(true); on_Box_hdmi7_clicked();}
-            if (k == 7 && !ui->Box_hdmi8->isChecked()){ui->Box_hdmi8->setChecked(true); on_Box_hdmi8_clicked();}
+        if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHDMI(k)){
+            if (k == 0 && !m_ui->Box_hdmi1->isChecked()){m_ui->Box_hdmi1->setChecked(true); on_Box_hdmi1_clicked();}
+            if (k == 1 && !m_ui->Box_hdmi2->isChecked()){m_ui->Box_hdmi2->setChecked(true); on_Box_hdmi2_clicked();}
+            if (k == 2 && !m_ui->Box_hdmi3->isChecked()){m_ui->Box_hdmi3->setChecked(true); on_Box_hdmi3_clicked();}
+            if (k == 3 && !m_ui->Box_hdmi4->isChecked()){m_ui->Box_hdmi4->setChecked(true); on_Box_hdmi4_clicked();}
+            if (k == 4 && !m_ui->Box_hdmi5->isChecked()){m_ui->Box_hdmi5->setChecked(true); on_Box_hdmi5_clicked();}
+            if (k == 5 && !m_ui->Box_hdmi6->isChecked()){m_ui->Box_hdmi6->setChecked(true); on_Box_hdmi6_clicked();}
+            if (k == 6 && !m_ui->Box_hdmi7->isChecked()){m_ui->Box_hdmi7->setChecked(true); on_Box_hdmi7_clicked();}
+            if (k == 7 && !m_ui->Box_hdmi8->isChecked()){m_ui->Box_hdmi8->setChecked(true); on_Box_hdmi8_clicked();}
         }
         else{
-            if (k == 0 && ui->Box_hdmi1->isChecked()){ui->Box_hdmi1->setChecked(false); on_Box_hdmi1_clicked();}
-            if (k == 1 && ui->Box_hdmi2->isChecked()){ui->Box_hdmi2->setChecked(false); on_Box_hdmi2_clicked();}
-            if (k == 2 && ui->Box_hdmi3->isChecked()){ui->Box_hdmi3->setChecked(false); on_Box_hdmi3_clicked();}
-            if (k == 3 && ui->Box_hdmi4->isChecked()){ui->Box_hdmi4->setChecked(false); on_Box_hdmi4_clicked();}
-            if (k == 4 && ui->Box_hdmi5->isChecked()){ui->Box_hdmi5->setChecked(false); on_Box_hdmi5_clicked();}
-            if (k == 5 && ui->Box_hdmi6->isChecked()){ui->Box_hdmi6->setChecked(false); on_Box_hdmi6_clicked();}
-            if (k == 6 && ui->Box_hdmi7->isChecked()){ui->Box_hdmi7->setChecked(false); on_Box_hdmi7_clicked();}
-            if (k == 7 && ui->Box_hdmi8->isChecked()){ui->Box_hdmi8->setChecked(false); on_Box_hdmi8_clicked();}
+            if (k == 0 && m_ui->Box_hdmi1->isChecked()){m_ui->Box_hdmi1->setChecked(false); on_Box_hdmi1_clicked();}
+            if (k == 1 && m_ui->Box_hdmi2->isChecked()){m_ui->Box_hdmi2->setChecked(false); on_Box_hdmi2_clicked();}
+            if (k == 2 && m_ui->Box_hdmi3->isChecked()){m_ui->Box_hdmi3->setChecked(false); on_Box_hdmi3_clicked();}
+            if (k == 3 && m_ui->Box_hdmi4->isChecked()){m_ui->Box_hdmi4->setChecked(false); on_Box_hdmi4_clicked();}
+            if (k == 4 && m_ui->Box_hdmi5->isChecked()){m_ui->Box_hdmi5->setChecked(false); on_Box_hdmi5_clicked();}
+            if (k == 5 && m_ui->Box_hdmi6->isChecked()){m_ui->Box_hdmi6->setChecked(false); on_Box_hdmi6_clicked();}
+            if (k == 6 && m_ui->Box_hdmi7->isChecked()){m_ui->Box_hdmi7->setChecked(false); on_Box_hdmi7_clicked();}
+            if (k == 7 && m_ui->Box_hdmi8->isChecked()){m_ui->Box_hdmi8->setChecked(false); on_Box_hdmi8_clicked();}
         }
     }
 }
 
-void fec_window::on_ip4_2_textChanged(const QString &arg1)
+void FECWindow::on_ip4_2_textChanged()
 {
-    QString ip =  QString("%1.%2.%3.%4").arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" )).arg(ui->ip4_2->text().toInt());
-    if(root_daq->root_main->daq[0].CheckIP( ip, fec_index )) root_daq->root_main->daq[0].fec[fec_index].SetReg("ip4", (unsigned long)ui->ip4_2->text().toInt());
+    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_ui->ip4_2->text().toInt());
+    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex )) m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip4", (unsigned long)m_ui->ip4_2->text().toInt());
     else {
-        ui->ip4_2->setText(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ));
-        root_daq->SetWarning2("IP already exists- resetted!", "orange");
+        m_ui->ip4_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
+        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
     }
 }
 
-void fec_window::on_ip3_2_textChanged(const QString &arg1)
+void FECWindow::on_ip3_2_textChanged()
 {
-    QString ip =  QString("%1.%2.%3.%4").arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" )).arg(ui->ip3_2->text().toInt()).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ));
-   if(root_daq->root_main->daq[0].CheckIP( ip, fec_index ))root_daq->root_main->daq[0].fec[fec_index].SetReg("ip3", (unsigned long)ui->ip3_2->text().toInt());
-   else {
-       ui->ip3_2->setText(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" ));
-       root_daq->SetWarning2("IP already exists- resetted!", "orange");
-   }
+    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_ui->ip3_2->text().toInt()).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
+    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip3", (unsigned long)m_ui->ip3_2->text().toInt());
+    else {
+        m_ui->ip3_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" ));
+        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+    }
 }
 
-void fec_window::on_ip2_2_textChanged(const QString &arg1)
+void FECWindow::on_ip2_2_textChanged()
 {
-    QString ip =  QString("%1.%2.%3.%4").arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" )).arg(ui->ip2_2->text().toInt()).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ));
-   if(root_daq->root_main->daq[0].CheckIP( ip, fec_index ))root_daq->root_main->daq[0].fec[fec_index].SetReg("ip2", (unsigned long)ui->ip2_2->text().toInt());
-   else {
-       ui->ip2_2->setText(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" ));
-       root_daq->SetWarning2("IP already exists- resetted!", "orange");
-   }
+    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_ui->ip2_2->text().toInt()).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
+    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip2", (unsigned long)m_ui->ip2_2->text().toInt());
+    else {
+        m_ui->ip2_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" ));
+        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+    }
 }
 
-void fec_window::on_ip1_2_textChanged(const QString &arg1)
+void FECWindow::on_ip1_2_textChanged()
 {
-    QString ip =  QString("%1.%2.%3.%4").arg(ui->ip3_2->text().toInt()).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip2" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip3" )).arg(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip4" ));
-  if(root_daq->root_main->daq[0].CheckIP( ip, fec_index ))root_daq->root_main->daq[0].fec[fec_index].SetReg("ip1", (unsigned long)ui->ip1_2->text().toInt());
-  else {
-      ui->ip1_2->setText(root_daq->root_main->daq[0].fec[fec_index].GetReg( "ip1" ));
-      root_daq->SetWarning2("IP already exists- resetted!", "orange");
-  }
+    QString ip =  QString("%1.%2.%3.%4").arg(m_ui->ip3_2->text().toInt()).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
+    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip1", (unsigned long)m_ui->ip1_2->text().toInt());
+    else {
+        m_ui->ip1_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" ));
+        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+    }
 }
 
-void fec_window::checkLinkStatus(){
-    root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->checkLinkStatus();
+void FECWindow::onCheckLinkStatus(){
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus();
 }
 
-void fec_window::writeFECStatus()
+void FECWindow::onWriteFECStatus()
 {
     QByteArray buff;
     buff.clear();
-    buff.resize(root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->socket().fecSocket().pendingDatagramSize() );
-    root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->socket().fecSocket().readDatagram(buff.data(), buff.size());
+    buff.resize(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().pendingDatagramSize() );
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
     if(buff.size()==0) return;
     bool ok;
     QString sizeOfPackageReceived, datagramCheck;
@@ -476,51 +476,80 @@ void fec_window::writeFECStatus()
                 ss << " Data, " << i << ": " << bin.number(tmp32,16).toStdString() << endl;
             }
         } // i
-        linkstate = QString::fromStdString(ss.str());
+        m_linkState = QString::fromStdString(ss.str());
         DisplayDebugScreen(QString::fromStdString(ss.str()));
 
-//        ui->debugScreen->append(QString::fromStdString(ss.str()));
-//        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        //        ui->debugScreen->append(QString::fromStdString(ss.str()));
+        //        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     }
 }
 
 
-void fec_window::DisplayDebugScreen(QString text){
-    ui->debugScreen->append(text);
-    ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-//    qDebug()<<text;
+void FECWindow::DisplayDebugScreen(QString text){
+    m_ui->debugScreen->append(text);
+    m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    //    qDebug()<<text;
     std::cout<<text.toStdString()<<std::endl;
 
-//    qDebug()<<linkstate;
+    //    qDebug()<<linkstate;
 }
 
-void fec_window::on_clearDebugScreenPB_clicked()
-{
-    ui->debugScreen->clear();
-//     ui->debugScreen->append(linkstate);
-//        qDebug()<<linkstate;
-}
 
 // ------------------------------------------------------------------------- //
-void fec_window::resetFEC()
+void FECWindow::onResetFEC()
 {
-    bool do_reset = (ui->fec_reset == QObject::sender() ? true : false);
-    root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->resetFEC(do_reset);
+    bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC(do_reset);
     //    runModule().resetFEC(do_reset);
-//    ui->fecRB->setChecked(1);
+    //    ui->fecRB->setChecked(1);
 
-    ui->trgExternal->setChecked(false);
-    ui->trgPulser->setChecked(false);
-    ui->onACQ->setChecked(false);
-    ui->offACQ->setChecked(false);
-//    ui->setTrgAcqConst->setChecked(false);
+    m_ui->trgExternal->setChecked(false);
+    m_ui->trgPulser->setChecked(false);
+    m_ui->onACQ->setChecked(false);
+    m_ui->offACQ->setChecked(false);
+    //    ui->setTrgAcqConst->setChecked(false);
 
-//    SetInitialState();
-//    m_commOK = true;
-//    m_configOK = false;
-//    m_tdaqOK = false;
-//    m_runModeOK = false;
-//    m_acqMode = "";
-//    emit checkFSM();
+    //    SetInitialState();
+    //    m_commOK = true;
+    //    m_configOK = false;
+    //    m_tdaqOK = false;
+    //    m_runModeOK = false;
+    //    m_acqMode = "";
+    //    emit checkFSM();
 }
 // ------------------------------------------------------------------------- //
+
+
+void FECWindow::on_clearDebugScreen_clicked()
+{
+    m_ui->debugScreen->clear();
+}
+
+
+
+void FECWindow::on_readSystemParams_pressed()
+{
+    QMap<QString, QString> registers;
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers);
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetFirmwareVersion(registers["FirmwareVers"]);
+    m_ui->firmware_version->setText(registers["FirmwareVers"]);
+
+}
+
+
+void FECWindow::on_pushButtonFECIP_pressed()
+{
+    int FECip = 0x0a000000;
+    bool ok;
+    QString result = QString::number(QInputDialog::getInt(this,"Set FEC IP Adress","10.0.0.",1,1,4,1,&ok));
+
+    if (ok && !result.isEmpty())
+    {
+        FECip = FECip + result.toInt();
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(FECip);
+        usleep(1000);
+        m_ui->ip4_2->setText(result);
+    }
+}
+
+

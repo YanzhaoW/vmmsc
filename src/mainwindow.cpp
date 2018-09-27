@@ -12,43 +12,43 @@ using namespace std;
 // ------------------------------------------------------------------------- //
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    vmmSocketHandler(0),
-    vmmMessageHandler(0),
-    calib(new calibration_module(this)),
     //thread
-    daq_act (DAQS_PER_GUIWINDOW)
+    m_daq_act (DAQS_PER_GUIWINDOW),
+    m_socketHandler(0),
+    m_messageHandler(0)
 {
-    daq_act[0] = 1;
+    m_daq_act[0] = 1;
     std::cout << "stating commandline" << std::endl;
-    b = new Commandline(this,1);
-    f1 = QtConcurrent::run(b, &Commandline::StartCommandline);
-       std::cout << "commandline started" << std::endl;
+    m_commandLine = new Commandline(this,1);
+    m_future1 = QtConcurrent::run(m_commandLine, &Commandline::StartCommandline);
+    std::cout << "commandline started" << std::endl;
 
-       vmmconfhandl = new VMM_config_handler(this);
-       hybridconfhandl = new hybrid_config_handler(this);
-        daqconfhandl = new DAQ_config_handler(this);
-        fecconfhandl = new FEC_config_handler(this);
-        daqwindow = new daq_window(this);
-        daqwindow->setWindowTitle("VMM3 - SRS DCS new");
-        daqwindow->show();
+    m_vmmConfigHandler = new VMMConfigHandler(this);
+    m_hybridConfigHandler = new HybridConfigHandler(this);
+    m_daqConfigHandler = new DAQConfigHandler(this);
+    m_fecConfigHandler = new FECConfigHandler(this);
+    m_daqWindow = new DAQWindow(this);
+    m_daqWindow->setWindowTitle("VMM3 - SRS DCS new");
+    m_daqWindow->show();
     //thread
 
-    vmmMessageHandler = new MessageHandler();
-    vmmMessageHandler->setMessageSize(75);
-    vmmMessageHandler->setGUI(true);
+    m_messageHandler = new MessageHandler();
+    m_messageHandler->SetMessageSize(75);
+    m_messageHandler->SetGUI(true);
 
     /////////////////////////////////////////////////////////////////////
     //-----------------------------------------------------------------//
     // VMM handles
     //-----------------------------------------------------------------//
     /////////////////////////////////////////////////////////////////////
-    vmmSocketHandler = new SocketHandler();
+    m_socketHandler = new SocketHandler();
 
-    vmmSocketHandler->LoadMessageHandler(msg());
+    m_socketHandler->LoadMessageHandler(GetMessageHandler());
 
 
     m_dbg = false;
-    vmmSocketHandler ->setDebug(false);
+    m_socketHandler ->SetDebugMode(false);
+    m_calib = new CalibrationModule(this);
 
 
 }
@@ -58,12 +58,9 @@ MainWindow::~MainWindow()
 {
 
 }
-void MainWindow::ResetCalib(){
-    delete calib;
-    calib = new calibration_module(this);
-}
+
 
 void MainWindow::ResetAll(){// for test purpose, not functioning correctly
-//    delete daq_act;
-    daq_act[DAQS_PER_GUIWINDOW];
+    //    delete daq_act;
+    m_daq_act[DAQS_PER_GUIWINDOW];
 }

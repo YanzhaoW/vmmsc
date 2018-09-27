@@ -28,7 +28,7 @@ class DaqMonitor : public QObject
         bool dbg() { return m_dbg; }
 
 
-        void setInterval(int interval = 5) { n_interval_to_check = interval; }
+        void setInterval(int interval = 30) { n_interval_to_check = interval; }
         void setTimer();
         void setCounter(boost::shared_ptr< int > counter);
 

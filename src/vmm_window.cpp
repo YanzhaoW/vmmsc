@@ -1,17 +1,17 @@
 #include "vmm_window.h"
 #include <unistd.h>
 
-vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm, QWidget *parent) :
+VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm, QWidget *parent) :
     QWidget(parent),
-    root_hybrid{top},
-    fec_index{fec},
-    hdmi_index{hdmi},
-    hybrid_index{hybrid},
-    vmm_index{vmm},
-    ui(new Ui::vmm_window)
+    m_hybridWindow{top},
+    m_fecIndex{fec},
+    m_hdmiIndex{hdmi},
+    m_hybridIndex{hybrid},
+    m_vmmIndex{vmm},
+    m_ui(new Ui::vmm_window)
 {
-    ui->setupUi(this);
-    ui->ADCresult->setReadOnly(true);
+    m_ui->setupUi(this);
+    m_ui->ADCresult->setReadOnly(true);
 
 //    ui->stackedWidgetPage1->setStyleSheet("QTabBar::tab { height: 18px; width: 100px; }");
 //    ui->stackedWidgetPage1->setTabText(0,"Channel Registers");
@@ -21,148 +21,150 @@ vmm_window::vmm_window(hybrid_window *top, unsigned short fec, unsigned short hd
     CreateChannelsFields();
     SetToolTips();
     LoadSettings();
-    ui->vmm_reset->setEnabled(false);
-    ui->ReadADC->setEnabled(false);
+    m_ui->vmmReset->setEnabled(false);
+    m_ui->readADC->setEnabled(false);
     //connect the settings from the GUI
     // General Settings
-    connect(ui->sdt, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sdp_2, SIGNAL(valueChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sp, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sm5_sm0, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sg, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->stc, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->srat, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sng, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sdp, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sdrv, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->ssh, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->adcs, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->s8b, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->s6b, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
 
-    connect(ui->sc010b, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sc08b, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sc06b, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sdcks, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sdcka, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sdck6b, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+
+    connect(m_ui->sdt, SIGNAL(valueChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sdp_2, SIGNAL(valueChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sp, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sm5_sm0, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sg, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->stc, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->srat, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sng, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sdp, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sdrv, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->ssh, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->adcs, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->s8b, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->s6b, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+
+    connect(m_ui->sc010b, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sc08b, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sc06b, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sdcks, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sdcka, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sdck6b, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
     //Advanced Settings
-    connect(ui->sttt, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->stot, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->stpp, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->st, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sfam, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->sttt, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->stot, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->stpp, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->st, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sfam, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
 //    connect(ui->ART, SIGNAL(pressed()),
 //                                    this, SLOT(updateSettings()));
-    connect(ui->sbft, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sbfp, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sbfm, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sbmx, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->slg, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sfm, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->sbft, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sbfp, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sbfm, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sbmx, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->slg, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sfm, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvs, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->stcr, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->ssart, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->s32, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->stlc, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->srec, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sbip, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sfrst, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->nskipm_i, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sL0ckinv, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
-    connect(ui->sL0dckinv, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvs, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->stcr, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->ssart, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->s32, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->stlc, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->srec, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sbip, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sfrst, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->nskipm_i, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sL0ckinv, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
+    connect(m_ui->sL0dckinv, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvsbc, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvsbc, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvstp, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvstp, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvstk, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvstk, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvsdt, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvsdt, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvsart, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvsart, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvstki, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvstki, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvsena, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvsena, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->slvs6b, SIGNAL(pressed()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->slvs6b, SIGNAL(pressed()),
+                                    this, SLOT(onUpdateSettings()));
 
 
-    connect(root_hybrid->root_hdmi->root_fec->root_daq->ui->openConnection_2, SIGNAL(clicked()),
-                                    this, SLOT(updateSettings()));
+    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
+                                    this, SLOT(onUpdateSettings()));
 
-    connect(ui->ApplyAll, SIGNAL(clicked()),
-                                    this, SLOT(updateSettings()));
+    connect(m_ui->ApplyAll, SIGNAL(clicked()),
+                                    this, SLOT(onUpdateSettings()));
 
 //    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
 //                                    this, SLOT( ReloadSettings() ) );
 
-    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod, SIGNAL(reloadVMM()),
-                                    this, SLOT( ReloadSettings() ));
+    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadVMM()),
+                                    this, SLOT( onReloadSettings() ));
 
 }
 
 
-vmm_window::~vmm_window()
+VMMWindow::~VMMWindow()
 {
-    delete ui;
+    delete m_ui;
 }
 
 // ------------------------------------------------------------------------- //
-void vmm_window::SetToolTips()
+void VMMWindow::SetToolTips()
 {
      //////////////////////////////////////////////////////////////////////////
     // -------------------------------------------------------------------- //
@@ -172,70 +174,70 @@ void vmm_window::SetToolTips()
 
 
 
-    ui->slvsbc->setToolTip("slvs 100 Ω termination on ckbc");
-    ui->slvstp->setToolTip("slvs 100 Ω termination on cktp");
-    ui->slvstk->setToolTip("slvs 100 Ω termination on cktk");
-    ui->slvsdt->setToolTip("slvs 100 Ω termination on ckdt");
-    ui->slvsart->setToolTip("slvs 100 Ω termination on ckart");
-    ui->slvstki->setToolTip("slvs 100 Ω termination on cktki");
-    ui->slvsena->setToolTip("slvs 100 Ω termination on ckena");
-    ui->slvs6b->setToolTip("slvs 100 Ω termination on ck6b");
-    ui->stlc->setToolTip("mild tail cancellation (when enabled, overrides sbip)");
-    ui->nskipm_i->setToolTip("magic number on BCID - 0xFE8");
-    ui->s32->setToolTip("skips channels 16-47 and makes 15 and 48 neighbors");
-    ui->sL0ckinv->setToolTip("invert BCCLK");
-    ui->sL0dckinv->setToolTip("invert DCK");
-    ui->sbip->setToolTip("bipolar shape");
-    ui->sfrst->setToolTip("fast reset at 6-b completion");
-    ui->slvs->setToolTip("enables direct output IOs");
-    ui->srec->setToolTip("fast recovery from high charge");
-    ui->sratLabel->setToolTip("Enables timing ramp at threshold");
-    ui->ssart->setToolTip("ART flag synchronization (trail to next trail)");
-    ui->stcr->setToolTip("auto-reset (at the end of the ramp, if no stop occurs)");
+    m_ui->slvsbc->setToolTip("slvs 100 Ω termination on ckbc");
+    m_ui->slvstp->setToolTip("slvs 100 Ω termination on cktp");
+    m_ui->slvstk->setToolTip("slvs 100 Ω termination on cktk");
+    m_ui->slvsdt->setToolTip("slvs 100 Ω termination on ckdt");
+    m_ui->slvsart->setToolTip("slvs 100 Ω termination on ckart");
+    m_ui->slvstki->setToolTip("slvs 100 Ω termination on cktki");
+    m_ui->slvsena->setToolTip("slvs 100 Ω termination on ckena");
+    m_ui->slvs6b->setToolTip("slvs 100 Ω termination on ck6b");
+    m_ui->stlc->setToolTip("mild tail cancellation (when enabled, overrides sbip)");
+    m_ui->nskipm_i->setToolTip("magic number on BCID - 0xFE8");
+    m_ui->s32->setToolTip("skips channels 16-47 and makes 15 and 48 neighbors");
+    m_ui->sL0ckinv->setToolTip("invert BCCLK");
+    m_ui->sL0dckinv->setToolTip("invert DCK");
+    m_ui->sbip->setToolTip("bipolar shape");
+    m_ui->sfrst->setToolTip("fast reset at 6-b completion");
+    m_ui->slvs->setToolTip("enables direct output IOs");
+    m_ui->srec->setToolTip("fast recovery from high charge");
+    m_ui->sratLabel->setToolTip("Enables timing ramp at threshold");
+    m_ui->ssart->setToolTip("ART flag synchronization (trail to next trail)");
+    m_ui->stcr->setToolTip("auto-reset (at the end of the ramp, if no stop occurs)");
 
-    ui->spgLabel->setToolTip("input charge polarity");
-    ui->sdp->setToolTip("disable-at-peak");
-    ui->sbmx->setToolTip("routes analog monitor to PDO output");
-    ui->sbft->setToolTip("analog output buffers, enable TDO");
-    ui->sbfp->setToolTip("analog output buffers, enable PDO");
-    ui->sbfm->setToolTip("analog output buffers, enable MO");
-    ui->slg->setToolTip("disable leakage current");
-    ui->sfm->setToolTip("enables dynamic discharge for AC coupling");
-    ui->sng->setToolTip("neighbor (channel and chip) triggering enable");
-    ui->stotLabel->setToolTip("timing outputs control 1 (s6b must be disabled)\n• stpp,stot[00,01,10,11]: TtP,ToT,PtP,PtT\n• TtP: threshold-to-peak\n• ToT: time-over-threshold\n• PtP: pulse-at-peak (10ns) (not available with s10b)\n• PtT: peak-to-threshold (not available with s10b)");
-    ui->sttt->setToolTip("enables direct-output logic (both timing and s6b)");
-    ui->ssh->setToolTip("enables sub-hysteresis discrimination");
-    ui->sc010bLabel->setToolTip("10-bit ADC conversion time");
-    ui->sc08bLabel->setToolTip("8-bit ADC conversion time");
-    ui->sc06bLabel->setToolTip("6-bit ADC conversion time");
-    ui->s8b->setToolTip("8-bit ADC conversion mode");
-    ui->s6b->setToolTip("enables 6-bit ADC (requires sttt enabled)");
-    ui->adcs->setToolTip("enables high resolution ADCs (10/8-bit ADC enable)");
-    ui->sdcks->setToolTip("dual clock edge serialized data enable");
-    ui->sdcka->setToolTip("dual clock edge serialized ART enable");
-    ui->sdck6b->setToolTip("dual clock edge serialized 6-bit enable");
-    ui->sdrv->setToolTip("tristates analog outputs with token, used in analog mode");
+    m_ui->spgLabel->setToolTip("input charge polarity");
+    m_ui->sdp->setToolTip("disable-at-peak");
+    m_ui->sbmx->setToolTip("routes analog monitor to PDO output");
+    m_ui->sbft->setToolTip("analog output buffers, enable TDO");
+    m_ui->sbfp->setToolTip("analog output buffers, enable PDO");
+    m_ui->sbfm->setToolTip("analog output buffers, enable MO");
+    m_ui->slg->setToolTip("disable leakage current");
+    m_ui->sfm->setToolTip("enables dynamic discharge for AC coupling");
+    m_ui->sng->setToolTip("neighbor (channel and chip) triggering enable");
+    m_ui->stotLabel->setToolTip("timing outputs control 1 (s6b must be disabled)\n• stpp,stot[00,01,10,11]: TtP,ToT,PtP,PtT\n• TtP: threshold-to-peak\n• ToT: time-over-threshold\n• PtP: pulse-at-peak (10ns) (not available with s10b)\n• PtT: peak-to-threshold (not available with s10b)");
+    m_ui->sttt->setToolTip("enables direct-output logic (both timing and s6b)");
+    m_ui->ssh->setToolTip("enables sub-hysteresis discrimination");
+    m_ui->sc010bLabel->setToolTip("10-bit ADC conversion time");
+    m_ui->sc08bLabel->setToolTip("8-bit ADC conversion time");
+    m_ui->sc06bLabel->setToolTip("6-bit ADC conversion time");
+    m_ui->s8b->setToolTip("8-bit ADC conversion mode");
+    m_ui->s6b->setToolTip("enables 6-bit ADC (requires sttt enabled)");
+    m_ui->adcs->setToolTip("enables high resolution ADCs (10/8-bit ADC enable)");
+    m_ui->sdcks->setToolTip("dual clock edge serialized data enable");
+    m_ui->sdcka->setToolTip("dual clock edge serialized ART enable");
+    m_ui->sdck6b->setToolTip("dual clock edge serialized 6-bit enable");
+    m_ui->sdrv->setToolTip("tristates analog outputs with token, used in analog mode");
 
-    ui->ApplyAll->setToolTip("Applies the settings of current VMM (except channel settings) to all activated VMMs");
+    m_ui->ApplyAll->setToolTip("Applies the settings of current VMM (except channel settings) to all activated VMMs");
 
 
 }
 // ------------------------------------------------------------------------- //
 
-unsigned short vmm_window::VMM_Get(std::string feature, int ch){
-    unsigned short setting = root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].GetRegister(feature, ch);
+unsigned short VMMWindow::GetVMM(std::string feature, int ch){
+    unsigned short setting = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetRegister(feature, ch);
     return setting;
 }
 // ------------------------------------------------------------------------- //
 
-bool vmm_window::VMM_Set(std::string feature, int value, int ch){
-    if(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].SetRegi(feature, value, ch)){
+bool VMMWindow::SetVMM(std::string feature, int value, int ch){
+    if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
      return true;
     }
     else return false;
 }
-bool vmm_window::VMM_Set(std::string feature, std::string value, int ch){
-    if(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].SetRegi(feature, value, ch)){
+bool VMMWindow::SetVMM(std::string feature, std::string value, int ch){
+    if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
      return true;
     }
     else return false;
@@ -244,277 +246,277 @@ bool vmm_window::VMM_Set(std::string feature, std::string value, int ch){
 // ------------------------------------------------------------------------- //
 
 
-void vmm_window::LoadSettings()
+void VMMWindow::LoadSettings()
 {
     //Loading General settings and updating GUI
-    ui->sp->setCurrentIndex(VMM_Get("sp"));
-    ui->sg->setCurrentIndex(VMM_Get("gain"));
-    if(!VMM_Get("scmx")){
+    m_ui->sp->setCurrentIndex(GetVMM("sp"));
+    m_ui->sg->setCurrentIndex(GetVMM("gain"));
+    if(!GetVMM("scmx")){
 //     std::cout<<"Settings Monitoring: "<<VMM_Get("monitoring")-63<<std::endl;
-        ui->sm5_sm0->setCurrentIndex(VMM_Get("monitoring")-1);
+        m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")-1);
     }
-    else ui->sm5_sm0->setCurrentIndex(VMM_Get("monitoring")+4);
-    ui->stc->setCurrentIndex(VMM_Get("stc"));
-    ui->srat->setCurrentIndex(VMM_Get("srat"));
-    ui->sng->setChecked(VMM_Get("sng"));
-    ui->sdp->setChecked(VMM_Get("sdp"));
-    ui->sdrv->setChecked(VMM_Get("sdrv"));
-    ui->ssh->setChecked(VMM_Get("ssh"));
-    ui->adcs->setChecked(VMM_Get("s10b"));
-    ui->s8b->setChecked(VMM_Get("s8b"));
-    ui->s6b->setChecked(VMM_Get("s6b"));
-    ui->sc010b->setCurrentIndex(VMM_Get("convtime_10"));
-    ui->sc08b->setCurrentIndex(VMM_Get("convtime_8"));
-    ui->sc06b->setCurrentIndex(VMM_Get("convtime_6"));
-    ui->sdcka->setChecked(VMM_Get("sdcka"));
-    ui->sdcks->setChecked(VMM_Get("sdcks"));
-    ui->sdck6b->setChecked(VMM_Get("sdck6b"));
-    ui->sdt->setValue(VMM_Get("sdt"));
-    ui->sdp_2->setValue(VMM_Get("sdp_2"));
+    else m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")+4);
+    m_ui->stc->setCurrentIndex(GetVMM("stc"));
+    m_ui->srat->setCurrentIndex(GetVMM("srat"));
+    m_ui->sng->setChecked(GetVMM("sng"));
+    m_ui->sdp->setChecked(GetVMM("sdp"));
+    m_ui->sdrv->setChecked(GetVMM("sdrv"));
+    m_ui->ssh->setChecked(GetVMM("ssh"));
+    m_ui->adcs->setChecked(GetVMM("s10b"));
+    m_ui->s8b->setChecked(GetVMM("s8b"));
+    m_ui->s6b->setChecked(GetVMM("s6b"));
+    m_ui->sc010b->setCurrentIndex(GetVMM("convtime_10"));
+    m_ui->sc08b->setCurrentIndex(GetVMM("convtime_8"));
+    m_ui->sc06b->setCurrentIndex(GetVMM("convtime_6"));
+    m_ui->sdcka->setChecked(GetVMM("sdcka"));
+    m_ui->sdcks->setChecked(GetVMM("sdcks"));
+    m_ui->sdck6b->setChecked(GetVMM("sdck6b"));
+    m_ui->sdt->setValue(GetVMM("sdt"));
+    m_ui->sdp_2->setValue(GetVMM("sdp_2"));
     QString tmp;
-    ui->dacmvLabel->setText(tmp.number((0.6862*ui->sdt->value()+63.478), 'f', 2) + " mV");
-    ui->dacmvLabel_TP->setText(tmp.number((0.6862*ui->sdp_2->value()+63.478), 'f', 2) + " mV");
+    m_ui->dacmvLabel->setText(tmp.number((0.6862*m_ui->sdt->value()+63.478), 'f', 2) + " mV");
+    m_ui->dacmvLabel_TP->setText(tmp.number((0.6862*m_ui->sdp_2->value()+63.478), 'f', 2) + " mV");
 
     //Loading Advanced settings and updating GUI
 //    ui->ART->setChecked(VMM_Get("sfa"));
-    if(VMM_Get("sfa")) ui->sfam->setCurrentIndex(VMM_Get("sfam")+1);
-    else ui->sfam->setCurrentIndex(VMM_Get("sfa"));
-    ui->st->setCurrentIndex(VMM_Get("peaktime"));
-    ui->sbfm->setChecked(VMM_Get("sbfm"));
-    ui->sbfp->setChecked(VMM_Get("sbfp"));
-    ui->sbft->setChecked(VMM_Get("sbft"));
-    ui->sbmx->setChecked(VMM_Get("sbmx"));
+    if(GetVMM("sfa")) m_ui->sfam->setCurrentIndex(GetVMM("sfam")+1);
+    else m_ui->sfam->setCurrentIndex(GetVMM("sfa"));
+    m_ui->st->setCurrentIndex(GetVMM("peaktime"));
+    m_ui->sbfm->setChecked(GetVMM("sbfm"));
+    m_ui->sbfp->setChecked(GetVMM("sbfp"));
+    m_ui->sbft->setChecked(GetVMM("sbft"));
+    m_ui->sbmx->setChecked(GetVMM("sbmx"));
 //    ui->scmx->setChecked(VMM_Get("scmx"));
-    ui->sfm->setChecked(VMM_Get("sfm"));
-    ui->slg->setChecked(VMM_Get("slg"));
-    ui->sttt->setChecked(VMM_Get("sttt"));
-    ui->stpp->setCurrentIndex(VMM_Get("stpp"));
-    ui->stot->setCurrentIndex(VMM_Get("stot"));
+    m_ui->sfm->setChecked(GetVMM("sfm"));
+    m_ui->slg->setChecked(GetVMM("slg"));
+    m_ui->sttt->setChecked(GetVMM("sttt"));
+    m_ui->stpp->setCurrentIndex(GetVMM("stpp"));
+    m_ui->stot->setCurrentIndex(GetVMM("stot"));
 
 
-    ui->nskipm_i->setChecked(VMM_Get("nskipm_i"));
-    ui->s32->setChecked(VMM_Get("s32"));
-    ui->stlc->setChecked(VMM_Get("stlc"));
-    ui->sL0ckinv->setChecked(VMM_Get("sL0ckinv"));
-    ui->sL0dckinv->setChecked(VMM_Get("sL0dckinv"));
-    ui->sbip->setChecked(VMM_Get("sbip"));
-    ui->sfrst->setChecked(VMM_Get("sfrst"));
-    ui->slvs->setChecked(VMM_Get("slvs"));
-    ui->srec->setChecked(VMM_Get("srec"));
-    ui->ssart->setChecked(VMM_Get("ssart"));
-    ui->stcr->setChecked(VMM_Get("stcr"));
+    m_ui->nskipm_i->setChecked(GetVMM("nskipm_i"));
+    m_ui->s32->setChecked(GetVMM("s32"));
+    m_ui->stlc->setChecked(GetVMM("stlc"));
+    m_ui->sL0ckinv->setChecked(GetVMM("sL0ckinv"));
+    m_ui->sL0dckinv->setChecked(GetVMM("sL0dckinv"));
+    m_ui->sbip->setChecked(GetVMM("sbip"));
+    m_ui->sfrst->setChecked(GetVMM("sfrst"));
+    m_ui->slvs->setChecked(GetVMM("slvs"));
+    m_ui->srec->setChecked(GetVMM("srec"));
+    m_ui->ssart->setChecked(GetVMM("ssart"));
+    m_ui->stcr->setChecked(GetVMM("stcr"));
 
 
-    ui->slvsbc->setChecked(VMM_Get("slvsbc"));
-    ui->slvstp->setChecked(VMM_Get("slvstp"));
-    ui->slvstk->setChecked(VMM_Get("slvstk"));
-    ui->slvsdt->setChecked(VMM_Get("slvsdt"));
-    ui->slvsart->setChecked(VMM_Get("slvsart"));
-    ui->slvstki->setChecked(VMM_Get("slvstki"));
-    ui->slvsena->setChecked(VMM_Get("slvsena"));
-    ui->slvs6b->setChecked(VMM_Get("slvs6b"));
+    m_ui->slvsbc->setChecked(GetVMM("slvsbc"));
+    m_ui->slvstp->setChecked(GetVMM("slvstp"));
+    m_ui->slvstk->setChecked(GetVMM("slvstk"));
+    m_ui->slvsdt->setChecked(GetVMM("slvsdt"));
+    m_ui->slvsart->setChecked(GetVMM("slvsart"));
+    m_ui->slvstki->setChecked(GetVMM("slvstki"));
+    m_ui->slvsena->setChecked(GetVMM("slvsena"));
+    m_ui->slvs6b->setChecked(GetVMM("slvs6b"));
 
 }
 // ------------------------------------------------------------------------- //
-void vmm_window::ReloadSettings(){
+void VMMWindow::onReloadSettings(){
     LoadSettings();
 }
 // ------------------------------------------------------------------------- //
 
-void vmm_window::updateSettings()
+void VMMWindow::onUpdateSettings()
 {
     QString tmp;
-    if(QObject::sender() == ui->sdt){
-        VMM_Set("sdt", ui->sdt->value());
-        ui->dacmvLabel->setText(tmp.number((0.6862*ui->sdt->value()+63.478), 'f', 2) + " mV");
+    if(QObject::sender() == m_ui->sdt){
+        SetVMM("sdt", m_ui->sdt->value());
+        m_ui->dacmvLabel->setText(tmp.number((0.6862*m_ui->sdt->value()+63.478), 'f', 2) + " mV");
     }
-    else if(QObject::sender() == ui->sdp_2){
-        ui->dacmvLabel_TP->setText(tmp.number((0.6862*ui->sdp_2->value()+63.478), 'f', 2) + " mV");
-        VMM_Set("sdp_2", ui->sdp_2->value());
+    else if(QObject::sender() == m_ui->sdp_2){
+        m_ui->dacmvLabel_TP->setText(tmp.number((0.6862*m_ui->sdp_2->value()+63.478), 'f', 2) + " mV");
+        SetVMM("sdp_2", m_ui->sdp_2->value());
     }
-    else if(QObject::sender() == ui->sp){
-        VMM_Set("sp", ui->sp->currentIndex());
+    else if(QObject::sender() == m_ui->sp){
+        SetVMM("sp", m_ui->sp->currentIndex());
     }
-    else if(QObject::sender() == ui->sm5_sm0){
-        if(ui->sm5_sm0->currentIndex()<=3){
+    else if(QObject::sender() == m_ui->sm5_sm0){
+        if(m_ui->sm5_sm0->currentIndex()<=3){
             std::string mm_val[4] = {"Pulser_DAC", "Threshold_DAC", "Bandgap_reference", "Temperature_sensor"};
-            VMM_Set("monitoring",mm_val[ui->sm5_sm0->currentIndex()]);
+            SetVMM("monitoring",mm_val[m_ui->sm5_sm0->currentIndex()]);
         }
-        else VMM_Set("monitoring", ui->sm5_sm0->currentIndex()-4);//starting with channel 1
+        else SetVMM("monitoring", m_ui->sm5_sm0->currentIndex()-4);//starting with channel 1
     }
-    else if(QObject::sender() == ui->sg){
-        VMM_Set("gain", ui->sg->currentIndex());
+    else if(QObject::sender() == m_ui->sg){
+        SetVMM("gain", m_ui->sg->currentIndex());
     }
-    else if(QObject::sender() == ui->stc){
-        VMM_Set("stc", ui->stc->currentIndex());
+    else if(QObject::sender() == m_ui->stc){
+        SetVMM("stc", m_ui->stc->currentIndex());
     }
-    else if(QObject::sender() == ui->srat){
-        VMM_Set("srat", ui->srat->currentIndex());
+    else if(QObject::sender() == m_ui->srat){
+        SetVMM("srat", m_ui->srat->currentIndex());
     }
-    else if(QObject::sender() == ui->sng){
-        VMM_Set("sng", !ui->sng->isChecked());
+    else if(QObject::sender() == m_ui->sng){
+        SetVMM("sng", !m_ui->sng->isChecked());
     }
-    else if(QObject::sender() == ui->sdp){
-        VMM_Set("sdp", !ui->sdp->isChecked());
+    else if(QObject::sender() == m_ui->sdp){
+        SetVMM("sdp", !m_ui->sdp->isChecked());
     }
-    else if(QObject::sender() == ui->sdrv){
-        VMM_Set("sdrv", !ui->sdrv->isChecked());
+    else if(QObject::sender() == m_ui->sdrv){
+        SetVMM("sdrv", !m_ui->sdrv->isChecked());
     }
-    else if(QObject::sender() == ui->ssh){
-        VMM_Set("ssh", !ui->ssh->isChecked());
+    else if(QObject::sender() == m_ui->ssh){
+        SetVMM("ssh", !m_ui->ssh->isChecked());
     }
-    else if(QObject::sender() == ui->adcs){
-        VMM_Set("s10b", !ui->adcs->isChecked());
+    else if(QObject::sender() == m_ui->adcs){
+        SetVMM("s10b", !m_ui->adcs->isChecked());
     }
-    else if(QObject::sender() == ui->s8b){
-        VMM_Set("s8b", !ui->s8b->isChecked());
+    else if(QObject::sender() == m_ui->s8b){
+        SetVMM("s8b", !m_ui->s8b->isChecked());
     }
-    else if(QObject::sender() == ui->s6b){
-        VMM_Set("s6b", !ui->s6b->isChecked());
-        if(!ui->s6b->isChecked()){
-            ui->sttt->setChecked(true);
-            VMM_Set("sttt",1);
+    else if(QObject::sender() == m_ui->s6b){
+        SetVMM("s6b", !m_ui->s6b->isChecked());
+        if(!m_ui->s6b->isChecked()){
+            m_ui->sttt->setChecked(true);
+            SetVMM("sttt",1);
         }
     }
-    else if(QObject::sender() == ui->sc010b){
-        VMM_Set("convtime_10", ui->sc010b->currentIndex());
+    else if(QObject::sender() == m_ui->sc010b){
+        SetVMM("convtime_10", m_ui->sc010b->currentIndex());
     }
-    else if(QObject::sender() == ui->sc08b){
-        VMM_Set("convtime_8", ui->sc08b->currentIndex());
+    else if(QObject::sender() == m_ui->sc08b){
+        SetVMM("convtime_8", m_ui->sc08b->currentIndex());
     }
-    else if(QObject::sender() == ui->sc06b){
-        VMM_Set("convtime_6", ui->sc06b->currentIndex());
+    else if(QObject::sender() == m_ui->sc06b){
+        SetVMM("convtime_6", m_ui->sc06b->currentIndex());
     }
 
-    else if(QObject::sender() == ui->sdcks){
-        VMM_Set("sdcks", !ui->sdcks->isChecked());
+    else if(QObject::sender() == m_ui->sdcks){
+        SetVMM("sdcks", !m_ui->sdcks->isChecked());
     }
-    else if(QObject::sender() == ui->sdcka){
-        VMM_Set("sdcka", !ui->sdcka->isChecked());
+    else if(QObject::sender() == m_ui->sdcka){
+        SetVMM("sdcka", !m_ui->sdcka->isChecked());
     }
-    else if(QObject::sender() == ui->sdck6b){
-        VMM_Set("sdck6b", !ui->sdck6b->isChecked());
+    else if(QObject::sender() == m_ui->sdck6b){
+        SetVMM("sdck6b", !m_ui->sdck6b->isChecked());
     }
-    else if(QObject::sender() == ui->sttt){
-        VMM_Set("sttt", !ui->sttt->isChecked());
-        if(ui->sttt->isChecked()) {
-            VMM_Set("s6b",0);
-            ui->s6b->setChecked(false);
+    else if(QObject::sender() == m_ui->sttt){
+        SetVMM("sttt", !m_ui->sttt->isChecked());
+        if(m_ui->sttt->isChecked()) {
+            SetVMM("s6b",0);
+            m_ui->s6b->setChecked(false);
         }
     }
 
-    else if(QObject::sender() == ui->stpp){
-        VMM_Set("stpp", ui->stpp->currentIndex());
+    else if(QObject::sender() == m_ui->stpp){
+        SetVMM("stpp", m_ui->stpp->currentIndex());
     }
-    else if(QObject::sender() == ui->stot){
-        VMM_Set("stot", ui->stot->currentIndex());
+    else if(QObject::sender() == m_ui->stot){
+        SetVMM("stot", m_ui->stot->currentIndex());
     }
-    else if(QObject::sender() == ui->st){
-        VMM_Set("peaktime", ui->st->currentIndex());
+    else if(QObject::sender() == m_ui->st){
+        SetVMM("peaktime", m_ui->st->currentIndex());
     }
-    else if(QObject::sender() == ui->sfam){
-        if(ui->sfam->currentIndex()>0) {
-            VMM_Set("sfam", ui->sfam->currentIndex()-1);
-            VMM_Set("sfa",1);
+    else if(QObject::sender() == m_ui->sfam){
+        if(m_ui->sfam->currentIndex()>0) {
+            SetVMM("sfam", m_ui->sfam->currentIndex()-1);
+            SetVMM("sfa",1);
         }
-        else VMM_Set("sfa", 0);
+        else SetVMM("sfa", 0);
     }
 //    else if(QObject::sender() == ui->ART){
 //        VMM_Set("sfa", !ui->ART->isChecked());
 //    }
-    else if(QObject::sender() == ui->sbft){
-        VMM_Set("sbft", !ui->sbft->isChecked());
+    else if(QObject::sender() == m_ui->sbft){
+        SetVMM("sbft", !m_ui->sbft->isChecked());
     }
-    else if(QObject::sender() == ui->sbfp){
-        VMM_Set("sbfp", !ui->sbfp->isChecked());
+    else if(QObject::sender() == m_ui->sbfp){
+        SetVMM("sbfp", !m_ui->sbfp->isChecked());
     }
-    else if(QObject::sender() == ui->sbfm){
-        VMM_Set("sbfm", !ui->sbfm->isChecked());
+    else if(QObject::sender() == m_ui->sbfm){
+        SetVMM("sbfm", !m_ui->sbfm->isChecked());
     }
-    else if(QObject::sender() == ui->sbmx){
-        VMM_Set("sbmx", !ui->sbmx->isChecked());
+    else if(QObject::sender() == m_ui->sbmx){
+        SetVMM("sbmx", !m_ui->sbmx->isChecked());
     }
-    else if(QObject::sender() == ui->slg){
-        VMM_Set("slg", !ui->slg->isChecked());
+    else if(QObject::sender() == m_ui->slg){
+        SetVMM("slg", !m_ui->slg->isChecked());
     }
-    else if(QObject::sender() == ui->sfm){
-        VMM_Set("sfm", !ui->sfm->isChecked());
+    else if(QObject::sender() == m_ui->sfm){
+        SetVMM("sfm", !m_ui->sfm->isChecked());
     }
-    else if(QObject::sender() == ui->slvs){
-        VMM_Set("slvs", !ui->slvs->isChecked());
+    else if(QObject::sender() == m_ui->slvs){
+        SetVMM("slvs", !m_ui->slvs->isChecked());
     }
-    else if(QObject::sender() == ui->stcr){
-        VMM_Set("stcr", !ui->stcr->isChecked());
+    else if(QObject::sender() == m_ui->stcr){
+        SetVMM("stcr", !m_ui->stcr->isChecked());
     }
-    else if(QObject::sender() == ui->ssart){
-        VMM_Set("ssart", !ui->ssart->isChecked());
+    else if(QObject::sender() == m_ui->ssart){
+        SetVMM("ssart", !m_ui->ssart->isChecked());
     }
-    else if(QObject::sender() == ui->s32){
-        VMM_Set("s32", !ui->s32->isChecked());
+    else if(QObject::sender() == m_ui->s32){
+        SetVMM("s32", !m_ui->s32->isChecked());
     }
-    else if(QObject::sender() == ui->stlc){
-        VMM_Set("stlc", !ui->stlc->isChecked());
+    else if(QObject::sender() == m_ui->stlc){
+        SetVMM("stlc", !m_ui->stlc->isChecked());
     }
-    else if(QObject::sender() == ui->srec){
-        VMM_Set("srec", !ui->srec->isChecked());
+    else if(QObject::sender() == m_ui->srec){
+        SetVMM("srec", !m_ui->srec->isChecked());
     }
-    else if(QObject::sender() == ui->sbip){
-        VMM_Set("sbip", !ui->sbip->isChecked());
+    else if(QObject::sender() == m_ui->sbip){
+        SetVMM("sbip", !m_ui->sbip->isChecked());
     }
-    else if(QObject::sender() == ui->sfrst){
-        VMM_Set("sfrst", !ui->sfrst->isChecked());
+    else if(QObject::sender() == m_ui->sfrst){
+        SetVMM("sfrst", !m_ui->sfrst->isChecked());
     }
-    else if(QObject::sender() == ui->nskipm_i){
-        VMM_Set("nskipm_i", !ui->nskipm_i->isChecked());
+    else if(QObject::sender() == m_ui->nskipm_i){
+        SetVMM("nskipm_i", !m_ui->nskipm_i->isChecked());
     }
-    else if(QObject::sender() == ui->sL0ckinv){
-        VMM_Set("sL0ckinv", !ui->sL0ckinv->isChecked());
+    else if(QObject::sender() == m_ui->sL0ckinv){
+        SetVMM("sL0ckinv", !m_ui->sL0ckinv->isChecked());
     }
-    else if(QObject::sender() == ui->sL0dckinv){
-        VMM_Set("sL0dckinv", !ui->sL0dckinv->isChecked());
+    else if(QObject::sender() == m_ui->sL0dckinv){
+        SetVMM("sL0dckinv", !m_ui->sL0dckinv->isChecked());
     }
 
-    else if(QObject::sender() == ui->slvsbc){
-        VMM_Set("slvsbc", !ui->slvsbc->isChecked());
+    else if(QObject::sender() == m_ui->slvsbc){
+        SetVMM("slvsbc", !m_ui->slvsbc->isChecked());
     }
-    else if(QObject::sender() == ui->slvstp){
-        VMM_Set("slvstp", !ui->slvstp->isChecked());
+    else if(QObject::sender() == m_ui->slvstp){
+        SetVMM("slvstp", !m_ui->slvstp->isChecked());
     }
-    else if(QObject::sender() == ui->slvstk){
-        VMM_Set("slvstk", !ui->slvstk->isChecked());
+    else if(QObject::sender() == m_ui->slvstk){
+        SetVMM("slvstk", !m_ui->slvstk->isChecked());
     }
-    else if(QObject::sender() == ui->slvsdt){
-        VMM_Set("slvsdt", !ui->slvsdt->isChecked());
+    else if(QObject::sender() == m_ui->slvsdt){
+        SetVMM("slvsdt", !m_ui->slvsdt->isChecked());
     }
-    else if(QObject::sender() == ui->slvsart){
-        VMM_Set("slvsart", !ui->slvsart->isChecked());
+    else if(QObject::sender() == m_ui->slvsart){
+        SetVMM("slvsart", !m_ui->slvsart->isChecked());
     }
-    else if(QObject::sender() == ui->slvstki){
-        VMM_Set("slvstki", !ui->slvstki->isChecked());
+    else if(QObject::sender() == m_ui->slvstki){
+        SetVMM("slvstki", !m_ui->slvstki->isChecked());
     }
-    else if(QObject::sender() == ui->slvsena){
-        VMM_Set("slvsena", !ui->slvsena->isChecked());
+    else if(QObject::sender() == m_ui->slvsena){
+        SetVMM("slvsena", !m_ui->slvsena->isChecked());
     }
-    else if(QObject::sender() == ui->slvs6b){
-        VMM_Set("slvs6b", !ui->slvs6b->isChecked());
+    else if(QObject::sender() == m_ui->slvs6b){
+        SetVMM("slvs6b", !m_ui->slvs6b->isChecked());
     }
-    else if(QObject::sender() == root_hybrid->root_hdmi->root_fec->root_daq->ui->openConnection_2){
-        if(root_hybrid->root_hdmi->root_fec->root_daq->ui->connectionLabel_2->text()==QString("all alive")){
-            ui->vmm_reset->setEnabled(true);
-            ui->ReadADC->setEnabled(true);}
+    else if(QObject::sender() == m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection_2){
+        if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
+            m_ui->vmmReset->setEnabled(true);
+            m_ui->readADC->setEnabled(true);}
         else {
-            ui->vmm_reset->setEnabled(false);
-            ui->ReadADC->setEnabled(false);}
+            m_ui->vmmReset->setEnabled(false);
+            m_ui->readADC->setEnabled(false);}
     }
 
-    else if(QObject::sender() == ui->ApplyAll){
-        root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].ApplyVMMs(fec_index, hdmi_index, hybrid_index, vmm_index);
+    else if(QObject::sender() == m_ui->ApplyAll){
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex);
     }
 
 }
 
 // ------------------------------------------------------------------------- //
-bool vmm_window::eventFilter(QObject *obj, QEvent *event)
+bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
 {
     if(event->type() == QEvent::Wheel)
     {
@@ -528,7 +530,7 @@ bool vmm_window::eventFilter(QObject *obj, QEvent *event)
     return false;
 }
 
-void vmm_window::CreateChannelsFields()
+void VMMWindow::CreateChannelsFields()
 {
 //    VMM_Set("sd", 1, 2);
     Font.setPointSize(8);
@@ -538,9 +540,9 @@ void vmm_window::CreateChannelsFields()
     channelGridLayout->setVerticalSpacing(1);
 
 //    ui->gridLayout_channels->setContentsMargins(margin*0.75, margin, margin*4.4*5, margin);
-    ui->gridLayout_channels->setHorizontalSpacing(1);
-    ui->gridLayout_channels->setVerticalSpacing(1);
-    ui->gridLayout_channels->setGeometry(QRect(620,10,380, 12));
+    m_ui->gridLayout_channels->setHorizontalSpacing(1);
+    m_ui->gridLayout_channels->setVerticalSpacing(1);
+    m_ui->gridLayout_channels->setGeometry(QRect(620,10,380, 12));
 //    ui->gridLayout_channels->setSpacing(1);
 
     QString initialValueRadio = "";
@@ -622,29 +624,29 @@ void vmm_window::CreateChannelsFields()
 
     int col = 5;
         QLabel *spacer = new QLabel("");
-    ui->gridLayout_channels->addWidget(spacer);
-    ui->gridLayout_channels->addWidget(SCLabel,     0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SLLabel,     0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(STLabel,     0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(STHLabel,    0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SMLabel,     0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SDLabel,     0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SMXLabel,    0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SZ010bLabel, 0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SZ08bLabel,  0, col, Qt::AlignCenter); col++;
-    ui->gridLayout_channels->addWidget(SZ06bLabel,  0, col, Qt::AlignCenter);
+    m_ui->gridLayout_channels->addWidget(spacer);
+    m_ui->gridLayout_channels->addWidget(SCLabel,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SLLabel,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(STLabel,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(STHLabel,    0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SMLabel,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SDLabel,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SMXLabel,    0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SZ010bLabel, 0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SZ08bLabel,  0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SZ06bLabel,  0, col, Qt::AlignCenter);
 
 
     for (int i = 0; i<64; i++){
-        VMMChannel[i] = new QLineEdit(counter.setNum(i+1),ui->stackedWidgetPage1);
+        VMMChannel[i] = new QLineEdit(counter.setNum(i+1),m_ui->stackedWidgetPage1);
         VMMChannel[i]->setAlignment(Qt::AlignHCenter);
 
-        VMMSC[i] = new QPushButton(initialValueRadio,ui->stackedWidgetPage1);
-        VMMSL[i] = new QPushButton(initialValueRadio,ui->stackedWidgetPage1);
-        VMMST[i] = new QPushButton(initialValueRadio,ui->stackedWidgetPage1);
-        VMMSTH[i]= new QPushButton(initialValueRadio,ui->stackedWidgetPage1);
-        VMMSM[i] = new QPushButton(initialValueRadio,ui->stackedWidgetPage1);
-        VMMSMX[i]= new QPushButton(initialValueRadio,ui->stackedWidgetPage1);
+        VMMSC[i] = new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
+        VMMSL[i] = new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
+        VMMST[i] = new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
+        VMMSTH[i]= new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
+        VMMSM[i] = new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
+        VMMSMX[i]= new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
 
 
         VMMSC[i]->setFixedSize (15,15);
@@ -654,12 +656,12 @@ void vmm_window::CreateChannelsFields()
         VMMSM[i]->setFixedSize (15,15);
         VMMSMX[i]->setFixedSize(15,15);
 
-        VMMSCBool[i]=VMM_Get("sc",i);
-        VMMSMBool[i]=VMM_Get("sm",i);
-        VMMSTBool[i]=VMM_Get("st",i);
-        VMMSTHBool[i]=VMM_Get("sth",i);
-        VMMSLBool[i]=VMM_Get("sl",i);
-        VMMSMXBool[i]=VMM_Get("smx",i);
+        VMMSCBool[i]=GetVMM("sc",i);
+        VMMSMBool[i]=GetVMM("sm",i);
+        VMMSTBool[i]=GetVMM("st",i);
+        VMMSTHBool[i]=GetVMM("sth",i);
+        VMMSLBool[i]=GetVMM("sl",i);
+        VMMSMXBool[i]=GetVMM("smx",i);
 
         VMMSC[i]->setStyleSheet("background-color: lightGray");
         VMMSM[i]->setStyleSheet("background-color: lightGray");
@@ -676,7 +678,7 @@ void vmm_window::CreateChannelsFields()
 
 
         VMMChannel[i]->setEnabled(0);
-        VMMSDVoltage[i] = new QComboBox(ui->stackedWidgetPage1);
+        VMMSDVoltage[i] = new QComboBox(m_ui->stackedWidgetPage1);
         VMMSDVoltage[i]->setFixedSize(60,20);
         VMMSDVoltage[i]->setFont(Font);
 //        VMMSDVoltage[i]->setFocusPolicy(Qt::StrongFocus);
@@ -684,15 +686,15 @@ void vmm_window::CreateChannelsFields()
             VMMSDVoltage[i]->addItem(counter.setNum(j)+" mV");
         }
 
-        VMMSZ010bCBox[i] = new QComboBox(ui->stackedWidgetPage1);
+        VMMSZ010bCBox[i] = new QComboBox(m_ui->stackedWidgetPage1);
         VMMSZ010bCBox[i]->setFixedSize(50,20);
         VMMSZ010bCBox[i]->setFont(Font);
 
-        VMMSZ08bCBox[i] = new QComboBox(ui->stackedWidgetPage1);
+        VMMSZ08bCBox[i] = new QComboBox(m_ui->stackedWidgetPage1);
         VMMSZ08bCBox[i]->setFixedSize(50,20);
         VMMSZ08bCBox[i]->setFont(Font);
 
-        VMMSZ06bCBox[i] = new QComboBox(ui->stackedWidgetPage1);
+        VMMSZ06bCBox[i] = new QComboBox(m_ui->stackedWidgetPage1);
         VMMSZ06bCBox[i]->setFixedSize(50,20);
         VMMSZ06bCBox[i]->setFont(Font);
 
@@ -708,9 +710,9 @@ void vmm_window::CreateChannelsFields()
         }
 
        // set initial ADC values
-        unsigned short ADC10_index = VMM_Get("ADC0_10",i);
-        unsigned short ADC08_index = VMM_Get("ADC0_8",i);
-        unsigned short ADC06_index = VMM_Get("ADC0_6",i);
+        unsigned short ADC10_index = GetVMM("ADC0_10",i);
+        unsigned short ADC08_index = GetVMM("ADC0_8",i);
+        unsigned short ADC06_index = GetVMM("ADC0_6",i);
         VMMSZ010bCBox[i]->setCurrentIndex(ADC10_index);
         VMMSZ010bValue[i]=ADC10_index;
         VMMSZ08bCBox[i]->setCurrentIndex(ADC08_index);
@@ -741,7 +743,7 @@ void vmm_window::CreateChannelsFields()
         VMMSZ06bCBox[i]         ->installEventFilter(this);
 
         // set initial channel voltage
-        unsigned short SD_volt = VMM_Get("sd",i);
+        unsigned short SD_volt = GetVMM("sd",i);
         VMMSDVoltage[i]->setCurrentIndex(SD_volt);
         VMMSDValue[i]=SD_volt;
 
@@ -752,8 +754,8 @@ void vmm_window::CreateChannelsFields()
     channelGridLayout->setGeometry(QRect(620,12,380,2000));
     dummy->setLayout(channelGridLayout);
     //ui->scrollArea->setLayout(channelGridLayout);
-    ui->scrollArea->setWidget(dummy);
-    ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    m_ui->scrollArea->setWidget(dummy);
+    m_ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     //ui->tab_3->setGeometry(QRect(620,12,50,50));
     //ui->tab_3->setGeometry(QRect(620,12,730,700));
@@ -769,29 +771,29 @@ void vmm_window::CreateChannelsFields()
     // update channel voltages
     // -------------------------------------------------------------------- //
     connect(SDLabel,  SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(updateChannelVoltages(int)));
+                                        this, SLOT(onUpdateChannelVoltages(int)));
 
 
     // -------------------------------------------------------------------- //
     // update channel ADC values
     // -------------------------------------------------------------------- //
     connect(SZ010bLabel,  SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(updateChannelADCs(int)));
+                                        this, SLOT(onUpdateChannelADCs(int)));
     connect(SZ08bLabel,   SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(updateChannelADCs(int)));
+                                        this, SLOT(onUpdateChannelADCs(int)));
     connect(SZ06bLabel,   SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(updateChannelADCs(int)));
+                                        this, SLOT(onUpdateChannelADCs(int)));
 
 
     // -------------------------------------------------------------------- //
     // update channel states (green boxes in Channel Fields)
     // -------------------------------------------------------------------- //
-    connect(SCLabel,   SIGNAL(pressed()), this, SLOT(updateChannelState()));
-    connect(SLLabel,   SIGNAL(pressed()), this, SLOT(updateChannelState()));
-    connect(STLabel,   SIGNAL(pressed()), this, SLOT(updateChannelState()));
-    connect(STHLabel,   SIGNAL(pressed()), this, SLOT(updateChannelState()));
-    connect(SMLabel,   SIGNAL(pressed()), this, SLOT(updateChannelState()));
-    connect(SMXLabel,  SIGNAL(pressed()), this, SLOT(updateChannelState()));
+    connect(SCLabel,   SIGNAL(pressed()), this, SLOT(onUpdateChannelState()));
+    connect(SLLabel,   SIGNAL(pressed()), this, SLOT(onUpdateChannelState()));
+    connect(STLabel,   SIGNAL(pressed()), this, SLOT(onUpdateChannelState()));
+    connect(STHLabel,   SIGNAL(pressed()), this, SLOT(onUpdateChannelState()));
+    connect(SMLabel,   SIGNAL(pressed()), this, SLOT(onUpdateChannelState()));
+    connect(SMXLabel,  SIGNAL(pressed()), this, SLOT(onUpdateChannelState()));
 
     ///////////////////////////////////////////////////////////////////
     // do updates for individual channels
@@ -800,27 +802,27 @@ void vmm_window::CreateChannelsFields()
 
         // ---------- channel voltages ----------- //
         connect(VMMSDVoltage[i],SIGNAL(currentIndexChanged(int)),
-                                        this,SLOT(updateChannelVoltages(int)));
+                                        this,SLOT(onUpdateChannelVoltages(int)));
 
         // ---------------- ADCs ---------------- //
         connect(VMMSZ010bCBox[i],SIGNAL(currentIndexChanged(int)),
-                                        this,SLOT(updateChannelADCs(int)));
+                                        this,SLOT(onUpdateChannelADCs(int)));
         connect(VMMSZ08bCBox[i],SIGNAL(currentIndexChanged(int)),
-                                            this,SLOT(updateChannelADCs(int)));
+                                            this,SLOT(onUpdateChannelADCs(int)));
         connect(VMMSZ06bCBox[i],SIGNAL(currentIndexChanged(int)),
-                                            this,SLOT(updateChannelADCs(int)));
+                                            this,SLOT(onUpdateChannelADCs(int)));
         // ----------- channel states ----------- //
-        connect(VMMSC[i],SIGNAL(pressed()),this,SLOT(updateChannelState()));
-        connect(VMMSM[i],SIGNAL(pressed()),this,SLOT(updateChannelState()));
-        connect(VMMST[i],SIGNAL(pressed()),this,SLOT(updateChannelState()));
-        connect(VMMSTH[i],SIGNAL(pressed()),this,SLOT(updateChannelState()));
-        connect(VMMSL[i],SIGNAL(pressed()),this,SLOT(updateChannelState()));
-        connect(VMMSMX[i],SIGNAL(pressed()),this,SLOT(updateChannelState()));
+        connect(VMMSC[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
+        connect(VMMSM[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
+        connect(VMMST[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
+        connect(VMMSTH[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
+        connect(VMMSL[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
+        connect(VMMSMX[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
     }
 
 }
 // ------------------------------------------------------------------------- //
-void vmm_window::updateChannelState()
+void VMMWindow::onUpdateChannelState()
 {
     // ***********************  SC  ********************************* //
     if(SCLabel == QObject::sender()){
@@ -829,7 +831,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSC[j]->setStyleSheet("background-color: green");
                 VMMSCBool[j]=true;
-                VMM_Set("sc", 1, j);
+                SetVMM("sc", 1, j);
             }
             VMMSCBoolAll=1;
         }else{
@@ -837,7 +839,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSC[j]->setStyleSheet("background-color: lightGray");
                 VMMSCBool[j]=0;
-                VMM_Set("sc", 0, j);
+                SetVMM("sc", 0, j);
             }
             VMMSCBoolAll=0;
         }
@@ -850,7 +852,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSL[j]->setStyleSheet("background-color: green");
                 VMMSLBool[j]=true;
-                VMM_Set("sl", 1, j);
+                SetVMM("sl", 1, j);
             }
             VMMSLBoolAll=1;
         }else{
@@ -858,7 +860,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSL[j]->setStyleSheet("background-color: lightGray");
                 VMMSLBool[j]=0;
-                VMM_Set("sl", 0, j);
+                SetVMM("sl", 0, j);
             }
             VMMSLBoolAll=0;
         }
@@ -870,7 +872,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMST[j]->setStyleSheet("background-color: green");
                 VMMSTBool[j]=true;
-                VMM_Set("st", 1, j);
+                SetVMM("st", 1, j);
             }
             VMMSTBoolAll=1;
         }else{
@@ -878,7 +880,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMST[j]->setStyleSheet("background-color: lightGray");
                 VMMSTBool[j]=0;
-                VMM_Set("st", 0, j);
+                SetVMM("st", 0, j);
             }
             VMMSTBoolAll=0;
         }
@@ -890,7 +892,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSTH[j]->setStyleSheet("background-color: green");
                 VMMSTHBool[j]=true;
-                VMM_Set("sth", 1, j);
+                SetVMM("sth", 1, j);
             }
             VMMSTHBoolAll=1;
         }else{
@@ -898,7 +900,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSTH[j]->setStyleSheet("background-color: lightGray");
                 VMMSTHBool[j]=0;
-                VMM_Set("sth", 0, j);
+                SetVMM("sth", 0, j);
             }
             VMMSTHBoolAll=0;
         }
@@ -910,7 +912,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSM[j]->setStyleSheet("background-color: green");
                 VMMSMBool[j]=true;
-                VMM_Set("sm", 1, j);
+                SetVMM("sm", 1, j);
             }
             VMMSMBoolAll=1;
         }else{
@@ -918,7 +920,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSM[j]->setStyleSheet("background-color: lightGray");
                 VMMSMBool[j]=0;
-                VMM_Set("sm", 0, j);
+                SetVMM("sm", 0, j);
             }
             VMMSMBoolAll=0;
         }
@@ -930,7 +932,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSMX[j]->setStyleSheet("background-color: green");
                 VMMSMXBool[j]=true;
-                VMM_Set("smx", 1, j);
+                SetVMM("smx", 1, j);
             }
             VMMSMXBoolAll=1;
         }else{
@@ -938,7 +940,7 @@ void vmm_window::updateChannelState()
             //for(int j=0;j<32;j++){
                 VMMSMX[j]->setStyleSheet("background-color: lightGray");
                 VMMSMXBool[j]=0;
-                VMM_Set("smx", 0, j);
+                SetVMM("smx", 0, j);
             }
             VMMSMXBoolAll=0;
         }
@@ -949,68 +951,68 @@ void vmm_window::updateChannelState()
             if(VMMSCBool[i]==0){
                 VMMSC[i]->setStyleSheet("background-color: green");
                 VMMSCBool[i]=true;
-                VMM_Set("sc", 1, i);
+                SetVMM("sc", 1, i);
             }else if(VMMSCBool[i]==1){
                 VMMSC[i]->setStyleSheet("background-color: lightGray");
                 VMMSCBool[i]=false;
-                VMM_Set("sc", 0, i);
+                SetVMM("sc", 0, i);
             }
         }else if(VMMST[i] == QObject::sender()){
             if(VMMSTBool[i]==0){
                 VMMST[i]->setStyleSheet("background-color: green");
                 VMMSTBool[i]=true;
-                VMM_Set("st", 1, i);
+                SetVMM("st", 1, i);
             }else if(VMMSTBool[i]==1){
                 VMMST[i]->setStyleSheet("background-color: lightGray");
                 VMMSTBool[i]=false;
-                VMM_Set("st", 0, i);
+                SetVMM("st", 0, i);
             }
         }else if(VMMSTH[i] == QObject::sender()){
             if(VMMSTHBool[i]==0){
                 VMMSTH[i]->setStyleSheet("background-color: green");
                 VMMSTHBool[i]=true;
-                VMM_Set("sth", 1, i);
+                SetVMM("sth", 1, i);
             }else if(VMMSTHBool[i]==1){
                 VMMSTH[i]->setStyleSheet("background-color: lightGray");
                 VMMSTHBool[i]=false;
-                VMM_Set("sth", 0, i);
+                SetVMM("sth", 0, i);
             }
         }else if(VMMSL[i] == QObject::sender()){
             if(VMMSLBool[i]==0){
                 VMMSL[i]->setStyleSheet("background-color: green");
                 VMMSLBool[i]=true;
-                VMM_Set("sl", 1, i);
+                SetVMM("sl", 1, i);
             }else if(VMMSLBool[i]==1){
                 VMMSL[i]->setStyleSheet("background-color: lightGray");
                 VMMSLBool[i]=false;
-                VMM_Set("sl", 0, i);
+                SetVMM("sl", 0, i);
             }
         }else if(VMMSM[i] == QObject::sender()){
             if(VMMSMBool[i]==0){
                 VMMSM[i]->setStyleSheet("background-color: green");
                 VMMSMBool[i]=true;
-                VMM_Set("sm", 1, i);
+                SetVMM("sm", 1, i);
             }else if(VMMSMBool[i]==1){
                 VMMSM[i]->setStyleSheet("background-color: lightGray");
                 VMMSMBool[i]=false;
-                VMM_Set("sm", 0, i);
+                SetVMM("sm", 0, i);
             }
         }else if(VMMSMX[i] == QObject::sender()){
             if(VMMSMXBool[i]==0){
                 VMMSMX[i]->setStyleSheet("background-color: green");
                 VMMSMXBool[i]=true;
-                VMM_Set("smx", 1, i);
+                SetVMM("smx", 1, i);
             }else if(VMMSMXBool[i]==1){
                 VMMSMX[i]->setStyleSheet("background-color: lightGray");
                 VMMSMXBool[i]=false;
-                VMM_Set("smx", 0, i);
+                SetVMM("smx", 0, i);
             }
         }
 
     }
 }
 // ------------------------------------------------------------------------- //
-void vmm_window::updateChannelVoltages(int index){
+void VMMWindow::onUpdateChannelVoltages(int index){
     // ***********************  SD  ******************************** //
     if(SDLabel == QObject::sender()){
         for(int j=0;j<64;j++){
@@ -1024,12 +1026,12 @@ void vmm_window::updateChannelVoltages(int index){
         if(VMMSDVoltage[i] == QObject::sender()){
             VMMSDValue[i]=index;
             qDebug() << "Voltage of channel " << i << " changed to " << index << ".";
-            VMM_Set("sd", index, i);
+            SetVMM("sd", index, i);
         }
     }
 }
 // ------------------------------------------------------------------------- //
-void vmm_window::updateChannelADCs(int index)
+void VMMWindow::onUpdateChannelADCs(int index)
 {
     // ***********************  SD  ******************************* //
     for(int j=0;j<64;j++){
@@ -1051,37 +1053,42 @@ void vmm_window::updateChannelADCs(int index)
     for(int i=0;i<64;i++){
         if(VMMSZ010bCBox[i] == QObject::sender()){
             VMMSZ010bValue[i]=index;
-            VMM_Set("ADC0_10", index, i);
+            SetVMM("ADC0_10", index, i);
         }
         if(VMMSZ08bCBox[i] == QObject::sender()){
             VMMSZ08bValue[i]=index;
-            VMM_Set("ADC0_8", index, i);
+            SetVMM("ADC0_8", index, i);
         }
         if(VMMSZ06bCBox[i] == QObject::sender()){
             VMMSZ06bValue[i]=index;
-            VMM_Set("ADC0_6", index, i);
+            SetVMM("ADC0_6", index, i);
         }
     }
 }
 // ------------------------------------------------------------------------- //
 
-void vmm_window::on_vmm_reset_clicked()
+void VMMWindow::on_vmmReset_clicked()
 {
-    VMM_Set("reset1", 1);
-    VMM_Set("reset2", 1);
-    root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
+    SetVMM("reset1", 1);
+    SetVMM("reset2", 1);
+    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_hybridIndex, m_vmmIndex);
     sleep(1);
-    VMM_Set("reset1", 0);
-    VMM_Set("reset2", 0);
-    root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->SendConfig(hdmi_index, hybrid_index, vmm_index);
+    SetVMM("reset1", 0);
+    SetVMM("reset2", 0);
+    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_hybridIndex, m_vmmIndex);
 
 }
 
-void vmm_window::on_ReadADC_clicked()
+void VMMWindow::on_readADC_clicked()
 {
-    int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | preparte to read other channels
+    int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | prepare to read other channels
 
-    int adc_result = root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->ReadADC(hdmi_index, hybrid_index, vmm_index, adc_chan);
+    int adc_result = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hdmiIndex, m_hybridIndex, m_vmmIndex, adc_chan);
     QString text = QString::number(adc_result);
-    ui->ADCresult->setText(text);
+    m_ui->ADCresult->setText(text);
 }
+
+
+
+
+

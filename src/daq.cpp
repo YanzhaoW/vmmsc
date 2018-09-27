@@ -2,32 +2,32 @@
 
 
 DAQ::DAQ():
-    vmmMessageHandler(0),
-    RegNames ( new std::vector<const char*> (11) ),
-    Reg ( new std::vector<unsigned short> (3) ),
-    RegText ( new std::vector<std::string> (11) ),
-    RegVals ( new std::vector<std::vector<const char*> > (3, std::vector<const char*>() ) ),
-    fec_act (FECS_PER_DAQ),
-    cchr ( new char ) //need for returning const char * in GetReg functions
+    m_regNames ( new std::vector<const char*> (11) ),
+    m_reg ( new std::vector<unsigned short> (3) ),
+    m_regText ( new std::vector<std::string> (11) ),
+    m_regVals ( new std::vector<std::vector<const char*> > (3, std::vector<const char*>() ) ),
+    m_fecActs (FECS_PER_DAQ),
+    m_chr ( new char ), //need for returning const char * in GetReg functions
+    m_messageHandler(0)
 {
     //fec_act[0] = 1;
 
-    (*RegNames)[0] ="ignore16";                (*Reg)[0] = 0;   (*RegVals)[0]={"0", "1", "false", "true"};
-    (*RegNames)[1] ="debug";                   (*Reg)[1] = 0;   (*RegVals)[1]={"0", "1", "false", "true"};
-    (*RegNames)[2] ="run_count";               (*Reg)[2] = 20;  // lets allow 16 bit, so unsigned short is ok
+    (*m_regNames)[0] ="ignore16";                (*m_reg)[0] = 0;   (*m_regVals)[0]={"0", "1", "false", "true"};
+    (*m_regNames)[1] ="debug";                   (*m_reg)[1] = 0;   (*m_regVals)[1]={"0", "1", "false", "true"};
+    (*m_regNames)[2] ="run_count";               (*m_reg)[2] = 20;  // lets allow 16 bit, so unsigned short is ok
 
-    (*RegNames)[3] ="mapping_file";            (*RegText)[3] = "mini2_map.txt";
-    (*RegNames)[4] ="output_filename";         (*RegText)[4] = "binary_dump.txt";
-    (*RegNames)[5] ="config_filename";         (*RegText)[5] = "";
-    (*RegNames)[6] ="vmm_id_list";             (*RegText)[6] = "";
-    (*RegNames)[7] ="ip_list";                 (*RegText)[7] = "";
-    (*RegNames)[8] ="config_version";          (*RegText)[8] = "";
-    (*RegNames)[9] ="comment";                 (*RegText)[9] = "None";
-    (*RegNames)[10] ="output_path";            (*RegText)[10] = "";
+    (*m_regNames)[3] ="mapping_file";            (*m_regText)[3] = "mini2_map.txt";
+    (*m_regNames)[4] ="output_filename";         (*m_regText)[4] = "binary_dump.txt";
+    (*m_regNames)[5] ="config_filename";         (*m_regText)[5] = "";
+    (*m_regNames)[6] ="vmm_id_list";             (*m_regText)[6] = "";
+    (*m_regNames)[7] ="ip_list";                 (*m_regText)[7] = "";
+    (*m_regNames)[8] ="config_version";          (*m_regText)[8] = "";
+    (*m_regNames)[9] ="comment";                 (*m_regText)[9] = "None";
+    (*m_regNames)[10] ="output_path";            (*m_regText)[10] = "";
 
-    vmmMessageHandler = new MessageHandler();
-    vmmMessageHandler->setMessageSize(75);
-    vmmMessageHandler->setGUI(true);
+    m_messageHandler = new MessageHandler();
+    m_messageHandler->SetMessageSize(75);
+    m_messageHandler->SetGUI(true);
     SetMessageHandler();
 
 }
@@ -37,7 +37,7 @@ void DAQ::SendAll(){
 
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){
-            fec[j].SendAll();
+            m_fecs[j].SendAll();
         }
     }
 }
@@ -47,11 +47,11 @@ bool DAQ::CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){
             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-                if( fec[j].GetHDMI(k) ){
+                if( m_fecs[j].GetHDMI(k) ){
                     for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                        if (fec[j].hdmi[k].GetHybrid(l) && !(fec_index==j && hdmi_index==k && hybrid_index==l) ){
-                            bool checkX   = fec[j].hdmi[k].hybrid[l].GetReg("Xaxis") == Xaxis;
-                            bool checkPos = fec[j].hdmi[k].hybrid[l].GetReg("position") == position;
+                        if (m_fecs[j].m_hdmis[k].GetHybrid(l) && !(fec_index==j && hdmi_index==k && hybrid_index==l) ){
+                            bool checkX   = m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("Xaxis") == Xaxis;
+                            bool checkPos = m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") == position;
                             if(checkX && checkPos){
                                 return false;
                             }
@@ -64,38 +64,38 @@ bool DAQ::CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec
         }
     }
     return check;
- }
+}
 
 bool DAQ::CheckIP(QString ip, int fec_index){
     bool check = true;
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) && j!=fec_index){
-            bool checkip = fec[j].GetIP()==ip;
+            bool checkip = m_fecs[j].GetIP()==ip;
             if(checkip) return false;
             else check = true;
         }
     }
     return check;
- }
+}
 
 
 void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index){
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){
             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-                if( fec[j].GetHDMI(k) ){
+                if( m_fecs[j].GetHDMI(k) ){
                     for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                        if (fec[j].hdmi[k].GetHybrid(l)){
+                        if (m_fecs[j].m_hdmis[k].GetHybrid(l)){
                             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                if (fec[j].hdmi[k].hybrid[l].GetVMM(m) && !(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
-                                    (*fec[j].hdmi[k].hybrid[l].vmm[m].Regi->m_GlobalReg1) = (*fec[fec_index].hdmi[hdmi_index].hybrid[hybrid_index].vmm[vmm_index].Regi->m_GlobalReg1);
+                                if (m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m) && !(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
+                                    (*m_fecs[j].m_hdmis[k].m_hybrids[l].m_vmms[m].m_vmmSettings->m_globalReg1) = (*m_fecs[fec_index].m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].m_vmmSettings->m_globalReg1);
                                 }
                             }
                         }
                     }
                 }
             }
-            fec[j].fec_conf_mod->VMMLoadEmit();//dirty trick, does not work to emit signal on daq level
+            m_fecs[j].m_fecConfigModule->VMMLoadEmit();//dirty trick, does not work to emit signal on daq level
         }
     }
 }
@@ -104,8 +104,8 @@ void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_ind
 void DAQ::ACQHandler(bool on){
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j)){
-            if(on) fec[j].fec_conf_mod->ACQon(true);
-            else if(!on) fec[j].fec_conf_mod->ACQoff(true);
+            if(on) m_fecs[j].m_fecConfigModule->ACQon(true);
+            else if(!on) m_fecs[j].m_fecConfigModule->ACQoff(true);
             break;
         }
     }
@@ -114,38 +114,38 @@ void DAQ::ACQHandler(bool on){
 
 void DAQ::SetMessageHandler(){
     for(int i=0; i<FECS_PER_DAQ; i++){
-        fec[i].LoadMessageHandler( msg() );
-//        fec[i].fec_conf_mod->LoadMessageHandler( msg() );
+        m_fecs[i].LoadMessageHandler(GetMessageHandler() );
+        //        fec[i].fec_conf_mod->LoadMessageHandler(GetMessageHandler() );
     }
 }
 
 bool DAQ::SetFEC(unsigned short FEC, bool OnOff){
-    if (FEC < FECS_PER_DAQ) {fec_act[FEC] = OnOff; return true;}
+    if (FEC < FECS_PER_DAQ) {m_fecActs[FEC] = OnOff; return true;}
     else {return false;}
 }
 
 bool DAQ::GetFEC(unsigned short FEC){
-    if (FEC < FECS_PER_DAQ) {return fec_act[FEC];}
+    if (FEC < FECS_PER_DAQ) {return m_fecActs[FEC];}
     else {return false;}
 }
 
 bool DAQ::Set(unsigned short reg, unsigned short val){
 
-    if (reg < (*Reg).size() ) { (*Reg)[reg] = val; std::cout << "Register " << reg << " set to " << val << " ." << std::endl; return true;}
+    if (reg < (*m_reg).size() ) { (*m_reg)[reg] = val; std::cout << "Register " << reg << " set to " << val << " ." << std::endl; return true;}
     else {std::cout << "ERROR register " << reg << " does not exist." << std::endl;return false;}
 }
 
 bool DAQ::SetText(unsigned short reg, const char * text){
     std::stringstream str;
     str << text;
-    if (reg < (*RegNames).size() &&  reg >= (*Reg).size() ) { (*RegText)[reg] = str.str(); std::cout << "Text register " << reg << " set to " << text << " ." << std::endl; return true;}
+    if (reg < (*m_regNames).size() &&  reg >= (*m_reg).size() ) { (*m_regText)[reg] = str.str(); std::cout << "Text register " << reg << " set to " << text << " ." << std::endl; return true;}
     else {std::cout << "ERROR register " << reg << " does not exist." << std::endl;return false;}
 }
 
 bool DAQ::SetReg(const char *reg, bool val){ //set a register, name and bool given
     const char *chr =  val ? "true" : "false";// convert bool to const char * to check if in allowed value list
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             if (CheckAllowedVal(i, chr)){
                 Set(i,val); return true;
             }
@@ -164,9 +164,9 @@ bool DAQ::SetReg(int regnum, bool val){
 
 bool DAQ::SetReg(const char *reg, int val){
     std::stringstream str1;str1 << val;const char * chr = str1.str().c_str(); // convert int to const char * to check if in allowed value list
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
-            if (CheckAllowedVal(i, chr) && i < (*Reg).size()){ //numbers only allowed for registers 0-2
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
+            if (CheckAllowedVal(i, chr) && i < (*m_reg).size()){ //numbers only allowed for registers 0-2
                 Set(i,val); return true;
             }
         }
@@ -176,18 +176,18 @@ bool DAQ::SetReg(const char *reg, int val){
 
 bool DAQ::SetReg(int regnum, int val){
     std::stringstream str1;str1 << val;const char *chr = str1.str().c_str(); // convert int to const char * to check if in allowed value list
-    if (CheckAllowedVal(regnum, chr) && abs(regnum) < (*Reg).size()){ //numbers only allowed for registers 0-2
+    if (CheckAllowedVal(regnum, chr) && abs(regnum) < (*m_reg).size()){ //numbers only allowed for registers 0-2
         Set(regnum,val); return true;
     }
     return false;
 }
 
 bool DAQ::SetReg(const char *reg, const char *val){
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             if (CheckAllowedVal(i, val)){
-                if (i < (*Reg).size()){Set(i,FindVecEntry(i,val)); return true;} // numbers
-                else if (i < (*RegNames).size() &&  i >= (*Reg).size() ) {SetText(i,val); return true;} //text
+                if (i < (*m_reg).size()){Set(i,FindVecEntry(i,val)); return true;} // numbers
+                else if (i < (*m_regNames).size() &&  i >= (*m_reg).size() ) {SetText(i,val); return true;} //text
             }
         }
     }
@@ -196,15 +196,15 @@ bool DAQ::SetReg(const char *reg, const char *val){
 
 bool DAQ::SetReg(int regnum, const char *val){
     if (CheckAllowedVal(regnum, val)){
-        if (abs(regnum) < (*Reg).size()){Set(regnum,FindVecEntry(regnum,val)); return true;} // numbers
-        else if (abs(regnum) < (*RegNames).size() &&  abs(regnum) >= (*Reg).size() ) {SetText(regnum,val); return true;} //text
+        if (abs(regnum) < (*m_reg).size()){Set(regnum,FindVecEntry(regnum,val)); return true;} // numbers
+        else if (abs(regnum) < (*m_regNames).size() &&  abs(regnum) >= (*m_reg).size() ) {SetText(regnum,val); return true;} //text
     }
     return false;
 }
 
 const char * DAQ::GetReg(const char *reg){
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             const char *chr = GetReg((int)i);
             return chr;
         }
@@ -214,32 +214,32 @@ const char * DAQ::GetReg(const char *reg){
 
 const char * DAQ::GetReg(int regnum){
     if (regnum == 0){// give the name of the value
-        if ((*Reg)[0] == 0 || (*Reg)[0] == 2 ) return "false";
-        else if ((*Reg)[0] == 1 || (*Reg)[0] == 3) return "true";
+        if ((*m_reg)[0] == 0 || (*m_reg)[0] == 2 ) return "false";
+        else if ((*m_reg)[0] == 1 || (*m_reg)[0] == 3) return "true";
         else return "ERROR";
     }
-    else if (abs(regnum) < (*Reg).size() && regnum != 4){ //need to convert number to const char *
-        std::stringstream str1;str1 << (*Reg)[regnum];
-        std::strcpy(cchr,str1.str().c_str());
-        return cchr;
+    else if (abs(regnum) < (*m_reg).size() && regnum != 4){ //need to convert number to const char *
+        std::stringstream str1;str1 << (*m_reg)[regnum];
+        std::strcpy(m_chr,str1.str().c_str());
+        return m_chr;
     }
-    else if (abs(regnum) < (*RegNames).size() &&  abs(regnum) >= (*Reg).size() ) { //directly return text
-        std::strcpy(cchr,(RegText->at(regnum)).c_str());
-        return cchr;
+    else if (abs(regnum) < (*m_regNames).size() &&  abs(regnum) >= (*m_reg).size() ) { //directly return text
+        std::strcpy(m_chr,(m_regText->at(regnum)).c_str());
+        return m_chr;
     }
     else return "ERROR";
 }
 
 unsigned short DAQ::GetRegVal(int regnum){
-    if (abs(regnum) < (*Reg).size() ){ //only reg 0-2
-        return (*Reg)[regnum];
+    if (abs(regnum) < (*m_reg).size() ){ //only reg 0-2
+        return (*m_reg)[regnum];
     }
     else return -1;
 }
 
 unsigned short DAQ::GetRegVal(const char *reg){
-    for (unsigned short i = 0; i < (*RegNames).size(); i++ ){
-        if(ConstCharStar_comp(reg,(*RegNames)[i])){
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
+        if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             return GetRegVal((int)i);
         }
     }
@@ -247,21 +247,21 @@ unsigned short DAQ::GetRegVal(const char *reg){
 }
 
 const char * DAQ::GetRegName(unsigned short regnum){
-    if(regnum < (*RegNames).size()){return (*RegNames)[regnum];}
+    if(regnum < (*m_regNames).size()){return (*m_regNames)[regnum];}
     return "failure";
 }
 
 unsigned short DAQ::GetRegNumber(const char *reg){
     unsigned short regnum = -1;
-    for (unsigned short i = 0; i < (*RegNames).size(); i++)
+    for (unsigned short i = 0; i < (*m_regNames).size(); i++)
     {
-        if (reg == (*RegNames)[i]) {regnum = i;}
+        if (reg == (*m_regNames)[i]) {regnum = i;}
     }
     return regnum;
 }
 
 unsigned short DAQ::GetRegSize(){
-    return RegNames->size();
+    return m_regNames->size();
 }
 
 bool DAQ::CheckAllowedVal(unsigned short reg, const char *val){
@@ -276,7 +276,7 @@ bool DAQ::CheckAllowedVal(unsigned short reg, const char *val){
     if (reg == 2 ){ // 16 bit values allowed for run_count
         if (intValue < 65536)found = true;
     }
-    else if (reg < (*RegNames).size() && reg != 0 && reg != 1 && reg != 2 ){ //others are text, so can be anything
+    else if (reg < (*m_regNames).size() && reg != 0 && reg != 1 && reg != 2 ){ //others are text, so can be anything
         found = true;
     }
     return found;
@@ -311,23 +311,23 @@ bool DAQ::ConstCharStar_comp(const char *ccs1, const char *ccs2){
 }
 
 DAQ::~DAQ(){
-    if( RegNames != NULL ){
-        delete RegNames;}
-    RegNames = NULL;
+    if( m_regNames != NULL ){
+        delete m_regNames;}
+    m_regNames = NULL;
 
-    if( Reg != NULL ){
-        delete Reg;}
-    Reg = NULL;
+    if( m_reg != NULL ){
+        delete m_reg;}
+    m_reg = NULL;
 
-    if( RegText != NULL ){
-        delete RegText;}
-    RegText = NULL;
+    if( m_regText != NULL ){
+        delete m_regText;}
+    m_regText = NULL;
 
-    if( RegVals != NULL ){
-        delete RegVals;}
-    RegVals = NULL;
+    if( m_regVals != NULL ){
+        delete m_regVals;}
+    m_regVals = NULL;
 
-    if( cchr != NULL ){
-        delete cchr;}
-    cchr = NULL;
+    if( m_chr != NULL ){
+        delete m_chr;}
+    m_chr = NULL;
 }

@@ -1,7 +1,7 @@
 #include "commandline.h"
 
 
-Commandline::Commandline(MainWindow *top, int value, QObject *parent): root1{top}, index{value}, QObject(parent)
+Commandline::Commandline(MainWindow *top, int value, QObject *parent):  QObject(parent), m_mainWindow{top}, m_index{value}
 {
 
 }
@@ -9,17 +9,19 @@ Commandline::Commandline(MainWindow *top, int value, QObject *parent): root1{top
 int Commandline::StartCommandline()
 
 {
-    running=true;
+    m_running=true;
     std::string ein;
     VMM VMM_inst;
 
     std::cout << "> " << std::flush;
+    /*
     const char *reg = "glob_polarity";
     const char *reg_gain = "gain";
     const char *val = "wires";
     const char *val2 = "strips";
     double doub = 3.0;
-    while(running){
+    */
+    while(m_running){
         std::getline(std::cin,ein);
 //        if((ein.compare("GeneralReset")==0)||(ein.compare("1")==0)) {std::cout << "hello"<< std::endl;}
 //        else if(ein.compare("quit")==0){root1->daqwindow->close(); root1->close(); running=false;break;}
@@ -151,7 +153,7 @@ int Commandline::StartCommandline()
 int Commandline::EndCommandline()
 {
     std::cout << "end called" << std::endl;
-    running=false;
+    m_running=false;
     return 0;
 }
 

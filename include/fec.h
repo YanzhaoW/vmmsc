@@ -15,21 +15,21 @@ public:
     FEC();
     ~FEC();
     friend class Commandline;
-    friend class FEC_config_module;
-    friend class fec_window;
-    friend class vmm_window;
-    friend class daq_window;
+    friend class FECConfigModule;
+    friend class FECWindow;
+    friend class VMMWindow;
+    friend class DAQWindow;
     friend class DAQ;
-    friend class calibration_module;
-    HDMI hdmi[HDMIS_PER_FEC];
+    friend class CalibrationModule;
+    HDMI m_hdmis[HDMIS_PER_FEC];
 
     void LoadDefault(bool calibration = false);
     void LoadMessageHandler(MessageHandler& m);
-    MessageHandler& msg() { return *m_msg; }
-    SocketHandler& socketHandle() { return *vmmSocketHandler; }
+    MessageHandler& GetMessageHandler() { return *m_msg; }
+    SocketHandler& GetSocketHandler() { return *m_socketHandler; }
 
-    bool SetHDMI(unsigned short hdmi, bool OnOff);
-    bool GetHDMI(unsigned short hdmi);
+    bool SetHDMI(unsigned short m_hdmis, bool OnOff);
+    bool GetHDMI(unsigned short m_hdmis);
 
     // global registers
     bool SetReg(const char *reg, bool val);
@@ -51,6 +51,8 @@ public:
     void SendAll();
     quint16 GetChMap();
 
+    void SetFirmwareVersion(QString version);
+    QString GetFirmwareVersion();
 
 
 private:
@@ -60,19 +62,19 @@ private:
     unsigned long FindVecEntry(unsigned short regval, const char *val);
     bool ConstCharStar_comp(const char *ccs1, const char *ccs2);
 
-    std::vector<bool> hdmi_act;//binary to store which hdmis are activated
-
-    std::vector<const char*> *RegNames;
-    std::vector<unsigned long> *Reg;
-    char *cchr;
-
-    unsigned short VMM_Get(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
-    bool VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
-    bool VMM_Set(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
-
-    FEC_config_module *fec_conf_mod;
-
+    std::vector<bool> m_hdmiActs;//binary to store which hdmis are activated
     MessageHandler *m_msg;
-    SocketHandler *vmmSocketHandler;
+    SocketHandler *m_socketHandler;
+    std::vector<const char*> *m_regNames;
+    std::vector<unsigned long> *m_reg;
+    char *m_chr;
+
+    unsigned short GetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
+    bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
+    bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
+
+    FECConfigModule *m_fecConfigModule;
+    QString m_firmwareVersion;
 };
 #endif // FEC_H
+
