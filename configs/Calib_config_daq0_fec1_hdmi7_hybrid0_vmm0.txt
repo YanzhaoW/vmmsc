@@ -1,5 +1,5 @@
 daq 0
-fec 0
+fec 1
 hdmi 7
 hybrid 0
 vmm 0

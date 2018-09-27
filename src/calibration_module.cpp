@@ -10,7 +10,7 @@
 CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     QObject(parent),
     m_mainWindow{top},
-    m_dbg(false),
+    m_dbg(true),
     m_udpSocket(nullptr),
     m_isCalibratedADC(false),
     m_isCalibratedTDC(false),
@@ -163,7 +163,7 @@ void CalibrationModule::FitTimeData()
 
         }
         calibrationObject.insert("fecID",fec);
-        calibrationObject.insert("vmmID",hdmi*2+vmm);
+        calibrationObject.insert("vmmID",hdmi*2+chip);
         calibrationObject.insert("offsets",offsetArray);
         calibrationObject.insert("slopes",slopeArray);
         calibrationArray.push_back(calibrationObject);
@@ -330,15 +330,12 @@ void CalibrationModule::PlotData(){
 // ------------------------------------------------------------------------ //
 void CalibrationModule::GetActiveVMMs(){
     m_vmmActs.clear();
-
+    m_mainWindow->m_daqWindow->ui->comboBoxFec->clear();
 
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
-            if( m_mainWindow->m_daqWindow->ui->comboBoxFec->count() == 0)
-            {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("FEC%0 VMM 0-7").arg(fec));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("FEC%0 VMM 8-15").arg(fec));
-            }
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("FEC%0 VMM 0-7").arg(fec));
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("FEC%0 VMM 8-15").arg(fec));
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 if( m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) ){
                     for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
@@ -459,6 +456,7 @@ void CalibrationModule::DoCalibrationStep(){
             {
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].SetReg("TP_skew", m_bitCount+2);
                 m_high.emplace("st", 1);
+                usleep(1000);
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].LoadDefault(true, m_high );
             }
 
@@ -680,12 +678,12 @@ void CalibrationModule::SetCorrections(){
         for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
             int fec = GetFEC(vmm);
             int hdmi = GetHDMI(vmm);
-
-            name += "_FEC_" + QString::number(fec);
-            name += "_VMM_" + QString::number(hdmi*2+vmm);
+            int chip = GetVMM(vmm);
+            name += "_FEC" + QString::number(fec);
+            name += "_VMM" + QString::number(hdmi*2+chip);
 
         }
-        name += (theDate + ".json");
+        name += ("_" + theDate + ".json");
         QJsonDocument doc(*m_jsonObject);
         QFile jsonFile(name);
         jsonFile.open(QFile::WriteOnly);
@@ -1061,8 +1059,7 @@ void CalibrationModule::Receive(const char* buffer, int size, QString ip)
     int oldNumHits = m_numHits;
     stringstream sx;
     m_lastUdpTimeStamp = m_commonData.m_udpTimeStamp;
-
-    if(mapIPFirmware[ip] == "2")
+    if(mapIPFirmware[ip] == "0002")
     {
         m_numHits += Receive_VMM3(buffer, size, mapIPFecId[ip]);
 
@@ -1125,7 +1122,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         uint16_t bcid = Gray2bin32(data1 & 0xFFF);
         if(IsDbgActive()) {
             sx.str("");
-            sx << "SRS Data fecId " << m_commonData.m_fecId << ", vmmId " << vmmid << ", chNo: " <<  chNo
+            sx << "SRS Data fecId " << (int)m_commonData.m_fecId << ", vmmId " << vmmid << ", chNo: " <<  chNo
                << ", bcid: " <<  bcid
                << ", tdc: " <<  tdc
                << ", adc: " <<  adc
@@ -1179,7 +1176,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         uint64_t timestamp_42bit = (timestamp_upper_32bit << 10) + timestamp_lower_10bit;
         if(IsDbgActive()) {
             sx.str("");
-            sx << "SRS Marker fecId " << m_commonData.m_fecId << ", vmmId " << vmmid << ", timestamp lower 10bit: " <<  timestamp_lower_10bit
+            sx << "SRS Marker fecId " << (int)m_commonData.m_fecId << ", vmmId " << vmmid << ", timestamp lower 10bit: " <<  timestamp_lower_10bit
                << ", timestamp upper 32bit: " <<  timestamp_upper_32bit
                << ", timestamp 42bit: " <<  timestamp_42bit << "\n";
             GetMessageHandler()(sx,"calibration_module::Parse_VMM3"); sx.str("");
@@ -1256,7 +1253,7 @@ int CalibrationModule::Receive_VMM3(const char *buffer, int size, int fecId) {
         return 0;
     }
 
-    m_commonData.m_fecId = (m_commonData.m_dataId & 0xF0) >> 4;
+    m_commonData.m_fecId = (((m_commonData.m_dataId & 0xF0) >> 4)-1);
     m_commonData.m_udpTimeStamp = ntohl(hdr->m_udpTimeStamp);
     m_commonData.m_offsetOverflow = ntohl(hdr->m_offsetOverflow);
 
@@ -1278,7 +1275,7 @@ int CalibrationModule::Receive_VMM3(const char *buffer, int size, int fecId) {
         uint32_t data1 = htonl(*(uint32_t *) &buffer[data1Offset]);
         uint16_t data2 = htons(*(uint16_t *) &buffer[data2Offset]);
 
-        int res = Parse_VMM3(data1, data2, m_commonData.m_fecId );
+        int res = Parse_VMM3(data1, data2, fecId );
         if (res == 1) { // This was data
             numHits++;
         }
@@ -1380,7 +1377,7 @@ int CalibrationModule::Receive_VMM2(const char *buffer, int size, int fecId) {
     }
 
 
-    if ((m_commonData.m_dataId & 0xffffff00) != 0x564d3300 && (m_commonData.m_dataId & 0xffffff00) != 0x564d3200) {
+    if ((m_commonData.m_dataId & 0xffffff00) != 0x564d3300) {
         if(IsDbgActive()) {
             sx << "Unknown data\n";
             GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
@@ -1404,9 +1401,9 @@ int CalibrationModule::Receive_VMM2(const char *buffer, int size, int fecId) {
         GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
     }
 
-    m_commonData.m_fecId  = (m_commonData.m_dataId & 0xF0) >> 4;
+    m_commonData.m_fecId = (((m_commonData.m_dataId & 0xF0) >> 4)-1);
     if(IsDbgActive()) {
-        sx << "VMM2 data, fecId " << m_commonData.m_fecId  << "\n";
+        sx << "VMM2 data, fecId " << (int)m_commonData.m_fecId  << "\n";
         GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
     }
 
@@ -1415,7 +1412,7 @@ int CalibrationModule::Receive_VMM2(const char *buffer, int size, int fecId) {
 
         uint32_t data1 = htonl(*(uint32_t *)&buffer[m_SRSHeaderSize_VMM2 + m_hitSize_VMM2 * index]);
         uint32_t data2 = htonl(*(uint32_t *)&buffer[m_SRSHeaderSize_VMM2 + m_data1Size + m_hitSize_VMM2 * index]);
-        int res = Parse_VMM2(data1, data2, vmmId, m_commonData.m_fecId );
+        int res = Parse_VMM2(data1, data2, vmmId, fecId );
         if (res == 1) {
             numHits++;
             index++;

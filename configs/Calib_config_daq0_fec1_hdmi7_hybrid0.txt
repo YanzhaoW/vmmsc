@@ -1,5 +1,5 @@
 daq 0
-fec 0
+fec 1
 hdmi 7
 hybrid 0
 
@@ -13,5 +13,5 @@ TP_skew 14
 TP_width 0
 Xaxis 0
 period 4094
-position 65534
+position 65535
 
