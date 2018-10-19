@@ -8,7 +8,7 @@
 class DAQWindow;
 
 namespace Ui {
-class fec_window;
+class FECWindow;
 }
 
 class FECWindow : public QWidget
@@ -41,7 +41,6 @@ private slots:
 
     void onUpdateSettings();
     void onCheckLinkStatus();
-    void onWriteFECStatus();
     void onResetFEC();
 
     void onSetTriggerMode(int mode);
@@ -55,9 +54,6 @@ private:
     unsigned short m_fecIndex;
     Ui::fec_window *m_ui;
 
-    QString m_linkState;
-
-    void DisplayDebugScreen(QString text);
     void HDMIBoxLogic(bool checked, unsigned short hdmi);
     void UpdateWindow();
     void LoadSettings();

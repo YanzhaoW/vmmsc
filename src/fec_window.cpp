@@ -67,8 +67,9 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
 
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
-    connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
-            this, SLOT(onWriteFECStatus()));
+
+   // connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
+   //        this, SLOT(onWriteFECStatus()));
 
     connect(m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
@@ -445,53 +446,16 @@ void FECWindow::on_ip1_2_textChanged()
 }
 
 void FECWindow::onCheckLinkStatus(){
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus();
-}
-
-void FECWindow::onWriteFECStatus()
-{
-    QByteArray buff;
-    buff.clear();
-    buff.resize(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().pendingDatagramSize() );
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
-    if(buff.size()==0) return;
-    bool ok;
-    QString sizeOfPackageReceived, datagramCheck;
-    datagramCheck = buff.mid(0,4).toHex();
-    quint32 check = datagramCheck.toUInt(&ok,16);
-
-    sizeOfPackageReceived = sizeOfPackageReceived.number(buff.size(),10);
-
-    if(check<1000000) {
-        stringstream ss;
-        ss << " ****** NEW PACKET RECEIVED ****** " << endl;
-        ss << " Data received size: " << sizeOfPackageReceived.toStdString()
-           << " bytes" << endl;
-        QString bin, hex;
-        for(int i = 0; i < buff.size()/4; i++) {
-            hex = buff.mid(i*4, 4).toHex();
-            quint32 tmp32 = hex.toUInt(&ok,16);
-            if(i==0) ss << " Rec'd ID: " << bin.number(tmp32,10).toStdString() << endl;
-            else {
-                ss << " Data, " << i << ": " << bin.number(tmp32,16).toStdString() << endl;
-            }
-        } // i
-        m_linkState = QString::fromStdString(ss.str());
-        DisplayDebugScreen(QString::fromStdString(ss.str()));
-
-        //        ui->debugScreen->append(QString::fromStdString(ss.str()));
-        //        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    QString message;
+    bool readOK= false;
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus(readOK, message);
+    if(readOK)
+    {
+        m_ui->debugScreen->insertPlainText(message);
+        m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        std::cout<< message.toStdString()<<std::endl;
     }
-}
 
-
-void FECWindow::DisplayDebugScreen(QString text){
-    m_ui->debugScreen->append(text);
-    m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-    //    qDebug()<<text;
-    std::cout<<text.toStdString()<<std::endl;
-
-    //    qDebug()<<linkstate;
 }
 
 
@@ -500,22 +464,10 @@ void FECWindow::onResetFEC()
 {
     bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
     m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC(do_reset);
-    //    runModule().resetFEC(do_reset);
-    //    ui->fecRB->setChecked(1);
-
     m_ui->trgExternal->setChecked(false);
     m_ui->trgPulser->setChecked(false);
     m_ui->onACQ->setChecked(false);
     m_ui->offACQ->setChecked(false);
-    //    ui->setTrgAcqConst->setChecked(false);
-
-    //    SetInitialState();
-    //    m_commOK = true;
-    //    m_configOK = false;
-    //    m_tdaqOK = false;
-    //    m_runModeOK = false;
-    //    m_acqMode = "";
-    //    emit checkFSM();
 }
 // ------------------------------------------------------------------------- //
 
@@ -532,8 +484,18 @@ void FECWindow::on_readSystemParams_pressed()
     QMap<QString, QString> registers;
     m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers);
     m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetFirmwareVersion(registers["FirmwareVers"]);
-    m_ui->firmware_version->setText(registers["FirmwareVers"]);
 
+    stringstream sx;
+    sx.str("");
+    sx << "**********************\n"
+       << " Firmware version:\n" << registers["FirmwareVers"].toStdString() << "\n\n"
+       << " FEC IP:\n" << registers["FECip"].toStdString() <<  "\n\n"
+       << " DAQ destination IP:\n" << registers["DAQip"].toStdString()  <<  "\n"
+       << "**********************";
+    cout << sx.str() << endl;
+    QString message = QString::fromStdString(sx.str());
+    m_ui->debugScreen->insertPlainText(message);
+    m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
 }
 
 
@@ -541,7 +503,7 @@ void FECWindow::on_pushButtonFECIP_pressed()
 {
     int FECip = 0x0a000000;
     bool ok;
-    QString result = QString::number(QInputDialog::getInt(this,"Set FEC IP Adress","10.0.0.",1,1,4,1,&ok));
+    QString result = QString::number(QInputDialog::getInt(this,"Set FEC IP Adress","10.0.0.X",1,1,4,1,&ok));
 
     if (ok && !result.isEmpty())
     {

@@ -5,8 +5,8 @@ FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
-    m_regNames ( new std::vector<const char*> (31) ),
-    m_reg ( new std::vector<unsigned long> (31) ),
+    m_regNames ( new std::vector<const char*> (32) ),
+    m_reg ( new std::vector<unsigned long> (32) ),
     m_chr ( new char ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
@@ -129,6 +129,7 @@ void FEC::LoadDefault(bool calibration){
         (*m_regNames)[29]="ip4";                      (*m_reg)[29] = 2;   //
 
         (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
+         (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
     }
    else{
         (*m_reg)[0] = 81;    //tp_delay

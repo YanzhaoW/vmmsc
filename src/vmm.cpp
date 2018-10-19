@@ -48,6 +48,7 @@ void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib
     SetRegi("sdt",(std::string)"300");
     SetRegi("s10b",1);
     SetRegi("s8b",1);
+    SetRegi("stc",1);
 }
 
 bool VMM::SetRegi(std::string feature, int val, int ch){

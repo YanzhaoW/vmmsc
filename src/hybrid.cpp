@@ -8,7 +8,7 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
     m_posX = true;
     m_posNo = -1;
     m_art = 0;
-    SetReg("CKBC", (std::string)"40");
+    SetReg("CKBC", (std::string)"20");
     SetReg("CKDT", (std::string)"40");
 
 }

@@ -45,7 +45,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -719,6 +719,18 @@
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="timeStampResCheckBox">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>High Res.</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0" rowspan="2">
            <widget class="QComboBox" name="evbld_mode">
             <property name="font">
@@ -745,18 +757,6 @@
               <string>Timestamp + Frame Cnt</string>
              </property>
             </item>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="timeStampResCheckBox">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>High Res.</string>
-            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -802,13 +802,6 @@
             </item>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="firmware_version">
-            <property name="text">
-             <string>Firmware version</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -823,7 +816,7 @@
          <property name="title">
           <string>FEC Response</string>
          </property>
-         <widget class="QTextEdit" name="debugScreen">
+         <widget class="QPlainTextEdit" name="debugScreen">
           <property name="geometry">
            <rect>
             <x>0</x>
@@ -836,6 +829,12 @@
            <font>
             <pointsize>9</pointsize>
            </font>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
          <widget class="QPushButton" name="clearDebugScreen">

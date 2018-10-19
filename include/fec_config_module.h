@@ -48,7 +48,7 @@ public:
     void SetS6clocks(int hdmi_index, int hybrid_index);
     void SetTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
     void SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
-    void CheckLinkStatus();
+    void CheckLinkStatus(bool& readOK, QString & message);
     void ResetLinks();
     void ResetFEC(bool do_reset);
     void ReadSystemRegisters(QMap<QString, QString>& registers);

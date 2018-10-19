@@ -36,7 +36,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -547,6 +547,16 @@
              </item>
             </widget>
            </item>
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="checkBoxPerVMM">
+             <property name="text">
+              <string>Calibrate per VMM</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -774,6 +784,11 @@
              <item>
               <property name="text">
                <string>Threshold</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>OfflineADC</string>
               </property>
              </item>
             </widget>

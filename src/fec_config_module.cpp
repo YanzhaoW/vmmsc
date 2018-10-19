@@ -1282,7 +1282,7 @@ void FECConfigModule::SetS6Resets(int hdmi_index, int hybrid_index)
 
 }
 // ------------------------------------------------------------------------ //
-void FECConfigModule::CheckLinkStatus()
+void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
 {
     if(IsDbgEnabled())GetMessageHandler()("Checking link status...","FEC_config_module::checkLinkStatus");
 
@@ -1320,21 +1320,56 @@ void FECConfigModule::CheckLinkStatus()
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::checkLinkStatus");
 
-    bool readOK = true;
+    readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        emit CheckLinks();
+
+    if(!readOK) {
+        //emit CheckLinks();
         //if(dbg())GetMessageHandler()("Processing replies...","FEC_config_module::checkLinkStatus");
         //socket().processReply("fec", ip);
-    } else {
+        //} else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::checkLinkStatus", true);
         GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::checkLinkStatus");
-        //        return;
-        return;
     }
+    else
+    {
+        QByteArray buff;
+        buff.clear();
+        //buff.resize(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().pendingDatagramSize() );
+        // m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
+        buff.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize() );
+        GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
+        if(buff.size()==0) return;
+        bool ok;
+        QString sizeOfPackageReceived, datagramCheck;
+        datagramCheck = buff.mid(0,4).toHex();
+        quint32 check = datagramCheck.toUInt(&ok,16);
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::checkLinkStatus");
+        sizeOfPackageReceived = sizeOfPackageReceived.number(buff.size(),10);
+
+        if(check<1000000) {
+            stringstream ss;
+            ss << " ****** NEW PACKET RECEIVED ****** " << endl;
+            ss << " Data received size: " << sizeOfPackageReceived.toStdString()
+               << " bytes" << endl;
+            QString bin, hex;
+            for(int i = 0; i < buff.size()/4; i++) {
+                hex = buff.mid(i*4, 4).toHex();
+                quint32 tmp32 = hex.toUInt(&ok,16);
+                if(i==0) ss << " Rec'd ID: " << bin.number(tmp32,10).toStdString() << endl;
+                else {
+                    ss << " Data, " << i << ": " << bin.number(tmp32,16).toStdString() << endl;
+                }
+            } // i
+            message = QString::fromStdString(ss.str());
+            // m_linkState = QString::fromStdString(ss.str());
+            // DisplayDebugScreen(QString::fromStdString(ss.str()));
+
+            //        ui->debugScreen->append(QString::fromStdString(ss.str()));
+            //        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        }
+    }
 
 }
 // ------------------------------------------------------------------------ //
@@ -1636,14 +1671,14 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
 // ------------------------------------------------------------------------ //
 void FECConfigModule::writeFECip(int FECip)
 {
-//    if(dbg())
-        GetMessageHandler()("Write new FEC ip...","FEC_config_module::writeFECip");
+    //    if(dbg())
+    GetMessageHandler()("Write new FEC ip...","FEC_config_module::writeFECip");
 
     bool ok;
     QByteArray datagram;
 
     // send reset call to FEC port
-    int send_to_port = m_fec->GetRegVal("fec_port");
+    int send_to_port = m_fec->GetRegVal("fec_sys_port");
     // headers
     QString cmd, cmdType, cmdLength, msbCounter;
     cmd = "AA"; //write
@@ -1652,43 +1687,43 @@ void FECConfigModule::writeFECip(int FECip)
     msbCounter = "0x80000000";
 
     QString ip = m_fec->GetIP();
-        datagram.clear();
-        QDataStream out (&datagram, QIODevice::WriteOnly);
-        out.device()->seek(0); //rewind
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
 
-        GetSocketHandler().UpdateCommandCounter();
+    GetSocketHandler().UpdateCommandCounter();
 
-        ///////////////////////////
-        // header info
-        ///////////////////////////
-        out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-            << (quint16) 0 //[4,5]
-            << (quint16) m_fec->GetChMap() //[6,7]
-            << (quint8) cmd.toUInt(&ok,16) //[8]
-            << (quint8) cmdType.toUInt(&ok,16) //[9]
-            << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0xffff //[4,5]
+        << (quint16) 0xffff //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
 
-        ///////////////////////////
-        // word
-        ///////////////////////////
-        out << (quint32) 0 //[12,15]
-            << (quint32) 3 // FEC ip register
-            << (quint32) FECip; // value 167772162=10.0.0.2
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0xa0f30000 // FEC ip register
+        << (quint32) FECip; // value 167772162=10.0.0.2
 
-        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                                "FEC_config_module::writeFECip");
-        bool readOK = true;
-        readOK = GetSocketHandler().WaitForReadyRead("fec");
-        if(readOK) {
-            if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeFECip");
-            GetSocketHandler().ProcessReply("fec", ip);
-        } else {
-            if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::writeFECip",true);
-            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::writeFECip");
-//            exit(1);
-            return;
-        }
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
+                                    "FEC_config_module::writeFECip");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(readOK) {
+        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeFECip");
+        GetSocketHandler().ProcessReply("fec", ip);
+    } else {
+        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                               "FEC_config_module::writeFECip",true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::writeFECip");
+        //            exit(1);
+        return;
+    }
 
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeFECip");
 }

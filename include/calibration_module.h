@@ -82,9 +82,10 @@ private:
     void PlotData();
     void CalibrateThreshold(bool modeThreshold);
     void FitTimeData();
+    void FitADCData();
     void AccumulateData();
     void CalculateCorrections();
-
+    double SortVectors( vector<double>& sortedMin, vector<double>& sortedMax);
     void InitializeDataStructures();
     void GetSettings();
     int GetFEC(int vmmId);
@@ -108,6 +109,7 @@ private:
     bool m_isCalibratedTDC = false;
     bool m_isCalibratedTime = false;
     bool m_isCalibratedThreshold = false;
+    bool m_isCalibratedOfflineADC = false;
 
     MessageHandler *m_msg;
 
@@ -159,6 +161,7 @@ private:
     const static int m_number_bits_tdc = 16;
     const static int m_number_bits_threshold = 32;
     const static int m_number_bits_time = 16;
+    const static int m_number_bits_offline_adc= 5;
 
     double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
     double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -166,16 +169,22 @@ private:
     std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
     std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_x;
-    std::vector<double> m_y;
-
+    std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    //std::vector<double> m_y;
     std::vector<double> m_calVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<int> m_bitVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_offset_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_slope_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_offset_adc[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_slope_adc[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
 
     bool m_ignore16;
+    bool m_perVMM;
+
     std::vector<int> m_BCID;
-    QJsonObject * m_jsonObject;
+    QJsonObject * m_jsonObjectTime;
+    QJsonObject * m_jsonObjectADC;
 
 
 signals:
