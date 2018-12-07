@@ -5,8 +5,8 @@ FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
-    m_regNames ( new std::vector<const char*> (32) ),
-    m_reg ( new std::vector<unsigned long> (32) ),
+    m_regNames ( new std::vector<const char*> (36) ),
+    m_reg ( new std::vector<unsigned long> (36) ),
     m_chr ( new char ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
@@ -20,6 +20,10 @@ QString FEC::GetIP(){
     QString ip;
     ip = QString("%1.%2.%3.%4").arg(m_reg->at(26)).arg(m_reg->at(27)).arg(m_reg->at(28)).arg(m_reg->at(29));
     return ip;
+}
+
+int FEC::GetIP_id(){
+   return m_reg->at(29);
 }
 
 void FEC::SetFirmwareVersion(QString version)
@@ -58,6 +62,7 @@ void FEC::SendAll(){
                             m_fecConfigModule->SendConfig(k, l, m);
                             m_fecConfigModule->SetEventHeaders(k, l, m);
                             m_fecConfigModule->SetTriggerAcqConstants(k, l, m);
+                            m_fecConfigModule->SetTriggeredMode(k, l, m);
 
                         }
                     }
@@ -130,6 +135,11 @@ void FEC::LoadDefault(bool calibration){
 
         (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
          (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
+         (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //{"0", "1", "disabled", "enabled"}
+         (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 0;   //{0-31}
+         (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //{0-4095 * BCCLOCK_PERIOD}
+         (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0;   //{0-4095 * BCCLOCK_PERIOD}
+
     }
    else{
         (*m_reg)[0] = 81;    //tp_delay

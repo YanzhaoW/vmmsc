@@ -33,6 +33,7 @@ public:
 
     void LoadConfig(QString text);
     bool FileExists(const char *fileName);
+    int GetFecIP(int id);
     //void PlotXY(std::vector<double> x, std::vector<double> y);
 
 private slots:
@@ -86,6 +87,7 @@ private:
     void fecBoxLogic(bool checked, unsigned short fec);
     MessageHandler *m_msg;
     std::string m_sendstate = "";
+    std::map<int,int> m_ip_fec;
 
 signals:
     void ChangeState();

@@ -48,6 +48,7 @@ public:
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
     QString GetIP();
+    int GetIP_id();
     void SendAll();
     quint16 GetChMap();
 

@@ -47,12 +47,14 @@ public:
     void SetS6Resets(int hdmi_index, int hybrid_index);
     void SetS6clocks(int hdmi_index, int hybrid_index);
     void SetTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
+    void SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm_index);
     void SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
     void CheckLinkStatus(bool& readOK, QString & message);
     void ResetLinks();
     void ResetFEC(bool do_reset);
     void ReadSystemRegisters(QMap<QString, QString>& registers);
     void writeFECip(int FECip);
+    void writeDAQip(int DAQip);
     void SetTriggerMode();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);

@@ -769,7 +769,7 @@ void CalibrationModule::AccumulateData(){
         }
         else{
             m_bitCount+=1;
-            usleep(1000);DoCalibrationStep();usleep(1000);
+            usleep(10);DoCalibrationStep();usleep(10);
         }
 
 
@@ -912,6 +912,7 @@ void CalibrationModule::SetCorrections(){
             int fec = GetFEC(vmm);
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
+            //int fecId = m_mainWindow->
             name += "_FEC" + QString::number(fec);
             name += "_VMM" + QString::number(hdmi*2+chip);
 

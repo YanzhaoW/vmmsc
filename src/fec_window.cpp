@@ -68,8 +68,8 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
 
-   // connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
-   //        this, SLOT(onWriteFECStatus()));
+    // connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
+    //        this, SLOT(onWriteFECStatus()));
 
     connect(m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
@@ -285,6 +285,25 @@ void FECWindow::LoadSettings(){
 
     m_ui->pulserDelay->setValue( GetFec( "tp_delay" ) );
     m_ui->trgPeriod->setText( QString::number( GetFec( "trigger_period" ), 16 ) );
+
+    unsigned int triggerPeriod = GetFec( "trigger_period" );
+
+    BC_period = 25;
+
+    if(triggerPeriod > 32000)
+    {
+        BC_period = 200;
+    }
+    else if(triggerPeriod > 16000)
+    {
+        BC_period = 100;
+    }
+    else if(triggerPeriod > 8000)
+    {
+        BC_period = 50;
+    }
+
+
     m_ui->bcid_reset->setValue( GetFec( "bcid_reset" ) );
     m_ui->acqSync->setValue( GetFec( "acq_sync" ) );
     m_ui->acqWindow->setValue( GetFec( "acq_window" ) );
@@ -508,6 +527,8 @@ void FECWindow::on_pushButtonFECIP_pressed()
     if (ok && !result.isEmpty())
     {
         FECip = FECip + result.toInt();
+
+        int FECip = 0x0a000002;
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(FECip);
         usleep(1000);
         m_ui->ip4_2->setText(result);
@@ -515,3 +536,81 @@ void FECWindow::on_pushButtonFECIP_pressed()
 }
 
 
+
+void FECWindow::on_lineEdit_triggerOffset_editingFinished()
+{
+
+    long val = m_ui->lineEdit_triggerOffset->text().toInt();
+    if(val < 0)
+    {
+        val = -val;
+    }
+    if(val > 31*4096*BC_period)
+    {
+        val = 31*4096*BC_period;
+    }
+
+    long div = val/BC_period;
+    long mod = val%BC_period;
+    if(mod !=0)
+    {
+        val = abs(div*BC_period);
+
+    }
+    m_ui->lineEdit_triggerOffset->setText( QString::number( val, 10 ) );
+
+    long offset = val/(4096*BC_period);
+    long bcid = val%(4096*BC_period);
+    bcid = bcid/BC_period;
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("time_offset_triggerperiod",(unsigned long)offset);
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("time_offset_BCID",(unsigned long)bcid);
+
+}
+
+void FECWindow::on_lineEdit_triggerWindow_editingFinished()
+{
+    long val = m_ui->lineEdit_triggerWindow->text().toLong();
+    if(val < 0)
+    {
+        val = -val;
+    }
+    if(val > 4096*BC_period)
+    {
+        val = 4096*BC_period;
+    }
+
+    long div = val/BC_period;
+    long mod = val%BC_period;
+    if(mod !=0)
+    {
+        val = div*BC_period;
+
+    }
+    m_ui->lineEdit_triggerWindow->setText( QString::number( val, 10 ) );
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("time_window_BCID",(unsigned long)div);
+}
+
+void FECWindow::on_checkBox_TriggeredMode_clicked()
+{
+    if(m_ui->checkBox_TriggeredMode->isChecked())
+    {
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)1);
+     }
+    else
+    {
+         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)0);
+    }
+}
+
+
+
+
+void FECWindow::on_pushButtonDAQIP_pressed()
+{
+    int DAQip = 0xC0A80003;
+      //DAQip = DAQip + result.toInt();
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
+        usleep(1000);
+        //m_ui->ip4_2->setText(result);
+
+}

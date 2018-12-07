@@ -261,12 +261,15 @@ void DAQWindow::on_Button_save_clicked()
 
 void DAQWindow::on_openConnection_2_clicked()
 {
+    m_ip_fec.clear();
     for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
         if (m_mainWindow->m_daq_act[i]){
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
                 if (m_mainWindow->m_daqs[i].GetFEC(j)){
 
                     if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
+                       int id =  m_mainWindow->m_daqs[i].m_fecs[j].GetIP_id();
+                        m_ip_fec.insert(std::make_pair(j,id));
                         SetWarning("all alive","green");
                         ui->Send->setEnabled(true);
                         ui->checkBoxGlobalDAQ->setEnabled(true);
@@ -289,9 +292,20 @@ void DAQWindow::on_openConnection_2_clicked()
         }
     }
 
-
-
 }
+
+
+int DAQWindow::GetFecIP(int id)
+{
+    auto search = m_ip_fec.find(id);
+    if(search != m_ip_fec.end())
+    {
+        return m_ip_fec[id];
+    }
+    return -1;
+}
+
+
 
 void DAQWindow::on_reset_warnings_clicked()
 {

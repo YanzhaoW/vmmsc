@@ -1103,6 +1103,84 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
 
     GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setTriggerAcqConstants");
 }
+
+
+// ------------------------------------------------------------------------ //
+void FECConfigModule::SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm_index)
+{
+    if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send T/DAQ constants to VMMAPP port
+    int send_to_port = m_fec->GetRegVal("vmmapp_port");
+
+    QString ip = m_fec->GetIP();
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); // rewind
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd         = "AA";
+    cmdType     = "AA";
+    cmdLength   = "FFFF";
+    msbCounter  = "0x80000000";
+    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) chMap //[6,7]
+           //<< (quint32) config().getHDMIChannelMap() //[8,11]
+        << (quint8)  cmd.toUInt(&ok,16) //[8]
+        << (quint8)  cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
+
+    quint32 val = 0x00000000;
+    if(m_fec->GetRegVal("triggered_mode") == 1)
+    {
+        val = 0xC0000000;
+        val += (m_fec->GetRegVal("time_offset_triggerperiod") << 24);
+        val += (m_fec->GetRegVal("time_offset_BCID") << 12);
+        val += (m_fec->GetRegVal("time_window_BCID"));
+
+    }
+
+    ///////////////////////////
+    // trigger constants
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+           //triggered mode
+        << (quint32) 11 //[16,19]
+        << (quint32) val; //[20,23]
+
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::SetTriggeredMode");
+
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::SetTriggeredMode");
+        GetSocketHandler().ProcessReply("fec", ip);
+    }
+    else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::SetTriggeredMode", true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
+        return;
+    }
+
+    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
+}
+
+
 // ------------------------------------------------------------------------ //
 void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
 {
@@ -1582,6 +1660,10 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
 
         read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
         GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
+for(int n =0; n< read_datagram.size();n++)
+ {
+    std::cout << n << " " << read_datagram.mid(n,1).toHex().toStdString() << std::endl;
+}
 
         QString FirmwareVers = read_datagram.mid(22,2).toHex();
         QString MACvendor = read_datagram.mid(29,3).toHex();
@@ -1703,6 +1785,7 @@ void FECConfigModule::writeFECip(int FECip)
         << (quint8) cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
 
+
     ///////////////////////////
     // word
     ///////////////////////////
@@ -1728,6 +1811,77 @@ void FECConfigModule::writeFECip(int FECip)
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeFECip");
 }
 // ------------------------------------------------------------------------ //
+
+
+// ------------------------------------------------------------------------ //
+void FECConfigModule::writeDAQip(int DAQip)
+{
+    //    if(dbg())
+    GetMessageHandler()("Write new DAQ ip...","FEC_config_module::writeDAQip");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send reset call to FEC port
+    int send_to_port = m_fec->GetRegVal("fec_sys_port");
+
+    // headers
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA"; //write
+    cmdType = "AA"; // pairs
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+
+    QString ip = m_fec->GetIP();
+
+
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0xffff //[4,5]
+        << (quint16) 0xffff //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0x0a // DAQ ip register
+        << (quint32) 0xC0A80003; // value 167772162=10.0.0.2
+
+     std::cout << "WRITING TO  IP " << ip.toStdString() << " " << send_to_port << std::endl;
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
+                                    "FEC_config_module::writeDAQip");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    std::cout << "RESULT " << readOK << std::endl;
+
+    if(readOK) {
+        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeDAQip");
+        GetSocketHandler().ProcessReply("fec", ip);
+    } else {
+        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                               "FEC_config_module::writeDAQip",true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::writeDAQip");
+        //            exit(1);
+        return;
+    }
+
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeDAQip");
+}
+// ------------------------------------------------------------------------ //
+
+
 
 void FECConfigModule::SetTriggerMode()
 {
@@ -2192,4 +2346,3 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
     return ADCresult_int;
 }
 // ------------------------------------------------------------------------ //
-

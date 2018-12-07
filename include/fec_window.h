@@ -49,6 +49,15 @@ private slots:
     void on_readSystemParams_pressed();
     void on_pushButtonFECIP_pressed();
 
+    void on_lineEdit_triggerOffset_editingFinished();
+
+    void on_lineEdit_triggerWindow_editingFinished();
+
+    void on_checkBox_TriggeredMode_clicked();
+
+
+    void on_pushButtonDAQIP_pressed();
+
 private:
     DAQWindow *m_daqWindow;
     unsigned short m_fecIndex;
@@ -60,6 +69,7 @@ private:
     void SetToolTips();
     bool SetFec(const char *feature, unsigned long val);
     unsigned long GetFec(const char *feature);
+    unsigned int BC_period;
 
 };
 
