@@ -55,7 +55,7 @@ public:
     void ReadSystemRegisters(QMap<QString, QString>& registers);
     void writeFECip(int FECip);
     void writeDAQip(int DAQip);
-    void SetTriggerMode();
+    void SetReadoutMode();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
     void SetMask();

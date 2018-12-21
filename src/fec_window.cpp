@@ -118,10 +118,10 @@ void FECWindow::onACQHandler(){
         m_ui->offACQ->setEnabled(true);
     }
     else if(m_daqWindow->m_sendstate == "trigPulser" ){
-        onSetTriggerMode(1);
+        onSetReadoutMode(1);
     }
     else if(m_daqWindow->m_sendstate == "trigExternal" ){
-        onSetTriggerMode(0);
+        onSetReadoutMode(0);
     }
 
 }
@@ -221,13 +221,13 @@ void FECWindow::onUpdateSettings(){
         m_ui->trgPulser->setCheckable(true);
         m_ui->trgPulser->setChecked(true);
         m_ui->trgExternal->setChecked(false);
-        onSetTriggerMode(1);
+        onSetReadoutMode(1);
     }
     else if(QObject::sender() == m_ui->trgExternal){
         m_ui->trgExternal->setCheckable(true);
         m_ui->trgExternal->setChecked(true);
         m_ui->trgPulser->setChecked(false);
-        onSetTriggerMode(0);
+        onSetReadoutMode(0);
     }
     else if(QObject::sender() == m_ui->onACQ){
         m_ui->onACQ->setCheckable(true);
@@ -262,14 +262,18 @@ void FECWindow::onUpdateSettings(){
 
 }
 
-void FECWindow::onSetTriggerMode(int mode){
+void FECWindow::onSetReadoutMode(int mode){
     SetFec("triggermode", mode);
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SetTriggerMode();
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SetReadoutMode();
 }
 
 
 
 void FECWindow::LoadSettings(){
+    //Test only, set default value
+    m_ui->lineEdit_triggerOffset->setText("2048000");
+    m_ui->lineEdit_triggerWindow->setText("204750");
+    m_ui->lineEdit_triggerPulseDelay->setText("0");
 
     QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
 
@@ -285,6 +289,8 @@ void FECWindow::LoadSettings(){
 
     m_ui->pulserDelay->setValue( GetFec( "tp_delay" ) );
     m_ui->trgPeriod->setText( QString::number( GetFec( "trigger_period" ), 16 ) );
+
+
 
     unsigned int triggerPeriod = GetFec( "trigger_period" );
 
@@ -574,9 +580,9 @@ void FECWindow::on_lineEdit_triggerWindow_editingFinished()
     {
         val = -val;
     }
-    if(val > 4096*BC_period)
+    if(val > 4095*BC_period)
     {
-        val = 4096*BC_period;
+        val = 4095*BC_period;
     }
 
     long div = val/BC_period;
@@ -595,10 +601,10 @@ void FECWindow::on_checkBox_TriggeredMode_clicked()
     if(m_ui->checkBox_TriggeredMode->isChecked())
     {
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)1);
-     }
+    }
     else
     {
-         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)0);
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)0);
     }
 }
 
@@ -608,9 +614,34 @@ void FECWindow::on_checkBox_TriggeredMode_clicked()
 void FECWindow::on_pushButtonDAQIP_pressed()
 {
     int DAQip = 0xC0A80003;
-      //DAQip = DAQip + result.toInt();
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
-        usleep(1000);
-        //m_ui->ip4_2->setText(result);
+    //DAQip = DAQip + result.toInt();
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
+    usleep(1000);
+    //m_ui->ip4_2->setText(result);
 
+}
+
+
+void FECWindow::on_lineEdit_triggerPulseDelay_editingFinished()
+{
+    const int internalClockPeriod = 25;
+    long val = m_ui->lineEdit_triggerPulseDelay->text().toLong();
+    if(val < 0)
+    {
+        val = -val;
+    }
+    if(val > 255*internalClockPeriod)
+    {
+        val = 255*internalClockPeriod;
+    }
+
+    long div = val/internalClockPeriod;
+    long mod = val%internalClockPeriod;
+    if(mod !=0)
+    {
+        val = div*internalClockPeriod;
+
+    }
+    m_ui->lineEdit_triggerPulseDelay->setText( QString::number( val, 10 ) );
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("trigger_pulse_delay",(unsigned long)div);
 }

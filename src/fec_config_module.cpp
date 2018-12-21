@@ -1145,14 +1145,15 @@ void FECConfigModule::SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
     quint32 val = 0x00000000;
+    quint32 val2 = 0x00000000;
     if(m_fec->GetRegVal("triggered_mode") == 1)
     {
         val = 0xC0000000;
         val += (m_fec->GetRegVal("time_offset_triggerperiod") << 24);
         val += (m_fec->GetRegVal("time_offset_BCID") << 12);
         val += (m_fec->GetRegVal("time_window_BCID"));
-
-    }
+        val2 = (m_fec->GetRegVal("trigger_pulse_delay") << 8);
+     }
 
     ///////////////////////////
     // trigger constants
@@ -1160,7 +1161,9 @@ void FECConfigModule::SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm
     out << (quint32) 0 //[12,15]
            //triggered mode
         << (quint32) 11 //[16,19]
-        << (quint32) val; //[20,23]
+        << (quint32) val //[20,23]
+        << (quint32) 15 //[24,27]
+        << (quint32) val2; //[28,31]
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::SetTriggeredMode");
 
@@ -1883,7 +1886,7 @@ void FECConfigModule::writeDAQip(int DAQip)
 
 
 
-void FECConfigModule::SetTriggerMode()
+void FECConfigModule::SetReadoutMode()
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting trigger mode...","FEC_config_module::setTriggerMode");
 

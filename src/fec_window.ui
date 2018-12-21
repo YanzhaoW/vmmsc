@@ -45,7 +45,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="title">
@@ -749,7 +749,7 @@
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>180</height>
+           <height>150</height>
           </size>
          </property>
          <property name="title">
@@ -984,71 +984,59 @@ Parameters</string>
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>150</height>
+           <height>200</height>
           </size>
          </property>
          <property name="title">
           <string> Triggered Mode</string>
          </property>
-         <widget class="QCheckBox" name="checkBox_TriggeredMode">
-          <property name="geometry">
-           <rect>
-            <x>11</x>
-            <y>22</y>
-            <width>121</width>
-            <height>26</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Enabled</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>50</y>
-            <width>111</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Time offset (ns)</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label_9">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>100</y>
-            <width>121</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Time window (ns)</string>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="lineEdit_triggerOffset">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>70</y>
-            <width>113</width>
-            <height>28</height>
-           </rect>
-          </property>
-         </widget>
-         <widget class="QLineEdit" name="lineEdit_triggerWindow">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>120</y>
-            <width>113</width>
-            <height>28</height>
-           </rect>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QCheckBox" name="checkBox_TriggeredMode">
+            <property name="text">
+             <string>Enabled</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTimeOffset">
+            <property name="text">
+             <string>Time offset (ns)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_triggerOffset">
+            <property name="text">
+             <string>2048000</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTimeWindow">
+            <property name="text">
+             <string>Time window (ns)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_triggerWindow">
+            <property name="text">
+             <string>204750</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="labelTriggerDelay">
+            <property name="text">
+             <string>Trigger Delay (ns)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEdit_triggerPulseDelay"/>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

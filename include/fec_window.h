@@ -43,7 +43,7 @@ private slots:
     void onCheckLinkStatus();
     void onResetFEC();
 
-    void onSetTriggerMode(int mode);
+    void onSetReadoutMode(int mode);
     void onACQHandler();
 
     void on_readSystemParams_pressed();
@@ -57,6 +57,8 @@ private slots:
 
 
     void on_pushButtonDAQIP_pressed();
+
+    void on_lineEdit_triggerPulseDelay_editingFinished();
 
 private:
     DAQWindow *m_daqWindow;

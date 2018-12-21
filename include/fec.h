@@ -66,6 +66,7 @@ private:
     std::vector<bool> m_hdmiActs;//binary to store which hdmis are activated
     MessageHandler *m_msg;
     SocketHandler *m_socketHandler;
+    const int numberOfRegisters = 37;
     std::vector<const char*> *m_regNames;
     std::vector<unsigned long> *m_reg;
     char *m_chr;
@@ -76,6 +77,7 @@ private:
 
     FECConfigModule *m_fecConfigModule;
     QString m_firmwareVersion;
+
 };
 #endif // FEC_H
 

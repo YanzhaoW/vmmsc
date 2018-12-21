@@ -5,8 +5,9 @@ FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
-    m_regNames ( new std::vector<const char*> (36) ),
-    m_reg ( new std::vector<unsigned long> (36) ),
+    numberOfRegisters(37),
+    m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
+    m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
     m_chr ( new char ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
@@ -100,7 +101,7 @@ quint16 FEC::GetChMap(){
 
 void FEC::LoadDefault(bool calibration){
     if(!calibration){
-        (*m_regNames)[0] ="tp_delay";                (*m_reg)[0] = 81;      //32 bit //max 50000 by gui?
+        (*m_regNames)[0] ="tp_delay";                (*m_reg)[0] = 81;      //register 4: 32 bit //max 50000 by gui?
         (*m_regNames)[1] ="trigger_period";          (*m_reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
         (*m_regNames)[2] ="acq_sync";                (*m_reg)[2] = 100;     //32 bit
         (*m_regNames)[3] ="acq_window";              (*m_reg)[3] = 3900;    //32 bit
@@ -135,10 +136,14 @@ void FEC::LoadDefault(bool calibration){
 
         (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
          (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
-         (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //{"0", "1", "disabled", "enabled"}
-         (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 0;   //{0-31}
-         (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //{0-4095 * BCCLOCK_PERIOD}
-         (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0;   //{0-4095 * BCCLOCK_PERIOD}
+         (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //register 11: {"0", "1", "disabled", "enabled"} - 1 bit
+         (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 10;   //register 11: {0-31} - 5 bit
+         (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
+         (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0xfff;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
+        (*m_regNames)[36]="trigger_pulse_delay";        (*m_reg)[36] = 0;   //register 15: {0-255} * BCCLOCK_PERIOD - 8 bit, bit 8-15
+
+
+
 
     }
    else{
