@@ -1045,6 +1045,10 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); // rewind
 
+    // bcid reset and clear S6 fifo
+    quint32 clear_S6_fifo = 0;
+    if (m_fec->GetRegVal("clear_S6_fifo")) clear_S6_fifo = 32768;
+
     ///////////////////////////
     // header info
     ///////////////////////////
@@ -1083,7 +1087,7 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
         << (quint32) m_fec->GetRegVal("acq_window") //[44,47]
            //bcid reset
         << (quint32) 9 //[48,51]
-        << (quint32) m_fec->GetRegVal("bcid_reset"); //[52,55]
+        << (quint32) m_fec->GetRegVal("bcid_reset") + clear_S6_fifo; //[52,55] is acctually 16 bit in FEC frimware. Highest bit is clear_S6_fifo
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::setTriggerAcqConstants");
@@ -1195,6 +1199,7 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
     //get settings
     int cktk = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKTK");
     int ckbc = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKBC");
+    int ckbc_duty = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKBC_duty");
     int ckbc_skew = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKBC_skew");
     int ckdt = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKDT");
 
@@ -1231,7 +1236,7 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
         << (quint32) (cktk*16) //[20,23]
         << (quint32) 7 //[24,27]
            //<< (quint32) ( ckbc + (ckbc_skew*16) ); //[28,31]
-        << (quint32) ( ckbc + (ckbc_skew*16) + 192) //[32,35] // +192 added for VMM3 to make ckbc high very short. Implemented in firmware: highest bits "11" 18.75 ns long high, "10"/"01" 25%/75% duty cycle, "00" is 50% duty cycle. From George: ckbc must be shorter than 20 ns and longer than 12.5 ns. With this hack, the ckbc of higher than 40 MHz will not work.
+        << (quint32) ( ckbc + (ckbc_skew*16) + (ckbc_duty*64)) //[32,35] // +192 added for VMM3 to make ckbc high very short. Implemented in firmware: highest bits "11" 18.75 ns long high, "10"/"01" 25%/75% duty cycle, "00" is 50% duty cycle. From George: ckbc must be shorter than 20 ns and longer than 12.5 ns. With this hack, the ckbc of higher than 40 MHz will not work.
         << (quint32) 5 //[36,39], CKDT control register
         << (quint32) 0 + (ckdt*2); //[40,43] lowest bit: old clock selector, unused, put to 0, bits [1,2,3] CKDT selection (readout clock)
 

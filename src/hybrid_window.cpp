@@ -20,6 +20,8 @@ HybridWindow::HybridWindow(HDMIWindow *top, unsigned short fec, unsigned short h
                                     this, SLOT(onUpdateSettings()));
     connect(m_ui->ckbc_s6, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(onUpdateSettings()));
+    connect(m_ui->ckbc_duty_s6, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
     connect(m_ui->ckbc_skew_s6, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(onUpdateSettings()));
     connect(m_ui->ckdt_s6, SIGNAL(currentIndexChanged(int)),
@@ -90,6 +92,7 @@ void HybridWindow::LoadSettings(){
     m_ui->position->setValue(GetHybrid("position"));
     m_ui->cktk_s6->setCurrentIndex(GetHybrid("CKTK"));
     m_ui->ckbc_s6->setCurrentIndex(GetHybrid("CKBC"));
+    m_ui->ckbc_duty_s6->setCurrentIndex(GetHybrid("CKBC_duty"));
     m_ui->ckbc_skew_s6->setCurrentIndex(GetHybrid("CKBC_skew"));
     m_ui->ckdt_s6->setCurrentIndex(GetHybrid("CKDT"));
     m_ui->s6_tkPulses->setValue(GetHybrid("TK_Pulses"));
@@ -137,6 +140,9 @@ void HybridWindow::onUpdateSettings(){
     }
     else if(QObject::sender() == m_ui->ckbc_s6){
         SetHybrid("CKBC", m_ui->ckbc_s6->currentIndex());
+    }
+    else if(QObject::sender() == m_ui->ckbc_duty_s6){
+        SetHybrid("CKBC_duty", m_ui->ckbc_duty_s6->currentIndex());
     }
     else if(QObject::sender() == m_ui->ckbc_skew_s6){
         SetHybrid("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());

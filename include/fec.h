@@ -66,7 +66,7 @@ private:
     std::vector<bool> m_hdmiActs;//binary to store which hdmis are activated
     MessageHandler *m_msg;
     SocketHandler *m_socketHandler;
-    const int numberOfRegisters = 37;
+    const int numberOfRegisters = 38;
     std::vector<const char*> *m_regNames;
     std::vector<unsigned long> *m_reg;
     char *m_chr;

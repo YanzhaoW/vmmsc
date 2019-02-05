@@ -9,12 +9,13 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
     m_posNo = -1;
     m_art = 0;
     SetReg("CKBC", (std::string)"20");
+    SetReg("CKBC_duty", (std::string)"18.725 ns high (standard)");
     SetReg("CKDT", (std::string)"40");
 
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){
@@ -72,7 +73,7 @@ bool Hybrid::SetReg(std::string feature, int val){
 
 
 bool Hybrid::SetRegister(std::string feature, std::string value){
-//{"Xaxis",0}, {"position", 65534}, {"CKTK",0}, {"CKBC",0}, {"CKBC_skew",0}, {"CKDT",1} ,{"TK_Pulses",2},{"period",4094}
+//{"Xaxis",0}, {"position", 65534}, {"CKTK",0}, {"CKBC",0}, {CKBC_duty,3}, {"CKBC_skew",0}, {"CKDT",1} ,{"TK_Pulses",2},{"period",4094}
     typedef std::map<std::string, unsigned short> InMap;
     typedef std::pair<std::string, unsigned short> BiPair;
     std::cout<<"feature "<<feature<<" set to "<<value<<std::endl;
@@ -116,6 +117,21 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
         if(feature=="CKBC"){
             InMap m_val;
             std::string v_val[8] = {"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
+            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
+                unsigned short bin_val=i;
+                m_val.insert(BiPair(v_val[i], bin_val));
+                m_val.insert(BiPair(std::to_string(i), bin_val));
+            }
+            if(m_val.find(value)!=m_val.end()){
+              m_hybrid[feature] = m_val[value];
+              return true;
+            }
+            else return false;
+        }
+
+        if(feature=="CKBC_duty"){
+            InMap m_val;
+            std::string v_val[4] = {"50 % high", "75 % high", "25 % high", "18.725 ns high (standard)"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));
