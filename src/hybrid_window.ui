@@ -357,13 +357,13 @@
         <property name="title">
          <string>S6</string>
         </property>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
-           <x>12</x>
-           <y>29</y>
-           <width>91</width>
-           <height>233</height>
+           <x>0</x>
+           <y>20</y>
+           <width>101</width>
+           <height>249</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
@@ -409,70 +409,109 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="ckbcLabel">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>CKBC</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="ckbcLabel">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>CKBC</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Duty cycle</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item>
-           <widget class="QComboBox" name="ckbc_s6">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>2</number>
-            </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <property name="text">
-              <string>160MHz</string>
-             </property>
+             <widget class="QComboBox" name="ckbc_s6">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="currentIndex">
+               <number>2</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>160MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>160MHz inv</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>80MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>40MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>20MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>10MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>5MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>2.5MHz</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item>
-             <property name="text">
-              <string>160MHz inv</string>
-             </property>
+             <widget class="QComboBox" name="ckbc_duty_s6">
+              <item>
+               <property name="text">
+                <string>50 % high</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>75 % high</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>25 % high</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>18.725 ns high (standard)</string>
+               </property>
+              </item>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>80MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>40MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>20MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>10MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>5MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>2.5MHz</string>
-             </property>
-            </item>
-           </widget>
+           </layout>
           </item>
           <item>
            <widget class="QLabel" name="label">
@@ -656,8 +695,6 @@
   <tabstop>Box_vmm2</tabstop>
   <tabstop>ckbc_skew_s6</tabstop>
   <tabstop>fecPeriodReset</tabstop>
-  <tabstop>cktk_s6</tabstop>
-  <tabstop>ckbc_s6</tabstop>
   <tabstop>s6_tkPulses</tabstop>
   <tabstop>ckdt_s6</tabstop>
   <tabstop>tpWidth</tabstop>

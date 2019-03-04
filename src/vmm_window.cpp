@@ -13,8 +13,8 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     m_ui->setupUi(this);
     m_ui->ADCresult->setReadOnly(true);
 
-//    ui->stackedWidgetPage1->setStyleSheet("QTabBar::tab { height: 18px; width: 100px; }");
-//    ui->stackedWidgetPage1->setTabText(0,"Channel Registers");
+    //    ui->stackedWidgetPage1->setStyleSheet("QTabBar::tab { height: 18px; width: 100px; }");
+    //    ui->stackedWidgetPage1->setTabText(0,"Channel Registers");
 
     channelGridLayout = new QGridLayout(this);
     dummy = new QWidget(this);
@@ -28,132 +28,132 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
 
 
     connect(m_ui->sdt, SIGNAL(valueChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sdp_2, SIGNAL(valueChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sp, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sm5_sm0, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sg, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->stc, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->srat, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sng, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sdp, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sdrv, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->ssh, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->adcs, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->s8b, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->s6b, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->sc010b, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sc08b, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sc06b, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sdcks, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sdcka, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sdck6b, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     //Advanced Settings
     connect(m_ui->sttt, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->stot, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->stpp, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->st, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sfam, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
-//    connect(ui->ART, SIGNAL(pressed()),
-//                                    this, SLOT(updateSettings()));
+            this, SLOT(onUpdateSettings()));
+    //    connect(ui->ART, SIGNAL(pressed()),
+    //                                    this, SLOT(updateSettings()));
     connect(m_ui->sbft, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sbfp, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sbfm, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sbmx, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->slg, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sfm, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvs, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->stcr, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->ssart, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->s32, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->stlc, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->srec, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sbip, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sfrst, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->nskipm_i, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sL0ckinv, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
     connect(m_ui->sL0dckinv, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvsbc, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvstp, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvstk, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvsdt, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvsart, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvstki, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvsena, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->slvs6b, SIGNAL(pressed()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
 
     connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
     connect(m_ui->ApplyAll, SIGNAL(clicked()),
-                                    this, SLOT(onUpdateSettings()));
+            this, SLOT(onUpdateSettings()));
 
-//    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
-//                                    this, SLOT( ReloadSettings() ) );
+    //    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
+    //                                    this, SLOT( ReloadSettings() ) );
 
     connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadVMM()),
-                                    this, SLOT( onReloadSettings() ));
+            this, SLOT( onReloadSettings() ));
 
 }
 
@@ -166,7 +166,7 @@ VMMWindow::~VMMWindow()
 // ------------------------------------------------------------------------- //
 void VMMWindow::SetToolTips()
 {
-     //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     // -------------------------------------------------------------------- //
     // Creates all the ToolTips for Push bottons etc.
     // -------------------------------------------------------------------- //
@@ -232,13 +232,13 @@ unsigned short VMMWindow::GetVMM(std::string feature, int ch){
 
 bool VMMWindow::SetVMM(std::string feature, int value, int ch){
     if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
-     return true;
+        return true;
     }
     else return false;
 }
 bool VMMWindow::SetVMM(std::string feature, std::string value, int ch){
     if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
-     return true;
+        return true;
     }
     else return false;
 }
@@ -252,7 +252,7 @@ void VMMWindow::LoadSettings()
     m_ui->sp->setCurrentIndex(GetVMM("sp"));
     m_ui->sg->setCurrentIndex(GetVMM("gain"));
     if(!GetVMM("scmx")){
-//     std::cout<<"Settings Monitoring: "<<VMM_Get("monitoring")-63<<std::endl;
+        //     std::cout<<"Settings Monitoring: "<<VMM_Get("monitoring")-63<<std::endl;
         m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")-1);
     }
     else m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")+4);
@@ -278,7 +278,7 @@ void VMMWindow::LoadSettings()
     m_ui->dacmvLabel_TP->setText(tmp.number((0.6862*m_ui->sdp_2->value()+63.478), 'f', 2) + " mV");
 
     //Loading Advanced settings and updating GUI
-//    ui->ART->setChecked(VMM_Get("sfa"));
+    //    ui->ART->setChecked(VMM_Get("sfa"));
     if(GetVMM("sfa")) m_ui->sfam->setCurrentIndex(GetVMM("sfam")+1);
     else m_ui->sfam->setCurrentIndex(GetVMM("sfa"));
     m_ui->st->setCurrentIndex(GetVMM("peaktime"));
@@ -286,7 +286,7 @@ void VMMWindow::LoadSettings()
     m_ui->sbfp->setChecked(GetVMM("sbfp"));
     m_ui->sbft->setChecked(GetVMM("sbft"));
     m_ui->sbmx->setChecked(GetVMM("sbmx"));
-//    ui->scmx->setChecked(VMM_Get("scmx"));
+    //    ui->scmx->setChecked(VMM_Get("scmx"));
     m_ui->sfm->setChecked(GetVMM("sfm"));
     m_ui->slg->setChecked(GetVMM("slg"));
     m_ui->sttt->setChecked(GetVMM("sttt"));
@@ -342,7 +342,7 @@ void VMMWindow::onUpdateSettings()
             std::string mm_val[4] = {"Pulser_DAC", "Threshold_DAC", "Bandgap_reference", "Temperature_sensor"};
             SetVMM("monitoring",mm_val[m_ui->sm5_sm0->currentIndex()]);
         }
-        else SetVMM("monitoring", m_ui->sm5_sm0->currentIndex()-4);//starting with channel 1
+        else SetVMM("monitoring", m_ui->sm5_sm0->currentIndex()-4);//starting with channel 0
     }
     else if(QObject::sender() == m_ui->sg){
         SetVMM("gain", m_ui->sg->currentIndex());
@@ -421,9 +421,9 @@ void VMMWindow::onUpdateSettings()
         }
         else SetVMM("sfa", 0);
     }
-//    else if(QObject::sender() == ui->ART){
-//        VMM_Set("sfa", !ui->ART->isChecked());
-//    }
+    //    else if(QObject::sender() == ui->ART){
+    //        VMM_Set("sfa", !ui->ART->isChecked());
+    //    }
     else if(QObject::sender() == m_ui->sbft){
         SetVMM("sbft", !m_ui->sbft->isChecked());
     }
@@ -521,10 +521,10 @@ bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
     if(event->type() == QEvent::Wheel)
     {
         //if(obj->hasFocus()) {
-//            ui->scrollArea->setFocus();
+        //            ui->scrollArea->setFocus();
         event->ignore();
         //}
-    //    qDebug() << "Wheel event blocked";
+        //    qDebug() << "Wheel event blocked";
         return true;
     }
     return false;
@@ -532,18 +532,18 @@ bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
 
 void VMMWindow::CreateChannelsFields()
 {
-//    VMM_Set("sd", 1, 2);
+    //    VMM_Set("sd", 1, 2);
     Font.setPointSize(8);
-//    int margin = 8;
-//    channelGridLayout->setContentsMargins(margin*0.75, margin, margin*2*10, margin);
+    //    int margin = 8;
+    //    channelGridLayout->setContentsMargins(margin*0.75, margin, margin*2*10, margin);
     channelGridLayout->setHorizontalSpacing(1);
     channelGridLayout->setVerticalSpacing(1);
 
-//    ui->gridLayout_channels->setContentsMargins(margin*0.75, margin, margin*4.4*5, margin);
+    //    ui->gridLayout_channels->setContentsMargins(margin*0.75, margin, margin*4.4*5, margin);
     m_ui->gridLayout_channels->setHorizontalSpacing(1);
     m_ui->gridLayout_channels->setVerticalSpacing(1);
-    m_ui->gridLayout_channels->setGeometry(QRect(620,10,380, 12));
-//    ui->gridLayout_channels->setSpacing(1);
+    m_ui->gridLayout_channels->setGeometry(QRect(700,10,400, 12));
+    //    ui->gridLayout_channels->setSpacing(1);
 
     QString initialValueRadio = "";
     QString counter;
@@ -575,13 +575,13 @@ void VMMWindow::CreateChannelsFields()
         SDLabel->addItem(counter.setNum(i)+" mV");
     }
     for(int i = 0; i < 32; i++) {
-        SZ010bLabel->addItem(counter.setNum(i)+" ns");
+        SZ010bLabel->addItem(counter.setNum(i)+" mV");
     }
     for(int i = 0; i < 16; i++) {
         SZ08bLabel->addItem(counter.setNum(i)+" ns");
     }
     for(int i = 0; i < 8; i++) {
-        SZ06bLabel->addItem(counter.setNum(i)+" ns");
+        SZ06bLabel->addItem(counter.setNum(i)+" mV");
     }
 
 
@@ -600,10 +600,10 @@ void VMMWindow::CreateChannelsFields()
     STLabel->setFixedSize(20,15);
     STHLabel->setFixedSize(30,15);
     SMLabel->setFixedSize(20,15);
-    SDLabel->setFixedSize    (60,19);
-    SZ010bLabel->setFixedSize(50,19);
-    SZ08bLabel->setFixedSize (50,19);
-    SZ06bLabel->setFixedSize (50,19);
+    SDLabel->setFixedSize    (58,19);
+    SZ010bLabel->setFixedSize(59,19);
+    SZ08bLabel->setFixedSize (53,19);
+    SZ06bLabel->setFixedSize (52,19);
     SMXLabel->setFixedSize(30,15);
 
     SDLabel     ->installEventFilter(this);
@@ -622,23 +622,53 @@ void VMMWindow::CreateChannelsFields()
     SZ06bLabel->setFont(Font);
     SMXLabel->setFont(Font);
 
-    int col = 5;
-        QLabel *spacer = new QLabel("");
-    m_ui->gridLayout_channels->addWidget(spacer);
-    m_ui->gridLayout_channels->addWidget(SCLabel,     0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SLLabel,     0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(STLabel,     0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(STHLabel,    0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SMLabel,     0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SDLabel,     0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SMXLabel,    0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SZ010bLabel, 0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SZ08bLabel,  0, col, Qt::AlignCenter); col++;
-    m_ui->gridLayout_channels->addWidget(SZ06bLabel,  0, col, Qt::AlignCenter);
+    int col = 0;
+    QLabel *spacer1 = new QLabel("");
+    QLabel *spacer2 = new QLabel("");
+    QLabel *labelSd = new QLabel("SD");
+    QLabel *labelSz10b = new QLabel("SZ010b");
+    QLabel *labelSz08b = new QLabel("SZ08b");
+    QLabel *labelSz06b = new QLabel("SZ06b");
+    spacer1->setFixedSize    (20,19);
+    spacer2->setFixedSize    (20,19);
+    labelSd->setFixedSize    (58,19);
+    labelSz10b->setFixedSize(59,19);
+    labelSz08b->setFixedSize (53,19);
+    labelSz06b->setFixedSize (52,19);
+    labelSd->setAlignment(Qt::AlignCenter);
+    labelSz10b->setAlignment(Qt::AlignCenter);
+    labelSz08b->setAlignment(Qt::AlignCenter);
+    labelSz06b->setAlignment(Qt::AlignCenter);
+    m_ui->gridLayout_channels->addWidget(spacer1,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(spacer1,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(spacer1,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(spacer1,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(spacer1,    0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(spacer1,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(labelSd,     0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(spacer1,    0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(labelSz10b, 0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(labelSz08b,  0, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(labelSz06b,  0, col, Qt::AlignCenter);
+
+    col = 0;
+    m_ui->gridLayout_channels->addWidget(spacer2,     1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SCLabel,     1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SLLabel,     1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(STLabel,     1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(STHLabel,    1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SMLabel,     1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SDLabel,     1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SMXLabel,    1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SZ010bLabel, 1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SZ08bLabel,  1, col, Qt::AlignCenter); col++;
+    m_ui->gridLayout_channels->addWidget(SZ06bLabel,  1, col, Qt::AlignCenter);
+
 
 
     for (int i = 0; i<64; i++){
-        VMMChannel[i] = new QLineEdit(counter.setNum(i+1),m_ui->stackedWidgetPage1);
+        //VMMChannel[i] = new QLineEdit(counter.setNum(i+1),m_ui->stackedWidgetPage1);
+        VMMChannel[i] = new QLineEdit(counter.setNum(i),m_ui->stackedWidgetPage1);
         VMMChannel[i]->setAlignment(Qt::AlignHCenter);
 
         VMMSC[i] = new QPushButton(initialValueRadio,m_ui->stackedWidgetPage1);
@@ -679,37 +709,37 @@ void VMMWindow::CreateChannelsFields()
 
         VMMChannel[i]->setEnabled(0);
         VMMSDVoltage[i] = new QComboBox(m_ui->stackedWidgetPage1);
-        VMMSDVoltage[i]->setFixedSize(60,20);
+        VMMSDVoltage[i]->setFixedSize(58,20);
         VMMSDVoltage[i]->setFont(Font);
-//        VMMSDVoltage[i]->setFocusPolicy(Qt::StrongFocus);
+        //        VMMSDVoltage[i]->setFocusPolicy(Qt::StrongFocus);
         for(int j=0;j<32;j++){
             VMMSDVoltage[i]->addItem(counter.setNum(j)+" mV");
         }
 
         VMMSZ010bCBox[i] = new QComboBox(m_ui->stackedWidgetPage1);
-        VMMSZ010bCBox[i]->setFixedSize(50,20);
+        VMMSZ010bCBox[i]->setFixedSize(58,20);
         VMMSZ010bCBox[i]->setFont(Font);
 
         VMMSZ08bCBox[i] = new QComboBox(m_ui->stackedWidgetPage1);
-        VMMSZ08bCBox[i]->setFixedSize(50,20);
+        VMMSZ08bCBox[i]->setFixedSize(52,20);
         VMMSZ08bCBox[i]->setFont(Font);
 
         VMMSZ06bCBox[i] = new QComboBox(m_ui->stackedWidgetPage1);
-        VMMSZ06bCBox[i]->setFixedSize(50,20);
+        VMMSZ06bCBox[i]->setFixedSize(52,20);
         VMMSZ06bCBox[i]->setFont(Font);
 
 
         for(int j=0;j<32;j++){
-            VMMSZ010bCBox[i]->addItem(counter.setNum(j)+" ns");
+            VMMSZ010bCBox[i]->addItem(counter.setNum(j)+" mV");
         }
         for(int j=0;j<16;j++){
             VMMSZ08bCBox[i]->addItem(counter.setNum(j)+" ns");
         }
         for(int j=0;j<8;j++){
-            VMMSZ06bCBox[i]->addItem(counter.setNum(j)+" ns");
+            VMMSZ06bCBox[i]->addItem(counter.setNum(j)+" mV");
         }
 
-       // set initial ADC values
+        // set initial ADC values
         unsigned short ADC10_index = GetVMM("ADC0_10",i);
         unsigned short ADC08_index = GetVMM("ADC0_8",i);
         unsigned short ADC06_index = GetVMM("ADC0_6",i);
@@ -749,9 +779,9 @@ void VMMWindow::CreateChannelsFields()
 
     } // i
 
-    channelGridLayout->setGeometry(QRect(620,12,50,50));
+    channelGridLayout->setGeometry(QRect(700,12,50,50));
     channelGridLayout->setSpacing(1);
-    channelGridLayout->setGeometry(QRect(620,12,380,2000));
+    channelGridLayout->setGeometry(QRect(700,12,400,2000));
     dummy->setLayout(channelGridLayout);
     //ui->scrollArea->setLayout(channelGridLayout);
     m_ui->scrollArea->setWidget(dummy);
@@ -771,18 +801,18 @@ void VMMWindow::CreateChannelsFields()
     // update channel voltages
     // -------------------------------------------------------------------- //
     connect(SDLabel,  SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(onUpdateChannelVoltages(int)));
+            this, SLOT(onUpdateChannelVoltages(int)));
 
 
     // -------------------------------------------------------------------- //
     // update channel ADC values
     // -------------------------------------------------------------------- //
     connect(SZ010bLabel,  SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(onUpdateChannelADCs(int)));
+            this, SLOT(onUpdateChannelADCs(int)));
     connect(SZ08bLabel,   SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(onUpdateChannelADCs(int)));
+            this, SLOT(onUpdateChannelADCs(int)));
     connect(SZ06bLabel,   SIGNAL(currentIndexChanged(int)),
-                                        this, SLOT(onUpdateChannelADCs(int)));
+            this, SLOT(onUpdateChannelADCs(int)));
 
 
     // -------------------------------------------------------------------- //
@@ -802,15 +832,15 @@ void VMMWindow::CreateChannelsFields()
 
         // ---------- channel voltages ----------- //
         connect(VMMSDVoltage[i],SIGNAL(currentIndexChanged(int)),
-                                        this,SLOT(onUpdateChannelVoltages(int)));
+                this,SLOT(onUpdateChannelVoltages(int)));
 
         // ---------------- ADCs ---------------- //
         connect(VMMSZ010bCBox[i],SIGNAL(currentIndexChanged(int)),
-                                        this,SLOT(onUpdateChannelADCs(int)));
+                this,SLOT(onUpdateChannelADCs(int)));
         connect(VMMSZ08bCBox[i],SIGNAL(currentIndexChanged(int)),
-                                            this,SLOT(onUpdateChannelADCs(int)));
+                this,SLOT(onUpdateChannelADCs(int)));
         connect(VMMSZ06bCBox[i],SIGNAL(currentIndexChanged(int)),
-                                            this,SLOT(onUpdateChannelADCs(int)));
+                this,SLOT(onUpdateChannelADCs(int)));
         // ----------- channel states ----------- //
         connect(VMMSC[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
         connect(VMMSM[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
@@ -828,7 +858,7 @@ void VMMWindow::onUpdateChannelState()
     if(SCLabel == QObject::sender()){
         if(VMMSCBoolAll==0){
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSC[j]->setStyleSheet("background-color: green");
                 VMMSCBool[j]=true;
                 SetVMM("sc", 1, j);
@@ -836,7 +866,7 @@ void VMMWindow::onUpdateChannelState()
             VMMSCBoolAll=1;
         }else{
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSC[j]->setStyleSheet("background-color: lightGray");
                 VMMSCBool[j]=0;
                 SetVMM("sc", 0, j);
@@ -849,7 +879,7 @@ void VMMWindow::onUpdateChannelState()
     if(SLLabel == QObject::sender()){
         if(VMMSLBoolAll==0){
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSL[j]->setStyleSheet("background-color: green");
                 VMMSLBool[j]=true;
                 SetVMM("sl", 1, j);
@@ -857,7 +887,7 @@ void VMMWindow::onUpdateChannelState()
             VMMSLBoolAll=1;
         }else{
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSL[j]->setStyleSheet("background-color: lightGray");
                 VMMSLBool[j]=0;
                 SetVMM("sl", 0, j);
@@ -869,7 +899,7 @@ void VMMWindow::onUpdateChannelState()
     if(STLabel == QObject::sender()){
         if(VMMSTBoolAll==0){
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMST[j]->setStyleSheet("background-color: green");
                 VMMSTBool[j]=true;
                 SetVMM("st", 1, j);
@@ -877,7 +907,7 @@ void VMMWindow::onUpdateChannelState()
             VMMSTBoolAll=1;
         }else{
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMST[j]->setStyleSheet("background-color: lightGray");
                 VMMSTBool[j]=0;
                 SetVMM("st", 0, j);
@@ -885,11 +915,11 @@ void VMMWindow::onUpdateChannelState()
             VMMSTBoolAll=0;
         }
     }
- // ***********************  STH  ********************************* //
+    // ***********************  STH  ********************************* //
     if(STHLabel == QObject::sender()){
         if(VMMSTHBoolAll==0){
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSTH[j]->setStyleSheet("background-color: green");
                 VMMSTHBool[j]=true;
                 SetVMM("sth", 1, j);
@@ -897,7 +927,7 @@ void VMMWindow::onUpdateChannelState()
             VMMSTHBoolAll=1;
         }else{
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSTH[j]->setStyleSheet("background-color: lightGray");
                 VMMSTHBool[j]=0;
                 SetVMM("sth", 0, j);
@@ -909,7 +939,7 @@ void VMMWindow::onUpdateChannelState()
     if(SMLabel == QObject::sender()){
         if(VMMSMBoolAll==0){
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSM[j]->setStyleSheet("background-color: green");
                 VMMSMBool[j]=true;
                 SetVMM("sm", 1, j);
@@ -917,7 +947,7 @@ void VMMWindow::onUpdateChannelState()
             VMMSMBoolAll=1;
         }else{
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSM[j]->setStyleSheet("background-color: lightGray");
                 VMMSMBool[j]=0;
                 SetVMM("sm", 0, j);
@@ -929,7 +959,7 @@ void VMMWindow::onUpdateChannelState()
     if(SMXLabel == QObject::sender()){
         if(VMMSMXBoolAll==0){
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSMX[j]->setStyleSheet("background-color: green");
                 VMMSMXBool[j]=true;
                 SetVMM("smx", 1, j);
@@ -937,7 +967,7 @@ void VMMWindow::onUpdateChannelState()
             VMMSMXBoolAll=1;
         }else{
             for(int j=0;j<64;j++){
-            //for(int j=0;j<32;j++){
+                //for(int j=0;j<32;j++){
                 VMMSMX[j]->setStyleSheet("background-color: lightGray");
                 VMMSMXBool[j]=0;
                 SetVMM("smx", 0, j);
@@ -1016,7 +1046,7 @@ void VMMWindow::onUpdateChannelVoltages(int index){
     // ***********************  SD  ******************************** //
     if(SDLabel == QObject::sender()){
         for(int j=0;j<64;j++){
-        //for(int j=0;j<32;j++){
+            //for(int j=0;j<32;j++){
             VMMSDVoltage[j]->setCurrentIndex(index);
             VMMSDValue[j]=index;
         }
@@ -1035,7 +1065,7 @@ void VMMWindow::onUpdateChannelADCs(int index)
 {
     // ***********************  SD  ******************************* //
     for(int j=0;j<64;j++){
-    //for(int j=0;j<32;j++){
+        //for(int j=0;j<32;j++){
         if(SZ010bLabel == QObject::sender()){
             VMMSZ010bCBox[j]->setCurrentIndex(index);
             VMMSZ010bValue[j]=index;

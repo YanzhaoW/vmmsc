@@ -5,7 +5,7 @@ FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
-    numberOfRegisters(37),
+    numberOfRegisters(38),
     m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
     m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
     m_chr ( new char ) //need for returning const char * in GetReg functions
@@ -141,6 +141,7 @@ void FEC::LoadDefault(bool calibration){
          (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
          (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0xfff;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
         (*m_regNames)[36]="trigger_pulse_delay";        (*m_reg)[36] = 0;   //register 15: {0-255} * BCCLOCK_PERIOD - 8 bit, bit 8-15
+        (*m_regNames)[37]="clear_S6_fifo";             (*m_reg)[37] = 0; //{"0", "1", "false", "true"};
 
 
 
@@ -167,6 +168,7 @@ void FEC::LoadDefault(bool calibration){
         (*m_reg)[23] = 0;//truncate
         (*m_reg)[24] = 0;//nskip
         (*m_reg)[25] = 0;//sL0cktest
+        (*m_reg)[37] = 0;//clear_S6_fifo
 
     }
 }

@@ -21,7 +21,8 @@ public:
     friend class Commandline;
 
 
-    void LoadDefault(bool calib = false, std::map<std::string, unsigned short> m_calib = {{"sc", 0}}, int channel =-9999 );
+    void LoadDefault();
+    void LoadCalibSettings();
     struct Channel{
         std::map<std::string, unsigned short> m_channel;
     };

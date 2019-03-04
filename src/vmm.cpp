@@ -14,24 +14,12 @@ bool VMM::SetRegi(std::string feature, std::string val, int ch){
      }
 }
 
-void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib, int channel ){
+void VMM::LoadDefault(){
 
     //Fill default values of channels
     for(int i =0; i<64; i++){
         m_vmmSettings->m_channels[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
     }
-
-    if(calib){
-        // allows to set different values from calibration for single channel or all channels at once
-        for( const auto& elem : m_calib ){
-            for(int i =0; i<64; i++){
-                if(channel == i  ||  channel == -9999){
-                    m_vmmSettings->m_channels[i].m_channel[elem.first] = elem.second;
-                }
-            }
-        }
-    }
-
 
     //Fill default values to map for Global Register 1
     for(std::string elem: m_vmmSettings->m_names_GReg1){
@@ -50,6 +38,38 @@ void VMM::LoadDefault(bool calib , std::map<std::string, unsigned short> m_calib
     SetRegi("s8b",1);
     SetRegi("stc",1);
 }
+
+
+void VMM::LoadCalibSettings(){
+
+    //Fill default values of channels
+    for(int i =0; i<64; i++){
+        m_vmmSettings->m_channels[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 1}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
+    }
+
+    //Fill default values to map for Global Register 1
+    for(std::string elem: m_vmmSettings->m_names_GReg1){
+        m_vmmSettings->m_globalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    }
+    //Fill default values to map for Global Register 2
+    for(std::string elem: m_vmmSettings->m_names_GReg2){
+        m_vmmSettings->m_globalReg1->insert(std::pair<std::string, unsigned short>(elem, 0));
+    }
+    ///Possibility to add more default values
+    // gain set by user
+    //SetRegi("gain", 2);//corrsponds to 3 mV/fC
+    // test pulse height set by user
+    //SetRegi("sdp_2", (std::string)"300");
+    // Thresholds DAC set by user
+    //SetRegi("sdt",(std::string)"300");
+    // TAC slope set by user
+    //SetRegi("stc",1);
+    SetRegi("s10b",1);
+    SetRegi("s8b",1);
+    SetRegi("monitoring", "Pulser_DAC");
+
+}
+
 
 bool VMM::SetRegi(std::string feature, int val, int ch){
     std::string value =std::to_string(val);
@@ -82,7 +102,7 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
                 if(i>=7) bin_val=1;
         m_bin.insert(BiPair(bools[i], bin_val));
     }
-std::cout<<"register: "<<feature<<" value: "<<val<<std::endl;
+    //std::cout<<"register: "<<feature<<" value: "<<val<<std::endl;
     if(ch==-9999){
 
         if(feature == "monitoring"){

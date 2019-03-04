@@ -44,6 +44,8 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
             this, SLOT(onUpdateSettings()));
     connect(m_ui->acqWindow, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
+    connect(m_ui->ClearS6FIFI, SIGNAL(stateChanged(int)),
+            this, SLOT(onUpdateSettings()));
 
     //L0
     connect(m_ui->L0BCoffset, SIGNAL(valueChanged(int)),
@@ -158,6 +160,9 @@ void FECWindow::onUpdateSettings(){
     }
     else if(QObject::sender() == m_ui->acqWindow){
         SetFec("acq_window",  m_ui->acqWindow->value() );
+    }
+    else if(QObject::sender() == m_ui->ClearS6FIFI){
+        SetFec("clear_S6_fifo",  m_ui->ClearS6FIFI->isChecked() );
     }
 
     //L0
@@ -313,6 +318,7 @@ void FECWindow::LoadSettings(){
     m_ui->bcid_reset->setValue( GetFec( "bcid_reset" ) );
     m_ui->acqSync->setValue( GetFec( "acq_sync" ) );
     m_ui->acqWindow->setValue( GetFec( "acq_window" ) );
+    m_ui->ClearS6FIFI->setChecked( GetFec( "clear_S6_fifo" ) );
 
     m_ui->evbld_mode->setCurrentIndex( GetFec( "evbld_mode" ) );
     m_ui->evbld_infodata->setCurrentIndex( GetFec( "evbld_infodata" ) );

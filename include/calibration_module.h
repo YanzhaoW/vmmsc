@@ -24,6 +24,9 @@ class QUdpSocket;
 
 // std/stl
 #include <iostream>
+#include <fstream>
+#include <chrono>
+
 #include "globparameter.h"
 // vmm
 #include "message_handler.h"
@@ -41,6 +44,8 @@ class CalibrationModule : public QObject
 public:
     explicit CalibrationModule(MainWindow *top, QObject *parent = nullptr);
     bool IsDbgActive() { return m_dbg; }
+    void StopDataTaking();
+    void StartDataTaking();
 
     void LoadMessageHandler(MessageHandler& GetMessageHandler);
     MessageHandler& GetMessageHandler() { return *m_msg; }
@@ -49,27 +54,31 @@ public:
 
     void ConnectDAQSocket();
     void CloseDAQSocket();
-    void TakeData();
+    void StartCalibration();
     void DoCalibrationStep();
 
-    void SetCorrections();
+    void SaveCorrections();
     void GetActiveVMMs();
-
+    void SavePlotsAsPDF();
 
     bool m_dataAvailable = false;
 private:
 
     MainWindow *m_mainWindow;
-    bool m_dbg = false;
+    bool m_dbg = true;
     QUdpSocket *m_udpSocket;
 
-    QString m_calibMode;
+
+    int m_modeIndex;
     QString m_runMode;
     QString m_plotType;
     QVector< QCustomPlot * > plotVector;
     //QString m_calibRun;
-    int m_eventcount = 0;
-    int m_errorcount = 0;
+
+    std::chrono::high_resolution_clock::time_point m_start;
+    std::chrono::high_resolution_clock::time_point m_end;
+    std::chrono::high_resolution_clock::time_point m_nodata_start;
+    std::chrono::high_resolution_clock::time_point m_nodata_end;
     vector<int> m_vmmActs;
     std::map<QString, QString> mapIPFirmware;
     std::map<QString, int> mapIPFecId;
@@ -77,12 +86,11 @@ private:
     void startReceiver();
     void stopReceiver();
     bool CheckModes();
+    int GetCalibrationModeIndex(QString mode);
     bool IsCalibration();
-    //void PlotCalibration();
     void PlotData();
-    void CalibrateThreshold(bool modeThreshold);
-    void FitTimeData();
-    void FitADCData();
+    void MeasurePedestal();
+    void FitOfflineCalibrationData();
     void AccumulateData();
     void CalculateCorrections();
     double SortVectors( vector<double>& sortedMin, vector<double>& sortedMax);
@@ -104,12 +112,8 @@ private:
     uint32_t Gray2bin32(uint32_t num);
 
 
-
-    bool m_isCalibratedADC = false;
-    bool m_isCalibratedTDC = false;
-    bool m_isCalibratedTime = false;
-    bool m_isCalibratedThreshold = false;
-    bool m_isCalibratedOfflineADC = false;
+    const static int maxModes = 20;
+    bool m_isCalibrated[maxModes];
 
     MessageHandler *m_msg;
 
@@ -155,13 +159,20 @@ private:
     CommonData_VMM3 m_commonData;
 
     int m_numHits = 0;
-    int m_bitCount=0;
+    int m_bitCount=-1;
     int m_number_bits = 0;
+    int m_vmmIndex=0;
+
+    int m_maxThreshold = 350;
+    int m_minThreshold = 200;
+    int m_threshold = 0;
+
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
-    const static int m_number_bits_threshold = 32;
-    const static int m_number_bits_time = 16;
-    const static int m_number_bits_offline_adc= 5;
+    const static int m_number_bits_threshold = 2;
+    const static int m_number_bits_offline_time = 16;
+    const static int m_number_bits_offline_adc= 15;
+    const static int m_number_bits_pedestal = 3;
 
     double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
     double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -173,20 +184,18 @@ private:
     //std::vector<double> m_y;
     std::vector<double> m_calVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<int> m_bitVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_offset_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_slope_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_offset_adc[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_slope_adc[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-
+    std::vector<double> m_offset[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     bool m_ignore16;
-    bool m_perVMM;
 
     std::vector<int> m_BCID;
-    QJsonObject * m_jsonObjectTime;
-    QJsonObject * m_jsonObjectADC;
+    QJsonObject * m_jsonObject;
+    std::ofstream m_outFile;
 
-
+    int m_old_sdp2[1000];
+    int m_old_TP_skew[1000];
+    int m_old_sdt[1000];
 signals:
 
 public slots:

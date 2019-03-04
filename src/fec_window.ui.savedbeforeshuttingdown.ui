@@ -176,7 +176,7 @@
              <bool>false</bool>
             </property>
             <property name="text">
-             <string>External Trigger</string>
+             <string>External</string>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -197,7 +197,7 @@
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="text">
-             <string>Internal Trigger</string>
+             <string>Pulser</string>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -205,6 +205,13 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButtonFECIP">
+         <property name="text">
+          <string>Set FEC IP</string>
+         </property>
         </widget>
        </item>
        <item row="4" column="0" colspan="2">
@@ -234,7 +241,7 @@
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="readOnly">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -253,7 +260,7 @@
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="readOnly">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -272,7 +279,7 @@
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="readOnly">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -310,108 +317,7 @@
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="1">
-           <widget class="QLabel" name="label_22">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Readout cycle len.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QSpinBox" name="acqSync">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>50000</number>
-            </property>
-            <property name="singleStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>100</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QSpinBox" name="acqWindow">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>50000</number>
-            </property>
-            <property name="singleStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>4096</number>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLabel" name="label_7">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>TP Delay</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_21">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>ACQ Win</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLabel" name="label_37">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>BCID Reset</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
+          <item row="1" column="1">
            <widget class="QSpinBox" name="bcid_reset">
             <property name="font">
              <font>
@@ -433,7 +339,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="2" column="1">
            <widget class="QLabel" name="label_20">
             <property name="font">
              <font>
@@ -445,7 +351,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
+          <item row="3" column="0">
            <widget class="QLineEdit" name="trgPeriod">
             <property name="font">
              <font>
@@ -454,14 +360,115 @@
              </font>
             </property>
             <property name="text">
-             <string>1FFE</string>
+             <string>61A80</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
+          <item row="6" column="0">
+           <widget class="QSpinBox" name="acqWindow">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>50000</number>
+            </property>
+            <property name="singleStep">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>4096</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_37">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>BCID Reset</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_22">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Trg Per</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="0">
+           <widget class="QLabel" name="label_21">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>ACQ Win</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="acqSync">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>50000</number>
+            </property>
+            <property name="singleStep">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>TP Delay</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
            <widget class="QSpinBox" name="pulserDelay">
             <property name="font">
              <font>
@@ -483,82 +490,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="Line" name="line">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="Line" name="line_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QLabel" name="label">
-            <property name="font">
-             <font>
-              <family>Sans Serif</family>
-              <pointsize>7</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Clear S6 FIFO at ACQ Sync</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QCheckBox" name="ClearS6FIFI">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
          </layout>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QPushButton" name="pushButtonFECIP">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Set FEC IP</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="pushButtonDAQIP">
-         <property name="minimumSize">
-          <size>
-           <width>130</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>130</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Set DAQ IP</string>
-         </property>
         </widget>
        </item>
       </layout>
@@ -781,50 +713,152 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox_19">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>150</height>
-          </size>
-         </property>
+       <item row="2" column="0" rowspan="2" colspan="2">
+        <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>FEC Response</string>
+          <string/>
          </property>
-         <layout class="QGridLayout" name="gridLayout_12">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="clearDebugScreen">
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="timeStampResCheckBox">
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>High Res.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" rowspan="2">
+           <widget class="QComboBox" name="evbld_mode">
             <property name="font">
              <font>
               <family>Arial</family>
               <pointsize>9</pointsize>
              </font>
             </property>
-            <property name="text">
-             <string>Clear</string>
+            <property name="currentIndex">
+             <number>0</number>
             </property>
+            <item>
+             <property name="text">
+              <string>Frame Cnt</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Global Frame Cnt</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Timestamp + Frame Cnt</string>
+             </property>
+            </item>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QPlainTextEdit" name="debugScreen">
+          <item row="2" column="0">
+           <widget class="QComboBox" name="evbld_infodata">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>9</pointsize>
              </font>
             </property>
-            <property name="tabChangesFocus">
-             <bool>true</bool>
+            <property name="currentIndex">
+             <number>5</number>
             </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
+            <item>
+             <property name="text">
+              <string>HINFO+Datalength</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trigger Cnt+Datalength</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trigger Cnt</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trigger Timestamp+Datalength</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trigger Timestamp</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Trigger Cnt+Trigger Timestamp</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="5" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox_19">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>230</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>FEC Response</string>
+         </property>
+         <widget class="QPlainTextEdit" name="debugScreen">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>50</y>
+            <width>131</width>
+            <height>171</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="clearDebugScreen">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>41</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Clear</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
           <string/>
@@ -896,182 +930,6 @@
 Parameters</string>
             </property>
            </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>120</height>
-          </size>
-         </property>
-         <property name="title">
-          <string notr="true"/>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="timeStampResCheckBox">
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>High Res.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" rowspan="2">
-           <widget class="QComboBox" name="evbld_mode">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>Frame Cnt</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Global Frame Cnt</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Timestamp + Frame Cnt</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QComboBox" name="evbld_infodata">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>25</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>5</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>HINFO+Datalength</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Trigger Cnt+Datalength</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Trigger Cnt</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Trigger Timestamp+Datalength</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Trigger Timestamp</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Trigger Cnt+Trigger Timestamp</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox_triggeredMode">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>200</height>
-          </size>
-         </property>
-         <property name="title">
-          <string> Triggered Mode</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QCheckBox" name="checkBox_TriggeredMode">
-            <property name="text">
-             <string>Enabled</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelTimeOffset">
-            <property name="text">
-             <string>Time offset (ns)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_triggerOffset">
-            <property name="text">
-             <string>2048000</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelTimeWindow">
-            <property name="text">
-             <string>Time window (ns)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_triggerWindow">
-            <property name="text">
-             <string>204750</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelTriggerDelay">
-            <property name="text">
-             <string>Trigger Delay (ns)</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_triggerPulseDelay"/>
           </item>
          </layout>
         </widget>

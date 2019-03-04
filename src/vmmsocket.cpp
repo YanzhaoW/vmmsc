@@ -105,6 +105,7 @@ quint64 VMMSocket::WriteDatagram(const QByteArray& datagram,
 {
     return m_socket->writeDatagram(datagram, host, port);
 }
+
 // ----------------------------------------------------------------------- //
 bool VMMSocket::CheckAndReconnect(std::string callingFn)
 {

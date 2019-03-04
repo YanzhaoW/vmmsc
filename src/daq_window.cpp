@@ -255,7 +255,7 @@ void DAQWindow::on_Button_save_clicked()
         m_mainWindow->m_fecConfigHandler->WriteAllFECConf(fname);
         fname+=".txt";
         m_mainWindow->m_daqConfigHandler->WriteDAQConf(fname.c_str());
-        std::cout << "loading file " << fname << std::endl;
+        std::cout << "writing to file " << fname << std::endl;
     }
 }
 
@@ -455,7 +455,7 @@ void DAQWindow::on_pushButtonTakeData_pressed()
     if(ui->connectionLabel_2->text()==QString("all alive")){
         if(!ui->pushButtonTakeData->isChecked()){
             ui->pushButtonTakeData->setCheckable(true);
-            m_mainWindow->m_calib->TakeData();
+            m_mainWindow->m_calib->StartCalibration();
         }
         /*
         else{
@@ -477,7 +477,7 @@ void DAQWindow::on_pushButtonTakeData_pressed()
 
 void DAQWindow::on_pushButtonStoreCorrections_pressed()
 {
-    m_mainWindow->m_calib->SetCorrections();
+    m_mainWindow->m_calib->SaveCorrections();
 
 }
 
@@ -491,19 +491,18 @@ void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
     ui->comboBoxCalibrationType->clear();
     if(index == 0)
     {
+        ui->comboBoxCalibrationType->addItem("Offline ADC");
+        ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
+        ui->comboBoxCalibrationType->addItem("Threshold");
         ui->comboBoxCalibrationType->addItem("ADC");
         ui->comboBoxCalibrationType->addItem("TDC");
-        ui->comboBoxCalibrationType->addItem("Time (BCID/TDC)");
-        ui->comboBoxCalibrationType->addItem("Threshold");
     }
     if(index == 1)
     {
+        ui->comboBoxCalibrationType->addItem("Channels");
         ui->comboBoxCalibrationType->addItem("ADC");
         ui->comboBoxCalibrationType->addItem("TDC");
         ui->comboBoxCalibrationType->addItem("BCID");
-        ui->comboBoxCalibrationType->addItem("Time (BCID/TDC)");
-        ui->comboBoxCalibrationType->addItem("Channels");
-        ui->comboBoxCalibrationType->addItem("Threshold");
         ui->comboBoxCalibrationType->addItem("Pedestal");
 
     }
@@ -512,4 +511,13 @@ void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
 void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
 {
    m_mainWindow->m_calib->m_dataAvailable = false;
+}
+
+
+
+
+
+void DAQWindow::on_pushButtonSavePDF_pressed()
+{
+    m_mainWindow->m_calib->SavePlotsAsPDF();
 }

@@ -76,6 +76,9 @@ private slots:
 
     void on_comboBoxCalibrationType_currentIndexChanged(int index);
 
+
+    void on_pushButtonSavePDF_pressed();
+
 public slots:
     // select the output directory
     void on_output_directory_select();

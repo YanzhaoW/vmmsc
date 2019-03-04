@@ -98,6 +98,7 @@ void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_ind
             m_fecs[j].m_fecConfigModule->VMMLoadEmit();//dirty trick, does not work to emit signal on daq level
         }
     }
+
 }
 
 
