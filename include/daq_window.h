@@ -79,7 +79,9 @@ private slots:
 
     void on_pushButtonSavePDF_pressed();
 
-public slots:
+    void on_pushButtonAbort_pressed();
+
+ public slots:
     // select the output directory
     void on_output_directory_select();
     void on_Button_save_clicked();

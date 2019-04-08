@@ -31,6 +31,7 @@ class QUdpSocket;
 // vmm
 #include "message_handler.h"
 
+#define TIME_FACTOR 4
 
 using namespace std;
 class MainWindow;
@@ -75,20 +76,19 @@ private:
     QVector< QCustomPlot * > plotVector;
     //QString m_calibRun;
 
-    std::chrono::high_resolution_clock::time_point m_start;
-    std::chrono::high_resolution_clock::time_point m_end;
     std::chrono::high_resolution_clock::time_point m_nodata_start;
     std::chrono::high_resolution_clock::time_point m_nodata_end;
     vector<int> m_vmmActs;
     std::map<QString, QString> mapIPFirmware;
     std::map<QString, int> mapIPFecId;
 
-    void startReceiver();
-    void stopReceiver();
+    //void startReceiver();
+    //void stopReceiver();
     bool CheckModes();
     int GetCalibrationModeIndex(QString mode);
     bool IsCalibration();
     void PlotData();
+    void MeasureThreshold(int the_bit);
     void MeasurePedestal();
     void FitOfflineCalibrationData();
     void AccumulateData();
@@ -96,10 +96,11 @@ private:
     double SortVectors( vector<double>& sortedMin, vector<double>& sortedMax);
     void InitializeDataStructures();
     void GetSettings();
+    void Reset();
     int GetFEC(int vmmId);
     int GetHDMI(int vmmId);
     int GetVMM(int vmmId);
-
+    QString CreateFileName(QString name,  int polarity, int gain, int peaktime, int tac);
 
 
     int Receive_VMM2(const char* buffer, int size, int fecId);
@@ -158,27 +159,51 @@ private:
     /// Holds data common to all readouts in a packet
     CommonData_VMM3 m_commonData;
 
+    int m_numHitsInFrame = 0;
     int m_numHits = 0;
     int m_bitCount=-1;
     int m_number_bits = 0;
     int m_vmmIndex=0;
-
-    int m_maxThreshold = 350;
-    int m_minThreshold = 200;
+    int m_theChannel = 0;
+    int m_theDirection = 0;
+    double m_rateLimit = 0;
+    int m_maxThreshold = 300;
+    int m_minThreshold = 50;
     int m_threshold = 0;
+    int m_minimumNumHits = 1;
+    int m_maskedChannels = 0;
+    double m_gainTable[8] = {0.5,1,3,4.5,6,9,12,16};
+    double m_peaktimeTable[4] = {200,100,50,25};
+    double m_tacTable[4] = {60,100,350,650};
+    QString m_polarityTable[2] = {"negative", "positive"};
+
+    int m_thresholdTable[8] = {220,250,250,250,250,300,300,300};
+    double m_minGainTable[8] = {500,330,150,120,60,50,40,30};
+    double m_maxGainTable[8] = {1023,1023,1023,700,510,320,210,140};
+
+
 
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
-    const static int m_number_bits_threshold = 2;
-    const static int m_number_bits_offline_time = 16;
+    const static int m_number_bits_threshold = 1;
+    const static int m_number_bits_s_curve = 1;
+
+    const static int m_number_bits_offline_time = 16/TIME_FACTOR;
     const static int m_number_bits_offline_adc= 15;
-    const static int m_number_bits_pedestal = 3;
+    const static int m_number_bits_pedestal = 1;
+
+    uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    uint64_t m_srs_timestamp_start[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    uint64_t m_start;
+    uint64_t m_end;
 
     double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
     double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
     std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_dac;
+
     std::vector<double> m_x;
     std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     //std::vector<double> m_y;

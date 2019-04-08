@@ -9,7 +9,7 @@ LoadDefault();
 bool VMM::SetRegi(std::string feature, std::string val, int ch){
     if (SetRegister(feature, val, ch)) return true;
      else{
-        std::cout << "ERROR register or entered value does not exist." << std::endl;
+        std::cout << "ERROR register " << feature << " or entered value " << val << " does not exist." << std::endl;
          return false;
      }
 }
@@ -75,7 +75,7 @@ bool VMM::SetRegi(std::string feature, int val, int ch){
     std::string value =std::to_string(val);
     if (SetRegister(feature, value, ch)) return true;
     else{
-       std::cout << "ERROR register or entered value does not exist." << std::endl;
+       std::cout << "ERROR register " << feature << " or entered value " << val << " does not exist." << std::endl;
         return false;
     }
 }
@@ -84,7 +84,7 @@ bool VMM::SetRegi(std::string feature, double val, int ch){
     std::string value =std::to_string(val);
     if (SetRegister(feature, value, ch)) return true;
     else{
-       std::cout << "ERROR register or entered value does not exist." << std::endl;
+      std::cout << "ERROR register " << feature << " or entered value " << val << " does not exist." << std::endl;
         return false;
     }
 }

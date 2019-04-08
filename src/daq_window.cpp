@@ -261,37 +261,39 @@ void DAQWindow::on_Button_save_clicked()
 
 void DAQWindow::on_openConnection_2_clicked()
 {
-    m_ip_fec.clear();
-    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (m_mainWindow->m_daq_act[i]){
-            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                if (m_mainWindow->m_daqs[i].GetFEC(j)){
+    if(!ui->onACQ->isDown())
+    {
+        m_ip_fec.clear();
+        for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+            if (m_mainWindow->m_daq_act[i]){
+                for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+                    if (m_mainWindow->m_daqs[i].GetFEC(j)){
 
-                    if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
-                       int id =  m_mainWindow->m_daqs[i].m_fecs[j].GetIP_id();
-                        m_ip_fec.insert(std::make_pair(j,id));
-                        SetWarning("all alive","green");
-                        ui->Send->setEnabled(true);
-                        ui->checkBoxGlobalDAQ->setEnabled(true);
+                        if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
+                            int id =  m_mainWindow->m_daqs[i].m_fecs[j].GetIP_id();
+                            m_ip_fec.insert(std::make_pair(j,id));
+                            SetWarning("all alive","green");
+                            ui->Send->setEnabled(true);
+                            ui->checkBoxGlobalDAQ->setEnabled(true);
+                        }
+                        else{
+
+                            SetWarning("ping failed", "red");
+                            ui->Send->setEnabled(false);
+                            ui->checkBoxGlobalDAQ->setChecked(false);
+                            ui->checkBoxGlobalDAQ->setEnabled(false);
+                            ui->trgPulser->setEnabled(false);
+                            ui->trgExternal->setEnabled(false);
+                            ui->onACQ->setEnabled(false);
+                            ui->offACQ->setEnabled(false);
+                            return;
+                        }
+
                     }
-                    else{
-
-                        SetWarning("ping failed", "red");
-                        ui->Send->setEnabled(false);
-                        ui->checkBoxGlobalDAQ->setChecked(false);
-                        ui->checkBoxGlobalDAQ->setEnabled(false);
-                        ui->trgPulser->setEnabled(false);
-                        ui->trgExternal->setEnabled(false);
-                        ui->onACQ->setEnabled(false);
-                        ui->offACQ->setEnabled(false);
-                        return;
-                    }
-
                 }
             }
         }
     }
-
 }
 
 
@@ -314,9 +316,12 @@ void DAQWindow::on_reset_warnings_clicked()
 
 void DAQWindow::on_Send_clicked()
 {
-    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (m_mainWindow->m_daq_act[i]){
-            m_mainWindow->m_daqs[i].SendAll();
+    if(!ui->onACQ->isChecked())
+    {
+        for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+            if (m_mainWindow->m_daq_act[i]){
+                m_mainWindow->m_daqs[i].SendAll();
+            }
         }
     }
 }
@@ -494,6 +499,8 @@ void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
         ui->comboBoxCalibrationType->addItem("Offline ADC");
         ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
         ui->comboBoxCalibrationType->addItem("Threshold");
+        ui->comboBoxCalibrationType->addItem("Pedestal");
+        ui->comboBoxCalibrationType->addItem("S-curve");
         ui->comboBoxCalibrationType->addItem("ADC");
         ui->comboBoxCalibrationType->addItem("TDC");
     }
@@ -503,14 +510,12 @@ void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
         ui->comboBoxCalibrationType->addItem("ADC");
         ui->comboBoxCalibrationType->addItem("TDC");
         ui->comboBoxCalibrationType->addItem("BCID");
-        ui->comboBoxCalibrationType->addItem("Pedestal");
-
     }
 }
 
 void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
 {
-   m_mainWindow->m_calib->m_dataAvailable = false;
+    m_mainWindow->m_calib->m_dataAvailable = false;
 }
 
 
@@ -520,4 +525,11 @@ void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
 void DAQWindow::on_pushButtonSavePDF_pressed()
 {
     m_mainWindow->m_calib->SavePlotsAsPDF();
+}
+
+void DAQWindow::on_pushButtonAbort_pressed()
+{
+    m_mainWindow->m_calib->StopDataTaking();
+    on_offACQ_clicked();
+    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 }

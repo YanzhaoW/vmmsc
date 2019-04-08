@@ -274,8 +274,8 @@ void VMMWindow::LoadSettings()
     m_ui->sdt->setValue(GetVMM("sdt"));
     m_ui->sdp_2->setValue(GetVMM("sdp_2"));
     QString tmp;
-    m_ui->dacmvLabel->setText(tmp.number((0.6862*m_ui->sdt->value()+63.478), 'f', 2) + " mV");
-    m_ui->dacmvLabel_TP->setText(tmp.number((0.6862*m_ui->sdp_2->value()+63.478), 'f', 2) + " mV");
+    m_ui->dacmvLabel->setText(tmp.number((0.801*m_ui->sdt->value()+25.182), 'f', 2) + " mV");
+    m_ui->dacmvLabel_TP->setText(tmp.number((0.796*m_ui->sdp_2->value()+30.615), 'f', 2) + " mV");
 
     //Loading Advanced settings and updating GUI
     //    ui->ART->setChecked(VMM_Get("sfa"));
@@ -328,10 +328,10 @@ void VMMWindow::onUpdateSettings()
     QString tmp;
     if(QObject::sender() == m_ui->sdt){
         SetVMM("sdt", m_ui->sdt->value());
-        m_ui->dacmvLabel->setText(tmp.number((0.6862*m_ui->sdt->value()+63.478), 'f', 2) + " mV");
+        m_ui->dacmvLabel->setText(tmp.number((0.801*m_ui->sdt->value()+25.182), 'f', 2) + " mV");
     }
     else if(QObject::sender() == m_ui->sdp_2){
-        m_ui->dacmvLabel_TP->setText(tmp.number((0.6862*m_ui->sdp_2->value()+63.478), 'f', 2) + " mV");
+        m_ui->dacmvLabel_TP->setText(tmp.number((0.796*m_ui->sdp_2->value()+30.615), 'f', 2) + " mV");
         SetVMM("sdp_2", m_ui->sdp_2->value());
     }
     else if(QObject::sender() == m_ui->sp){

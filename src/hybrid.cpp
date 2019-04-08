@@ -57,7 +57,7 @@ unsigned short Hybrid::GetPosNo(){
 bool Hybrid::SetReg(std::string feature, std::string val){
     if (SetRegister(feature, val)) return true;
      else{
-        std::cout << "ERROR register or entered value for Hybrid does not exist." << std::endl;
+        std::cout << "ERROR register " << feature << " or entered value " << val << " for Hybrid does not exist." << std::endl;
          return false;
      }
 }
@@ -66,7 +66,7 @@ bool Hybrid::SetReg(std::string feature, int val){
     std::string value =std::to_string(val);
     if (SetRegister(feature, value)) return true;
     else{
-       std::cout << "ERROR register or entered value for Hybrid does not exist." << std::endl;
+       std::cout << "ERROR register " << feature << " or entered value " << val << " for Hybrid does not exist." << std::endl;
         return false;
     }
 }
