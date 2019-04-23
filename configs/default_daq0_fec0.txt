@@ -2,9 +2,9 @@ daq 0
 fec 0
 
 tp_delay 81
-trigger_period 8190
+trigger_period 4094
 acq_sync 100
-acq_window 7060
+acq_window 3700
 run_mode pulser
 bcid_reset 0
 fec_port 6007
@@ -31,3 +31,11 @@ ip1 10
 ip2 0
 ip3 0
 ip4 2
+i2c_port 6604
+fec_sys_port 6023
+triggered_mode 0
+time_offset_triggerperiod 10
+time_offset_BCID 0
+time_window_BCID 4095
+trigger_pulse_delay 0
+clear_S6_fifo 0

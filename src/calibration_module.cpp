@@ -2,6 +2,7 @@
 #include <cmath>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QFileInfo>
 #include "calibration_module.h"
 
 
@@ -69,6 +70,7 @@ void CalibrationModule::StartDataTaking()
 
     emit m_mainWindow->m_daqWindow->ui->onACQ->clicked();usleep(1000);
     ConnectDAQSocket();
+    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
 }
 
 // ------------------------------------------------------------------------ //
@@ -445,7 +447,7 @@ void CalibrationModule::PlotData(){
     {
         QCustomPlot *plot = plotVector[i];
         plot->clearItems();
-        plot->clearPlottables();
+         plot->clearPlottables();
         plot->clearGraphs();
         plot->yAxis->setLabel("");
         plot->xAxis->setLabel("");
@@ -570,8 +572,6 @@ void CalibrationModule::PlotData(){
                 plot->legend->setFont(QFont("Helvetica",9));
                 plot->graph(0)->setName(title);
                 plot->yAxis->rescale();
-                plot->replot();
-
             }
             else
             {
@@ -661,7 +661,6 @@ void CalibrationModule::PlotData(){
                         //     plot->legend->removeItem(plot->legend->itemCount()-1);
                         //}
                     }
-                    plot->replot();
                     /*
                     for(int bit=m_number_bits; bit<2*m_number_bits;bit++){
                         plot->addGraph();
@@ -697,11 +696,13 @@ void CalibrationModule::PlotData(){
                     plot->graph(0)->setLineStyle(QCPGraph::lsLine);
                     plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
                     plot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
-                    plot->replot();
+
                 }
             }
+            plot->replot();
 
         }
+
 
     }
 }
@@ -814,7 +815,8 @@ void CalibrationModule::StartCalibration(){
                 int chip = GetVMM(vmm);
                 m_y[fec][hdmi][0][chip].push_back(0);
             }
-        } m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+        }
+        m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 
 
         int fec = GetFEC(0);
@@ -969,9 +971,9 @@ void CalibrationModule::DoCalibrationStep(){
                         int hdmi = GetHDMI(vmm);
                         int chip = GetVMM(vmm);
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",0,m_theChannel);
-                     }
-                     m_mainWindow->m_daqs[0].SendAll();
-                     m_maskedChannels=0;
+                    }
+                    m_mainWindow->m_daqs[0].SendAll();
+                    m_maskedChannels=0;
                 }
                 if(m_theDirection == 0)
                 {
@@ -1383,7 +1385,7 @@ void CalibrationModule::SaveCorrections(){
     }
 
     QString name = "";
-
+    QString readName = "";
     if(m_modeIndex == 1 || m_modeIndex == 2)
     {
 
@@ -1391,11 +1393,15 @@ void CalibrationModule::SaveCorrections(){
         if(m_modeIndex == 1)
         {
             name = "adc_offset_slope";
+            readName = "time_offset_slope";
         }
         else if(m_modeIndex == 2)
         {
             name = "time_offset_slope";
+            readName = "adc_offset_slope";
         }
+        QString configName = name;
+        QString combinedConfigName = "adc_time_calibration";
 
 
         QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
@@ -1417,6 +1423,31 @@ void CalibrationModule::SaveCorrections(){
         QFile jsonFile(name);
         jsonFile.open(QFile::WriteOnly);
         jsonFile.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
+        jsonFile.close();
+
+        QFile jsonFile_config(configName+ ".json");
+        jsonFile_config.open(QFile::WriteOnly);
+        jsonFile_config.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
+        jsonFile_config.close();
+
+        QFile jsonFile_combinedConfig(combinedConfigName+ ".json");
+        jsonFile_combinedConfig.open(QFile::WriteOnly);
+        jsonFile_combinedConfig.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
+
+        bool fileExists = QFileInfo::exists(readName) && QFileInfo(readName).isFile();
+        if(fileExists)
+        {
+            QFile jsonFile_read(readName+ ".json");
+            jsonFile_read.open(QFile::ReadOnly);
+            QString content;
+            content = jsonFile_read.readAll();
+            jsonFile_read.close();
+            QJsonDocument secondConfig  = QJsonDocument::fromJson(content.toUtf8());
+            jsonFile_combinedConfig.write(secondConfig.toJson(QJsonDocument::JsonFormat::Compact));
+            jsonFile_combinedConfig.close();
+
+        }
+
         delete m_jsonObject;
 
     }
@@ -1865,6 +1896,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                     else if(m_modeIndex == 6)
                     {
                         m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
+                        std::cout << (int)chip << " " << (int)chNo << " " << (int)bcid << " " << (int)tdc << " " << (int)adc << std::endl;
                     }
                     else if(m_modeIndex == 2 )
                     {

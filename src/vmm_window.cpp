@@ -1125,7 +1125,11 @@ void VMMWindow::on_readADC_clicked()
         QString text = QString::number(adc_result);
         m_ui->ADCresult->setText(text);
     }
+    QDateTime current = QDateTime::currentDateTime();
+    QString str =  current.toString(Qt::TextDate) ;
+    std::cout << str.toStdString() << "," << temperature << std::endl;
 }
+
 
 
 

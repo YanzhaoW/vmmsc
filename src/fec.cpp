@@ -104,7 +104,7 @@ void FEC::LoadDefault(bool calibration){
         (*m_regNames)[0] ="tp_delay";                (*m_reg)[0] = 81;      //register 4: 32 bit //max 50000 by gui?
         (*m_regNames)[1] ="trigger_period";          (*m_reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
         (*m_regNames)[2] ="acq_sync";                (*m_reg)[2] = 100;     //32 bit
-        (*m_regNames)[3] ="acq_window";              (*m_reg)[3] = 3900;    //32 bit
+        (*m_regNames)[3] ="acq_window";              (*m_reg)[3] = 3700;    //32 bit
         (*m_regNames)[4] ="run_mode";                (*m_reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
         (*m_regNames)[5] ="bcid_reset";              (*m_reg)[5] = 0;       //max 65535 (16 bit)
         (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
@@ -151,7 +151,7 @@ void FEC::LoadDefault(bool calibration){
         (*m_reg)[0] = 81;    //tp_delay
         (*m_reg)[1] = 4094;  //trigger_period
         (*m_reg)[2] = 100; //acq_sync
-        (*m_reg)[3] = 3900;//acq_window
+        (*m_reg)[3] = 3700;//acq_window
         (*m_reg)[4] = 0;//run_mode
         (*m_reg)[5] = 0;//bcid_reset
         (*m_reg)[12] = 0;//evbld_infodata

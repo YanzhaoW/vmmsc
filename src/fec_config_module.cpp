@@ -2233,9 +2233,10 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
 
     out << (quint32) 0 //[12,15]
         << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
-        << (quint32) (1*65536) +                      (1*32768 + (adc_chan+4)*4096 + 2*512 + 1*256) +                 131; //=116099; //[20,23] //goes to sc_data to ADC, must be 3 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
+        << (quint32) (1*65536) +                      (1*32768 + (adc_chan+4)*4096 + 2*512 + 1*256) +                 131;
+    //=116099; //[20,23] //goes to sc_data to ADC, must be 3 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
     // is 00000001 (point to conversion register) 11000101 (start conversion, channel 1, range +-2V, single shot) 10000011 (LSB of conversion register to be written)
-
+    std::cout << datagram.toHex().toStdString() << std::endl;
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
 
     bool readOK = true;
@@ -2279,6 +2280,7 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
         << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
         << (quint32) 0; //[20,23] //goes to sc_data to ADC, must be 2 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
 
+    std::cout << datagram.toHex().toStdString() << std::endl;
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
 
     readOK = true;
@@ -2321,7 +2323,7 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
         << (quint32) 11141120;//65535;//11141120; //7121558; //[20,23] //goes to sc_data to ADC, must be 3 bytes
     // can be anytinh here but needs to be 3 byte long
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
-
+std::cout << datagram.toHex().toStdString() << std::endl;
     readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
 
@@ -2331,10 +2333,12 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
 
         read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
         GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-
+std::cout << read_datagram.toHex().toStdString() << std::endl;
 
         QString ADCresult = read_datagram.mid(22,2).toHex();
+        std::cout << ADCresult.toStdString() << std::endl;
         ADCresult_int_bare = ADCresult.toInt(&ok,16) >> 4; //bit shift
+         std::cout << ADCresult_int_bare << std::endl;
     } // while loop
 
     if(readOK) {

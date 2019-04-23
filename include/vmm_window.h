@@ -103,7 +103,6 @@ public slots:
 private slots:
     void on_vmmReset_clicked();
     void on_readADC_clicked();
-
 };
 
 #endif // VMM_WINDOW_H
