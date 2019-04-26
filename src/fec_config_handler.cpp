@@ -2,7 +2,7 @@
 
 FECConfigHandler::FECConfigHandler(MainWindow *top, QObject *parent) : QObject(parent), m_mainWindow{top}
 {
-    getcwd(m_execPath,sizeof(m_execPath));
+    //getcwd(m_execPath,sizeof(m_execPath));
 }
 
 bool FECConfigHandler::LoadAllFECConf(std::string filename){
@@ -19,7 +19,7 @@ bool FECConfigHandler::LoadSingleFECConf(const char* filename, unsigned short da
 
 bool FECConfigHandler::LoadSingleFECConf(const char* filename){//exact file name must be given!
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return LoadFECConfig(fname);
 }
 
@@ -38,7 +38,7 @@ bool FECConfigHandler::WriteSingleFECConf(const char* filename){//exact file nam
     std::string fec_str = str.substr ((str.find("fec")+3),str.find("_",str.find("fec")+3)-(str.find("fec")+3));
     unsigned short fec =atoi(fec_str.c_str());if(!m_mainWindow->m_daqs[daq].GetFEC(fec)) {std::cout << "ERROR, fec " << fec << " does not exist "<< std::endl; return false;}
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
 
     return WriteFECConfig(fname,daq,fec);
 }
@@ -51,7 +51,7 @@ bool FECConfigHandler::GenericAllFECConf(bool load, std::string filename){
                     if (load) std::cout <<"Loading FEC configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<std::endl;
                     else std::cout <<"Writing FEC configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<std::endl;
                     std::ostringstream oss;
-                    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+                    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
                     oss << i;
                     fname+="_daq";
                     fname+=oss.str();
@@ -76,7 +76,7 @@ bool FECConfigHandler::GenericSingleFECConf(bool load, const char* filename, uns
     if (load) std::cout <<"Loading FEC configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<std::endl;
     else std::cout <<"Writing FEC configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<std::endl;
     std::ostringstream oss;
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     oss << daq;
     fname+="_daq";
     fname+=oss.str();

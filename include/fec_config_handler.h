@@ -21,7 +21,6 @@ public:
     bool LoadSingleFECConf(const char* filename);
     bool WriteSingleFECConf(const char* filename);
 private:
-    char m_execPath[256];
     MainWindow *m_mainWindow;
     bool GenericAllFECConf(bool load, std::string filename);
     bool GenericSingleFECConf(bool load, const char* filename, unsigned short daq, unsigned short fec);

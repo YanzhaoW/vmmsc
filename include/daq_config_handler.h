@@ -20,7 +20,6 @@ public:
     bool LoadDAQConf(const char* filename); // only one DAQ implemented
     bool WriteDAQConf(const char* filename);
 private:
-    char m_execPath[256];
     MainWindow *m_mainWindow;
     bool LoadDAQConfig(std::string fname);
     bool WriteDAQConfig(std::string fname);

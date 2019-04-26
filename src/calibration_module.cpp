@@ -48,7 +48,6 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
 
-
 }
 
 void CalibrationModule::StopDataTaking()
@@ -167,14 +166,16 @@ void CalibrationModule::FitOfflineCalibrationData()
     {
         return;
     }
-    if(m_jsonObject)
+
+
+    if(m_calibrationArray[m_modeIndex-1])
     {
-        delete m_jsonObject;
+        while(m_calibrationArray[m_modeIndex-1]->count()) {
+            m_calibrationArray[m_modeIndex-1]->pop_back();
+        }
+        delete m_calibrationArray[m_modeIndex-1];
     }
-
-    m_jsonObject = new QJsonObject();
-
-    QJsonArray calibrationArray;
+    m_calibrationArray[m_modeIndex-1] = new QJsonArray();
 
 
     double meanOffset = 0;
@@ -320,16 +321,8 @@ void CalibrationModule::FitOfflineCalibrationData()
             calibrationObject.insert("vmmID",hdmi*2+chip);
             calibrationObject.insert("offsets",offsetArray);
             calibrationObject.insert("slopes",slopeArray);
-            calibrationArray.push_back(calibrationObject);
+            m_calibrationArray[m_modeIndex-1]->push_back(calibrationObject);
 
-        }
-
-        if(m_modeIndex == 1){
-            m_jsonObject->insert("vmm_adc_calibration",calibrationArray);
-        }
-        else if(m_modeIndex == 2)
-        {
-            m_jsonObject->insert("vmm_time_calibration",calibrationArray);
         }
 
     }
@@ -402,7 +395,6 @@ void CalibrationModule::SavePlotsAsPDF(){
             {
                 name = "Online_TDC";
             }
-
             else if(m_modeIndex == 6)
             {
                 name = "Counts_Channels";
@@ -736,6 +728,7 @@ void CalibrationModule::GetActiveVMMs(){
         }
     }
 }
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::updatePlot(){
     GetSettings();
@@ -1379,77 +1372,84 @@ void CalibrationModule::CalculateCorrections(){
 
 
 void CalibrationModule::SaveCorrections(){
-    if(!IsCalibration())
+    GetSettings();
+
+    if(m_modeIndex == 1 ||  m_modeIndex == 2)
     {
-        return;
-    }
-
-    QString name = "";
-    QString readName = "";
-    if(m_modeIndex == 1 || m_modeIndex == 2)
-    {
-
-        m_isCalibrated[m_modeIndex] = false;
-        if(m_modeIndex == 1)
+        /*
+        if(m_calibrationArray[m_modeIndex-1])
         {
-            name = "adc_offset_slope";
-            readName = "time_offset_slope";
+            while(m_calibrationArray[m_modeIndex-1]->count()) {
+                m_calibrationArray[m_modeIndex-1]->pop_back();
+            }
+            delete m_calibrationArray[m_modeIndex-1];
         }
-        else if(m_modeIndex == 2)
+        m_calibrationArray[m_modeIndex-1] = new QJsonArray();
+        for(int vmm =0; vmm < 2; vmm++){
+            int fec = 2;
+            int hdmi = 0;
+            int chip = vmm;
+            QJsonObject calibrationObject;
+            QJsonArray offsetArray;
+            QJsonArray slopeArray;
+
+            for(unsigned int ch = 0; ch<64; ch++){
+
+                double slope = ch/64;
+                double offset = ch;
+                offset = std::round(1000*offset)/1000;
+                slopeArray.push_back(slope);
+                offsetArray.push_back(offset);
+            }
+            calibrationObject.insert("fecID",fec+1);
+            calibrationObject.insert("vmmID",hdmi*2+chip);
+            calibrationObject.insert("offsets",offsetArray);
+            calibrationObject.insert("slopes",slopeArray);
+            m_calibrationArray[m_modeIndex-1]->push_back(calibrationObject);
+
+        }
+        */
+
+
+        if(m_calibrationArray[m_modeIndex-1])
         {
-            name = "time_offset_slope";
-            readName = "adc_offset_slope";
+            QString name = m_jsonObjectName[m_modeIndex-1];
+
+            m_isCalibrated[m_modeIndex] = false;
+            for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
+                int fec = GetFEC(vmm);
+                int hdmi = GetHDMI(vmm);
+                int chip = GetVMM(vmm);
+                name += "_FEC" + QString::number(fec);
+                name += "_VMM" + QString::number(hdmi*2+chip);
+            }
+
+            QString theName = CreateFileName(name);
+            theName += ".json";
+
+            QJsonObject object;
+            object.insert(m_jsonObjectName[m_modeIndex-1],*m_calibrationArray[m_modeIndex-1]);
+
+            QJsonDocument document(object);
+            QFile jsonFile(theName);
+            jsonFile.open(QFile::WriteOnly);
+            jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
+            jsonFile.close();
         }
-        QString configName = name;
-        QString combinedConfigName = "adc_time_calibration";
 
-
-        QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
-
-        for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
-            int fec = GetFEC(vmm);
-            int hdmi = GetHDMI(vmm);
-            int chip = GetVMM(vmm);
-            //int fecId = m_mainWindow->
-            name += "_FEC" + QString::number(fec);
-            name += "_VMM" + QString::number(hdmi*2+chip);
-
-        }
-        //GetRegVal(const char *reg)
-        //         unsigned short Hybrid::GetReg(std::string feature){
-        //name += "_VMM" + QString::number(hdmi*2+chip);
-        name += ("_" + theDate + ".json");
-        QJsonDocument doc(*m_jsonObject);
-        QFile jsonFile(name);
-        jsonFile.open(QFile::WriteOnly);
-        jsonFile.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
-        jsonFile.close();
-
-        QFile jsonFile_config(configName+ ".json");
-        jsonFile_config.open(QFile::WriteOnly);
-        jsonFile_config.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
-        jsonFile_config.close();
-
-        QFile jsonFile_combinedConfig(combinedConfigName+ ".json");
-        jsonFile_combinedConfig.open(QFile::WriteOnly);
-        jsonFile_combinedConfig.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
-
-        bool fileExists = QFileInfo::exists(readName) && QFileInfo(readName).isFile();
-        if(fileExists)
+        if(m_calibrationArray[0] && m_calibrationArray[1] )
         {
-            QFile jsonFile_read(readName+ ".json");
-            jsonFile_read.open(QFile::ReadOnly);
-            QString content;
-            content = jsonFile_read.readAll();
-            jsonFile_read.close();
-            QJsonDocument secondConfig  = QJsonDocument::fromJson(content.toUtf8());
-            jsonFile_combinedConfig.write(secondConfig.toJson(QJsonDocument::JsonFormat::Compact));
-            jsonFile_combinedConfig.close();
 
+            QString nameCombined = "vmm_adc_time_calibration";
+            QFile jsonFileCombined(m_mainWindow->GetApplicationPath() + "/" + nameCombined + ".json");
+            jsonFileCombined.open(QFile::WriteOnly);
+            QJsonObject object;
+            object.insert(m_jsonObjectName[0],*m_calibrationArray[0]);
+            object.insert(m_jsonObjectName[1],*m_calibrationArray[1]);
+            QJsonDocument documentCombined(object);
+            jsonFileCombined.write(documentCombined.toJson(QJsonDocument::JsonFormat::Compact));
+            jsonFileCombined.close();
         }
-
-        delete m_jsonObject;
-
     }
     else
     {
@@ -2303,7 +2303,7 @@ uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
 
 QString CalibrationModule::CreateFileName(QString name, int polarity, int gain, int peaktime, int tac)
 {
-    QString theName = name;
+    QString theName = m_mainWindow->GetApplicationPath() + "/" + name;
     QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
 
     if(polarity != -1)

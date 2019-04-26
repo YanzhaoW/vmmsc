@@ -47,6 +47,7 @@ public:
     DAQConfigHandler *m_daqConfigHandler;
     FECConfigHandler *m_fecConfigHandler;
     DAQWindow *m_daqWindow;
+    QString GetApplicationPath();
     bool IsDbgActive() { return m_dbg; }
     void ResetAll();
 
@@ -66,6 +67,7 @@ private:
 
     SocketHandler *m_socketHandler;
     MessageHandler *m_messageHandler;
+    QString m_execPath;
     
 
 

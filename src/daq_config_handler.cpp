@@ -2,17 +2,17 @@
 
 DAQConfigHandler::DAQConfigHandler(MainWindow *top, QObject *parent) :QObject(parent), m_mainWindow{top}
 {
-    getcwd(m_execPath,sizeof(m_execPath));
+    //getcwd(m_execPath,sizeof(m_execPath));
 }
 
 bool DAQConfigHandler::LoadDAQConf(const char* filename){
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return LoadDAQConfig(fname);
 }
 
 bool DAQConfigHandler::WriteDAQConf(const char* filename){
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return WriteDAQConfig(fname);
 }
 

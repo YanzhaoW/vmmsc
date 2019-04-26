@@ -100,7 +100,7 @@ private:
     int GetFEC(int vmmId);
     int GetHDMI(int vmmId);
     int GetVMM(int vmmId);
-    QString CreateFileName(QString name,  int polarity, int gain, int peaktime, int tac);
+    QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1);
 
 
     int Receive_VMM2(const char* buffer, int size, int fecId);
@@ -215,8 +215,10 @@ private:
     bool m_ignore16;
 
     std::vector<int> m_BCID;
-    QJsonObject * m_jsonObject;
+    QJsonArray *m_calibrationArray[2] ;
+    QString m_jsonObjectName[2] = {"vmm_adc_calibration","vmm_time_calibration"};
     std::ofstream m_outFile;
+
 
     int m_old_sdp2[1000];
     int m_old_TP_skew[1000];

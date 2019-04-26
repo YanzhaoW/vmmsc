@@ -23,7 +23,7 @@ public:
     bool WriteSingleVMMConf(const char* filename);
 
 private:
-    char m_execPath[256];
+    //char m_execPath[256];
     MainWindow *m_mainWindow;
     bool GenericAllVMMConf(bool load, std::string filename);
     bool GenericSingleVMMConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm);

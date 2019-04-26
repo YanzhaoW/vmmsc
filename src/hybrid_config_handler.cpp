@@ -2,7 +2,7 @@
 
 HybridConfigHandler::HybridConfigHandler(MainWindow *top,QObject *parent) : QObject(parent), m_mainWindow{top}
 {
-    getcwd(m_execPath,sizeof(m_execPath));
+    //getcwd(m_execPath,sizeof(m_execPath));
 }
 
 
@@ -20,7 +20,7 @@ bool HybridConfigHandler::LoadSingleHybridConf(const char* filename, unsigned sh
 
 bool HybridConfigHandler::LoadSingleHybridConf(const char* filename){//exact file name must be given!
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return LoadHybridConfig(fname);
 }
 
@@ -45,7 +45,7 @@ bool HybridConfigHandler::WriteSingleHybridConf(const char* filename){//exact fi
     std::string hybrid_str = str.substr ((str.find("hybrid")+6),str.find("_",str.find("hybrid")+6)-(str.find("hybrid")+6));
     unsigned short hybrid =atoi(hybrid_str.c_str());if(!m_mainWindow->m_daqs[daq].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid)) {std::cout << "ERROR, hybrid " << hybrid << " does not exist "<< std::endl; return false;}
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
 
     return WriteHybridConfig(fname,daq,fec,hdmi,hybrid);
 }
@@ -62,7 +62,7 @@ bool HybridConfigHandler::GenericAllHybridConf(bool load, std::string filename){
                                     if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<std::endl;
                                     else std::cout <<"Writing vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<std::endl;
                                     std::ostringstream oss;
-                                    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+                                    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
                                     oss << i;
                                     fname+="_daq";
                                     fname+=oss.str();
@@ -98,7 +98,7 @@ bool HybridConfigHandler::GenericSingleHybridConf(bool load, const char* filenam
     if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<std::endl;
     else std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<std::endl;
     std::ostringstream oss;
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     oss << daq;
     fname+="_daq";
     fname+=oss.str();

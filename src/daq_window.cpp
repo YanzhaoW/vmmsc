@@ -10,13 +10,13 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->setupUi(this);
     ui->Send->setEnabled(false);
     LoadMessageHandler(m_mainWindow->m_daqs[0].GetMessageHandler());
-    connect(m_msg, SIGNAL(logReady()), this, SLOT(on_readLog()));
+    connect(m_msg, SIGNAL(on_log_ready()), this, SLOT(on_readLog()));
     ui->openConnection_2->setToolTip("Open communication");
 
     //    this->setStyleSheet("QMainWindow {background: 'lightgray';}");
 
-    connect(ui->selectDir, SIGNAL(clicked()),
-            this, SLOT(on_output_directory_select()));
+   //connect(ui->selectDir, SIGNAL(clicked()),
+   //        this, SLOT(on_selectDir_clicked()));
     ui->selectDir->setToolTip("Opens file browser to select config file");
     ui->Button_load->setToolTip("Loading config file");
     ui->Button_save->setToolTip("Saving settings into config file");
@@ -26,7 +26,9 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->offACQ->setEnabled(false);
     ui->checkBoxGlobalDAQ->setEnabled(false);
 
-    if(FileExists("../configs/default.txt")){
+    QString correctedFileName = m_mainWindow->GetApplicationPath() +  "/../configs/default.txt";
+    std::cout << correctedFileName.toStdString() << std::endl;
+    if(FileExists(correctedFileName.toStdString().c_str())){
         LoadConfig("default");
     }
 
@@ -69,22 +71,6 @@ void DAQWindow::SetWarning2(QString warning, QString bkgcol ){
     ui->connectionLabel_3->setStyleSheet("background-color: "+bkgcol);
 }
 // ------------------------------------------------------------------------- //
-
-/*
-void DAQWindow::PlotXY(std::vector<double> x, std::vector<double> y){
-
-    // create graph and assign data to it:
-    ui->customPlot1->addGraph();
-    ui->customPlot1->graph(0)->setData(QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(y));
-    // give the axes some labels:
-    ui->customPlot1->xAxis->setLabel("channel");
-    ui->customPlot1->yAxis->setLabel("Mean ADC");
-    // set axes ranges, so we see all data:
-    ui->customPlot1->xAxis->setRange(0, 66);
-    ui->customPlot1->yAxis->setRange(220, 320);
-    ui->customPlot1->replot();
-}
-*/
 
 
 
@@ -426,14 +412,15 @@ void DAQWindow::on_Debug_pressed()
 
 
 
-void DAQWindow::on_output_directory_select()
+void DAQWindow::on_selectDir_clicked()
 {
+
     stringstream sx;
 
     QFileDialog getdir;
     //    getdir.setProxyModel();
     QString dirStr = QFileDialog::getOpenFileName(this,
-                                                  tr("Select config file"), "../configs",
+                                                  tr("Select config file"), m_mainWindow->GetApplicationPath() + "/../configs",
                                                   tr("Text (*.txt)") );
     if(dirStr=="") return;
     if(!dirStr.contains("/configs/")){
@@ -533,3 +520,4 @@ void DAQWindow::on_pushButtonAbort_pressed()
     on_offACQ_clicked();
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 }
+

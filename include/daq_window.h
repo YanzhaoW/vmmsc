@@ -46,9 +46,6 @@ private slots:
     void on_Box_fec7_clicked();
     void on_Box_fec8_clicked();
 
-    void on_Button_load_clicked();
-
-
     void on_openConnection_2_clicked();
     void on_readLog();
 
@@ -81,10 +78,16 @@ private slots:
 
     void on_pushButtonAbort_pressed();
 
- public slots:
+
+
+
+
+public slots:
     // select the output directory
-    void on_output_directory_select();
+    //void on_output_directory_select();
     void on_Button_save_clicked();
+    void on_selectDir_clicked();
+     void on_Button_load_clicked();
 
 private:
     MainWindow *m_mainWindow;

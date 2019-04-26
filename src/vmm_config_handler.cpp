@@ -2,7 +2,7 @@
 
 VMMConfigHandler::VMMConfigHandler(MainWindow *top, QObject *parent) :QObject(parent), m_mainWindow{top}
 {
-    getcwd(m_execPath,sizeof(m_execPath));
+    //getcwd(m_execPath,sizeof(m_execPath));
 }
 
 bool VMMConfigHandler::LoadAllVMMConf(std::string filename){
@@ -19,7 +19,7 @@ bool VMMConfigHandler::LoadSingleVMMConf(const char* filename, unsigned short da
 
 bool VMMConfigHandler::LoadSingleVMMConf(const char* filename){//exact file name must be given!
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return LoadVMMConfig(fname);
 }
 
@@ -47,7 +47,7 @@ bool VMMConfigHandler::WriteSingleVMMConf(const char* filename){//exact file nam
     std::string vmm_str = str.substr ((str.find("vmm")+3),str.find("_",str.find("vmm")+3)-(str.find("vmm")+3));
     unsigned short vmm =atoi(vmm_str.c_str());if(!m_mainWindow->m_daqs[daq].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].GetVMM(vmm)) {std::cout << "ERROR, vmm " << vmm << " does not exist "<< std::endl; return false;}
     //add config path before file name
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
 
     return WriteVMMConfig(fname,daq,fec,hdmi,hybrid,vmm);
 }
@@ -66,7 +66,7 @@ bool VMMConfigHandler::GenericAllVMMConf(bool load, std::string filename){
                                             if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<" vmm"<<m<<std::endl;
                                             else std::cout <<"Writing vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<" vmm"<<m<<std::endl;
                                             std::ostringstream oss;
-                                            std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+                                            std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
                                             oss << i;
                                             fname+="_daq";
                                             fname+=oss.str();
@@ -107,7 +107,7 @@ bool VMMConfigHandler::GenericSingleVMMConf(bool load, const char* filename, uns
     if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<" vmm"<<vmm<<std::endl;
     else std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<" vmm"<<vmm<<std::endl;
     std::ostringstream oss;
-    std::string fname = m_execPath; fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     oss << daq;
     fname+="_daq";
     fname+=oss.str();

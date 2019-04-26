@@ -17,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_socketHandler(0),
     m_messageHandler(0)
 {
+    QString fileName = QCoreApplication::applicationDirPath();
+    m_execPath = fileName.replace("/vmmdcs.app/Contents/MacOS", "");
+
     m_daq_act[0] = 1;
     std::cout << "stating commandline" << std::endl;
     m_commandLine = new Commandline(this,1);
@@ -59,6 +62,11 @@ MainWindow::~MainWindow()
 
 }
 
+
+QString MainWindow::GetApplicationPath()
+{
+    return m_execPath;
+}
 
 void MainWindow::ResetAll(){// for test purpose, not functioning correctly
     //    delete daq_act;
