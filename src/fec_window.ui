@@ -446,7 +446,7 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QLineEdit" name="trgPeriod">
+           <widget class="QLineEdit" name="readoutCycle">
             <property name="font">
              <font>
               <family>Arial</family>
@@ -909,7 +909,7 @@ Parameters</string>
           </size>
          </property>
          <property name="title">
-          <string notr="true"/>
+          <string notr="true">Deprecated</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="3" column="0">
@@ -1045,7 +1045,7 @@ Parameters</string>
           <item>
            <widget class="QLineEdit" name="lineEdit_triggerOffset">
             <property name="text">
-             <string>2048000</string>
+             <string>1024000</string>
             </property>
            </widget>
           </item>
@@ -1059,7 +1059,7 @@ Parameters</string>
           <item>
            <widget class="QLineEdit" name="lineEdit_triggerWindow">
             <property name="text">
-             <string>204750</string>
+             <string>102325</string>
             </property>
            </widget>
           </item>

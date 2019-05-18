@@ -5,7 +5,7 @@ FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
-    numberOfRegisters(38),
+    numberOfRegisters(39),
     m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
     m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
     m_chr ( new char ) //need for returning const char * in GetReg functions
@@ -24,7 +24,7 @@ QString FEC::GetIP(){
 }
 
 int FEC::GetIP_id(){
-   return m_reg->at(29);
+    return m_reg->at(29);
 }
 
 void FEC::SetFirmwareVersion(QString version)
@@ -99,78 +99,50 @@ quint16 FEC::GetChMap(){
 
 // ------------------------------------------------------------------------- //
 
-void FEC::LoadDefault(bool calibration){
-    if(!calibration){
-        (*m_regNames)[0] ="tp_delay";                (*m_reg)[0] = 81;      //register 4: 32 bit //max 50000 by gui?
-        (*m_regNames)[1] ="trigger_period";          (*m_reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
-        (*m_regNames)[2] ="acq_sync";                (*m_reg)[2] = 100;     //32 bit
-        (*m_regNames)[3] ="acq_window";              (*m_reg)[3] = 3700;    //32 bit
-        (*m_regNames)[4] ="run_mode";                (*m_reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
-        (*m_regNames)[5] ="bcid_reset";              (*m_reg)[5] = 0;       //max 65535 (16 bit)
-        (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
-        (*m_regNames)[7] ="daq_port";                (*m_reg)[7] = 6006;    //32 bit
-        (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
-        (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
-        (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
-        (*m_regNames)[11]="evbld_mode";              (*m_reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
-        (*m_regNames)[12]="evbld_infodata";          (*m_reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
-        (*m_regNames)[13]="highres";                 (*m_reg)[13] = 0;   //{"0", "1", "false", "true"};
+void FEC::LoadDefault(){
+    (*m_regNames)[0] ="tp_delay";                (*m_reg)[0] = 81;      //register 4: 32 bit //max 50000 by gui?
+    (*m_regNames)[1] ="readout_cycle";          (*m_reg)[1] = 4094;  //32 bit //max 7FFFFFFF = 31 bit?
+    (*m_regNames)[2] ="acq_sync";                (*m_reg)[2] = 100;     //32 bit
+    (*m_regNames)[3] ="acq_window";              (*m_reg)[3] = 3700;    //32 bit
+    (*m_regNames)[4] ="run_mode";                (*m_reg)[4] = 0;       //{"0", "1", "pulser" (=0), "external" (=1)};
+    (*m_regNames)[5] ="bcid_reset";              (*m_reg)[5] = 0;       //max 65535 (16 bit)
+    (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
+    (*m_regNames)[7] ="daq_port";                (*m_reg)[7] = 6006;    //32 bit
+    (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
+    (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
+    (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
+    (*m_regNames)[11]="evbld_mode";              (*m_reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
+    (*m_regNames)[12]="evbld_infodata";          (*m_reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
+    (*m_regNames)[13]="highres";                 (*m_reg)[13] = 0;   //{"0", "1", "false", "true"};
 
-        (*m_regNames)[14]="triggermode";             (*m_reg)[14] = 0;   // 0 for external and 1 for pulser
-        (*m_regNames)[15]="res2";                    (*m_reg)[15] = 0;   //
-        (*m_regNames)[16]="res3";                    (*m_reg)[16] = 0;   //
+    (*m_regNames)[14]="triggermode";             (*m_reg)[14] = 0;   // 0 for external and 1 for pulser
+    (*m_regNames)[15]="res2";                    (*m_reg)[15] = 0;   //
+    (*m_regNames)[16]="res3";                    (*m_reg)[16] = 0;   //
 
-        (*m_regNames)[17]="sL0enaV";                  (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
-        (*m_regNames)[18]="sL0ena";                   (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
-        (*m_regNames)[19]="l0offset";                 (*m_reg)[19] = 0;   //12 bit
-        (*m_regNames)[20]="offset";                   (*m_reg)[20] = 0;   //12 bit
-        (*m_regNames)[21]="rollover";                 (*m_reg)[21] = 0;   //12 bit
-        (*m_regNames)[22]="window";                   (*m_reg)[22] = 0;   //3 bit
-        (*m_regNames)[23]="truncate";                 (*m_reg)[23] = 0;   //6 bit
-        (*m_regNames)[24]="nskip";                    (*m_reg)[24] = 0;   //7 bit
-        (*m_regNames)[25]="sL0cktest";                (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
-        (*m_regNames)[26]="ip1";                      (*m_reg)[26] = 10;   //
-        (*m_regNames)[27]="ip2";                      (*m_reg)[27] = 0;   //
-        (*m_regNames)[28]="ip3";                      (*m_reg)[28] = 0;   //
-        (*m_regNames)[29]="ip4";                      (*m_reg)[29] = 2;   //
+    (*m_regNames)[17]="sL0enaV";                  (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
+    (*m_regNames)[18]="sL0ena";                   (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
+    (*m_regNames)[19]="l0offset";                 (*m_reg)[19] = 0;   //12 bit
+    (*m_regNames)[20]="offset";                   (*m_reg)[20] = 0;   //12 bit
+    (*m_regNames)[21]="rollover";                 (*m_reg)[21] = 0;   //12 bit
+    (*m_regNames)[22]="window";                   (*m_reg)[22] = 0;   //3 bit
+    (*m_regNames)[23]="truncate";                 (*m_reg)[23] = 0;   //6 bit
+    (*m_regNames)[24]="nskip";                    (*m_reg)[24] = 0;   //7 bit
+    (*m_regNames)[25]="sL0cktest";                (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
+    (*m_regNames)[26]="ip1";                      (*m_reg)[26] = 10;   //
+    (*m_regNames)[27]="ip2";                      (*m_reg)[27] = 0;   //
+    (*m_regNames)[28]="ip3";                      (*m_reg)[28] = 0;   //
+    (*m_regNames)[29]="ip4";                      (*m_reg)[29] = 2;   //
 
-        (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
-         (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
-         (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //register 11: {"0", "1", "disabled", "enabled"} - 1 bit
-         (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 10;   //register 11: {0-31} - 5 bit
-         (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
-         (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0xfff;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
-        (*m_regNames)[36]="trigger_pulse_delay";        (*m_reg)[36] = 0;   //register 15: {0-255} * BCCLOCK_PERIOD - 8 bit, bit 8-15
-        (*m_regNames)[37]="clear_S6_fifo";             (*m_reg)[37] = 0; //{"0", "1", "false", "true"};
+    (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
+    (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
+    (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //register 11: {"0", "1", "disabled", "enabled"} - 1 bit, bit 31
+    (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 10;   //register 11: {0-31} - 5 bit, bit 24-28
+    (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit, bit 12-23
+    (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0xfff;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit, bit 0-11
+    (*m_regNames)[36]="trigger_pulse_delay";        (*m_reg)[36] = 0;   //register 15: {0-255} * BCCLOCK_PERIOD - 8 bit, bit 8-15
+    (*m_regNames)[37]="clear_S6_fifo";             (*m_reg)[37] = 0; //{"0", "1", "false", "true"};
+    (*m_regNames)[38]="triggered_mode";          (*m_reg)[38] = 0;   //register 11, 0=40MHz, 1=20 MHz, 2=10MHz, 3=5 MHz, 2 bit, bit 29-30
 
-
-
-
-    }
-   else{
-        (*m_reg)[0] = 81;    //tp_delay
-        (*m_reg)[1] = 4094;  //trigger_period
-        (*m_reg)[2] = 100; //acq_sync
-        (*m_reg)[3] = 3700;//acq_window
-        (*m_reg)[4] = 0;//run_mode
-        (*m_reg)[5] = 0;//bcid_reset
-        (*m_reg)[12] = 0;//evbld_infodata
-        (*m_reg)[13] = 0;//highres
-
-        (*m_reg)[14] = 0;//triggermode
-
-        (*m_reg)[17] = 0;//sL0enaV
-        (*m_reg)[18] = 0;//sL0ena
-        (*m_reg)[19] = 0;//l0offset
-        (*m_reg)[20] = 0;//offset
-        (*m_reg)[21] = 0;//rollover
-        (*m_reg)[22] = 0;//window
-        (*m_reg)[23] = 0;//truncate
-        (*m_reg)[24] = 0;//nskip
-        (*m_reg)[25] = 0;//sL0cktest
-        (*m_reg)[37] = 0;//clear_S6_fifo
-
-    }
 }
 
 // ------------------------------------------------------------------------- //
@@ -181,14 +153,14 @@ unsigned short FEC::GetVMM(int hdmi_index, int hybrid_index, int vmm_index, std:
 
 bool FEC::SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch){
     if(m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
-     return true;
+        return true;
     }
     else return false;
 }
 
 bool FEC::SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch){
     if(m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
-     return true;
+        return true;
     }
     else return false;
 }
@@ -227,15 +199,15 @@ bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
     else if (reg < m_reg->size()){// && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
         if (intValue < 4294967296)found = true;
     }
-//    if (reg == 11){ //evbld_mode
-//        if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
-//    }
-//    if (reg == 12){ //evbld_info
-//        if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
-//    }
-//    if (reg == 13){ //timeStampHighRes
-//        if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
-//    }
+    //    if (reg == 11){ //evbld_mode
+    //        if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
+    //    }
+    //    if (reg == 12){ //evbld_info
+    //        if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
+    //    }
+    //    if (reg == 13){ //timeStampHighRes
+    //        if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
+    //    }
     return found;
 }
 

@@ -56,57 +56,60 @@
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0" colspan="2">
         <layout class="QGridLayout" name="gridLayout_16">
-         <item row="2" column="1">
-          <widget class="QComboBox" name="sg">
+         <item row="0" column="0">
+          <widget class="QLabel" name="spgLabel">
            <property name="font">
             <font>
              <family>Arial</family>
              <pointsize>9</pointsize>
             </font>
            </property>
-           <property name="currentIndex">
-            <number>2</number>
+           <property name="text">
+            <string>Input charge polarity</string>
            </property>
-           <item>
-            <property name="text">
-             <string>0.5 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>1.0 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>3.0 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>4.5 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>6.0 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>9.0 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>12.0 mV/fC</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>16.0 mV/fC</string>
-            </property>
-           </item>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="sm5_sm0Label">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Analog (Channel) Monitor</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="stLabel">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Peak time (st)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <widget class="QTextEdit" name="ADCresult">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ADC res.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
           </widget>
          </item>
          <item row="1" column="1">
@@ -459,8 +462,41 @@
            </item>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="spgLabel">
+         <item row="4" column="1">
+          <widget class="QComboBox" name="st">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <item>
+            <property name="text">
+             <string>200 ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>100 ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>50 ns</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>25 ns</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="stcLabel">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -468,21 +504,61 @@
             </font>
            </property>
            <property name="text">
-            <string>Input charge polarity</string>
+            <string>TAC Slop Adj (stc)</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="sm5_sm0Label">
+         <item row="2" column="1">
+          <widget class="QComboBox" name="sg">
            <property name="font">
             <font>
              <family>Arial</family>
              <pointsize>9</pointsize>
             </font>
            </property>
-           <property name="text">
-            <string>Analog (Channel) Monitor</string>
+           <property name="currentIndex">
+            <number>2</number>
            </property>
+           <item>
+            <property name="text">
+             <string>0.5 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1.0 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>3.0 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>4.5 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>6.0 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>9.0 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>12.0 mV/fC</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>16.0 mV/fC</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="2" column="0">
@@ -498,39 +574,10 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="sp">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>negative</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>positive</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="stcLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
+         <item row="5" column="0">
+          <widget class="QPushButton" name="readADC">
            <property name="text">
-            <string>TAC Slop Adj (stc)</string>
+            <string>ReadADC</string>
            </property>
           </widget>
          </item>
@@ -570,21 +617,8 @@
            </item>
           </widget>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="stLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Peak time (st)</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QComboBox" name="st">
+         <item row="0" column="1">
+          <widget class="QComboBox" name="sp">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -596,48 +630,14 @@
            </property>
            <item>
             <property name="text">
-             <string>200 ns</string>
+             <string>negative</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>100 ns</string>
+             <string>positive</string>
             </property>
            </item>
-           <item>
-            <property name="text">
-             <string>50 ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>25 ns</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QPushButton" name="readADC">
-           <property name="text">
-            <string>ReadADC</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="1">
-          <widget class="QTextEdit" name="ADCresult">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>22</height>
-            </size>
-           </property>
-           <property name="html">
-            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;ADC res.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
           </widget>
          </item>
         </layout>

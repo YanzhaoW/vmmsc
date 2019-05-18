@@ -334,12 +334,17 @@ void CalibrationModule::SavePlotsAsPDF(){
     int polarity = 0;
     int peaktime = 0;
     int tac = 0;
-    for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
+
+    int theChoice =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex();
+    int start = theChoice * 8;
+    int end = (theChoice +1)*8;
+    for(int vmm=start; vmm<m_vmmActs.size() && vmm <end; vmm++){
         int fec = GetFEC(vmm);
         int hdmi = GetHDMI(vmm);
         int chip = GetVMM(vmm);
 
-        if(vmm==0)
+
+        if(vmm==start)
         {
             gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
             polarity = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("sp");
@@ -347,31 +352,7 @@ void CalibrationModule::SavePlotsAsPDF(){
             tac = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("stc");
         }
 
-        int theFec =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex()/2;
-        int selectedRangeStart = 0;
-        int selectedRangeStop = 3;
-        if(m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex()%2 == 1 )
-        {
-            selectedRangeStart = 4;
-            selectedRangeStop = 7;
-        }
-        //Changed to put all VMMs on one tab
-        //if(fec == theFec && hdmi >= selectedRangeStart && hdmi <= selectedRangeStop)
-        if(hdmi == 0 || hdmi == 2 || hdmi == 3 || hdmi == 7)
-        {
-            int index = hdmi;
-            if(hdmi == 2)
-            {
-                index = 1;
-            }
-            else if(hdmi == 3)
-            {
-                index = 2;
-            }
-
-            //Changed to put all VMMs on one tab
-            //QCustomPlot *plot = plotVector[hdmi*2+chip];
-            QCustomPlot *plot = plotVector[index*2+chip];
+            QCustomPlot *plot = plotVector[vmm%8];
 
             QString name = "";
             if(m_modeIndex == 1)
@@ -420,14 +401,12 @@ void CalibrationModule::SavePlotsAsPDF(){
                 name = "S-curve";
             }
 
-            name += "_FEC" + QString::number(fec);
+            name += "_FEC" + QString::number(fec+1);
             name += "_VMM" + QString::number(hdmi*2+chip);
             QString theName = CreateFileName(name,polarity,gain,peaktime,tac);
             theName += ".pdf";
             plot->savePdf(theName);
         }
-    }
-
 }
 
 
@@ -439,7 +418,7 @@ void CalibrationModule::PlotData(){
     {
         QCustomPlot *plot = plotVector[i];
         plot->clearItems();
-         plot->clearPlottables();
+        plot->clearPlottables();
         plot->clearGraphs();
         plot->yAxis->setLabel("");
         plot->xAxis->setLabel("");
@@ -450,210 +429,190 @@ void CalibrationModule::PlotData(){
     {
         return;
     }
-    for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
+    int theChoice =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex();
+    int start = theChoice * 8;
+    int end = (theChoice +1)*8;
+    for(int vmm=start; vmm<m_vmmActs.size() && vmm <end; vmm++){
         int fec = GetFEC(vmm);
         int hdmi = GetHDMI(vmm);
         int chip = GetVMM(vmm);
 
-        int theFec =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex()/2;
-        int selectedRangeStart = 0;
-        int selectedRangeStop = 3;
-        if(m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex()%2 == 1 )
-        {
-            selectedRangeStart = 4;
-            selectedRangeStop = 7;
+        QCustomPlot *plot = plotVector[vmm%8];
+
+
+        plot->clearGraphs();
+        // give the axes some labels:
+        plot->xAxis->setLabel("channel");
+        // set axes ranges, so we see all data:
+        plot->xAxis->setRange(0, 66);
+        QPen pen(Qt::red,3,Qt::SolidLine);
+
+        QString title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hdmi*2+chip);
+
+        double colorFactor = 0;
+
+
+        if(m_modeIndex == 1) {
+            title+= ": Mean ADC";
+            colorFactor = 10;
+            plot->yAxis->setRange(0.0, 1023.0);
         }
-        //Changed to put all VMMs on one tab
-        //if(fec == theFec && hdmi >= selectedRangeStart && hdmi <= selectedRangeStop)
-        if(hdmi == 0 || hdmi == 2 || hdmi == 3 || hdmi == 7)
+        else if(m_modeIndex == 4) {
+            title+= ": Mean ADC";
+            colorFactor = 5;
+            plot->yAxis->setRange(0.0, 1023.0);
+        }
+        else if(m_modeIndex == 2) {
+            title+= ": Mean time";
+            colorFactor = 10;
+            plot->yAxis->setRange(-10.0, 60.0);
+        }
+        else if(m_modeIndex == 3) {
+            title+= ": Threshold";
+            colorFactor = 5;
+            plot->yAxis->setRange(0.0, 300.0);
+        }
+        else if(m_modeIndex == 5) {
+            title+= ": Mean TDC";
+            colorFactor = 10;
+            plot->yAxis->setRange(0.0, 255.0);
+        }
+        else if(m_modeIndex == 6)
         {
-            int index = hdmi;
-            if(hdmi == 2)
+            title+= ": Counts";
+        }
+        else if(m_modeIndex == 7)
+        {
+            title+= ": Mean ADC";
+            plot->yAxis->setRange(0.0, 1023.0);
+        }
+        else if(m_modeIndex == 8)
+        {
+            title+= ": Mean TDC";
+            plot->yAxis->setRange(0.0, 255.0);
+        }
+        else if(m_modeIndex == 9)
+        {
+            title+= ": Mean BCID";
+            plot->yAxis->setRange(0.0, 4095.0);
+        }
+        else if(m_modeIndex == 10)
+        {
+            title+= ": Pedestal [mV]";
+            colorFactor = 30;
+            plot->yAxis->setRange(0.0, 350.0);
+        }
+        else if(m_modeIndex == 11)
+        {
+            title+= ": Rate [Hz]";
+            plot->xAxis->setLabel("DAC threshold");
+            plot->yAxis->setRange(0.0, m_rateLimit);
+            plot->xAxis->setRange(m_minThreshold, m_maxThreshold);
+        }
+
+        plot->yAxis->setLabel(title);
+        if(m_runMode == "User" /*m_modeIndex >= 6  &&  m_modeIndex <= 9*/)
+        {
+
+            plot->addGraph();
+            plot->graph(0)->setPen(pen);
+            plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
+
+            plot->yAxis->setLabel(title);
+            plot->legend->setVisible(true);
+            plot->legend->setFont(QFont("Helvetica",9));
+            plot->graph(0)->setName(title);
+            plot->yAxis->rescale();
+        }
+        else
+        {
+            if(m_modeIndex == 1 || m_modeIndex == 2)
             {
-                index = 1;
-            }
-            else if(hdmi == 3)
-            {
-                index = 2;
+                for(int bit=0; bit<m_number_bits;bit++){
+                    plot->addGraph();
+                    plot->graph(2*bit)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                    plot->graph(2*bit)->setPen(QPen(QColor(bit*colorFactor)));
+                    plot->legend->removeItem(plot->legend->itemCount()-1);
+                    std::vector<double> y;
+                    for(int ch=0; ch<64; ch++)
+                    {
+                        y.push_back((m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])*  m_slope[fec][hdmi][0][chip][ch]);
+                        //std::cout << ch << " " << m_mean[bit][fec][hdmi][0][chip][ch] << std::endl;
+                    }
+                    plot->addGraph();
+                    plot->graph(bit*2+1)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(y));
+
+                    plot->graph(bit*2+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                    plot->legend->removeItem(plot->legend->itemCount()-1);
+                }
+                plot->legend->setVisible(false);
+
             }
 
-            //Changed to put all VMMs on one tab
-            //QCustomPlot *plot = plotVector[hdmi*2+chip];
-            QCustomPlot *plot = plotVector[index*2+chip];
-
-            plot->clearGraphs();
-            // give the axes some labels:
-            plot->xAxis->setLabel("channel");
-            // set axes ranges, so we see all data:
-            plot->xAxis->setRange(0, 66);
-            QPen pen(Qt::red,3,Qt::SolidLine);
-
-            QString title = "VMM " + QString::number(hdmi*2+chip);
-
-            double colorFactor = 0;
-
-
-            if(m_modeIndex == 1) {
-                title+= ": Mean ADC";
-                colorFactor = 10;
-                plot->yAxis->setRange(0.0, 1023.0);
-            }
-            else if(m_modeIndex == 4) {
-                title+= ": Mean ADC";
-                colorFactor = 5;
-                plot->yAxis->setRange(0.0, 1023.0);
-            }
-            else if(m_modeIndex == 2) {
-                title+= ": Mean time";
-                colorFactor = 10;
-                plot->yAxis->setRange(-10.0, 60.0);
-            }
-            else if(m_modeIndex == 3) {
-                title+= ": Threshold";
-                colorFactor = 5;
-                plot->yAxis->setRange(0.0, 300.0);
-            }
-            else if(m_modeIndex == 5) {
-                title+= ": Mean TDC";
-                colorFactor = 10;
-                plot->yAxis->setRange(0.0, 255.0);
-            }
-            else if(m_modeIndex == 6)
+            else if(m_modeIndex == 3)
             {
-                title+= ": Counts";
+                for(int bit=0; bit<m_number_bits+1;bit++){
+                    plot->addGraph();
+                    plot->graph(bit)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                    if(bit == 1)
+                    {
+                        plot->graph(1)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
+                        plot->graph(1)->setName(QString("threshold"));
+                    }
+                    else {
+                        plot->graph(0)->setPen(QPen(Qt::red,2,Qt::SolidLine));
+                        plot->graph(0)->setName(QString("upper noise edge"));
+                    }
+
+                }
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",8));
+
             }
-            else if(m_modeIndex == 7)
+            else if(m_modeIndex == 4 || m_modeIndex == 5)
             {
-                title+= ": Mean ADC";
-                plot->yAxis->setRange(0.0, 1023.0);
-            }
-            else if(m_modeIndex == 8)
-            {
-                title+= ": Mean TDC";
-                plot->yAxis->setRange(0.0, 255.0);
-            }
-            else if(m_modeIndex == 9)
-            {
-                title+= ": Mean BCID";
-                plot->yAxis->setRange(0.0, 4095.0);
+                for(int bit=0; bit<m_number_bits;bit++){
+                    plot->addGraph();
+                    plot->graph(bit)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                    plot->graph(bit)->setPen(QPen(QColor(bit*colorFactor)));
+                    plot->legend->removeItem(plot->legend->itemCount()-1);
+                }
+                int n_graph =plot->graphCount();
+                plot->addGraph();
+                plot->graph(n_graph)->setPen(QPen(Qt::red,4,Qt::SolidLine));
+                plot->graph(n_graph)->setName("Best common value");
+                plot->graph(n_graph)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                plot->addGraph();
+                plot->graph(n_graph+1)->setData(QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_calVal[fec][hdmi][0][chip] ));
+                plot->graph(n_graph+1)->setPen(QPen(Qt::green,4,Qt::SolidLine));
+                plot->graph(n_graph+1)->setName("Calibrated curve");
             }
             else if(m_modeIndex == 10)
             {
-                title+= ": Pedestal [mV]";
-                colorFactor = 30;
-                plot->yAxis->setRange(0.0, 350.0);
-            }
-            else if(m_modeIndex == 11)
-            {
-                title+= ": Rate [Hz]";
-                plot->xAxis->setLabel("DAC threshold");
-                plot->yAxis->setRange(0.0, m_rateLimit);
-                plot->xAxis->setRange(m_minThreshold, m_maxThreshold);
-            }
-
-            plot->yAxis->setLabel(title);
-            if(m_runMode == "User" /*m_modeIndex >= 6  &&  m_modeIndex <= 9*/)
-            {
-
-                plot->addGraph();
-                plot->graph(0)->setPen(pen);
-                plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
-
-                plot->yAxis->setLabel(title);
                 plot->legend->setVisible(true);
                 plot->legend->setFont(QFont("Helvetica",9));
-                plot->graph(0)->setName(title);
-                plot->yAxis->rescale();
-            }
-            else
-            {
-                if(m_modeIndex == 1 || m_modeIndex == 2)
-                {
-                    for(int bit=0; bit<m_number_bits;bit++){
-                        plot->addGraph();
-                        plot->graph(2*bit)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
-                        plot->graph(2*bit)->setPen(QPen(QColor(bit*colorFactor)));
-                        plot->legend->removeItem(plot->legend->itemCount()-1);
-                        std::vector<double> y;
-                        for(int ch=0; ch<64; ch++)
-                        {
-                            y.push_back((m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])*  m_slope[fec][hdmi][0][chip][ch]);
-                            //std::cout << ch << " " << m_mean[bit][fec][hdmi][0][chip][ch] << std::endl;
-                        }
-                        plot->addGraph();
-                        plot->graph(bit*2+1)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(y));
-
-                        plot->graph(bit*2+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
-                        plot->legend->removeItem(plot->legend->itemCount()-1);
-                    }
-                    plot->legend->setVisible(false);
-
-                }
-
-                else if(m_modeIndex == 3)
-                {
-                    for(int bit=0; bit<m_number_bits+1;bit++){
-                        plot->addGraph();
-                        plot->graph(bit)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
-                        if(bit == 1)
-                        {
-                            plot->graph(1)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
-                            plot->graph(1)->setName(QString("threshold"));
-                        }
-                        else {
-                            plot->graph(0)->setPen(QPen(Qt::red,2,Qt::SolidLine));
-                            plot->graph(0)->setName(QString("upper noise edge"));
-                        }
-
-                    }
-                    plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
-
-                }
-                else if(m_modeIndex == 4 || m_modeIndex == 5)
-                {
-                    for(int bit=0; bit<m_number_bits;bit++){
-                        plot->addGraph();
-                        plot->graph(bit)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
-                        plot->graph(bit)->setPen(QPen(QColor(bit*colorFactor)));
-                        plot->legend->removeItem(plot->legend->itemCount()-1);
-                    }
-                    int n_graph =plot->graphCount();
+                for(int bit=0; bit<m_number_bits;bit++){
                     plot->addGraph();
-                    plot->graph(n_graph)->setPen(QPen(Qt::red,4,Qt::SolidLine));
-                    plot->graph(n_graph)->setName("Best common value");
-                    plot->graph(n_graph)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
-                    plot->addGraph();
-                    plot->graph(n_graph+1)->setData(QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_calVal[fec][hdmi][0][chip] ));
-                    plot->graph(n_graph+1)->setPen(QPen(Qt::green,4,Qt::SolidLine));
-                    plot->graph(n_graph+1)->setName("Calibrated curve");
-                }
-                else if(m_modeIndex == 10)
-                {
-                    plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",9));
-                    for(int bit=0; bit<m_number_bits;bit++){
-                        plot->addGraph();
-                        plot->graph(bit)->setName(QString("Pedestal"));
-                        plot->graph(bit)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
-                        plot->graph(bit)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+                    plot->graph(bit)->setName(QString("Pedestal"));
+                    plot->graph(bit)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                    plot->graph(bit)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
 
-                        //if(bit > 0)
-                        //{
-                        //     plot->legend->removeItem(plot->legend->itemCount()-1);
-                        //}
-                    }
-                    /*
+                    //if(bit > 0)
+                    //{
+                    //     plot->legend->removeItem(plot->legend->itemCount()-1);
+                    //}
+                }
+                /*
                     for(int bit=m_number_bits; bit<2*m_number_bits;bit++){
                         plot->addGraph();
                         if(bit == m_number_bits)
@@ -676,27 +635,25 @@ void CalibrationModule::PlotData(){
                     }
                     */
 
-                }
-                else if(m_modeIndex == 11)
-                {
-                    plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",9));
-                    plot->addGraph();
-                    plot->graph(0)->setName(QString("S-curve channel ") + QString::number(m_theChannel));
-                    plot->graph(0)->setData( QVector<double>::fromStdVector(m_dac), QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
-                    plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
-                    plot->graph(0)->setLineStyle(QCPGraph::lsLine);
-                    plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
-                    plot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
-
-                }
             }
-            plot->replot();
+            else if(m_modeIndex == 11)
+            {
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",9));
+                plot->addGraph();
+                plot->graph(0)->setName(QString("S-curve channel ") + QString::number(m_theChannel));
+                plot->graph(0)->setData( QVector<double>::fromStdVector(m_dac), QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+                plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+                plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
+                plot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
 
+            }
         }
-
+        plot->replot();
 
     }
+
 }
 
 // ------------------------------------------------------------------------ //
@@ -706,8 +663,7 @@ void CalibrationModule::GetActiveVMMs(){
 
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
-            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("FEC%0 VMM 0-7").arg(fec));
-            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("FEC%0 VMM 8-15").arg(fec));
+
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 if( m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) ){
                     for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
@@ -718,7 +674,6 @@ void CalibrationModule::GetActiveVMMs(){
                                                         hdmi*HYBRIDS_PER_HDMI*VMMS_PER_HYBRID +
                                                         hybrid*VMMS_PER_HYBRID
                                                         +vmm);
-
                                 }
                             }
                         }
@@ -726,6 +681,38 @@ void CalibrationModule::GetActiveVMMs(){
                 }
             }
         }
+    }
+    if(m_vmmActs.size() <=8 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
+    }
+    if(m_vmmActs.size() <=16 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
+    }
+    if(m_vmmActs.size() <=24 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
+    }
+    if(m_vmmActs.size() <=32 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
+    }
+    if(m_vmmActs.size() <=40 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
+    }
+    if(m_vmmActs.size() <=48 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
+    }
+    if(m_vmmActs.size() <=56 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
+    }
+    if(m_vmmActs.size() <=64 )
+    {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
     }
 }
 

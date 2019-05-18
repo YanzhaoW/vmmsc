@@ -31,13 +31,11 @@ class QUdpSocket;
 // vmm
 #include "message_handler.h"
 
-#define TIME_FACTOR 4
-
 using namespace std;
 class MainWindow;
 class QCustomPlot;
 
-
+#define TIME_FACTOR 4
 
 class CalibrationModule : public QObject
 {
@@ -188,8 +186,8 @@ private:
     const static int m_number_bits_threshold = 1;
     const static int m_number_bits_s_curve = 1;
 
-    const static int m_number_bits_offline_time = 16/TIME_FACTOR;
-    const static int m_number_bits_offline_adc= 15;
+    const static int m_number_bits_offline_time = 4;
+    const static int m_number_bits_offline_adc= 4;
     const static int m_number_bits_pedestal = 1;
 
     uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];

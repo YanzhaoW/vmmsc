@@ -165,8 +165,39 @@ void HybridWindow::onUpdateSettings(){
     else if(QObject::sender() == m_ui->tpPolarity){
         SetHybrid("TP_pol", m_ui->tpPolarity->currentIndex());
     }
+}
 
+void HybridWindow::on_pbReadI2C_pressed()
+{
+  QString result = m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadI2C(m_hdmiIndex, m_hybridIndex, m_ui->cbChoiceI2C->currentIndex());
+  m_ui->lineEditResultI2C->setText(result.toUpper());
+}
 
+void HybridWindow::on_pushButton_setAllHybrids_pressed()
+{
+    for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
+        if (m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].GetFEC(fec) ){
+            for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
+                if( m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) ){
+                    for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
+                        if (m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid)){
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKTK", m_ui->cktk_s6->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKBC", m_ui->ckbc_s6->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKBC_duty", m_ui->ckbc_duty_s6->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKDT", m_ui->ckdt_s6->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("TK_Pulses", m_ui->s6_tkPulses->value());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("period", m_ui->fecPeriodReset->value());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("TP_skew", m_ui->tpSkew->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("TP_width", m_ui->tpWidth->currentIndex());
+                            m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("TP_pol", m_ui->tpPolarity->currentIndex());
 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].SendAll();
 
 }

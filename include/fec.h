@@ -23,7 +23,7 @@ public:
     friend class CalibrationModule;
     HDMI m_hdmis[HDMIS_PER_FEC];
 
-    void LoadDefault(bool calibration = false);
+    void LoadDefault();
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& GetMessageHandler() { return *m_msg; }
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }
@@ -56,6 +56,7 @@ public:
     QString GetFirmwareVersion();
 
 
+    FECConfigModule *m_fecConfigModule;
 private:
     bool Set(unsigned short reg, unsigned long val);
     bool CheckAllowedVal(unsigned short reg, const char *val);
@@ -75,7 +76,6 @@ private:
     bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
     bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
 
-    FECConfigModule *m_fecConfigModule;
     QString m_firmwareVersion;
 
 };

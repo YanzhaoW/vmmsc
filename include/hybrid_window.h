@@ -25,6 +25,9 @@ private slots:
     void on_Box_vmm1_clicked();
     void on_Box_vmm2_clicked();
     void onUpdateSettings();
+    void on_pbReadI2C_pressed();
+    void on_pushButton_setAllHybrids_pressed();
+
 private:
     HDMIWindow *m_hdmiWindow;
     unsigned short m_fecIndex;

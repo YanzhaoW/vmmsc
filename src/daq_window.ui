@@ -661,7 +661,7 @@
               </size>
              </property>
              <property name="text">
-              <string>Display FEC</string>
+              <string>Display VMMs</string>
              </property>
             </widget>
            </item>

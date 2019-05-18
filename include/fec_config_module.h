@@ -60,12 +60,13 @@ public:
     void ACQoff(bool broadcast=false);
     void SetMask();
     int ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan);
+    QString ReadI2C(int hdmi_index, int hybrid_index, int choice);
     void VMMLoadEmit();
 
 private:
     FEC *m_fec;
     bool m_dbg;
-
+    std::vector<int> m_hdmi_i2c;
     SocketHandler *m_socketHandler;
 //    ConfigHandler *m_configHandler;
     MessageHandler* m_messageHandler;

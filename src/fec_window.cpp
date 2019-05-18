@@ -34,7 +34,7 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
             this, SLOT(onUpdateSettings()));
     connect(m_ui->timeStampResCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgPeriod, SIGNAL(textChanged(QString)),
+    connect(m_ui->readoutCycle, SIGNAL(editingFinished()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->pulserDelay, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
@@ -143,11 +143,44 @@ void FECWindow::onUpdateSettings(){
     else if(QObject::sender() == m_ui->timeStampResCheckBox){
         SetFec("highres",  m_ui->timeStampResCheckBox->isChecked() );
     }
-    else if(QObject::sender() == m_ui->trgPeriod){
-        QString val_trg = m_ui->trgPeriod->text();
+    else if(QObject::sender() == m_ui->readoutCycle && m_ui->readoutCycle->isModified()){
+        QString val_trg = m_ui->readoutCycle->text();
         bool ok;
         int value = val_trg.toInt(&ok,16);
-        SetFec("trigger_period", value );
+
+        if(value != 4096 && value != 8190 && value != 16382 &&value !=32766)
+        {
+            m_ui->readoutCycle->blockSignals(true);
+            QMessageBox::StandardButton reply;
+            reply = QMessageBox::warning(this, "Readout cycle", "The readout cycle is normally adapted to the BC clock of the hybrids.\nThe following values are foreseen:\n\n"
+                                                                " FFE (40 MHz) \n 1FFE (20 MHz) \n 3FFE (10 MHz) \n 7FFE (5 MHz)",  QMessageBox::Ok);
+            m_ui->readoutCycle->blockSignals(false);
+        }
+
+        /*
+            40 MHz 4096-2 = 4094
+            20 MHz 2*4096 -2 = 8190
+            10 MHz 4 * 4096 -2 = 16382
+            5 MHz 8*4096-2 = 32766
+        */
+
+        BC_period = 25;
+
+        if(value > 32000)
+        {
+            BC_period = 200;
+        }
+        else if(value > 16000)
+        {
+            BC_period = 100;
+        }
+        else if(value > 8000)
+        {
+            BC_period = 50;
+        }
+        SetFec("readout_cycle", value );
+        on_lineEdit_triggerOffset_editingFinished();
+        on_lineEdit_triggerWindow_editingFinished();
     }
     else if(QObject::sender() == m_ui->pulserDelay){
         SetFec("tp_delay",  m_ui->pulserDelay->value() );
@@ -276,8 +309,8 @@ void FECWindow::onSetReadoutMode(int mode){
 
 void FECWindow::LoadSettings(){
     //Test only, set default value
-    m_ui->lineEdit_triggerOffset->setText("2048000");
-    m_ui->lineEdit_triggerWindow->setText("204750");
+    m_ui->lineEdit_triggerOffset->setText("1024000");
+    m_ui->lineEdit_triggerWindow->setText("102350");
     m_ui->lineEdit_triggerPulseDelay->setText("0");
 
     QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
@@ -293,11 +326,17 @@ void FECWindow::LoadSettings(){
     m_ui->ip4_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ) );
 
     m_ui->pulserDelay->setValue( GetFec( "tp_delay" ) );
-    m_ui->trgPeriod->setText( QString::number( GetFec( "trigger_period" ), 16 ) );
+    m_ui->readoutCycle->setText( QString::number( GetFec( "readout_cycle" ), 16 ) );
 
 
 
-    unsigned int triggerPeriod = GetFec( "trigger_period" );
+    /*
+    40 MHz 4096-2 = 4094
+    20 MHz 2*4096 -2 = 8190
+    10 MHz 4 * 4096 -2 = 16382
+    5 MHz 8*4096-2 = 32766
+*/
+    unsigned int triggerPeriod = GetFec( "readout_cycle" );
 
     BC_period = 25;
 
@@ -540,7 +579,6 @@ void FECWindow::on_pushButtonFECIP_pressed()
     {
         FECip = FECip + result.toInt();
 
-        int FECip = 0x0a000002;
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(FECip);
         usleep(1000);
         m_ui->ip4_2->setText(result);
@@ -566,7 +604,7 @@ void FECWindow::on_lineEdit_triggerOffset_editingFinished()
     long mod = val%BC_period;
     if(mod !=0)
     {
-        val = abs(div*BC_period);
+        val = div*BC_period;
 
     }
     m_ui->lineEdit_triggerOffset->setText( QString::number( val, 10 ) );
@@ -619,12 +657,18 @@ void FECWindow::on_checkBox_TriggeredMode_clicked()
 
 void FECWindow::on_pushButtonDAQIP_pressed()
 {
-    int DAQip = 0xC0A80003;
-    //DAQip = DAQip + result.toInt();
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
-    usleep(1000);
-    //m_ui->ip4_2->setText(result);
 
+    long DAQip = 0x0a000003;
+    bool ok;
+    QString result = QString::number(QInputDialog::getDouble(this,"Set DAC IP Adress","x.x.x.x",167772163,1,0xffffffff,1,&ok));
+
+    if (ok && !result.isEmpty())
+    {
+        DAQip = result.toLong();
+        DAQip = 0x0a000003;
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
+        usleep(1000);
+     }
 }
 
 
