@@ -5,7 +5,7 @@ FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
-    numberOfRegisters(39),
+    numberOfRegisters(42),
     m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
     m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
     m_chr ( new char ) //need for returning const char * in GetReg functions
@@ -50,6 +50,7 @@ void FEC::SendAll(){
     /// function to send all configurations to fec, hybrid and vmm
 
     m_fecConfigModule->SetMask();
+    m_fecConfigModule->SetReadoutMode();
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
         if(GetHDMI(k)){
             for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
@@ -135,14 +136,16 @@ void FEC::LoadDefault(){
 
     (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
     (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
-    (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //register 11: {"0", "1", "disabled", "enabled"} - 1 bit, bit 31
-    (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 10;   //register 11: {0-31} - 5 bit, bit 24-28
-    (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit, bit 12-23
-    (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0xfff;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit, bit 0-11
+    (*m_regNames)[32]="triggered_mode";          (*m_reg)[32] = 0;   //register 11: {"0", "1", "disabled", "enabled"} - 1 bit
+    (*m_regNames)[33]="time_offset_triggerperiod";(*m_reg)[33] = 10;   //register 11: {0-31} - 5 bit
+    (*m_regNames)[34]="time_offset_BCID";         (*m_reg)[34] = 0;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
+    (*m_regNames)[35]="time_window_BCID";         (*m_reg)[35] = 0xfff;   //register 11: {0-4095} * BCCLOCK_PERIOD - 12 bit
     (*m_regNames)[36]="trigger_pulse_delay";        (*m_reg)[36] = 0;   //register 15: {0-255} * BCCLOCK_PERIOD - 8 bit, bit 8-15
     (*m_regNames)[37]="clear_S6_fifo";             (*m_reg)[37] = 0; //{"0", "1", "false", "true"};
-    (*m_regNames)[38]="triggered_mode";          (*m_reg)[38] = 0;   //register 11, 0=40MHz, 1=20 MHz, 2=10MHz, 3=5 MHz, 2 bit, bit 29-30
-
+    (*m_regNames)[38]="acceptance_window";         (*m_reg)[38] = 0; //{"0", "1", "false", "true"};
+    (*m_regNames)[39]="globalCKBC";             (*m_reg)[39] = 3; //{"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
+    (*m_regNames)[40]="ts_ext_trg";             (*m_reg)[40] = 0; //{"0", "1", "false", "true"};
+    (*m_regNames)[41]="open_fec_wr_fifo_outside_acq_win";             (*m_reg)[41] = 1; //{"0", "1", "false", "true"};
 }
 
 // ------------------------------------------------------------------------- //
@@ -199,15 +202,15 @@ bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
     else if (reg < m_reg->size()){// && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
         if (intValue < 4294967296)found = true;
     }
-    //    if (reg == 11){ //evbld_mode
-    //        if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
-    //    }
-    //    if (reg == 12){ //evbld_info
-    //        if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
-    //    }
-    //    if (reg == 13){ //timeStampHighRes
-    //        if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
-    //    }
+    //if (reg == 11){ //evbld_mode
+    //    if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
+    //}
+    //if (reg == 12){ //evbld_info
+    //    if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
+    //}
+    //if (reg == 13){ //timeStampHighRes
+    //    if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
+    //}
     return found;
 }
 

@@ -6,7 +6,6 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_dbg(false),
     m_socketHandler(0),
     m_messageHandler(0)
-
   //    m_configHandler(0)
 {
     m_hdmi_i2c.clear();
@@ -18,7 +17,6 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_hdmi_i2c.push_back(6);
     m_hdmi_i2c.push_back(5);
     m_hdmi_i2c.push_back(4);
-
     //    std::cout<<"FEC -ip4 orig: "<<fec->GetRegVal("ip4") <<std::endl;
     //    std::cout<<"FEC -ip4 Set: "<<fec->SetReg("ip4",(unsigned long) 23) <<std::endl;
     //    std::cout<<"FEC -ip4 changed: "<<fec->GetRegVal("ip4") <<std::endl;
@@ -1057,7 +1055,15 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
 
     // bcid reset and clear S6 fifo
     quint32 clear_S6_fifo = 0;
-    if (m_fec->GetRegVal("clear_S6_fifo")) clear_S6_fifo = 32768;
+    if (m_fec->GetRegVal("clear_S6_fifo")) clear_S6_fifo = 32768; // goes as highest bit to 16 bit bcid reset
+
+    // bcid reset and acceptanc _window
+    quint32 acceptance_window = 0;
+    if (m_fec->GetRegVal("acceptance_window")) acceptance_window = 16384; // goes as second highest bit to 16 bit bvid reset
+
+    //"Close FEC write FIFO outside ACQ win (default true)
+    quint32 open_fec_wr_fifo_outside_acq_win = 0;
+    if (m_fec->GetRegVal("open_fec_wr_fifo_outside_acq_win")) open_fec_wr_fifo_outside_acq_win = 8192; // goes as third highest bit to 16 bit bvid reset
 
     ///////////////////////////
     // header info
@@ -1097,7 +1103,7 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
         << (quint32) m_fec->GetRegVal("acq_window") //[44,47]
            //bcid reset
         << (quint32) 9 //[48,51]
-        << (quint32) m_fec->GetRegVal("bcid_reset") + clear_S6_fifo; //[52,55] is acctually 16 bit in FEC frimware. Highest bit is clear_S6_fifo
+        << (quint32) m_fec->GetRegVal("bcid_reset") + clear_S6_fifo + acceptance_window + open_fec_wr_fifo_outside_acq_win; //[52,55] is acctually 16 bit in FEC frimware. Highest bit is clear_S6_fifo, second highest is acceptance_window, third highest is open_fec_wr_fifo_outside_acq_win
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::setTriggerAcqConstants");
@@ -1122,100 +1128,79 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
 // ------------------------------------------------------------------------ //
 void FECConfigModule::SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm_index)
 {
+    if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send T/DAQ constants to VMMAPP port
+    int send_to_port = m_fec->GetRegVal("vmmapp_port");
+
+    QString ip = m_fec->GetIP();
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); // rewind
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    QString chMapString = "0000000000000000";
+    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
+    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd         = "AA";
+    cmdType     = "AA";
+    cmdLength   = "FFFF";
+    msbCounter  = "0x80000000";
+    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint16) chMap //[6,7]
+           //<< (quint32) config().getHDMIChannelMap() //[8,11]
+        << (quint8)  cmd.toUInt(&ok,16) //[8]
+        << (quint8)  cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
+
+    quint32 val = 0x00000000;
+    quint32 val2 = 0x00000000;
     if(m_fec->GetRegVal("triggered_mode") == 1)
     {
-        if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
-
-        bool ok;
-        QByteArray datagram;
-
-        // send T/DAQ constants to VMMAPP port
-        int send_to_port = m_fec->GetRegVal("vmmapp_port");
-
-        QString ip = m_fec->GetIP();
-
-        GetSocketHandler().UpdateCommandCounter();
-
-        datagram.clear();
-        QDataStream out (&datagram, QIODevice::WriteOnly);
-        out.device()->seek(0); // rewind
-
-        ///////////////////////////
-        // header info
-        ///////////////////////////
-        QString chMapString = "0000000000000000";
-        chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
-        quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
-        QString cmd, cmdType, cmdLength, msbCounter;
-        cmd         = "AA";
-        cmdType     = "AA";
-        cmdLength   = "FFFF";
-        msbCounter  = "0x80000000";
-        out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-            << (quint16) 0 //[4,5]
-            << (quint16) chMap //[6,7]
-               //<< (quint32) config().getHDMIChannelMap() //[8,11]
-            << (quint8)  cmd.toUInt(&ok,16) //[8]
-            << (quint8)  cmdType.toUInt(&ok,16) //[9]
-            << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
-
-        quint32 val = 0x00000000;
-        quint32 val2 = 0x00000000;
-
-        int cycle = m_fec->GetRegVal("readout_cycle");
-        //Depending on the readout cycle, the BC used for the triggered mode is selected
-        //40 MHz BC clock
-        val = 0x80000000;
-        // 5 MHz BC clock
-        if(cycle > 32000)
-        {
-            val = 0xE0000000;
-        }
-        // 10 MHz BC clock
-        else if(cycle > 16000)
-        {
-            val = 0xC0000000;
-        }
-        // 20 MHz BC clock
-        else if(cycle > 8000)
-        {
-            val = 0xA0000000;
-        }
+        val = 0x80000000; // first bit=enable triggered mode
         val += (m_fec->GetRegVal("time_offset_triggerperiod") << 24);
         val += (m_fec->GetRegVal("time_offset_BCID") << 12);
         val += (m_fec->GetRegVal("time_window_BCID"));
-
-
         val2 = (m_fec->GetRegVal("trigger_pulse_delay") << 8);
+     }
 
-        ///////////////////////////
-        // trigger constants
-        ///////////////////////////
-        out << (quint32) 0 //[12,15]
-               //triggered mode
-            << (quint32) 11 //[16,19]
-            << (quint32) val //[20,23]
-            << (quint32) 15 //[24,27]
-            << (quint32) val2; //[28,31]
+    ///////////////////////////
+    // trigger constants
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+           //triggered mode
+        << (quint32) 11 //[16,19]
+        << (quint32) val //[20,23]
+        << (quint32) 15 //[24,27]
+        << (quint32) val2; //[28,31]
 
-        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::SetTriggeredMode");
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::SetTriggeredMode");
 
-        bool readOK = true;
-        readOK = GetSocketHandler().WaitForReadyRead("fec");
-        if(readOK) {
-            if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::SetTriggeredMode");
-            GetSocketHandler().ProcessReply("fec", ip);
-        }
-        else {
-            GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                "FEC_config_module::SetTriggeredMode", true);
-            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
-            return;
-        }
-
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::SetTriggeredMode");
+        GetSocketHandler().ProcessReply("fec", ip);
     }
+    else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::SetTriggeredMode", true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
+        return;
+    }
+
+    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
 }
 
 
@@ -1829,7 +1814,7 @@ void FECConfigModule::writeFECip(int FECip)
     // word
     ///////////////////////////
     out << (quint32) 0 //[12,15]
-        << (quint32) 0xa0f30000 // FEC ip register
+        << (quint32) 0xa0f30000 // FEC ip register on FEC EEPROM (via I2C)
         << (quint32) FECip; // value 167772162=10.0.0.2
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
@@ -1894,20 +1879,16 @@ void FECConfigModule::writeDAQip(int DAQip)
     ///////////////////////////
     // word
     ///////////////////////////
-    out << (quint32)  0x0 //[12,15]
-        << (quint32) 0xa0f30012 // DAQ ip register
-        << (quint32) DAQip; // value 10.0.0.4
+    out << (quint32) 0x0 //[12,15]
+        << (quint32) 0xa0f30012 // DAQ ip register on FEC EEPROM (via I2C)
+        << (quint32) DAQip; // value 167772162=10.0.0.2
 
-
-
-
-    std::cout << "WRITING TO  IP " << ip.toStdString() << " " << send_to_port << std::endl;
+     std::cout << "WRITING TO  IP " << ip.toStdString() << " " << send_to_port << std::endl;
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::writeDAQip");
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     std::cout << "RESULT " << readOK << " " << DAQip << std::endl;
-
     if(readOK) {
         if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeDAQip");
         GetSocketHandler().ProcessReply("fec", ip);
@@ -1927,7 +1908,7 @@ void FECConfigModule::writeDAQip(int DAQip)
 
 void FECConfigModule::SetReadoutMode()
 {
-    if(IsDbgEnabled())GetMessageHandler()("Setting trigger mode...","FEC_config_module::setTriggerMode");
+    if(IsDbgEnabled())GetMessageHandler()("Setting trigger mode...","FEC_config_module::SetReadoutMode");
 
     bool ok;
     QByteArray datagram;
@@ -1953,6 +1934,10 @@ void FECConfigModule::SetReadoutMode()
     cmdLength   = "FFFF";
     msbCounter  = "0x80000000";
 
+    int globalCKBC = m_fec->GetRegVal("globalCKBC");
+    std::cout << " globalCKBC " << globalCKBC << std::endl;
+    int ts_ext_trg = m_fec->GetRegVal("ts_ext_trg");
+
     out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
         << (quint16) 0 //[4,5]
         << (quint16) m_fec->GetChMap() //[6,7]
@@ -1966,32 +1951,32 @@ void FECConfigModule::SetReadoutMode()
     out << (quint32) 0 //[12,15]
         << (quint32) 0; //[16,19]
     if(m_fec->GetRegVal("triggermode") == 0){//external trigger
-        out << (quint32) 4; //[20,23]
-        if(IsDbgEnabled())GetMessageHandler()("External trigger enabled","FEC_config_module::setTriggerMode");
+        out << (quint32) 4 + (globalCKBC*8) + (ts_ext_trg*64) ; //[20,23] bit 0: enable periodic trigger, bit 1: enable t_pulse, bit 2: enable acq win, bit 3-5:GlobalCKBC, bit 6: ts_ext_trg
+        if(IsDbgEnabled())GetMessageHandler()("External trigger enabled","FEC_config_module::SetReadoutMode");
     } // external
     else {
-        out << (quint32) 7; //[20,23]
-        if(IsDbgEnabled())GetMessageHandler()("Internal trigger enabled","FEC_config_module::setTriggerMode");
+        out << (quint32) 7 + (globalCKBC*8) + (ts_ext_trg*64); //[20,23]bit 0: enable periodic trigger, bit 1: enable t_pulse, bit 2: enable acq win, bit 3-5:GlobalCKBC, bit 6: ts_ext_trg
+        if(IsDbgEnabled())GetMessageHandler()("Internal trigger enabled","FEC_config_module::SetReadoutMode");
     }
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::setTriggerMode");
+                                    "FEC_config_module::SetReadoutMode");
 
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setTriggerMode");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::SetReadoutMode");
         GetSocketHandler().ProcessReply("fec", ip);
     }
     else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::setTriggerMode",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setTriggerMode");
+                            "FEC_config_module::SetReadoutMode",true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetReadoutMode");
         //        exit(1);
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setTriggerMode");
+    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetReadoutMode");
 
 }
 // ------------------------------------------------------------------------ //
@@ -2031,12 +2016,13 @@ void FECConfigModule::ACQon(bool broadcast)
         << (quint8) cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
 
+    quint32 val2 = (m_fec->GetRegVal("trigger_pulse_delay") << 8);
     ///////////////////////////
     // ACQ on
     ///////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 15 //[16,19]
-        << (quint32) 1; //[20,23]
+        << (quint32) 1 + val2; //[20,23] x val2 to not overwrite other config parameters sent to reg 15.
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::ACQon");
@@ -2241,7 +2227,7 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
     GetSocketHandler().UpdateCommandCounter();
 
     QString hdmiMapString = "00000000";
-    hdmiMapString.replace(7 -  m_hdmi_i2c[hdmi_index] , 1 , QString("1") );
+    hdmiMapString.replace(7 -  m_hdmi_i2c[hdmi_index] , 1 , QString("1") ); // remaping of HDMI ports on DVM card: not performed for I2C MUX -> this hack needed
     quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
 
     ///////////////////////////
@@ -2372,7 +2358,7 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
         QString ADCresult = read_datagram.mid(22,2).toHex();
         std::cout << ADCresult.toStdString() << std::endl;
         ADCresult_int_bare = ADCresult.toInt(&ok,16) >> 4; //bit shift
-        std::cout << ADCresult_int_bare << std::endl;
+         std::cout << ADCresult_int_bare << std::endl;
     } // while loop
 
     if(readOK) {
@@ -2393,8 +2379,6 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
 }
 // ------------------------------------------------------------------------ //
 
-
-// ------------------------------------------------------------------------ //
 QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadI2C");
@@ -2528,16 +2512,16 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
     } // while loop
 
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadADC");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadI2C");
         GetSocketHandler().ProcessReply("fec",ip);
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::ReadADC", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadADC");
+                            "FEC_config_module::ReadI2C", true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadI2C");
         //        exit(1);
         return 0;
     }
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadADC");
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadI2C");
     return result;
 }
 // ------------------------------------------------------------------------ //

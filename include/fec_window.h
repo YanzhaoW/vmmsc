@@ -72,6 +72,11 @@ private:
     bool SetFec(const char *feature, unsigned long val);
     unsigned long GetFec(const char *feature);
     unsigned int BC_period;
+    unsigned int internalClockPeriod;
+    std::string m_sendstate = "";
+
+signals:
+    void ChangeState_FEC();
 
 };
 

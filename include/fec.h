@@ -55,7 +55,6 @@ public:
     void SetFirmwareVersion(QString version);
     QString GetFirmwareVersion();
 
-
     FECConfigModule *m_fecConfigModule;
 private:
     bool Set(unsigned short reg, unsigned long val);
@@ -67,7 +66,7 @@ private:
     std::vector<bool> m_hdmiActs;//binary to store which hdmis are activated
     MessageHandler *m_msg;
     SocketHandler *m_socketHandler;
-    const int numberOfRegisters = 38;
+    const int numberOfRegisters = 42;
     std::vector<const char*> *m_regNames;
     std::vector<unsigned long> *m_reg;
     char *m_chr;

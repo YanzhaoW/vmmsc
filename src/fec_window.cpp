@@ -8,6 +8,7 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     m_fecIndex{fec},
     m_ui(new Ui::fec_window)
 {
+    internalClockPeriod = 25;
     m_ui->setupUi(this);
     UpdateWindow();
     SetToolTips();
@@ -23,6 +24,7 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     m_ui->offACQ->setEnabled(false);
 
     m_ui->debugScreen->setReadOnly(true);
+    m_ui->OpenWrFifo->setChecked(false); SetFec("open_fec_wr_fifo_outside_acq_win",  m_ui->OpenWrFifo->isChecked() );
 
 
 
@@ -46,6 +48,12 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
             this, SLOT(onUpdateSettings()));
     connect(m_ui->ClearS6FIFI, SIGNAL(stateChanged(int)),
             this, SLOT(onUpdateSettings()));
+    connect(m_ui->AccWin, SIGNAL(stateChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->OpenWrFifo, SIGNAL(stateChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->Stamp_ext_trg, SIGNAL(stateChanged(int)),
+            this, SLOT(onUpdateSettings()));
 
     //L0
     connect(m_ui->L0BCoffset, SIGNAL(valueChanged(int)),
@@ -66,6 +74,9 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
             this, SLOT(onUpdateSettings()));
     connect(m_ui->sL0cktest, SIGNAL(pressed()),
             this, SLOT(onUpdateSettings()));
+
+    connect(m_ui->box_globalCKBC, SIGNAL(currentIndexChanged(int)),
+                                    this, SLOT(onUpdateSettings()));
 
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
@@ -148,12 +159,11 @@ void FECWindow::onUpdateSettings(){
         bool ok;
         int value = val_trg.toInt(&ok,16);
 
-        if(value != 4096 && value != 8190 && value != 16382 &&value !=32766)
-        {
+        if(value != 4094 && value != 8190 && value != 16382 &&value !=32766){
             m_ui->readoutCycle->blockSignals(true);
             QMessageBox::StandardButton reply;
             reply = QMessageBox::warning(this, "Readout cycle", "The readout cycle is normally adapted to the BC clock of the hybrids.\nThe following values are foreseen:\n\n"
-                                                                " FFE (40 MHz) \n 1FFE (20 MHz) \n 3FFE (10 MHz) \n 7FFE (5 MHz)",  QMessageBox::Ok);
+                                                                    " FFE (40 MHz) \n 1FFE (20 MHz) \n 3FFE (10 MHz) \n 7FFE (5 MHz)",  QMessageBox::Ok);
             m_ui->readoutCycle->blockSignals(false);
         }
 
@@ -197,6 +207,15 @@ void FECWindow::onUpdateSettings(){
     else if(QObject::sender() == m_ui->ClearS6FIFI){
         SetFec("clear_S6_fifo",  m_ui->ClearS6FIFI->isChecked() );
     }
+    else if(QObject::sender() == m_ui->AccWin){
+        SetFec("acceptance_window",  m_ui->AccWin->isChecked() );
+    }
+    else if(QObject::sender() == m_ui->OpenWrFifo){
+        SetFec("open_fec_wr_fifo_outside_acq_win",  m_ui->OpenWrFifo->isChecked() );
+    }
+    else if(QObject::sender() == m_ui->Stamp_ext_trg){
+        SetFec("ts_ext_trg",  m_ui->Stamp_ext_trg->isChecked() );
+    }
 
     //L0
     else if(QObject::sender() == m_ui->L0BCoffset){
@@ -225,6 +244,19 @@ void FECWindow::onUpdateSettings(){
     }
     else if(QObject::sender() == m_ui->sL0cktest){
         SetFec("sL0cktest", !m_ui->sL0cktest->isChecked());
+    }
+
+    else if(QObject::sender() == m_ui->box_globalCKBC){
+        SetFec("globalCKBC", m_ui->box_globalCKBC->currentIndex());
+        for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+            if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHDMI(k)){
+                for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                     if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].GetHybrid(l)){
+                         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].m_hybrids[l].SetReg("CKBC", m_ui->box_globalCKBC->currentIndex());
+                     }
+                }
+            }
+        }
     }
     else if(QObject::sender() == m_daqWindow->ui->openConnection_2){
         if(m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
@@ -330,12 +362,6 @@ void FECWindow::LoadSettings(){
 
 
 
-    /*
-    40 MHz 4096-2 = 4094
-    20 MHz 2*4096 -2 = 8190
-    10 MHz 4 * 4096 -2 = 16382
-    5 MHz 8*4096-2 = 32766
-*/
     unsigned int triggerPeriod = GetFec( "readout_cycle" );
 
     BC_period = 25;
@@ -358,6 +384,10 @@ void FECWindow::LoadSettings(){
     m_ui->acqSync->setValue( GetFec( "acq_sync" ) );
     m_ui->acqWindow->setValue( GetFec( "acq_window" ) );
     m_ui->ClearS6FIFI->setChecked( GetFec( "clear_S6_fifo" ) );
+    m_ui->AccWin->setChecked( GetFec( "acceptance_window" ) );
+    m_ui->OpenWrFifo->setChecked( GetFec( "open_fec_wr_fifo_outside_acq_win" ) );
+
+    m_ui->Stamp_ext_trg->setChecked( GetFec( "ts_ext_trg" ) );
 
     m_ui->evbld_mode->setCurrentIndex( GetFec( "evbld_mode" ) );
     m_ui->evbld_infodata->setCurrentIndex( GetFec( "evbld_infodata" ) );
@@ -373,6 +403,22 @@ void FECWindow::LoadSettings(){
     m_ui->sL0enaV->setChecked( GetFec( "sL0enaV" ) );
     m_ui->sL0ena->setChecked( GetFec( "sL0ena" ) );
     m_ui->sL0cktest->setChecked( GetFec( "sL0cktest" ) );
+
+    //Trigger Mode
+    m_ui->checkBox_TriggeredMode->setChecked( GetFec("triggered_mode"));
+    if ( GetFec("triggered_mode")){
+        m_ui->box_globalCKBC->setEnabled( true);
+        m_sendstate = "globalCKBCon";
+    }
+    else {
+        m_ui->box_globalCKBC->setEnabled( false);
+        m_sendstate = "globalCKBCoff";
+    }
+    emit ChangeState_FEC();
+    m_ui->lineEdit_triggerOffset->setText( QString::number( ( (GetFec("time_offset_triggerperiod")*(4096*BC_period))+GetFec("time_offset_BCID")*BC_period ), 10 ) );
+    m_ui->lineEdit_triggerWindow->setText( QString::number( GetFec("time_window_BCID")*BC_period, 10) );
+    m_ui->lineEdit_triggerPulseDelay->setText( QString::number( GetFec("trigger_pulse_delay")*internalClockPeriod, 10) );
+    m_ui->box_globalCKBC->setCurrentIndex( GetFec("globalCKBC"));
 
 
 }
@@ -604,7 +650,7 @@ void FECWindow::on_lineEdit_triggerOffset_editingFinished()
     long mod = val%BC_period;
     if(mod !=0)
     {
-        val = div*BC_period;
+        val = abs(div*BC_period);
 
     }
     m_ui->lineEdit_triggerOffset->setText( QString::number( val, 10 ) );
@@ -645,10 +691,26 @@ void FECWindow::on_checkBox_TriggeredMode_clicked()
     if(m_ui->checkBox_TriggeredMode->isChecked())
     {
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)1);
+        m_ui->box_globalCKBC->setEnabled(true);
+        SetFec("globalCKBC", m_ui->box_globalCKBC->currentIndex());
+        m_sendstate = "globalCKBCon";
+        emit ChangeState_FEC();
+        for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+            if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHDMI(k)){
+                for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                     if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].GetHybrid(l)){
+                         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].m_hybrids[l].SetReg("CKBC", m_ui->box_globalCKBC->currentIndex());
+                     }
+                }
+            }
+        }
     }
     else
     {
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)0);
+        m_ui->box_globalCKBC->setEnabled(false);
+        m_sendstate = "globalCKBCoff";
+        emit ChangeState_FEC();
     }
 }
 
@@ -657,10 +719,9 @@ void FECWindow::on_checkBox_TriggeredMode_clicked()
 
 void FECWindow::on_pushButtonDAQIP_pressed()
 {
-
     long DAQip = 0x0a000003;
     bool ok;
-    QString result = QString::number(QInputDialog::getDouble(this,"Set DAC IP Adress","x.x.x.x",167772163,1,0xffffffff,1,&ok));
+    QString result = QString::number(QInputDialog::getDouble(this,"Set DAQ IP Adress","x.x.x.x",167772163,1,0xffffffff,1,&ok));
 
     if (ok && !result.isEmpty())
     {
@@ -674,7 +735,6 @@ void FECWindow::on_pushButtonDAQIP_pressed()
 
 void FECWindow::on_lineEdit_triggerPulseDelay_editingFinished()
 {
-    const int internalClockPeriod = 25;
     long val = m_ui->lineEdit_triggerPulseDelay->text().toLong();
     if(val < 0)
     {

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1191</width>
-    <height>746</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,58 +25,654 @@
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <widget class="QWidget" name="widget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>150</width>
-       <height>0</height>
-      </size>
-     </property>
      <property name="maximumSize">
       <size>
-       <width>150</width>
+       <width>120</width>
        <height>16777215</height>
       </size>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
-      <item row="6" column="0">
-       <widget class="QGroupBox" name="groupBox_3">
-        <property name="minimumSize">
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="maximumSize">
          <size>
-          <width>150</width>
-          <height>0</height>
+          <width>110</width>
+          <height>16777215</height>
          </size>
         </property>
+        <property name="title">
+         <string>VMM</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QCheckBox" name="Box_vmm1">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>1</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="Box_vmm2">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>2</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="4" column="0" rowspan="2">
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>240</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="title">
+         <string>S6</string>
+        </property>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>101</width>
+           <height>211</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="cktkLabel">
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>CKTK</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="cktk_s6">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>0 ns</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>12.5 ns</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>25 ns</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="ckbcLabel">
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>8</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>CKBC</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Duty cycle</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QComboBox" name="ckbc_s6">
+                <property name="maximumSize">
+                 <size>
+                  <width>40</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="currentIndex">
+                 <number>2</number>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>160MHz</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>160MHz inv</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>80MHz</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>40MHz</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>20MHz</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>10MHz</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>5MHz</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>2.5MHz</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="ckbc_duty_s6">
+                <property name="maximumSize">
+                 <size>
+                  <width>60</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>50 % high</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>75 % high</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 % high</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>18.725 ns high (standard)</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>CKDT</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="ckdt_s6">
+              <property name="maximumSize">
+               <size>
+                <width>60</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>10 MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>40 MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>80 MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>160 MHz</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>160 MHz (will be 200 MHz)</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="ckbcLabel_2">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>CKBC skew</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ckbc_skew_s6">
+            <property name="maximumSize">
+             <size>
+              <width>110</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>0 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>6.26 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>12.52 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>18.78 ns</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label_34">
+              <property name="maximumSize">
+               <size>
+                <width>100</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>TK Pulses</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_32">
+              <property name="font">
+               <font>
+                <pointsize>8</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>  Period</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QSpinBox" name="s6_tkPulses">
+              <property name="maximumSize">
+               <size>
+                <width>40</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>7</number>
+              </property>
+              <property name="singleStep">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <number>2</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="fecPeriodReset">
+              <property name="maximumSize">
+               <size>
+                <width>50</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>4096</number>
+              </property>
+              <property name="singleStep">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <number>4094</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Position</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="2" column="0">
+          <widget class="QSpinBox" name="position">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>9</pointsize>
+            </font>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>65535</number>
+           </property>
+           <property name="singleStep">
+            <number>1</number>
+           </property>
+           <property name="value">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <item>
+            <widget class="QLabel" name="cktkLabel_2">
+             <property name="maximumSize">
+              <size>
+               <width>40</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>8</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Axis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="Xaxis">
+             <property name="minimumSize">
+              <size>
+               <width>50</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Y</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>X</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="cktkLabel_3">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>Position</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>110</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>I2C</string>
+        </property>
+        <widget class="QWidget" name="verticalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>20</y>
+           <width>101</width>
+           <height>83</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="leftMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QComboBox" name="cbChoiceI2C">
+            <item>
+             <property name="text">
+              <string>Geographical position</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Hybrid ID</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="lineEditResultI2C"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pbReadI2C">
+            <property name="text">
+             <string>Read I2C</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QGroupBox" name="groupBox_3">
         <property name="title">
          <string>Test Pulse</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
-          <widget class="QLabel" name="tpSkewLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Skew</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="tpPolarityLabel">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Polarity</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
+         <item row="6" column="0">
           <widget class="QComboBox" name="tpWidth">
            <property name="font">
             <font>
@@ -129,7 +725,7 @@
            </item>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="tpWidthLabel">
            <property name="font">
             <font>
@@ -142,100 +738,142 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QComboBox" name="tpSkew">
+         <item row="7" column="0">
+          <widget class="QLabel" name="tpPolarityLabel">
            <property name="font">
             <font>
              <family>Arial</family>
              <pointsize>9</pointsize>
             </font>
            </property>
-           <property name="currentIndex">
-            <number>0</number>
+           <property name="text">
+            <string>Polarity</string>
            </property>
-           <item>
-            <property name="text">
-             <string>0ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>3.125ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>6.25ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>9.375ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>12.5ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>15.625ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>18.75ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>21.875ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>25ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>28.125ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>31.25ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>34.375ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>37.5ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>40.625ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>43.75ns</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>46.875ns</string>
-            </property>
-           </item>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <item>
+            <widget class="QLabel" name="tpSkewLabel">
+             <property name="maximumSize">
+              <size>
+               <width>30</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Skew</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="tpSkew">
+             <property name="maximumSize">
+              <size>
+               <width>50</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>0ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>3.125ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>6.25ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>9.375ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>12.5ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>15.625ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>18.75ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>21.875ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>25ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>28.125ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>31.25ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>34.375ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>37.5ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>40.625ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>43.75ns</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>46.875ns</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="8" column="0">
           <widget class="QComboBox" name="tpPolarity">
            <property name="font">
             <font>
@@ -261,559 +899,10 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QGroupBox" name="groupBox">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>70</height>
-         </size>
-        </property>
-        <property name="title">
-         <string>VMM</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="Box_vmm2">
-           <property name="text">
-            <string>2</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="Box_vmm1">
-           <property name="text">
-            <string>1</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="title">
-         <string>Position</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <widget class="QLabel" name="cktkLabel_2">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>8</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Axis</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QComboBox" name="Xaxis">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>Y</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>X</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="cktkLabel_3">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>8</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Position</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QSpinBox" name="position">
-           <property name="font">
-            <font>
-             <family>Arial</family>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>65535</number>
-           </property>
-           <property name="singleStep">
-            <number>1</number>
-           </property>
-           <property name="value">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QGroupBox" name="groupBox_4">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::LeftToRight</enum>
-        </property>
-        <property name="title">
-         <string>I2C</string>
-        </property>
-        <widget class="QWidget" name="verticalLayoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>20</y>
-           <width>182</width>
-           <height>89</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QComboBox" name="cbChoiceI2C">
-            <item>
-             <property name="text">
-              <string>Geographical Position</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Hybrid ID</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEditResultI2C"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="pbReadI2C">
-            <property name="text">
-             <string>Read I2C</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-      <item row="3" column="0" rowspan="2">
-       <widget class="QGroupBox" name="groupBox_8">
-        <property name="minimumSize">
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>140</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="title">
-         <string>S6</string>
-        </property>
-        <widget class="QWidget" name="layoutWidget">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>20</y>
-           <width>275</width>
-           <height>242</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QLabel" name="cktkLabel">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>CKTK</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="cktk_s6">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>0 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>12.5 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>25 ns</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QLabel" name="ckbcLabel">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>CKBC</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Duty cycle</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QComboBox" name="ckbc_s6">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="currentIndex">
-               <number>2</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>160MHz</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>160MHz inv</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>80MHz</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>40MHz</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>20MHz</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>10MHz</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>5MHz</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>2.5MHz</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="ckbc_duty_s6">
-              <item>
-               <property name="text">
-                <string>50 % high</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>75 % high</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>25 % high</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>18.725 ns high (standard)</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>CKDT</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="ckdt_s6">
-            <item>
-             <property name="text">
-              <string>10 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>40 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>80 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>160 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>160 MHz (will be 200 MHz)</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="ckbcLabel_2">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>CKBC skew</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="ckbc_skew_s6">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>0 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>6.26 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>12.52 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>18.78 ns</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLabel" name="label_34">
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>TK Pulses</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_32">
-              <property name="font">
-               <font>
-                <pointsize>8</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>  Period</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QSpinBox" name="s6_tkPulses">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="minimum">
-               <number>0</number>
-              </property>
-              <property name="maximum">
-               <number>7</number>
-              </property>
-              <property name="singleStep">
-               <number>1</number>
-              </property>
-              <property name="value">
-               <number>2</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="fecPeriodReset">
-              <property name="font">
-               <font>
-                <family>Arial</family>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="minimum">
-               <number>0</number>
-              </property>
-              <property name="maximum">
-               <number>4096</number>
-              </property>
-              <property name="singleStep">
-               <number>1</number>
-              </property>
-              <property name="value">
-               <number>4094</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-      <item row="5" column="0">
+      <item row="7" column="0">
        <widget class="QPushButton" name="pushButton_setAllHybrids">
-        <property name="minimumSize">
-         <size>
-          <width>100</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
         <property name="text">
-         <string>Set all Hybrids</string>
+         <string>Set all hybrids</string>
         </property>
        </widget>
       </item>
@@ -830,15 +919,11 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>Xaxis</tabstop>
   <tabstop>tabWidget</tabstop>
-  <tabstop>position</tabstop>
   <tabstop>ckbc_skew_s6</tabstop>
   <tabstop>fecPeriodReset</tabstop>
   <tabstop>s6_tkPulses</tabstop>
-  <tabstop>ckdt_s6</tabstop>
   <tabstop>tpWidth</tabstop>
-  <tabstop>tpSkew</tabstop>
   <tabstop>tpPolarity</tabstop>
  </tabstops>
  <resources/>

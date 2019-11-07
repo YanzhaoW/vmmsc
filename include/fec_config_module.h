@@ -67,6 +67,7 @@ private:
     FEC *m_fec;
     bool m_dbg;
     std::vector<int> m_hdmi_i2c;
+
     SocketHandler *m_socketHandler;
 //    ConfigHandler *m_configHandler;
     MessageHandler* m_messageHandler;
