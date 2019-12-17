@@ -1285,12 +1285,16 @@ void CalibrationModule::SaveCorrections(){
             return;
         }
         QString name = "vmm_calibration";
+        int lastFEC = -1;
         for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
             int fec = GetFEC(vmm);
             int fecId = m_mainWindow->m_daqs[0].m_fecs[fec].GetIP_id();
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
-            name += "_FEC" + QString::number(fecId);
+            if(lastFEC != fecId) {
+                name += "_FEC" + QString::number(fecId);
+            }
+            lastFEC = fecId;
             name += "_VMM" + QString::number(hdmi*2+chip);
         }
         QString theName = CreateFileName(name);
