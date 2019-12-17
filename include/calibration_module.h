@@ -214,7 +214,7 @@ private:
 
     std::vector<int> m_BCID;
     QJsonArray *m_calibrationArray[2] ;
-    QString m_jsonObjectName[2] = {"vmm_adc_calibration","vmm_time_calibration"};
+    QString m_jsonObjectName = "vmm_calibration";
     std::ofstream m_outFile;
 
 
