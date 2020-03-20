@@ -823,139 +823,6 @@ p, li { white-space: pre-wrap; }
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBoxGeneral">
-         <property name="title">
-          <string>ADC </string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_10">
-          <item row="0" column="2" colspan="2">
-           <widget class="QPushButton" name="s8b">
-            <property name="text">
-             <string>8-bit Conv. Mode</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="sc010b">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <item>
-             <property name="text">
-              <string>200ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>+60ns</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="sc010bLabel">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>10b ADC</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="adcs">
-            <property name="text">
-             <string>ADCs</string>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="sc06bLabel">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>6b ADC</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="sc06b">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <item>
-             <property name="text">
-              <string>Low</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Up</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="sc08bLabel">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>8b ADC</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QComboBox" name="sc08b">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <item>
-             <property name="text">
-              <string>100ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>+60ns</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="4" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxClock">
          <property name="title">
@@ -991,6 +858,208 @@ p, li { white-space: pre-wrap; }
              <bool>true</bool>
             </property>
            </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBoxGeneral">
+         <property name="title">
+          <string>ADC </string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="0" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <widget class="QPushButton" name="adcs">
+                <property name="text">
+                 <string>ADCs on/off</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="sc010bLabel">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>10b ADC (Ampl)</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="sc06bLabel">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>6b ADC (Direct out)</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="sc08bLabel">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>8b ADC (Time)</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QPushButton" name="s8b">
+                <property name="text">
+                 <string>8-bit Conv. Mode</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="sc010b">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>200 ns + 180 ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>200 ns + 120 ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>200 ns + 60ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>200 ns</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="sc06b">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>25 ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 1 ckdt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 2 ckdt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 3 ckdt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 4 ckdt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 5 ckdt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 6 ckdt</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>25 ns + 7 ckdt</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="sc08b">
+                <property name="font">
+                 <font>
+                  <family>Arial</family>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>100 ns + 180 ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>100 ns + 120 ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>100 ns + 60 ns</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>100 ns</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>

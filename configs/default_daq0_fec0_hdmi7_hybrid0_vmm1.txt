@@ -4,9 +4,9 @@ hdmi 7
 hybrid 0
 vmm 1
 
-convtime_10 0
+convtime_10 3
 convtime_6 0
-convtime_8 0
+convtime_8 3
 gain 2
 monitoring 67
 nskipm_i 0

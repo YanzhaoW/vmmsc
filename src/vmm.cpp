@@ -37,6 +37,8 @@ void VMM::LoadDefault(){
     SetRegi("s10b",1);
     SetRegi("s8b",1);
     SetRegi("stc",1);
+    SetRegi("convtime_8",3);
+    SetRegi("convtime_10",3);
 }
 
 
@@ -67,7 +69,8 @@ void VMM::LoadCalibSettings(){
     SetRegi("s10b",1);
     SetRegi("s8b",1);
     SetRegi("monitoring", "Pulser_DAC");
-
+    SetRegi("convtime_8",3);
+    SetRegi("convtime_10",3);
 }
 
 
@@ -222,40 +225,58 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
             }
             return false;
         }
-        else if(feature == "convtime_10" ){
+        else if(feature == "convtime_10" ){//sc10b: sc010b, sc110b
             InMap m_val;
-            m_val.insert(BiPair("200ns", 0 ));//sc010b
-            m_val.insert(BiPair("+60ns", 1 ));//sc110b
-            m_val.insert(BiPair("0", 0 ));//sc010b
-            m_val.insert(BiPair("1", 1 ));//sc110b
-
-            if(m_val.find(val)!=m_val.end()){
-              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
-              return true;
-            }
-            return false;
-        }
-        else if(feature == "convtime_8" ){
-            InMap m_val;
-            m_val.insert(BiPair("100ns", 0 ));//sc08b
-            m_val.insert(BiPair("+60ns", 1 ));//sc18b
-            m_val.insert(BiPair("1", 1 ));//sc18b
-            m_val.insert(BiPair("0", 0 ));//sc08b
-
-            if(m_val.find(val)!=m_val.end()){
-              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
-              return true;
-            }
-            return false;
-        }
-        else if(feature == "convtime_6" ){
-            InMap m_val;
-            m_val.insert(BiPair("low", 0 ));
-            m_val.insert(BiPair("middle", 1 ));
-            m_val.insert(BiPair("up", 2 ));
+            m_val.insert(BiPair("200 ns + 180 ns", 0 ));
+            m_val.insert(BiPair("200 ns + 180 ns", 1 ));
+            m_val.insert(BiPair("200 ns + 60 ns", 2 ));
+            m_val.insert(BiPair("200 ns", 3 ));
             m_val.insert(BiPair("0", 0 ));
             m_val.insert(BiPair("1", 1 ));
             m_val.insert(BiPair("2", 2 ));
+            m_val.insert(BiPair("3", 3 ));
+
+            if(m_val.find(val)!=m_val.end()){
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "convtime_8" ){//sc8b: sc08b, sc18b
+            InMap m_val;
+            m_val.insert(BiPair("100 ns + 180 ns", 0 ));
+            m_val.insert(BiPair("100 ns + 180 ns", 1 ));
+            m_val.insert(BiPair("100 ns + 60 ns", 2 ));
+            m_val.insert(BiPair("100 ns", 3 ));
+            m_val.insert(BiPair("0", 0 ));
+            m_val.insert(BiPair("1", 1 ));
+            m_val.insert(BiPair("2", 2 ));
+            m_val.insert(BiPair("3", 3 ));
+
+            if(m_val.find(val)!=m_val.end()){
+              m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
+              return true;
+            }
+            return false;
+        }
+        else if(feature == "convtime_6" ){//sc6b: sc06b, sc16b, sc26b
+            InMap m_val;
+            m_val.insert(BiPair("25 ns", 0 ));
+            m_val.insert(BiPair("25 ns + 1 ckdt", 1 ));
+            m_val.insert(BiPair("25 ns + 2 ckdt", 2 ));
+            m_val.insert(BiPair("25 ns + 3 ckdt", 3 ));
+            m_val.insert(BiPair("25 ns + 4 ckdt", 4 ));
+            m_val.insert(BiPair("25 ns + 5 ckdt", 5 ));
+            m_val.insert(BiPair("25 ns + 6 ckdt", 6 ));
+            m_val.insert(BiPair("25 ns + 7 ckdt", 7 ));
+            m_val.insert(BiPair("0", 0 ));
+            m_val.insert(BiPair("1", 1 ));
+            m_val.insert(BiPair("2", 2 ));
+            m_val.insert(BiPair("3", 3 ));
+            m_val.insert(BiPair("4", 4 ));
+            m_val.insert(BiPair("5", 5 ));
+            m_val.insert(BiPair("6", 6 ));
+            m_val.insert(BiPair("7", 7 ));
 
             if(m_val.find(val)!=m_val.end()){
               m_vmmSettings->m_globalReg1->at(feature) = m_val[val];
