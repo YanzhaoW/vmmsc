@@ -27,7 +27,7 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->checkBoxGlobalDAQ->setEnabled(false);
 
     QString correctedFileName = m_mainWindow->GetApplicationPath() +  "/../configs/default.txt";
-    std::cout << correctedFileName.toStdString() << std::endl;
+
     if(FileExists(correctedFileName.toStdString().c_str())){
         LoadConfig("default");
     }

@@ -626,7 +626,7 @@ void FECWindow::on_pushButtonFECIP_pressed()
         FECip = FECip + result.toInt();
 
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(FECip);
-        usleep(1000);
+        QThread::usleep(1000);
         m_ui->ip4_2->setText(result);
     }
 }
@@ -650,7 +650,7 @@ void FECWindow::on_lineEdit_triggerOffset_editingFinished()
     long mod = val%BC_period;
     if(mod !=0)
     {
-        val = abs(div*BC_period);
+        val = abs((double)div*BC_period);
 
     }
     m_ui->lineEdit_triggerOffset->setText( QString::number( val, 10 ) );
@@ -728,7 +728,7 @@ void FECWindow::on_pushButtonDAQIP_pressed()
         DAQip = result.toLong();
         DAQip = 0x0a000003;
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
-        usleep(1000);
+        QThread::usleep(1000);
      }
 }
 

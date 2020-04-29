@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <unistd.h>
+//#include <unistd.h>
 
 #include <QtConcurrentRun>
 #include <QFuture>

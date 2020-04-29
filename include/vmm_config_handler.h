@@ -1,7 +1,7 @@
 #ifndef VMM_CONFIG_HANDLER_H
 #define VMM_CONFIG_HANDLER_H
 #include "globparameter.h"
-#include <unistd.h>
+//#include <unistd.h>
 
 #include <QObject>
 #include <fstream>

@@ -1,7 +1,7 @@
 #ifndef HYBRID_CONFIG_HANDLER_H
 #define HYBRID_CONFIG_HANDLER_H
 #include "globparameter.h"
-#include <unistd.h>
+//#include <unistd.h>
 #include "iostream"
 
 #include <QObject>

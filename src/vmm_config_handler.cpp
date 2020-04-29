@@ -63,8 +63,8 @@ bool VMMConfigHandler::GenericAllVMMConf(bool load, std::string filename){
                                 if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].GetHybrid(l)){
                                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                                         if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)){
-                                            if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<" vmm"<<m<<std::endl;
-                                            else std::cout <<"Writing vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<" vmm"<<m<<std::endl;
+                                            if (load) std::cout <<"Loading vmm configuration \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<" vmm"<<m<<std::endl;
+                                            else std::cout <<"Writing vmm configuration \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hdmi"<<k<<" hybrid"<<l<<" vmm"<<m<<std::endl;
                                             std::ostringstream oss;
                                             std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
                                             oss << i;
@@ -104,8 +104,8 @@ bool VMMConfigHandler::GenericAllVMMConf(bool load, std::string filename){
 }
 
 bool VMMConfigHandler::GenericSingleVMMConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm){
-    if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<" vmm"<<vmm<<std::endl;
-    else std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<" vmm"<<vmm<<std::endl;
+    if (load) std::cout <<"Loading vmm configuration \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<" vmm"<<vmm<<std::endl;
+    else std::cout <<"Loading vmm configuration \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hdmi"<<hdmi<<" hybrid"<<hybrid<<" vmm"<<vmm<<std::endl;
     std::ostringstream oss;
     std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     oss << daq;

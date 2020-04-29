@@ -19,7 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     QString fileName = QCoreApplication::applicationDirPath();
     m_execPath = fileName.replace("/vmmdcs.app/Contents/MacOS", "");
-
+    std::string execPath = m_execPath.toStdString();
+    if(execPath.find("/debug") !=std::string::npos || execPath.find("/release") !=std::string::npos) {
+        m_execPath += "/..";
+    }
     m_daq_act[0] = 1;
     std::cout << "stating commandline" << std::endl;
     m_commandLine = new Commandline(this,1);

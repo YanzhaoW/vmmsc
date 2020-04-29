@@ -1,7 +1,7 @@
 #ifndef FEC_CONFIG_HANDLER_H
 #define FEC_CONFIG_HANDLER_H
 
-#include <unistd.h>
+//#include <unistd.h>
 
 #include <QObject>
 #include <fstream>

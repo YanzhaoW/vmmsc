@@ -1,5 +1,5 @@
 #include "fec.h"
-#include <unistd.h>
+//#include <unistd.h>
 
 FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),

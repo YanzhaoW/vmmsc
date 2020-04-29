@@ -1,10 +1,20 @@
-#include <arpa/inet.h>
 #include <cmath>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QFileInfo>
 #include "calibration_module.h"
+<<<<<<< HEAD
+#ifdef __linux__
+    #include <arpa/inet.h>
+#elif __APPLE__
+    #include <arpa/inet.h>
+#elif _WIN32
+    #include <windows.h>
+    #include <winsock.h>
+#endif
+=======
 
+>>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
 
 CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     QObject(parent),
@@ -52,12 +62,17 @@ void CalibrationModule::StopDataTaking()
     m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
     m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
     m_mainWindow->m_daqs[0].ACQHandler(false);
-    usleep(1000);
+    QThread::usleep(1000);
     CloseDAQSocket();
 }
 void CalibrationModule::StartDataTaking()
 {
+<<<<<<< HEAD
+    emit m_mainWindow->m_daqWindow->ui->onACQ->clicked();
+    QThread::usleep(1000);
+=======
     emit m_mainWindow->m_daqWindow->ui->onACQ->clicked();usleep(1000);
+>>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
     ConnectDAQSocket();
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
 }
@@ -156,7 +171,12 @@ void CalibrationModule::FitOfflineCalibrationData()
     m_calibrationArray[m_modeIndex-1] = new QJsonArray();
     double meanOffset = 0;
 
+#if _WIN32
+    double* baseLine = new double[m_bitCount];
+#else
     double baseLine[m_bitCount];
+#endif
+
     for(int n=0; n< m_bitCount;n++)
     {
         baseLine[n] = 0;
@@ -297,6 +317,14 @@ void CalibrationModule::FitOfflineCalibrationData()
             m_calibrationArray[m_modeIndex-1]->push_back(calibrationObject);
         }
     }
+<<<<<<< HEAD
+
+#if _WIN32
+    delete[] baseLine;
+#endif
+
+=======
+>>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
 }
 void CalibrationModule::SavePlotsAsPDF(){
     int gain = 0;
@@ -339,6 +367,7 @@ void CalibrationModule::SavePlotsAsPDF(){
         else if(m_modeIndex == 5)
         {
             name = "Online_TDC";
+<<<<<<< HEAD
         }
         else if(m_modeIndex == 6)
         {
@@ -360,6 +389,29 @@ void CalibrationModule::SavePlotsAsPDF(){
         {
             name = "Pedestal";
         }
+=======
+        }
+        else if(m_modeIndex == 6)
+        {
+            name = "Counts_Channels";
+        }
+        else if(m_modeIndex == 7)
+        {
+            name = "Mean_ADC";
+        }
+        else if(m_modeIndex == 8)
+        {
+            name = "Mean_TDC";
+        }
+        else if(m_modeIndex == 9)
+        {
+            name = "Mean_BCID";
+        }
+        else if(m_modeIndex == 10)
+        {
+            name = "Pedestal";
+        }
+>>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
         else if(m_modeIndex == 11)
         {
             name = "S-curve";
@@ -672,7 +724,8 @@ void CalibrationModule::StartCalibration(){
         m_isCalibrated[n] = false;
     }
     m_dataAvailable = false;
-    emit m_mainWindow->m_daqWindow->ui->openConnection_2->clicked();usleep(1000);
+    emit m_mainWindow->m_daqWindow->ui->openConnection_2->clicked();
+    QThread::usleep(1000);
     if(! (m_mainWindow->m_daqWindow->ui->connectionLabel_2->text()==QString("all alive"))) {
         std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
         m_mainWindow->m_daqWindow->ui->InfoScreen->setTextColor(Qt::red);
@@ -698,7 +751,8 @@ void CalibrationModule::StartCalibration(){
     }
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
-    emit m_mainWindow->m_daqWindow->ui->Button_save->clicked();usleep(1000);
+    emit m_mainWindow->m_daqWindow->ui->Button_save->clicked();
+    QThread::usleep(1000);
     m_mainWindow->m_daqWindow->ui->line_configFile->setText("");
     GetActiveVMMs();
     InitializeDataStructures();
@@ -761,7 +815,8 @@ void CalibrationModule::StartCalibration(){
 
     m_mainWindow->m_daqWindow->ui->checkBoxGlobalDAQ->setChecked(true);
     emit m_mainWindow->m_daqWindow->ui->checkBoxGlobalDAQ->stateChanged(true);
-    emit m_mainWindow->m_daqWindow->ui->trgPulser->clicked();usleep(1000);
+    emit m_mainWindow->m_daqWindow->ui->trgPulser->clicked();
+    QThread::usleep(1000);
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
 
@@ -813,7 +868,7 @@ void CalibrationModule::StartCalibration(){
     else {
         m_nodata_start = std::chrono::high_resolution_clock::now();
         DoCalibrationStep();
-        usleep(1000000);
+        QThread::usleep(1000000);
         StartDataTaking();
     }
 }
@@ -1034,7 +1089,7 @@ void CalibrationModule::AccumulateData(){
         if(continueCalibration)
         {
             DoCalibrationStep();
-            usleep(10);
+            QThread::usleep(10);
             StartDataTaking();
         }
         else
@@ -1127,7 +1182,7 @@ void CalibrationModule::Reset()
 {
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-    usleep(1000);
+    QThread::usleep(1000);
     std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Hard Reset of VMMs!" << std::endl;
     for(int vmm =0; vmm < m_vmmActs.size(); vmm++){
         int fec = GetFEC(vmm);
@@ -1141,15 +1196,15 @@ void CalibrationModule::Reset()
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
-        usleep(1000);
+        QThread::usleep(1000);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 0);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 0);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
-        usleep(1000);
+        QThread::usleep(1000);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC(false);
-        usleep(1000);
+        QThread::usleep(1000);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC(true);
-        usleep(1000);
+        QThread::usleep(1000);
         m_mainWindow->m_daqs[0].SendAll();
     }
 }
@@ -1427,7 +1482,7 @@ void CalibrationModule::SaveCorrections(){
     else
     {
         m_mainWindow->m_daqWindow->LoadConfig("Calib_config");
-        sleep(1);
+        QThread::sleep(1);
         for(int vmm=0; vmm<m_vmmActs.size(); vmm++){
             for(int ch=0; ch<64; ch++)
             {
@@ -1450,9 +1505,10 @@ void CalibrationModule::SaveCorrections(){
         }
         //m_mainWindow->m_daqs[0].SendAll();
         m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
-        m_mainWindow->m_daqWindow->on_Button_save_clicked();usleep(1000);
+        m_mainWindow->m_daqWindow->on_Button_save_clicked();
+        QThread::usleep(1000);
         m_mainWindow->m_daqWindow->ui->line_configFile->setText("");
-        sleep(1);
+        QThread::sleep(1);
         m_mainWindow->m_daqWindow->LoadConfig("Calib_config");
     }
 }
@@ -1644,7 +1700,7 @@ void CalibrationModule::MeasurePedestal()
             {
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",0,ch);
                 m_mainWindow->m_daqs[0].SendAll();
-                usleep(1000);
+                QThread::usleep(1000);
                 int pedestal =  m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
                 //m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",1,ch);
                 //m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",bit*15,ch);
@@ -1680,12 +1736,12 @@ void CalibrationModule::MeasureThreshold(int the_bit)
             m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",1,ch);
             m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",15,ch);
             m_mainWindow->m_daqs[0].SendAll();
-            usleep(1000);
+            QThread::usleep(1000);
             int noise_channel_mV =  m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
             m_mean[the_bit][fec][hdmi][0][chip].push_back(noise_channel_mV);
             m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",0,ch);
             m_mainWindow->m_daqs[0].SendAll();
-            usleep(1000);
+            QThread::usleep(1000);
             int pedestal_mV =  m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
             m_mean[0][fec][hdmi][0][chip][ch] = pedestal_mV;
         }

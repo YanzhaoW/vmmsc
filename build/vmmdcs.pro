@@ -31,6 +31,7 @@ QT      += network
 QT      += widgets
 QT      += xml
 QT      += concurrent
+
 greaterThan(QT_MAJOR_VERSION, 4): QT +=widgets printsupport
 CONFIG  += console
 CONFIG  +=declarative_debug
@@ -50,7 +51,11 @@ UI_DIR      += ./ui/
 
 linux {
     QMAKE_CXXFLAGS += -std=c++11
-} else {
+}
+else:win32 {
+    LIBS += -lws2_32
+}
+else {
     QMAKE_CXXFLAGS += -stdlib=libc++
     QMAKE_CXXFLAGS += -std=c++11
     QMAKE_LFLAGS   += -stdlib=libc++

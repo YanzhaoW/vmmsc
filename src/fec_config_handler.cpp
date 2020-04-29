@@ -48,8 +48,8 @@ bool FECConfigHandler::GenericAllFECConf(bool load, std::string filename){
         if (m_mainWindow->m_daq_act[i]){
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
                 if (m_mainWindow->m_daqs[i].GetFEC(j)){
-                    if (load) std::cout <<"Loading FEC configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<std::endl;
-                    else std::cout <<"Writing FEC configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<std::endl;
+                    if (load) std::cout <<"Loading FEC configuration \""<<filename<<"\" for daq"<<i<<" fec"<<j<<std::endl;
+                    else std::cout <<"Writing FEC configuration \""<<filename<<"\" for daq"<<i<<" fec"<<j<<std::endl;
                     std::ostringstream oss;
                     std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
                     oss << i;
@@ -73,8 +73,8 @@ bool FECConfigHandler::GenericAllFECConf(bool load, std::string filename){
 }
 
 bool FECConfigHandler::GenericSingleFECConf(bool load, const char* filename, unsigned short daq, unsigned short fec){
-    if (load) std::cout <<"Loading FEC configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<std::endl;
-    else std::cout <<"Writing FEC configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<std::endl;
+    if (load) std::cout <<"Loading FEC configuration \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<std::endl;
+    else std::cout <<"Writing FEC configuration \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<std::endl;
     std::ostringstream oss;
     std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     oss << daq;
