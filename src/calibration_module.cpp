@@ -3,7 +3,7 @@
 #include <QJsonArray>
 #include <QFileInfo>
 #include "calibration_module.h"
-<<<<<<< HEAD
+
 #ifdef __linux__
     #include <arpa/inet.h>
 #elif __APPLE__
@@ -12,9 +12,7 @@
     #include <windows.h>
     #include <winsock.h>
 #endif
-=======
 
->>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
 
 CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     QObject(parent),
@@ -67,12 +65,8 @@ void CalibrationModule::StopDataTaking()
 }
 void CalibrationModule::StartDataTaking()
 {
-<<<<<<< HEAD
     emit m_mainWindow->m_daqWindow->ui->onACQ->clicked();
     QThread::usleep(1000);
-=======
-    emit m_mainWindow->m_daqWindow->ui->onACQ->clicked();usleep(1000);
->>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
     ConnectDAQSocket();
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
 }
@@ -317,14 +311,12 @@ void CalibrationModule::FitOfflineCalibrationData()
             m_calibrationArray[m_modeIndex-1]->push_back(calibrationObject);
         }
     }
-<<<<<<< HEAD
+
 
 #if _WIN32
     delete[] baseLine;
 #endif
 
-=======
->>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
 }
 void CalibrationModule::SavePlotsAsPDF(){
     int gain = 0;
@@ -367,7 +359,6 @@ void CalibrationModule::SavePlotsAsPDF(){
         else if(m_modeIndex == 5)
         {
             name = "Online_TDC";
-<<<<<<< HEAD
         }
         else if(m_modeIndex == 6)
         {
@@ -389,29 +380,6 @@ void CalibrationModule::SavePlotsAsPDF(){
         {
             name = "Pedestal";
         }
-=======
-        }
-        else if(m_modeIndex == 6)
-        {
-            name = "Counts_Channels";
-        }
-        else if(m_modeIndex == 7)
-        {
-            name = "Mean_ADC";
-        }
-        else if(m_modeIndex == 8)
-        {
-            name = "Mean_TDC";
-        }
-        else if(m_modeIndex == 9)
-        {
-            name = "Mean_BCID";
-        }
-        else if(m_modeIndex == 10)
-        {
-            name = "Pedestal";
-        }
->>>>>>> 58f63267a1312a2b2181dd31d4ba48b124e4d7e6
         else if(m_modeIndex == 11)
         {
             name = "S-curve";

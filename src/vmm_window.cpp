@@ -1102,7 +1102,7 @@ void VMMWindow::on_vmmReset_clicked()
     SetVMM("reset1", 1);
     SetVMM("reset2", 1);
     m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_hybridIndex, m_vmmIndex);
-    QThread::usleep(1);
+    QThread::sleep(1);
     SetVMM("reset1", 0);
     SetVMM("reset2", 0);
     m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_hybridIndex, m_vmmIndex);
