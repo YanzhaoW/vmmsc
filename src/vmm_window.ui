@@ -957,17 +957,17 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <item>
                  <property name="text">
-                  <string>200 ns + 180 ns</string>
+                  <string>200 ns + 120 ns (both)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>200 ns + 120 ns</string>
+                  <string>200 ns + 60 ns (MSB part)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>200 ns + 60ns</string>
+                  <string>200 ns + 60 ns (LSB part)</string>
                  </property>
                 </item>
                 <item>
@@ -1037,17 +1037,17 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <item>
                  <property name="text">
-                  <string>100 ns + 180 ns</string>
+                  <string>100 ns + 120 ns (both)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>100 ns + 120 ns</string>
+                  <string>100 ns + 60 ns (MSB part)</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>100 ns + 60 ns</string>
+                  <string>100 ns + 60 ns (LSB part)</string>
                  </property>
                 </item>
                 <item>

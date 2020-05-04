@@ -227,9 +227,9 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
         }
         else if(feature == "convtime_10" ){//sc10b: sc010b, sc110b
             InMap m_val;
-            m_val.insert(BiPair("200 ns + 180 ns", 0 ));
-            m_val.insert(BiPair("200 ns + 180 ns", 1 ));
-            m_val.insert(BiPair("200 ns + 60 ns", 2 ));
+            m_val.insert(BiPair("200 ns + 120 ns (both)", 0 ));
+            m_val.insert(BiPair("200 ns + 60 ns (MSB part)", 1 ));
+            m_val.insert(BiPair("200 ns + 60 ns (LSB part)", 2 ));
             m_val.insert(BiPair("200 ns", 3 ));
             m_val.insert(BiPair("0", 0 ));
             m_val.insert(BiPair("1", 1 ));
@@ -244,9 +244,9 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
         }
         else if(feature == "convtime_8" ){//sc8b: sc08b, sc18b
             InMap m_val;
-            m_val.insert(BiPair("100 ns + 180 ns", 0 ));
-            m_val.insert(BiPair("100 ns + 180 ns", 1 ));
-            m_val.insert(BiPair("100 ns + 60 ns", 2 ));
+            m_val.insert(BiPair("200 ns + 120 ns (both)", 0 ));
+            m_val.insert(BiPair("200 ns + 60 ns (MSB part)", 1 ));
+            m_val.insert(BiPair("200 ns + 60 ns (LSB part)", 2 ));
             m_val.insert(BiPair("100 ns", 3 ));
             m_val.insert(BiPair("0", 0 ));
             m_val.insert(BiPair("1", 1 ));
