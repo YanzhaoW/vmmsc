@@ -862,7 +862,8 @@ int FECConfigModule::Connect()
 #elif __APPLE__
     int status_code = QProcess::execute("ping", QStringList()<<"-t1"<<ip);
 #elif _WIN32
-    int status_code = QProcess::execute("ping", QStringList()<<"-n 1"<<ip);
+    QString command = "ping -n 1 " + ip;
+    int status_code = QProcess::execute(command);
 #endif
     //////////////////////////////////
     bool pingOK = false;
