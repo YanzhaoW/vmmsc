@@ -1653,7 +1653,6 @@ void CalibrationModule::InitializeDataStructures()
         }
     }
 }
-
 void CalibrationModule::MeasurePedestal()
 {
     stringstream sx;
@@ -1662,23 +1661,25 @@ void CalibrationModule::MeasurePedestal()
         int hdmi = GetHDMI(vmm);
         int chip = GetVMM(vmm);
         for(unsigned int ch = 0; ch<64; ch++){
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
             m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
-            for(int bit=0; bit<m_number_bits;bit++)
-            {
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",0,ch);
+            m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",0,ch);
+        }
+        m_mainWindow->m_daqs[0].SendAll();
+        QThread::usleep(1000000);
+        for(unsigned int ch = 0; ch<64; ch++){
+            m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+            for(int bit=0; bit<m_number_bits;bit++){
                 m_mainWindow->m_daqs[0].SendAll();
                 QThread::usleep(1000);
-                int pedestal =  m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
+                int pedestal = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
                 //m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",1,ch);
                 //m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",bit*15,ch);
                 //m_mainWindow->m_daqs[0].SendAll();
-                //int threshold =  m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
+                //int threshold = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
                 m_mean[bit][fec][hdmi][0][chip].push_back(pedestal);
                 //m_mean[m_number_bits + bit][fec][hdmi][0][chip].push_back(threshold);
             }
         }
-
     }
     m_dataAvailable = true;
     m_isCalibrated[10] = true;
@@ -1687,7 +1688,6 @@ void CalibrationModule::MeasurePedestal()
     //CalculateCorrections();
     PlotData();
 }
-
 
 void CalibrationModule::MeasureThreshold(int the_bit)
 {
