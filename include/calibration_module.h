@@ -94,16 +94,15 @@ private:
     double SortVectors( vector<double>& sortedMin, vector<double>& sortedMax);
     void InitializeDataStructures();
     void GetSettings();
+    void SetPlotChoice();
     void Reset();
     int GetFEC(int vmmId);
     int GetHDMI(int vmmId);
     int GetVMM(int vmmId);
-    QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1);
+    double threshold_dac_to_mV(int dac);
+    QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1,int bcclock=-1);
 
-
-    int Receive_VMM2(const char* buffer, int size, int fecId);
     int Receive_VMM3(const char* buffer, int size, int fecId);
-    int Parse_VMM2(uint32_t data1, uint32_t data2, uint32_t vmmid, int fecId);
     int Parse_VMM3(uint32_t data1, uint16_t data2, int fecId);
 
     uint32_t Reversebits32(uint32_t x);
@@ -163,21 +162,27 @@ private:
     int m_number_bits = 0;
     int m_vmmIndex=0;
     int m_theChannel = 0;
+    int m_theVMM = 0;
+    int m_theFEC = 0;
     int m_theDirection = 0;
     double m_rateLimit = 0;
-    int m_maxThreshold = 300;
-    int m_minThreshold = 50;
+    int m_maxThreshold = 800;
+    int m_minThreshold = 400;
     int m_threshold = 0;
+    int m_pulser_dac = 0;
     int m_minimumNumHits = 1;
     int m_maskedChannels = 0;
     double m_gainTable[8] = {0.5,1,3,4.5,6,9,12,16};
     double m_peaktimeTable[4] = {200,100,50,25};
     double m_tacTable[4] = {60,100,350,650};
+    QString m_bcclock_table[8] = {"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
+
     QString m_polarityTable[2] = {"negative", "positive"};
 
     int m_thresholdTable[8] = {220,250,250,250,250,300,300,300};
     double m_minGainTable[8] = {500,330,150,120,60,50,40,30};
     double m_maxGainTable[8] = {1023,1023,1023,700,510,320,210,140};
+
 
 
 
@@ -200,11 +205,14 @@ private:
 
     std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
     std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_dac;
+
 
     std::vector<double> m_x;
+    std::vector<double> m_dac_x;
     std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    //std::vector<double> m_y;
+    std::vector<double> m_channel_y[64];
+    std::vector<double> m_max_value_x;
+    std::vector<double> m_min_value_x;
     std::vector<double> m_calVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<int> m_bitVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_offset[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -226,6 +234,7 @@ signals:
 public slots:
     void readEvent();
     void updatePlot();
+    void setPlotChoice();
     void Receive(const char* buffer, int size, QString ip);
 };
 

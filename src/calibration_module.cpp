@@ -50,7 +50,10 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
              this, SLOT(updatePlot()));
     connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
+    connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(setPlotChoice()));
 }
+
 void CalibrationModule::StopDataTaking()
 {
     m_start = 0;
@@ -323,22 +326,31 @@ void CalibrationModule::SavePlotsAsPDF(){
     int polarity = 0;
     int peaktime = 0;
     int tac = 0;
+    int bcclock = 0;
     int theChoice =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex();
     int start = theChoice * 8;
     int end = (theChoice +1)*8;
-    for(int vmm=start; vmm<m_vmmActs.size() && vmm <end; vmm++){
-        int fec = GetFEC(vmm);
-        int hdmi = GetHDMI(vmm);
-        int chip = GetVMM(vmm);
+    int limit = 0;
+    if(m_modeIndex == 11) {
+        limit = 64;
+    }
+    else {
+        limit = m_vmmActs.size();
+    }
+    for(int idx=start; idx< limit&& idx <end; idx++){
+        int fec = GetFEC(idx);
+        int hdmi = GetHDMI(idx);
+        int chip = GetVMM(idx);
 
-        if(vmm==start)
+        if(idx==start)
         {
             gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
             polarity = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("sp");
             peaktime = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("peaktime");
             tac = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("stc");
+            bcclock = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].GetReg("CKBC");
         }
-        QCustomPlot *plot = plotVector[vmm%8];
+        QCustomPlot *plot = plotVector[idx%8];
         QString name = "";
         if(m_modeIndex == 1)
         {
@@ -382,11 +394,18 @@ void CalibrationModule::SavePlotsAsPDF(){
         }
         else if(m_modeIndex == 11)
         {
-            name = "S-curve";
+            name = "S-curve_CH" + QString::number(idx);
         }
-        name += "_FEC" + QString::number(fec+1);
-        name += "_VMM" + QString::number(hdmi*2+chip);
-        QString theName = CreateFileName(name,polarity,gain,peaktime,tac);
+        if(m_modeIndex == 11) {
+            name += "_FEC" + QString::number(m_theFEC);
+            name += "_VMM" + QString::number(m_theVMM);
+        }
+        else {
+            name += "_FEC" + QString::number(fec+1);
+            name += "_VMM" + QString::number(hdmi*2+chip);
+        }
+
+        QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
         theName += ".pdf";
         plot->savePdf(theName);
     }
@@ -412,11 +431,15 @@ void CalibrationModule::PlotData(){
     int theChoice =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex();
     int start = theChoice * 8;
     int end = (theChoice +1)*8;
-    for(int vmm=start; vmm<m_vmmActs.size() && vmm <end; vmm++){
-        int fec = GetFEC(vmm);
-        int hdmi = GetHDMI(vmm);
-        int chip = GetVMM(vmm);
-        QCustomPlot *plot = plotVector[vmm%8];
+    int limit = 0;
+    if(m_modeIndex == 11) {
+        limit = 64;
+    }
+    else {
+        limit = m_vmmActs.size();
+    }
+    for(int idx=start; idx<limit && idx <end; idx++){
+        QCustomPlot *plot = plotVector[idx%8];
 
         plot->clearGraphs();
         // give the axes some labels:
@@ -424,7 +447,22 @@ void CalibrationModule::PlotData(){
         // set axes ranges, so we see all data:
         plot->xAxis->setRange(0, 66);
         QPen pen(Qt::red,3,Qt::SolidLine);
-        QString title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hdmi*2+chip);
+        QString title = "";
+        int fec = 0;
+        int hdmi = 0;
+        int chip = 0;
+        if(m_modeIndex != 11) {
+            fec = GetFEC(idx);
+            hdmi = GetHDMI(idx);
+            chip = GetVMM(idx);
+            title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hdmi*2+chip);
+        }
+        else {
+            fec = m_theFEC-1;
+            hdmi = m_theVMM / 2;
+            chip = m_theVMM % 2;
+            title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hdmi*2+chip) + " CH " + QString::number(idx);
+        }
         double colorFactor = 0;
 
         if(m_modeIndex == 1) {
@@ -480,9 +518,9 @@ void CalibrationModule::PlotData(){
         else if(m_modeIndex == 11)
         {
             title+= ": Rate [Hz]";
-            plot->xAxis->setLabel("DAC threshold");
-            plot->yAxis->setRange(0.0, m_rateLimit);
-            plot->xAxis->setRange(m_minThreshold, m_maxThreshold);
+            plot->xAxis->setLabel("threshold [mV]");
+            //plot->yAxis->setRange(0.0, m_rateLimit);
+            plot->xAxis->setRange(threshold_dac_to_mV(m_minThreshold), threshold_dac_to_mV(m_maxThreshold));
         }
         plot->yAxis->setLabel(title);
         if(m_runMode == "User" /*m_modeIndex >= 6  &&  m_modeIndex <= 9*/)
@@ -605,21 +643,104 @@ void CalibrationModule::PlotData(){
                 plot->legend->setVisible(true);
                 plot->legend->setFont(QFont("Helvetica",9));
                 plot->addGraph();
-                plot->graph(0)->setName(QString("S-curve channel ") + QString::number(m_theChannel));
-                plot->graph(0)->setData( QVector<double>::fromStdVector(m_dac), QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                plot->graph(0)->setData( QVector<double>::fromStdVector(m_dac_x), QVector<double>::fromStdVector(m_channel_y[idx]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                 plot->graph(0)->setLineStyle(QCPGraph::lsLine);
                 plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
                 plot->graph(0)->setBrush(QBrush(QColor(0, 0, 255, 20)));
+                double max = *max_element (m_channel_y[idx].begin(), m_channel_y[idx].end());
+                m_max_value_x[idx] = 0;
+                m_min_value_x[idx] = -1;
+                for(int i = 0; i < m_channel_y[idx].size(); i++){
+                    if(m_channel_y[idx][i] == max) {
+                        m_max_value_x[idx] = threshold_dac_to_mV(m_minThreshold+i);
+                    }
+                    if(m_channel_y[idx][i] == 0 && m_min_value_x[idx]  == -1 && i > 0) {
+                        m_min_value_x[idx]  = threshold_dac_to_mV(m_minThreshold+i);
+                    }
+
+                }
+                double width = m_min_value_x[idx] -  m_max_value_x[idx];
+                plot->graph(0)->setName(QString("S-curve (edge width: ") + QString::number(width)  + " mV)");
+                QCPItemStraightLine * m_lineMin = new QCPItemStraightLine(plot);//Vertical line
+                m_lineMin->setLayer("overlay");
+                m_lineMin->setPen(QPen(Qt::red,2,Qt::SolidLine));
+                m_lineMin->setClipToAxisRect(true);
+                m_lineMin->point1->setCoords(m_min_value_x[idx], 0);
+                m_lineMin->point2->setCoords(m_min_value_x[idx], max);
+                QCPItemStraightLine * m_lineMax = new QCPItemStraightLine(plot);//Vertical line
+                m_lineMax->setLayer("overlay");
+                m_lineMax->setPen(QPen(Qt::red,2,Qt::SolidLine));
+                m_lineMax->setClipToAxisRect(true);
+                m_lineMax->point1->setCoords(m_max_value_x[idx], 0);
+                m_lineMax->point2->setCoords(m_max_value_x[idx], max);
+                plot->yAxis->rescale();
             }
         }
         plot->replot();
     }
 }
+
+void CalibrationModule::setPlotChoice(){
+    m_mainWindow->m_daqWindow->ui->comboBoxFec->clear();
+    m_mainWindow->m_daqWindow->ui->label_vmm->clear();
+    QString calibMode = m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentText();
+    m_modeIndex = GetCalibrationModeIndex(calibMode);
+    std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << calibMode.toStdString() << " " << m_modeIndex << std::endl;
+    if(m_modeIndex != 11) {
+        m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display VMMs");
+        if(m_vmmActs.size() <=8 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
+        }
+        if(m_vmmActs.size() <=16 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
+        }
+        if(m_vmmActs.size() <=24 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
+        }
+        if(m_vmmActs.size() <=32 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
+        }
+        if(m_vmmActs.size() <=40 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
+        }
+        if(m_vmmActs.size() <=48 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
+        }
+        if(m_vmmActs.size() <=56 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
+        }
+        if(m_vmmActs.size() <=64 )
+        {
+            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
+        }
+    }
+    else {
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 0-7"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 8-15"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 16-23"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 24-31"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 32-39"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 40-47"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 48-55"));
+        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 56-63"));
+        m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display Channels");
+    }
+
+
+}
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::GetActiveVMMs(){
     m_vmmActs.clear();
-    m_mainWindow->m_daqWindow->ui->comboBoxFec->clear();
+
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
@@ -640,44 +761,19 @@ void CalibrationModule::GetActiveVMMs(){
             }
         }
     }
-    if(m_vmmActs.size() <=8 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
-    }
-    if(m_vmmActs.size() <=16 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
-    }
-    if(m_vmmActs.size() <=24 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
-    }
-    if(m_vmmActs.size() <=32 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
-    }
-    if(m_vmmActs.size() <=40 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
-    }
-    if(m_vmmActs.size() <=48 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
-    }
-    if(m_vmmActs.size() <=56 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
-    }
-    if(m_vmmActs.size() <=64 )
-    {
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
-    }
+    setPlotChoice();
 }
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::updatePlot(){
     GetSettings();
     PlotData();
 }
+
+double CalibrationModule::threshold_dac_to_mV(int dac) {
+    return 0.801*dac+25.182;
+}
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::StartCalibration(){
 
@@ -724,38 +820,55 @@ void CalibrationModule::StartCalibration(){
     m_mainWindow->m_daqWindow->ui->line_configFile->setText("");
     GetActiveVMMs();
     InitializeDataStructures();
+
+
     if(m_modeIndex == 11)
     {
         bool ok;
-        QStringList list = QInputDialog::getText(0, tr("S-curve input parameters"), tr("Lower threshold, upper threshold, channel, rate limit [Hz]:"),QLineEdit::Normal,"50,350,18,1000",&ok).split(",");
-        if (list.count() == 4) {
-            m_theChannel = list[2].toInt();
-            m_maxThreshold = list[1].toInt();
-            m_minThreshold = list[0].toInt();
-            m_rateLimit = list[3].toDouble();
-        }
-        else {
+        QStringList list = QInputDialog::getText(0, tr("S-curve input parameters"), tr("FEC(1-8), VMM(0-15), lower threshold, upper threshold, test pulse DAQ, scan direction (0=up, 1=down):"),
+                                                 QLineEdit::Normal,"1,0,750,800,200,0",&ok).split(",");
+        if(list.count() != 6) {
             return;
         }
+        else {
+            m_theFEC = list[0].toInt();
+            m_theVMM = list[1].toInt();
+            m_minThreshold = list[2].toInt();
+            m_maxThreshold = list[3].toInt();
+            m_pulser_dac = list[4].toInt();
+            m_theDirection= list[5].toInt();
+        }
+        if(m_theFEC > 8 || m_theFEC < 1 || m_theVMM > 15 || m_theVMM < 0
+            || m_minThreshold < 100 || m_minThreshold > 1023
+            || m_maxThreshold < 100 || m_maxThreshold > 1023
+            || m_minThreshold > m_maxThreshold
+            || m_pulser_dac < 100 || m_pulser_dac > 1023
+            || m_theDirection < 0 || m_theDirection > 1) {
+            return;
+        }
+        int fec = m_theFEC-1;
+        int hdmi = m_theVMM / 2;
+        int chip = m_theVMM % 2;
         for(int z=0; z < m_maxThreshold-m_minThreshold+1; z++)
         {
-            m_dac.push_back(m_minThreshold+z);
-            for(unsigned int vmm=0; vmm<m_vmmActs.size(); vmm++){
-                int fec = GetFEC(vmm);
-                int hdmi = GetHDMI(vmm);
-                int chip = GetVMM(vmm);
-                m_y[fec][hdmi][0][chip].push_back(0);
+            m_dac_x.push_back(threshold_dac_to_mV(m_minThreshold+z));
+            for(unsigned int ch = 0; ch<64; ch++){
+                m_channel_y[ch].push_back(0);
+                m_max_value_x.push_back(m_maxThreshold);
+                m_min_value_x.push_back(m_minThreshold);
             }
         }
         m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 
-        int fec = GetFEC(0);
-        int hdmi = GetHDMI(0);
-        int chip = GetVMM(0);
+        fec = GetFEC(0);
+        hdmi = GetHDMI(0);
+        chip = GetVMM(0);
         int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
         int polarity = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("sp");
         int peaktime = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("peaktime");
-        QString name = CreateFileName("S-curve",polarity,gain,peaktime,-1);
+        int tac = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("stc");
+        int bcclock = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].GetReg("CKBC");
+        QString name = CreateFileName("S-curve",polarity,gain,peaktime,tac, bcclock);
         name += ".txt";
         if(m_outFile.is_open())
         {
@@ -765,10 +878,10 @@ void CalibrationModule::StartCalibration(){
     }
     if(m_theDirection == 0)
     {
-        m_threshold = m_maxThreshold;
+        m_threshold = m_minThreshold;
     }
     else {
-        m_threshold = m_minThreshold;
+        m_threshold = m_maxThreshold;
     }
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
@@ -790,17 +903,22 @@ void CalibrationModule::StartCalibration(){
 
     if(m_runMode != "User")
     {
+
         for(unsigned int vmm=0; vmm<m_vmmActs.size(); vmm++){
             int fec = GetFEC(vmm);
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
+
             //Save settings that are modified during calibration
             m_old_sdp2[vmm] = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("sdp_2");
             m_old_sdt[vmm] = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("sdt");
             m_old_TP_skew[vmm] = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].GetReg("TP_skew");
             //Load general calibration settings
             m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].LoadCalibSettings();
-
+            if(m_modeIndex == 11) {
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2", m_pulser_dac);
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_threshold);
+            }
             for(unsigned int ch = 0; ch<64; ch++){
                 //prepare setting for threshold calibration
                 //disable all test pulses
@@ -814,19 +932,24 @@ void CalibrationModule::StartCalibration(){
                 }
                 else if(m_modeIndex == 11)
                 {
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
-                    if(ch == m_theChannel)
+                    int theFec = m_theFEC-1;
+                    int theHdmi = m_theVMM / 2;
+                    int theChip = m_theVMM % 2;
+                    if(fec == theFec && hdmi == theHdmi && theChip == chip)
                     {
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",0,ch);
+                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",1,ch);
                     }
                     else
                     {
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",1,ch);
+                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
                     }
                     m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",0,ch);
                 }
             }
         }
+
         m_mainWindow->m_daqs[0].SendAll();
     }
     if(m_modeIndex == 10)
@@ -872,25 +995,12 @@ void CalibrationModule::DoCalibrationStep(){
             //S-curve
             else if(m_modeIndex == 11)
             {
-                if(m_theDirection == 0 &&  (m_threshold == m_minThreshold ||  m_maskedChannels == m_vmmActs.size()))
-                {
-                    m_theDirection = 1;
-                    m_threshold = m_minThreshold;
-                    for(unsigned int vmm=0; vmm<m_vmmActs.size(); vmm++){
-                        int fec = GetFEC(vmm);
-                        int hdmi = GetHDMI(vmm);
-                        int chip = GetVMM(vmm);
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",0,m_theChannel);
-                    }
-                    m_mainWindow->m_daqs[0].SendAll();
-                    m_maskedChannels=0;
-                }
                 if(m_theDirection == 0)
                 {
-                    m_threshold--;
+                    m_threshold++;
                 }
                 else {
-                    m_threshold++;
+                    m_threshold--;
                 }
             }
         }
@@ -998,7 +1108,7 @@ void CalibrationModule::AccumulateData(){
     }
     bool continueCalibration = true;
 
-    uint64_t delay_ns = m_end - m_start;
+    double delay_ns = m_end - m_start;
     if(delay_ns >= (uint64_t)m_mainWindow->m_daqWindow->ui->Runs->value()*1000000)
     {
         StopDataTaking();
@@ -1017,31 +1127,30 @@ void CalibrationModule::AccumulateData(){
         }
         else if(m_modeIndex == 11)
         {
-            std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Finished S-curve acquisition " <<  m_threshold << " after " << delay_ns*0.000001 << " ms!" << std::endl;
-            for(int vmm =0; vmm < m_vmmActs.size(); vmm++){
-                int fec = GetFEC(vmm);
-                int hdmi = GetHDMI(vmm);
-                int chip = GetVMM(vmm);
+            std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Finished S-curve acquisition step " <<  m_threshold << " after " << delay_ns*0.000001 << " ms!" << std::endl;
+            int fec = m_theFEC-1;
+            int hdmi = m_theVMM / 2;
+            int chip = m_theVMM % 2;
+            double delay_s = delay_ns/1000000000.0;
+            for(unsigned int ch = 0; ch<64; ch++){
                 uint64_t cnt = 0;
                 double rate = 0;
-                uint64_t delay_s = delay_ns/1000000000;
-                if(!m_data[m_bitCount][fec][hdmi][0][chip][m_theChannel].empty())
+
+                if(!m_data[m_bitCount][fec][hdmi][0][chip][ch].empty())
                 {
-                    cnt = m_data[m_bitCount][fec][hdmi][0][chip][m_theChannel][0];
-                    rate = cnt/(double)delay_s;
-                    m_y[fec][hdmi][0][chip][m_threshold-m_minThreshold] = rate;
-                    m_data[m_bitCount][fec][hdmi][0][chip][m_theChannel].clear();
-                    if(rate >= m_rateLimit)
-                    {
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",1,m_theChannel);
-                        m_maskedChannels++;
+                    cnt = m_data[m_bitCount][fec][hdmi][0][chip][ch][0];
+                    if(delay_s > 0) {
+                        rate = cnt/(double)delay_s;
                     }
                 }
-                m_outFile << delay_ns  << "," << fec << "," << hdmi <<"," << chip << "," << m_theChannel << "," << m_threshold << "," << cnt << "," << std::setprecision(6) << rate<< std::endl;
-                std::cout << delay_ns  << "," << fec << "," << hdmi <<"," << chip << "," << m_theChannel << "," << m_threshold << "," << cnt << "," << std::setprecision(6) << rate << std::endl;
+                m_channel_y[ch][m_threshold-m_minThreshold] = rate;
+                m_data[m_bitCount][fec][hdmi][0][chip][ch].clear();
+
+                m_outFile << delay_ns  << "," << fec << "," << hdmi <<"," << chip << "," << ch << "," << m_threshold << "," << cnt << "," << std::setprecision(6) << rate<< std::endl;
+                //std::cout << delay_ns  << "," << fec << "," << hdmi <<"," << chip << "," << ch << "," << m_threshold << "," << cnt << "," << std::setprecision(6) << rate << std::endl;
             }
-            m_mainWindow->m_daqs[0].SendAll();
-            if(m_theDirection == 1 && (m_threshold == m_maxThreshold ||  m_maskedChannels == m_vmmActs.size()) )
+            //m_mainWindow->m_daqs[0].SendAll();
+            if((m_theDirection == 0 && m_threshold == m_maxThreshold) || (m_theDirection == 1 && m_threshold == m_minThreshold))
             {
                 continueCalibration = false;
             }
@@ -1057,7 +1166,7 @@ void CalibrationModule::AccumulateData(){
         if(continueCalibration)
         {
             DoCalibrationStep();
-            QThread::usleep(10);
+            QThread::msleep(50);
             StartDataTaking();
         }
         else
@@ -1164,15 +1273,40 @@ void CalibrationModule::Reset()
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
-        QThread::usleep(1000);
+        QThread::msleep(100);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 0);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 0);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
-        QThread::usleep(1000);
+        QThread::msleep(100);
+
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 1);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 1);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
+        QThread::msleep(100);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 0);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 0);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
+        QThread::msleep(100);
+
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 1);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 1);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
+        QThread::msleep(100);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 0);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 0);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
+        QThread::msleep(100);
+
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC(false);
-        QThread::usleep(1000);
+        QThread::msleep(100);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC(true);
-        QThread::usleep(1000);
+        QThread::msleep(100);
+
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC(false);
+        QThread::msleep(100);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC(true);
+        QThread::msleep(100);
+
         m_mainWindow->m_daqs[0].SendAll();
     }
 }
@@ -1574,14 +1708,19 @@ void CalibrationModule::InitializeDataStructures()
     mapIPFecId.clear();
     mapIPFirmware.clear();
     m_x.clear();
-    m_dac.clear();
+    m_dac_x.clear();
+    m_max_value_x.clear();
+    m_min_value_x.clear();
     for (unsigned int n=0; n < 1000; n++){
         m_old_sdp2[n] = 0;
         m_old_TP_skew[n] = 0;
         m_old_sdt[n] = 0;
     }
     for (unsigned int ch=0; ch < 64; ch++){
+        m_channel_y[ch].clear();
         m_x.push_back(ch);
+        m_max_value_x.push_back(0);
+        m_min_value_x.push_back(0);
     }
 
     for(unsigned int bit = 0; bit < 32; bit++) {
@@ -1715,34 +1854,33 @@ void CalibrationModule::MeasureThreshold(int the_bit)
         }
     }
 }
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::Receive(const char* buffer, int size, QString ip)
 {
     stringstream sx;
     m_lastUdpTimeStamp = m_commonData.m_udpTimeStamp;
     m_numHitsInFrame=0;
-    if(mapIPFirmware[ip] == "0002")
-    {
-        m_numHitsInFrame = Receive_VMM3(buffer, size, mapIPFecId[ip]);
-    }
-    else
-    {
-        m_numHitsInFrame = Receive_VMM2(buffer, size, mapIPFecId[ip]);
-    }
+    m_numHitsInFrame = Receive_VMM3(buffer, size, mapIPFecId[ip]);
+
     //std::cout << ip.toStdString() << " " << m_bitCount << " " <<  m_numHitsInFrame << std::endl;
     AccumulateData();
 }
+
 int CalibrationModule::GetFEC(int vmmId) {
     return m_vmmActs[vmmId]/(HDMIS_PER_FEC*HYBRIDS_PER_HDMI*VMMS_PER_HYBRID);
 }
+
 int CalibrationModule::GetHDMI(int vmmId) {
     int hdmi =  m_vmmActs[vmmId]%(HDMIS_PER_FEC*HYBRIDS_PER_HDMI*VMMS_PER_HYBRID);
     return hdmi/2;
 }
+
 int CalibrationModule::GetVMM(int vmmId) {
     int hdmi =  m_vmmActs[vmmId]%(HDMIS_PER_FEC*HYBRIDS_PER_HDMI*VMMS_PER_HYBRID);
     return hdmi%2;
 }
+
 int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
     stringstream sx;
     int dataflag = (data2 >> 15) & 0x1;
@@ -1802,7 +1940,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                     else if(m_modeIndex == 6)
                     {
                         m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
-                        std::cout << (int)chip << " " << (int)chNo << " " << (int)bcid << " " << (int)tdc << " " << (int)adc << std::endl;
+                        //std::cout << (int)chip << " " << (int)chNo << " " << (int)bcid << " " << (int)tdc << " " << (int)adc << std::endl;
                     }
                     else if(m_modeIndex == 2 )
                     {
@@ -1856,6 +1994,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         return 0;
     }
 }
+
 int CalibrationModule::Receive_VMM3(const char *buffer, int size, int fecId) {
     int numHitsInFrame = 0;
     stringstream sx;
@@ -1953,201 +2092,6 @@ int CalibrationModule::Receive_VMM3(const char *buffer, int size, int fecId) {
     return numHitsInFrame;
 }
 
-int CalibrationModule::Parse_VMM2(uint32_t data1, uint32_t data2, uint32_t vmmid, int fecId) {
-    data1 = Reversebits32(data1);
-    data2 = Reversebits32(data2);
-    uint8_t tdc = ((data1 >> 18) & 0x3f) + (((data1 >> 8) & 0x03) << 6);
-    uint16_t adc = ((data1 >> 24) & 0xff) + (((data1 >> 16) & 0x03) << 8);
-    uint16_t bcid = Gray2bin32(((data1 >> 10) & 0x3f) + (((data1 >> 0) & 0x3f) << 6));
-    uint8_t chNo = (data2 >> 2) & 0x3f;
-    //uint8_t overThreshold = (data2 >> 1) & 0x01;
-    auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
-    if ((m_BCID.empty() || it != m_BCID.end()))
-    {
-        int hdmi = vmmid/2;
-        int chip = vmmid%2;
-        double tac_slope_ns = m_tac_slope[fecId][hdmi][0][chip];
-        double bc_period_ns = m_bc_period[fecId][hdmi][0];
-        //double theTdc = (int)(tdc/8)*8 + 4.0;
-        double theTdc = tdc;
-        double theTime =  ((bcid+1)*bc_period_ns - theTdc*tac_slope_ns/255);
-        //if(m_bitCount == 0)
-        //    std::cout << "rawdata," << hdmi << "," << chip << "," << (int)chNo << "," << m_bitCount << ","
-        //             << theTime << "," << bcid << "," << (int)tdc << "," << (int)adc << std::endl;
-        if(m_srs_timestamp_start[fecId][hdmi][0][chip] > 0)
-        {
-            uint64_t delay = m_srs_timestamp_end[fecId][hdmi][0][chip] - m_srs_timestamp_start[fecId][hdmi][0][chip];
-            if(delay <= (uint64_t)m_mainWindow->m_daqWindow->ui->Runs->value()*1000000)
-            {
-                if(m_modeIndex == 1 || m_modeIndex == 4  || m_modeIndex == 7)
-                {
-                    m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(adc);
-                }
-                else if(m_modeIndex == 5|| m_modeIndex == 8)
-                {
-                    m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(tdc);
-                }
-                else if(m_modeIndex == 9)
-                {
-                    m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(bcid);
-                }
-                else if(m_modeIndex == 3)
-                {
-                    m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(m_threshold);
-                }
-                else if(m_modeIndex == 6)
-                {
-                    m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
-                }
-                else if(m_modeIndex == 2 )
-                {
-                    m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(theTime);
-                }
-                else if(m_modeIndex == 11)
-                {
-                    if(m_data[m_bitCount][fecId][hdmi][0][chip][chNo].empty())
-                    {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
-                    }
-                    else {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo][0]++;
-                    }
-                }
-                m_numHits++;
-            }
-        }
-    }
-    return 1;
-    /*
-    auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
-    if ((m_BCID.empty() || it != m_BCID.end()))
-    {
-        int hdmi = vmmid/2;
-        int chip = vmmid%2;
-        double tac_slope_ns = m_tac_slope[fecId][hdmi][0][chip];
-        double bc_period_ns = m_bc_period[fecId][hdmi][0];
-        double theTdc = (int)(tdc/8)*8 + 4.0;
-        double theTime =  ((bcid+1)*bc_period_ns - theTdc*tac_slope_ns/255);
-        if(m_modeIndex == 1 || m_modeIndex == 4  || m_modeIndex == 7)
-        {
-            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(adc);
-        }
-        else if(m_modeIndex == 5|| m_modeIndex == 8)
-        {
-            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(tdc);
-        }
-        else if(m_modeIndex == 9)
-        {
-            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(bcid);
-        }
-        else if(m_modeIndex == 3)
-        {
-            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(m_threshold);
-        }
-        else if(m_modeIndex == 6)
-        {
-            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
-        }
-        else if(m_modeIndex == 2 )
-        {
-            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(theTime);
-        }
-    }
-    return 1;
-    */
-}
-int CalibrationModule::Receive_VMM2(const char *buffer, int size, int fecId) {
-    stringstream sx;
-    int numHitsInFrame = 0;
-    struct SRSHeader_VMM2 *hdr = (struct SRSHeader_VMM2 *)buffer;
-    if (ntohl(hdr->m_frameCounter) == 0xfafafafa) {
-        if(IsDbgActive()) {
-            sx << "End of frame\n";
-            GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-        }
-        return 0;
-    }
-    if (size < 20) {
-        if(IsDbgActive()) {
-            sx << "Undersize data\n";
-            GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-        }
-        return 0;
-    }
-    m_commonData.m_dataId = ntohl(hdr->m_dataId);
-
-    if (m_commonData.m_dataId == 0x56413300 || m_commonData.m_dataId == 0x564d3300) {
-        if(IsDbgActive()) {
-            sx << "No data\n";
-            GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-        }
-        return 0;
-    }
-
-    if ((m_commonData.m_dataId & 0xffffff00) != 0x564d3300) {
-        if(IsDbgActive()) {
-            sx << "Unknown data\n";
-            GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-        }
-        return 0;
-    }
-    auto dataLength = size - m_SRSHeaderSize_VMM2;
-    if ((dataLength & 0xfff8) != dataLength) {
-        if(IsDbgActive()) {
-            sx << "Invalid data length " << dataLength << "\n";
-            GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-        }
-        return 0;
-    }
-    m_commonData.m_udpTimeStamp = ntohl(hdr->m_udpTimeStamp);
-    int vmmid = m_commonData.m_dataId & 0x0f;
-    if(IsDbgActive()) {
-        sx << "VMM2 data, vmmID " << vmmid << "\n";
-        GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-    }
-    m_commonData.m_fecId = (((m_commonData.m_dataId & 0xF0) >> 4)-1);
-    if(IsDbgActive()) {
-        sx << "VMM2 data, fecId " << (int)m_commonData.m_fecId  << "\n";
-        GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-    }
-    int hdmi = vmmid/2;
-    int chip = vmmid%2;
-    uint64_t delay = m_srs_timestamp_end[fecId][hdmi][0][chip] - m_srs_timestamp_start[fecId][hdmi][0][chip];
-    if(delay <= (uint64_t)m_mainWindow->m_daqWindow->ui->Runs->value()*1000000)
-    {
-        //first timestamp/marker for this VMM
-        if(m_srs_timestamp_start[fecId][hdmi][0][chip] == 0)
-        {
-            //UDP timestamp, high 3.125 resolution
-            m_srs_timestamp_start[fecId][hdmi][0][chip] = m_commonData.m_udpTimeStamp*3.125;
-            m_start =  m_commonData.m_udpTimeStamp*3.125;
-            m_numHits=0;
-        }
-        m_srs_timestamp_end[fecId][hdmi][0][chip] =  m_commonData.m_udpTimeStamp*3.125;
-        m_end =  m_commonData.m_udpTimeStamp*3.125;
-    }
-
-    int index = 0;
-    while (dataLength >= m_hitSize_VMM2) {
-        uint32_t data1 = htonl(*(uint32_t *)&buffer[m_SRSHeaderSize_VMM2 + m_hitSize_VMM2 * index]);
-        uint32_t data2 = htonl(*(uint32_t *)&buffer[m_SRSHeaderSize_VMM2 + m_data1Size + m_hitSize_VMM2 * index]);
-        int res = Parse_VMM2(data1, data2, vmmid, fecId );
-        if (res == 1) {
-            numHitsInFrame++;
-            index++;
-        }
-        dataLength -= m_hitSize_VMM2;
-        if (numHitsInFrame == m_maxHits_VMM2 && dataLength >= m_hitSize_VMM2) {
-            if(IsDbgActive()) {
-                sx << "Data overflow, skipping " << dataLength << " bytes\n";
-                GetMessageHandler()(sx,"calibration_module::Receive_VMM2"); sx.str("");
-            }
-            break;
-        }
-    }
-    return numHitsInFrame;
-}
-
 uint32_t CalibrationModule::Reversebits32(uint32_t x) {
     x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
     x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
@@ -2167,7 +2111,7 @@ uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
     num = num ^ (num >> 1);
     return num;
 }
-QString CalibrationModule::CreateFileName(QString name, int polarity, int gain, int peaktime, int tac)
+QString CalibrationModule::CreateFileName(QString name, int polarity, int gain, int peaktime, int tac, int bcclock)
 {
     QString theName = m_mainWindow->GetApplicationPath() + "/" + name;
     QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
@@ -2190,6 +2134,11 @@ QString CalibrationModule::CreateFileName(QString name, int polarity, int gain, 
     {
         QString strTac = QString::number(m_tacTable[tac]) + "ns";
         theName = theName + "_" + strTac;
+    }
+    if(bcclock != -1)
+    {
+        QString strBcclock = m_bcclock_table[bcclock] + "MHz";
+        theName = theName + "_" + strBcclock;
     }
     theName = theName + "_" + theDate;
     return theName;

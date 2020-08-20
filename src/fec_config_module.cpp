@@ -1938,7 +1938,6 @@ void FECConfigModule::SetReadoutMode()
     msbCounter  = "0x80000000";
 
     int globalCKBC = m_fec->GetRegVal("globalCKBC");
-    std::cout << " globalCKBC " << globalCKBC << std::endl;
     int ts_ext_trg = m_fec->GetRegVal("ts_ext_trg");
 
     out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]

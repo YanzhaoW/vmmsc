@@ -76,7 +76,6 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
 //{"Xaxis",0}, {"position", 65534}, {"CKTK",0}, {"CKBC",0}, {CKBC_duty,3}, {"CKBC_skew",0}, {"CKDT",1} ,{"TK_Pulses",2},{"period",4094}
     typedef std::map<std::string, unsigned short> InMap;
     typedef std::pair<std::string, unsigned short> BiPair;
-    std::cout<<"feature "<<feature<<" set to "<<value<<std::endl;
     if(m_hybrid.find(feature)==m_hybrid.end()) return false;
     else{
         if(feature=="Xaxis"){
