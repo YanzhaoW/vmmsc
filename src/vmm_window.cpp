@@ -10,6 +10,7 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     m_vmmIndex{vmm},
     m_ui(new Ui::vmm_window)
 {
+
     m_ui->setupUi(this);
     m_ui->ADCresult->setReadOnly(true);
 
@@ -250,7 +251,8 @@ void VMMWindow::LoadSettings()
 {
     //Loading General settings and updating GUI
     m_ui->sp->setCurrentIndex(GetVMM("sp"));
-    m_ui->sg->setCurrentIndex(GetVMM("gain"));
+    int gain = GetVMM("gain");
+    m_ui->sg->setCurrentIndex(gain);
     if(!GetVMM("scmx")){
         //     std::cout<<"Settings Monitoring: "<<VMM_Get("monitoring")-63<<std::endl;
         m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")-1);
@@ -272,10 +274,23 @@ void VMMWindow::LoadSettings()
     m_ui->sdcks->setChecked(GetVMM("sdcks"));
     m_ui->sdck6b->setChecked(GetVMM("sdck6b"));
     m_ui->sdt->setValue(GetVMM("sdt"));
-    m_ui->sdp_2->setValue(GetVMM("sdp_2"));
+    int sdp_2 = GetVMM("sdp_2");
+    m_ui->sdp_2->setValue(sdp_2);
     QString tmp;
-    m_ui->dacmvLabel->setText(tmp.number((0.801*m_ui->sdt->value()+25.182), 'f', 2) + " mV");
-    m_ui->dacmvLabel_TP->setText(tmp.number((0.796*m_ui->sdp_2->value()+30.615), 'f', 2) + " mV");
+
+    double val = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
+    m_ui->dacmvLabel->setText(tmp.number(val, 'f', 0) + " mV");
+    double pulseHeight = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
+    double dav_mV = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
+    m_ui->dacmvLabel_TP->setText(tmp.number(dav_mV, 'f', 0) + " mV DAC\n"+ tmp.number(pulseHeight, 'f', 0) + " mV pulse height");
+    if(pulseHeight > 1200) {
+        m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : red; }");
+        m_ui->sdp_2->setStyleSheet("QSpinBox { background-color : red; color : white; }");
+    }
+    else {
+        m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : black; }");
+        m_ui->sdp_2->setStyleSheet("QSpinBox { background-color : white; color : black; }");
+    }
 
     //Loading Advanced settings and updating GUI
     //    ui->ART->setChecked(VMM_Get("sfa"));
@@ -328,10 +343,22 @@ void VMMWindow::onUpdateSettings()
     QString tmp;
     if(QObject::sender() == m_ui->sdt){
         SetVMM("sdt", m_ui->sdt->value());
-        m_ui->dacmvLabel->setText(tmp.number((0.801*m_ui->sdt->value()+25.182), 'f', 2) + " mV");
+        double val = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
+        m_ui->dacmvLabel->setText(tmp.number(val, 'f', 0) + " mV");
     }
     else if(QObject::sender() == m_ui->sdp_2){
-        m_ui->dacmvLabel_TP->setText(tmp.number((0.796*m_ui->sdp_2->value()+30.615), 'f', 2) + " mV");
+        double pulseHeight = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
+        double dav_mV = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
+        m_ui->dacmvLabel_TP->setText(tmp.number(dav_mV, 'f', 0) + " mV DAC\n"+ tmp.number(pulseHeight, 'f', 0) + " mV pulse height");
+        if(pulseHeight > 1200) {
+            m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : red; }");
+            m_ui->sdp_2->setStyleSheet("QSpinBox { background-color : red; color : white; }");
+        }
+        else {
+            m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : black; }");
+            m_ui->sdp_2->setStyleSheet("QSpinBox { background-color : white; color : black; }");
+        }
+
         SetVMM("sdp_2", m_ui->sdp_2->value());
     }
     else if(QObject::sender() == m_ui->sp){
@@ -346,6 +373,19 @@ void VMMWindow::onUpdateSettings()
     }
     else if(QObject::sender() == m_ui->sg){
         SetVMM("gain", m_ui->sg->currentIndex());
+        double val = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
+        m_ui->dacmvLabel->setText(tmp.number(val, 'f', 0) + " mV");
+        double pulseHeight = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
+        double dav_mV = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
+        m_ui->dacmvLabel_TP->setText(tmp.number(dav_mV, 'f', 0) + " mV DAC\n"+ tmp.number(pulseHeight, 'f', 0) + " mV pulse height");
+        if(pulseHeight > 1200) {
+            m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : red; }");
+            m_ui->sdp_2->setStyleSheet("QSpinBox { background-color : red; color : white; }");
+        }
+        else {
+            m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : black; }");
+            m_ui->sdp_2->setStyleSheet("QSpinBox { background-color : white; color : black; }");
+        }
     }
     else if(QObject::sender() == m_ui->stc){
         SetVMM("stc", m_ui->stc->currentIndex());

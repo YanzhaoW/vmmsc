@@ -60,6 +60,15 @@ public:
     void GetActiveVMMs();
     void SavePlotsAsPDF();
 
+    double ThresholdDAC_to_mV(int dac);
+    int Threshold_mV_to_DAC(double mV);
+    double PulserDAC_to_mV(int dac);
+    double PulserDAC_to_PulseHeight_mV(int dac, int gain_idx);
+    int PulseHeight_mV_to_PulserDAC( double pulseHeight, int gain_idx);
+
+    void LoadSettings();
+    void SaveSettings();
+
     bool m_dataAvailable = false;
 private:
 
@@ -86,8 +95,7 @@ private:
     int GetCalibrationModeIndex(QString mode);
     bool IsCalibration();
     void PlotData();
-    void MeasureThreshold(int the_bit);
-    void MeasurePedestal();
+    void MeasurePedestalOrThreshold(bool isPedestal, bool isThresholdCalibration);
     void FitOfflineCalibrationData();
     void AccumulateData();
     void CalculateCorrections();
@@ -99,7 +107,7 @@ private:
     int GetFEC(int vmmId);
     int GetHDMI(int vmmId);
     int GetVMM(int vmmId);
-    double threshold_dac_to_mV(int dac);
+
     QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1,int bcclock=-1);
 
     int Receive_VMM3(const char* buffer, int size, int fecId);
@@ -165,13 +173,13 @@ private:
     int m_theVMM = 0;
     int m_theFEC = 0;
     int m_theDirection = 0;
-    double m_rateLimit = 0;
-    int m_maxThreshold = 800;
-    int m_minThreshold = 400;
+    //double m_rateLimit = 0;
+    int m_maxThreshold = 0;
+    int m_minThreshold = 0;
     int m_threshold = 0;
     int m_pulser_dac = 0;
-    int m_minimumNumHits = 1;
-    int m_maskedChannels = 0;
+
+    bool m_isThresholdCalibration = false;
     double m_gainTable[8] = {0.5,1,3,4.5,6,9,12,16};
     double m_peaktimeTable[4] = {200,100,50,25};
     double m_tacTable[4] = {60,100,350,650};
@@ -179,16 +187,14 @@ private:
 
     QString m_polarityTable[2] = {"negative", "positive"};
 
-    int m_thresholdTable[8] = {220,250,250,250,250,300,300,300};
-    double m_minGainTable[8] = {500,330,150,120,60,50,40,30};
-    double m_maxGainTable[8] = {1023,1023,1023,700,510,320,210,140};
+    int m_thresholdTable[8] = {220,220,250,250,250,300,300,300};
 
-
-
+    double m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
+    double m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
 
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
-    const static int m_number_bits_threshold = 1;
+    const static int m_number_bits_threshold = 32;
     const static int m_number_bits_s_curve = 1;
 
     const static int m_number_bits_offline_time = 4;
@@ -203,20 +209,38 @@ private:
     double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
     double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
+    //Data Acquisition
+    //Data containers for data in Parse_VMM3
     std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
     std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
-
-    std::vector<double> m_x;
-    std::vector<double> m_dac_x;
-    std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_channel_y[64];
+    //Containers for calculated data
+    //S-curve
     std::vector<double> m_max_value_x;
     std::vector<double> m_min_value_x;
+
+    //Online ADC and TDC
     std::vector<double> m_calVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<int> m_bitVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
+    //Fit for offline ADC and time calibration
     std::vector<double> m_offset[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
+
+    //Plot containers
+    //Plots with channels on x-axis
+    std::vector<double> m_x;
+
+    //Plots with DAC or mV values on x-axis
+    std::vector<double> m_dac_x;
+
+    //y values for plots with channels on x-axis
+    std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
+    //y values for S-curve, the vector contains one value per threshold
+    std::vector<double> m_channel_y[64];
+
 
     bool m_ignore16;
 

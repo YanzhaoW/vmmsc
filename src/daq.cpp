@@ -7,7 +7,7 @@ DAQ::DAQ():
     m_regText ( new std::vector<std::string> (11) ),
     m_regVals ( new std::vector<std::vector<const char*> > (3, std::vector<const char*>() ) ),
     m_fecActs (FECS_PER_DAQ),
-    m_chr ( new char ), //need for returning const char * in GetReg functions
+    m_chr ( new char[1000] ), //need for returning const char * in GetReg functions
     m_messageHandler(0)
 {
     //fec_act[0] = 1;

@@ -485,11 +485,12 @@ void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
     {
         ui->comboBoxCalibrationType->addItem("Offline ADC");
         ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
-        ui->comboBoxCalibrationType->addItem("Threshold");
-        ui->comboBoxCalibrationType->addItem("Pedestal");
-        ui->comboBoxCalibrationType->addItem("S-curve");
         ui->comboBoxCalibrationType->addItem("ADC");
         ui->comboBoxCalibrationType->addItem("TDC");
+        ui->comboBoxCalibrationType->addItem("S-curve");
+        ui->comboBoxCalibrationType->addItem("Threshold");
+        ui->comboBoxCalibrationType->addItem("Pedestal");
+
     }
     if(index == 1)
     {

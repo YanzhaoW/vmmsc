@@ -8,7 +8,7 @@ FEC::FEC():
     numberOfRegisters(42),
     m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
     m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
-    m_chr ( new char ) //need for returning const char * in GetReg functions
+    m_chr ( new char[1000] ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
 
@@ -188,11 +188,12 @@ bool FEC::Set(unsigned short reg, unsigned long val){
 bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
     bool found = false;
 
-    std::stringstream strValue;
-    strValue << val;
-    unsigned long intValue;
-    strValue >> intValue;
-    std::cout << "intValue: " << intValue << std::endl;
+    //std::stringstream strValue;
+    //strValue << val;
+    unsigned long intValue = atol(val);
+    //strValue >> intValue;
+    //std::cout << "intValue: " << intValue << std::endl;
+
     if (reg == 4){ //run_mode
         if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"pulser") || ConstCharStar_comp(val,"external") ) found = true;
     }
@@ -227,18 +228,23 @@ bool FEC::SetReg(const char *reg, bool val){ //set a register, name and bool giv
 }
 
 bool FEC::SetReg(int regnum, bool val){
-    const char *chr =  val ? "1" : "0";// convert bool to const char * to check if in allowed value list
-    if (CheckAllowedVal(regnum, chr)){
+    if(val) {
+        sprintf(m_chr, "%d", 1);
+    }
+    else {
+        sprintf(m_chr, "%d", 0);
+    }
+    if (CheckAllowedVal(regnum, m_chr)){
         Set(regnum,val); return true;
     }
     return false;
 }
 
 bool FEC::SetReg(const char *reg, unsigned long val){
-    std::stringstream str1;str1 << val;const char * chr = str1.str().c_str(); // convert int to const char * to check if in allowed value list
+    sprintf(m_chr, "%d", val); // convert int to char * to check if in allowed value list
     for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
         if(ConstCharStar_comp(reg,(*m_regNames)[i])){
-            if (CheckAllowedVal(i, chr)){
+            if (CheckAllowedVal(i, m_chr)){
                 Set(i,val); return true;
             }
         }
