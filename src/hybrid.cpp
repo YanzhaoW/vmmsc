@@ -8,14 +8,15 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
     m_posX = true;
     m_posNo = -1;
     m_art = 0;
-    SetReg("CKBC", (std::string)"20");
-    SetReg("CKBC_duty", (std::string)"18.725 ns high (standard)");
-    SetReg("CKDT", (std::string)"40");
+
 
 }
 
 void Hybrid::LoadDefault(){
     m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    SetReg("CKBC", (std::string)"80");
+    SetReg("CKBC_duty", (std::string)"18.725 ns high (standard)");
+    SetReg("CKDT", (std::string)"80");
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){

@@ -143,7 +143,7 @@ void FEC::LoadDefault(){
     (*m_regNames)[36]="trigger_pulse_delay";        (*m_reg)[36] = 0;   //register 15: {0-255} * BCCLOCK_PERIOD - 8 bit, bit 8-15
     (*m_regNames)[37]="clear_S6_fifo";             (*m_reg)[37] = 0; //{"0", "1", "false", "true"};
     (*m_regNames)[38]="acceptance_window";         (*m_reg)[38] = 0; //{"0", "1", "false", "true"};
-    (*m_regNames)[39]="globalCKBC";             (*m_reg)[39] = 3; //{"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
+    (*m_regNames)[39]="globalCKBC";             (*m_reg)[39] = 2; //{"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
     (*m_regNames)[40]="ts_ext_trg";             (*m_reg)[40] = 0; //{"0", "1", "false", "true"};
     (*m_regNames)[41]="open_fec_wr_fifo_outside_acq_win";             (*m_reg)[41] = 1; //{"0", "1", "false", "true"};
 }

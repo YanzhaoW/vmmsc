@@ -31,7 +31,10 @@ public:
         //
         Channel m_channels[64];
         std::map<std::string, unsigned short> *m_globalReg1 = new std::map<std::string, unsigned short>;
-        std::vector<std::string> m_names_GReg1 = {"sp", "sdp", "sbmx", "sbft", "sbfp", "sbfm", "slg", "scmx", "monitoring", "sfa", "sfam", "peaktime", "sfm", "gain", "sng", "stot", "sttt", "ssh", "stc", "sdt", "sdp_2", "convtime_10", "convtime_8", "convtime_6", "s8b", "s6b", "s10b", "sdcks", "sdcka", "sdck6b", "sdrv", "stpp", "slvs", "s32", "stcr", "ssart", "srec", "stlc", "sbip", "srat", "sfrst", "slvsbc", "slvstp", "slvstk",  "slvsdt", "slvsart", "slvstki", "slvsena", "slvs6b", "reset1", "reset2"} ;
+        std::vector<std::string> m_names_GReg1 = {"sp", "sdp", "sbmx", "sbft", "sbfp", "sbfm", "slg", "scmx", "monitoring", "sfa", "sfam", "peaktime", "sfm",
+                                                  "gain", "sng", "stot", "sttt", "ssh", "stc", "sdt", "sdp_2", "convtime_10", "convtime_8", "convtime_6",
+                                                  "s8b", "s6b", "s10b", "sdcks", "sdcka", "sdck6b", "sdrv", "stpp", "slvs", "s32", "stcr", "ssart", "srec",
+                                                  "stlc", "sbip", "srat", "sfrst", "slvsbc", "slvstp", "slvstk",  "slvsdt", "slvsart", "slvstki", "slvsena", "slvs6b", "reset1", "reset2"} ;
         std::vector<std::string> m_names_GReg2 ={"sL0dckinv", "sL0ckinv", "nskipm_i" };//not clear whats difference between single resets!!!!!
 
 

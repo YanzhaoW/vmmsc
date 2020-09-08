@@ -18,7 +18,7 @@ void VMM::LoadDefault(){
 
     //Fill default values of channels
     for(int i =0; i<64; i++){
-        m_vmmSettings->m_channels[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
+         m_vmmSettings->m_channels[i].m_channel = {{"sc", 0}, {"sl", 0}, {"st", 0}, {"sth", 0}, {"sm", 0}, {"sd", 0}, {"smx", 0}, {"ADC0_10", 0}, {"ADC0_8", 0}, {"ADC0_6", 0}  };
     }
 
     //Fill default values to map for Global Register 1
@@ -31,14 +31,24 @@ void VMM::LoadDefault(){
     }
     ///Possibility to add more default values
     SetRegi("gain", 2);//corrsponds to 3 mV/fC
-    SetRegi("monitoring", "Pulser_DAC");
+    SetRegi("monitoring", "Temperature_sensor");
     SetRegi("sdp_2", (std::string)"300");
     SetRegi("sdt",(std::string)"300");
     SetRegi("s10b",1);
     SetRegi("s8b",1);
-    SetRegi("stc",1);
+    SetRegi("stc",0);
     SetRegi("convtime_8",3);
     SetRegi("convtime_10",3);
+    SetRegi("sbip",true);
+    SetRegi("sbfm",true);
+    SetRegi("sdcks",true);
+
+/*
+    std::vector<std::string> m_names_GReg1 = {"sp", "sdp", "sbmx", "sbft", "sbfp", "sbfm", "slg", "scmx", "monitoring", "sfa", "sfam", "peaktime", "sfm",
+                                              "gain", "sng", "stot", "sttt", "ssh", "stc", "sdt", "sdp_2", "convtime_10", "convtime_8", "convtime_6",
+                                              "s8b", "s6b", "s10b", "sdcks", "sdcka", "sdck6b", "sdrv", "stpp", "slvs", "s32", "stcr", "ssart", "srec",
+                                              "stlc", "sbip", "srat", "sfrst", "slvsbc", "slvstp", "slvstk",  "slvsdt", "slvsart", "slvstki", "slvsena", "slvs6b", "reset1", "reset2"} ;
+*/
 }
 
 
