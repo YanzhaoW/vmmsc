@@ -85,10 +85,7 @@ use these instructions to setup Qt for use with **VMM Software**.
 Questions, comments, suggestions, or help?
 
 Originally developed by:
-**Manuel Guth**: <manuel.guth@cern.ch>
-
-and:
-**Michael Lupberger**:  <michael.lupberger@cern.ch>
+**Manuel Guth**: <manuel.guth@cern.ch> and **Michael Lupberger**:  <michael.lupberger@cern.ch>
 
 For present development, contact:
 **Michael Lupberger**:  <michael.lupberger@cern.ch>
