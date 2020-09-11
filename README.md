@@ -13,7 +13,7 @@
 ## Recommended Release
 The recommended release is **v1.0** which is for *VMM3* slow control and calibration. To obtain this release do:
 ```
-git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
+git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc.git
 ```
 and follow the installation instructions below.
 
@@ -21,7 +21,7 @@ and follow the installation instructions below.
 
 Here we list the (tested) software requirements.
 
-* [Qt 5.7](https://www.qt.io/qt5-7/)
+* [Qt 5.7](https://www.qt.io/qt5-11)
 * C++11 (gcc >=4.7)
 
 ## Installation
@@ -33,7 +33,7 @@ The nominal use case is to check out the current version of the software.
 To do this, run the following command from a terminal in a directory where you would like the software to reside:
 
 ```
-git clone https://gitlab.cern.ch/mguth/VMM-software-RD51.git
+git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc.git
 ```
 
 ### Compile the software
@@ -53,7 +53,7 @@ make clean
 make -j10
 ```
 The executable will now be located in
-VMM-software-RD51/build
+vmmsc/build
 
 To open the slow control on linux use the following command:
 ```
@@ -72,7 +72,7 @@ On macOS use this command:
 ## Installing Qt
 
 If you do not have Qt on your system or you do, but not a recent enough version as required for the **VMM Software**, then you will
-have to install Qt from the main [Qt pages](https://www.qt.io/qt5-7/). 
+have to install Qt from the main [Qt pages](https://www.qt.io/qt5-11/). 
 
 The full installation procedure of Qt takes less than 1 hour on a machine with adequate internet connection.
 
