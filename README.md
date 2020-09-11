@@ -91,5 +91,6 @@ For present development, contact:
 **Michael Lupberger**:  <michael.lupberger@cern.ch>
 **Dorothea Pfeiffer**:  <dorothea.pfeiffer@cern.ch>
 **Lucian Scharenberg**:  <Lucian.Scharenberg@cern.ch>
+**Finn Jaekel**: <s6fijaek@uni-bonn.de>
 
 
