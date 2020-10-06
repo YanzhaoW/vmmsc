@@ -573,7 +573,7 @@ bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
 void VMMWindow::CreateChannelsFields()
 {
     //    VMM_Set("sd", 1, 2);
-    Font.setPointSize(8);
+    Font.setPointSize(11);
     //    int margin = 8;
     //    channelGridLayout->setContentsMargins(margin*0.75, margin, margin*2*10, margin);
     channelGridLayout->setHorizontalSpacing(1);

@@ -176,7 +176,7 @@ bool VMMConfigHandler::WriteVMMConfig(std::string fname, unsigned short daq, uns
 //        f << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegGlobName(j) << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetReg(j) << std::endl;
 //        if(f.fail()) {return false;}
 //    }
-    for(auto const entr: (*m_mainWindow->m_daqs[daq].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_globalReg1)){
+    for(const auto &entr: (*m_mainWindow->m_daqs[daq].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_globalReg1)){
         f<<entr.first<< " " <<entr.second<<std::endl;
         if(f.fail()) {return false;}
     }
@@ -186,7 +186,7 @@ bool VMMConfigHandler::WriteVMMConfig(std::string fname, unsigned short daq, uns
 //            f << "channel " << k << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetRegChanName(j) << " " << root1->daq[daq].fec[fec].hdmi[hdmi].hybrid[hybrid].vmm[vmm].GetReg(j,k) << std::endl;
 //            if(f.fail()) {return false;}
 //        }
-        for(auto const entr: m_mainWindow->m_daqs[daq].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_channels[k].m_channel){
+        for(auto const &entr: m_mainWindow->m_daqs[daq].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_channels[k].m_channel){
           f << "channel " << k << " " <<entr.first<< " " <<entr.second<<std::endl;
             if(f.fail()) {return false;}
         }

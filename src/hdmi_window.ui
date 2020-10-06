@@ -23,6 +23,12 @@
    </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox">
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="title">
       <string>Hybrid</string>
      </property>

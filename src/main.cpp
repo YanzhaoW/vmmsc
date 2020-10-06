@@ -16,6 +16,5 @@ int main(int argc, char *argv[])
     a.setStyle(QStyleFactory::create("Fusion"));
 
     MainWindow w;
-
     return a.exec();
 }
