@@ -53,7 +53,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -83,7 +83,7 @@
           <property name="font">
            <font>
             <family>Arial</family>
-            <pointsize>11</pointsize>
+            <pointsize>10</pointsize>
            </font>
           </property>
           <property name="text">
@@ -111,6 +111,11 @@
             <height>20</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>Link Status</string>
           </property>
@@ -136,6 +141,11 @@
             <height>20</height>
            </size>
           </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
           <property name="text">
            <string>System Parameters</string>
           </property>
@@ -154,6 +164,11 @@
             <width>140</width>
             <height>20</height>
            </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
           </property>
           <property name="text">
            <string>Clear Info</string>
@@ -206,7 +221,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -230,7 +245,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -261,7 +276,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -292,7 +307,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -314,7 +329,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -345,7 +360,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="toolTip">
@@ -373,7 +388,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="toolTip">
@@ -404,7 +419,7 @@
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -426,7 +441,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -442,7 +457,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -464,7 +479,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -486,7 +501,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -499,7 +514,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -515,7 +530,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -531,7 +546,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -553,7 +568,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -566,7 +581,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -582,7 +597,7 @@
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -618,6 +633,11 @@
                   <height>0</height>
                  </size>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Clear S6 FIFO at
  ACQ Sync</string>
@@ -649,6 +669,11 @@
               </property>
               <item>
                <widget class="QCheckBox" name="AccWin">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>acceptance
 window</string>
@@ -661,6 +686,11 @@ window</string>
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
                <widget class="QCheckBox" name="OpenWrFifo">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>outside ACQ win
 open FEC wr FIFO</string>
@@ -685,7 +715,7 @@ open FEC wr FIFO</string>
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -697,6 +727,12 @@ open FEC wr FIFO</string>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
            <widget class="QCheckBox" name="Box_hdmi1">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>1</string>
             </property>
@@ -704,6 +740,11 @@ open FEC wr FIFO</string>
           </item>
           <item row="0" column="2">
            <widget class="QCheckBox" name="Box_hdmi3">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>3</string>
             </property>
@@ -711,6 +752,11 @@ open FEC wr FIFO</string>
           </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="Box_hdmi2">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>2</string>
             </property>
@@ -718,6 +764,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="0" column="3">
            <widget class="QCheckBox" name="Box_hdmi4">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>4</string>
             </property>
@@ -725,6 +777,11 @@ open FEC wr FIFO</string>
           </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="Box_hdmi5">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>5</string>
             </property>
@@ -732,6 +789,11 @@ open FEC wr FIFO</string>
           </item>
           <item row="1" column="1">
            <widget class="QCheckBox" name="Box_hdmi6">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>6</string>
             </property>
@@ -739,6 +801,11 @@ open FEC wr FIFO</string>
           </item>
           <item row="1" column="2">
            <widget class="QCheckBox" name="Box_hdmi7">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>7</string>
             </property>
@@ -746,6 +813,11 @@ open FEC wr FIFO</string>
           </item>
           <item row="1" column="3">
            <widget class="QCheckBox" name="Box_hdmi8">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>8</string>
             </property>
@@ -771,7 +843,7 @@ open FEC wr FIFO</string>
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -791,6 +863,11 @@ open FEC wr FIFO</string>
                 <height>20</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>Trigger</string>
               </property>
@@ -809,7 +886,7 @@ open FEC wr FIFO</string>
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="focusPolicy">
@@ -834,7 +911,7 @@ open FEC wr FIFO</string>
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="focusPolicy">
@@ -855,7 +932,7 @@ open FEC wr FIFO</string>
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>11</pointsize>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="text">
@@ -886,7 +963,7 @@ open FEC wr FIFO</string>
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="focusPolicy">
@@ -905,7 +982,7 @@ open FEC wr FIFO</string>
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="focusPolicy">
@@ -950,7 +1027,7 @@ open FEC wr FIFO</string>
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -967,6 +1044,12 @@ open FEC wr FIFO</string>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QCheckBox" name="checkBox_TriggeredMode">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>Ena</string>
               </property>
@@ -976,6 +1059,12 @@ open FEC wr FIFO</string>
              <widget class="QComboBox" name="box_globalCKBC">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>10</pointsize>
+               </font>
               </property>
               <property name="currentIndex">
                <number>3</number>
@@ -1031,6 +1120,12 @@ open FEC wr FIFO</string>
             </property>
             <item>
              <widget class="QLineEdit" name="lineEdit_triggerOffset">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>2048000</string>
               </property>
@@ -1047,7 +1142,7 @@ open FEC wr FIFO</string>
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>11</pointsize>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="text">
@@ -1067,6 +1162,12 @@ open FEC wr FIFO</string>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
              <widget class="QLineEdit" name="lineEdit_triggerWindow">
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
               <property name="text">
                <string>204750</string>
               </property>
@@ -1077,7 +1178,7 @@ open FEC wr FIFO</string>
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>11</pointsize>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="text">
@@ -1103,6 +1204,12 @@ open FEC wr FIFO</string>
                 <height>16777215</height>
                </size>
               </property>
+              <property name="font">
+               <font>
+                <family>Arial</family>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
              </widget>
             </item>
             <item>
@@ -1122,7 +1229,7 @@ open FEC wr FIFO</string>
               <property name="font">
                <font>
                 <family>Arial</family>
-                <pointsize>11</pointsize>
+                <pointsize>10</pointsize>
                </font>
               </property>
               <property name="text">
@@ -1149,7 +1256,7 @@ open FEC wr FIFO</string>
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>11</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="title">
@@ -1164,6 +1271,12 @@ open FEC wr FIFO</string>
           </property>
           <item row="10" column="0" colspan="2">
            <widget class="QPushButton" name="sL0cktest">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>sL0cktest</string>
             </property>
@@ -1177,7 +1290,7 @@ open FEC wr FIFO</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1196,6 +1309,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_2">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>l0offset</string>
             </property>
@@ -1203,6 +1322,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="8" column="0">
            <widget class="QLabel" name="label_6">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>truncate</string>
             </property>
@@ -1210,6 +1335,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QPushButton" name="sL0enaV">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>sL0enaV</string>
             </property>
@@ -1220,6 +1351,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="3" column="0" colspan="2">
            <widget class="QPushButton" name="sL0ena">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>sL0ena</string>
             </property>
@@ -1230,6 +1367,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="label_3">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>offset</string>
             </property>
@@ -1240,7 +1383,7 @@ open FEC wr FIFO</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1262,7 +1405,7 @@ open FEC wr FIFO</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1281,6 +1424,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="9" column="0">
            <widget class="QLabel" name="label_8">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>nskip</string>
             </property>
@@ -1291,7 +1440,7 @@ open FEC wr FIFO</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1313,7 +1462,7 @@ open FEC wr FIFO</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1332,6 +1481,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="6" column="0">
            <widget class="QLabel" name="label_4">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>rollover</string>
             </property>
@@ -1342,7 +1497,7 @@ open FEC wr FIFO</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1361,6 +1516,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="7" column="0">
            <widget class="QLabel" name="label_5">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>window</string>
             </property>
@@ -1368,6 +1529,12 @@ open FEC wr FIFO</string>
           </item>
           <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="label_13">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>VMM global parameters
 register bank 2</string>
@@ -1386,11 +1553,23 @@ register bank 2</string>
      <layout class="QGridLayout" name="gridLayout_8">
       <item row="0" column="0">
        <widget class="QTabWidget" name="tabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>800</width>
           <height>800</height>
          </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>11</pointsize>
+         </font>
         </property>
        </widget>
       </item>

@@ -25,6 +25,12 @@
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
      <property name="currentIndex">
       <number>-1</number>
      </property>
@@ -460,7 +466,7 @@
              <property name="font">
               <font>
                <family>Arial</family>
-               <pointsize>11</pointsize>
+               <pointsize>10</pointsize>
               </font>
              </property>
              <property name="currentIndex">
@@ -578,7 +584,7 @@
              <property name="font">
               <font>
                <family>Arial</family>
-               <pointsize>11</pointsize>
+               <pointsize>10</pointsize>
               </font>
              </property>
              <property name="currentIndex">
@@ -656,7 +662,7 @@
              <property name="font">
               <font>
                <family>Arial</family>
-               <pointsize>11</pointsize>
+               <pointsize>10</pointsize>
               </font>
              </property>
              <property name="currentIndex">
@@ -707,7 +713,7 @@
           <rect>
            <x>0</x>
            <y>20</y>
-           <width>141</width>
+           <width>144</width>
            <height>291</height>
           </rect>
          </property>
@@ -868,7 +874,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="currentIndex">
@@ -914,7 +920,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="currentIndex">
@@ -985,7 +991,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <item>
@@ -1033,7 +1039,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="currentIndex">
@@ -1084,7 +1090,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <item>
@@ -1131,7 +1137,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">
@@ -1165,7 +1171,7 @@ Pulses</string>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="minimum">

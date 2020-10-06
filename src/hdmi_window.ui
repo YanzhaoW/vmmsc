@@ -16,6 +16,12 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
     <widget class="QTabWidget" name="tabWidget">
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
      <property name="currentIndex">
       <number>-1</number>
      </property>
@@ -26,7 +32,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="title">

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
+    <width>844</width>
     <height>877</height>
    </rect>
   </property>
@@ -24,7 +24,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>900</width>
+    <width>1100</width>
     <height>99999</height>
    </size>
   </property>
@@ -43,7 +43,7 @@
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>11</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="currentIndex">
@@ -61,7 +61,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="currentIndex">
@@ -114,7 +114,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <item>
@@ -464,7 +464,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -477,7 +477,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -490,7 +490,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -503,7 +503,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="currentIndex">
@@ -526,7 +526,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -539,7 +539,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="currentIndex">
@@ -575,7 +575,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -588,7 +588,7 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="currentIndex">
@@ -618,6 +618,11 @@
          </item>
          <item row="5" column="0">
           <widget class="QPushButton" name="readADC">
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>ReadADC</string>
            </property>
@@ -634,14 +639,14 @@
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial','Arial'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Arial','Arial'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Arial'; font-size:9pt;&quot;&gt;ADC res.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
@@ -655,7 +660,7 @@ p, li { white-space: pre-wrap; }
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>11</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <item>
@@ -677,7 +682,7 @@ p, li { white-space: pre-wrap; }
              <property name="font">
               <font>
                <family>Arial</family>
-               <pointsize>11</pointsize>
+               <pointsize>10</pointsize>
               </font>
              </property>
              <property name="text">
@@ -700,6 +705,11 @@ p, li { white-space: pre-wrap; }
          <layout class="QGridLayout" name="gridLayout_15">
           <item row="0" column="1">
            <widget class="QPushButton" name="sdp">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Disable At Peak</string>
             </property>
@@ -710,6 +720,11 @@ p, li { white-space: pre-wrap; }
           </item>
           <item row="0" column="0">
            <widget class="QPushButton" name="sng">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Neighbor Trigger (sng)</string>
             </property>
@@ -720,6 +735,11 @@ p, li { white-space: pre-wrap; }
           </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="sdrv">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Analog tristates</string>
             </property>
@@ -730,6 +750,11 @@ p, li { white-space: pre-wrap; }
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="ssh">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="text">
              <string>Sub Hysterisis </string>
             </property>
@@ -749,7 +774,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -762,7 +787,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -775,7 +800,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -788,7 +813,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="maximum">
@@ -804,7 +829,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="maximum">
@@ -820,7 +845,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
@@ -836,6 +861,11 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="4" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxClock">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="title">
           <string>Dual Clock</string>
          </property>
@@ -845,7 +875,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
@@ -861,7 +891,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
@@ -877,7 +907,7 @@ p, li { white-space: pre-wrap; }
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
@@ -893,6 +923,11 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="3" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBoxGeneral">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="title">
           <string>ADC </string>
          </property>
@@ -903,6 +938,11 @@ p, li { white-space: pre-wrap; }
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
                <widget class="QPushButton" name="adcs">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>ADCs on/off</string>
                 </property>
@@ -916,7 +956,7 @@ p, li { white-space: pre-wrap; }
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="layoutDirection">
@@ -935,7 +975,7 @@ p, li { white-space: pre-wrap; }
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -951,7 +991,7 @@ p, li { white-space: pre-wrap; }
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <property name="text">
@@ -968,6 +1008,11 @@ p, li { white-space: pre-wrap; }
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
                <widget class="QPushButton" name="s8b">
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>8-bit Conv. Mode</string>
                 </property>
@@ -981,7 +1026,7 @@ p, li { white-space: pre-wrap; }
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <item>
@@ -1011,7 +1056,7 @@ p, li { white-space: pre-wrap; }
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>11</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <item>
@@ -1061,7 +1106,7 @@ p, li { white-space: pre-wrap; }
                 <property name="font">
                  <font>
                   <family>Arial</family>
-                  <pointsize>9</pointsize>
+                  <pointsize>10</pointsize>
                  </font>
                 </property>
                 <item>
@@ -1107,7 +1152,7 @@ p, li { white-space: pre-wrap; }
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>9</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <item>
@@ -1132,7 +1177,7 @@ p, li { white-space: pre-wrap; }
            <property name="font">
             <font>
              <family>Arial</family>
-             <pointsize>9</pointsize>
+             <pointsize>10</pointsize>
             </font>
            </property>
            <property name="text">
@@ -1150,6 +1195,12 @@ p, li { white-space: pre-wrap; }
            <height>0</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Direct Time</string>
          </property>
@@ -1163,7 +1214,7 @@ p, li { white-space: pre-wrap; }
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>9</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <item>
@@ -1183,7 +1234,7 @@ p, li { white-space: pre-wrap; }
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>9</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <item>
@@ -1423,7 +1474,7 @@ p, li { white-space: pre-wrap; }
          <property name="font">
           <font>
            <family>Arial</family>
-           <pointsize>9</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
@@ -1433,6 +1484,12 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="3" column="1">
         <widget class="QPushButton" name="s6b">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>6-bit</string>
          </property>
@@ -1445,6 +1502,12 @@ p, li { white-space: pre-wrap; }
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="1">
           <widget class="QPushButton" name="sbft">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>SBFT</string>
            </property>
@@ -1455,6 +1518,12 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="3" column="2">
           <widget class="QPushButton" name="sfm">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Double Leak</string>
            </property>
@@ -1465,6 +1534,12 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="0" column="2">
           <widget class="QPushButton" name="sbfp">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>SBFP</string>
            </property>
@@ -1478,6 +1553,12 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="3" column="1">
           <widget class="QPushButton" name="slg">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>Leak. Curr.</string>
            </property>
@@ -1488,6 +1569,12 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="1" column="1">
           <widget class="QPushButton" name="sbfm">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>SBFM</string>
            </property>
@@ -1498,6 +1585,12 @@ p, li { white-space: pre-wrap; }
          </item>
          <item row="1" column="2">
           <widget class="QPushButton" name="sbmx">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>SBMX</string>
            </property>
@@ -1520,7 +1613,7 @@ p, li { white-space: pre-wrap; }
      <property name="font">
       <font>
        <family>Arial</family>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -1532,7 +1625,7 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="ApplyAll">
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="text">
@@ -1574,8 +1667,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>10</x>
             <y>44</y>
-            <width>461</width>
-            <height>1041</height>
+            <width>460</width>
+            <height>681</height>
            </rect>
           </property>
           <property name="lineWidth">
@@ -1595,8 +1688,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>444</width>
-             <height>1039</height>
+             <width>441</width>
+             <height>679</height>
             </rect>
            </property>
           </widget>
@@ -1620,7 +1713,7 @@ p, li { white-space: pre-wrap; }
         <property name="font">
          <font>
           <family>Arial</family>
-          <pointsize>11</pointsize>
+          <pointsize>10</pointsize>
          </font>
         </property>
         <property name="text">

@@ -573,7 +573,8 @@ bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
 void VMMWindow::CreateChannelsFields()
 {
     //    VMM_Set("sd", 1, 2);
-    Font.setPointSize(11);
+    Font.setPointSize(10);
+    Font.setFamily("Arial");
     //    int margin = 8;
     //    channelGridLayout->setContentsMargins(margin*0.75, margin, margin*2*10, margin);
     channelGridLayout->setHorizontalSpacing(1);
@@ -582,7 +583,7 @@ void VMMWindow::CreateChannelsFields()
     //    ui->gridLayout_channels->setContentsMargins(margin*0.75, margin, margin*4.4*5, margin);
     m_ui->gridLayout_channels->setHorizontalSpacing(1);
     m_ui->gridLayout_channels->setVerticalSpacing(1);
-    m_ui->gridLayout_channels->setGeometry(QRect(700,10,400, 12));
+    m_ui->gridLayout_channels->setGeometry(QRect(700,10,420, 12));
     //    ui->gridLayout_channels->setSpacing(1);
 
     QString initialValueRadio = "";
