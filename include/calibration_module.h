@@ -256,22 +256,9 @@ private:
     QString m_jsonObjectName = "vmm_calibration";
     std::ofstream m_outFile;
 
-<<<<<<< HEAD
-
-=======
-signals:
-
-public slots:
-    void readEvent();
-    void updatePlot();
-    void setPlotChoice();
-    void Receive(const char* buffer, long size, QString ip);
->>>>>>> 5efc07a068509c05dda7c72b07327b143db9ef94
 };
 
 #endif // CALIBRATION_MODULE_H
 
 
-//#ifndef _MAINWINDOW_HPP
-//#include "mainwindow.h"
-//#endif
+
