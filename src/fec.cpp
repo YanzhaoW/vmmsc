@@ -57,7 +57,7 @@ void FEC::SendAll(){
                 if (m_hdmis[k].GetHybrid(l)){
                     m_fecConfigModule->ConfigTP(k, l);
                     m_fecConfigModule->SetS6clocks(k, l);
-                    m_fecConfigModule->SetS6Resets(k, l);
+                    //m_fecConfigModule->SetS6Resets(k, l);
                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                         if (m_hdmis[k].m_hybrids[l].GetVMM(m)){
                             //sleep(1);

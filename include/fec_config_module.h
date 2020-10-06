@@ -44,7 +44,7 @@ public:
     int Connect();
 
     void ConfigTP( int hdmi_index, int hybrid_index);
-    void SetS6Resets(int hdmi_index, int hybrid_index);
+    //void SetS6Resets(int hdmi_index, int hybrid_index);
     void SetS6clocks(int hdmi_index, int hybrid_index);
     void SetTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
     void SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm_index);

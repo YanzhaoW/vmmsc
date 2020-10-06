@@ -1295,7 +1295,9 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
     GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::s6clocks");
 
 }
+
 // ------------------------------------------------------------------------ //
+/*
 void FECConfigModule::SetS6Resets(int hdmi_index, int hybrid_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting s6 reset settings...","FEC_config_module::setS6Resets");
@@ -1404,6 +1406,8 @@ void FECConfigModule::SetS6Resets(int hdmi_index, int hybrid_index)
     GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setS6Resets");
 
 }
+*/
+
 // ------------------------------------------------------------------------ //
 void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
 {

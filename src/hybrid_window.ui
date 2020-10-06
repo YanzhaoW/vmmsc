@@ -743,55 +743,52 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="label_32">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>11</pointsize>
-             </font>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="ckbc_duty_s6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="text">
-             <string>Period</string>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
             </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label">
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
+              <width>75</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>11</pointsize>
+              <pointsize>10</pointsize>
              </font>
             </property>
-            <property name="text">
-             <string>CKDT</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="ckbcLabel">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>CKBC</string>
-            </property>
+            <item>
+             <property name="text">
+              <string>50 % high</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>75 % high</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>25 % high</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>18.725 ns high (standard)</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="2" column="0">
@@ -831,8 +828,59 @@ skew</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_34">
+          <item row="3" column="1">
+           <widget class="QComboBox" name="ckbc_skew_s6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>0 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>6.26 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>12.52 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>18.78 ns</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -846,8 +894,7 @@ skew</string>
              </font>
             </property>
             <property name="text">
-             <string>TK
-Pulses</string>
+             <string>CKDT</string>
             </property>
            </widget>
           </item>
@@ -968,103 +1015,23 @@ Pulses</string>
             </item>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="ckbc_duty_s6">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
+          <item row="1" column="0">
+           <widget class="QLabel" name="ckbcLabel">
             <property name="maximumSize">
              <size>
-              <width>75</width>
+              <width>16777215</width>
               <height>16777215</height>
              </size>
             </property>
             <property name="font">
              <font>
               <family>Arial</family>
-              <pointsize>10</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
-            <item>
-             <property name="text">
-              <string>50 % high</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>75 % high</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>25 % high</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>18.725 ns high (standard)</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="ckbc_skew_s6">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="text">
+             <string>CKBC</string>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>0 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>6.26 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>12.52 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>18.78 ns</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="4" column="1">
@@ -1118,74 +1085,6 @@ Pulses</string>
               <string>160 MHz (will be 200 MHz)</string>
              </property>
             </item>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QSpinBox" name="s6_tkPulses">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>7</number>
-            </property>
-            <property name="singleStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>2</number>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QSpinBox" name="fecPeriodReset">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="minimum">
-             <number>0</number>
-            </property>
-            <property name="maximum">
-             <number>4096</number>
-            </property>
-            <property name="singleStep">
-             <number>1</number>
-            </property>
-            <property name="value">
-             <number>4094</number>
-            </property>
            </widget>
           </item>
          </layout>
