@@ -62,7 +62,7 @@ void FEC::SendAll(){
                         if (m_hdmis[k].m_hybrids[l].GetVMM(m)){
                             //sleep(1);
                             m_fecConfigModule->SendConfig(k, l, m);
-                            m_fecConfigModule->SetEventHeaders(k, l, m);
+                            //m_fecConfigModule->SetEventHeaders(k, l, m);
                             m_fecConfigModule->SetTriggerAcqConstants(k, l, m);
                             m_fecConfigModule->SetTriggeredMode(k, l, m);
 
@@ -337,26 +337,26 @@ const char * FEC::GetReg(int regnum){
         std::strcpy(m_chr,str1.str().c_str());
         return m_chr;
     }
-    else if (regnum == 11){
-        if ((*m_reg)[11] == 0) return "Frame_Cnt";
-        else if ((*m_reg)[11] == 1) return "Global_Frame_Cnt";
-        else if ((*m_reg)[11] == 2) return "Timestamp+Frame_Cnt";
-        else return "ERROR";
-    }
-    else if (regnum == 12){
-        if ((*m_reg)[12] == 0) return "HINFO+Datalength";
-        else if ((*m_reg)[12] == 1) return "Trigger_Cnt+Datalength";
-        else if ((*m_reg)[12] == 2) return "Trigger_Cnt";
-        else if ((*m_reg)[12] == 3) return "Trigger_Timestamp+Datalength";
-        else if ((*m_reg)[12] == 4) return "Trigger_Timestamp";
-        else if ((*m_reg)[12] == 5) return "Trigger_Cnt+Trigger_Timestamp";
-        else return "ERROR";
-    }
-    else if (regnum == 13){// give the name of the value
-        if ((*m_reg)[13] == 0 || (*m_reg)[13] == 2 ) return "false";
-        else if ((*m_reg)[13] == 1 || (*m_reg)[13] == 3) return "true";
-        else return "ERROR";
-    }
+//    else if (regnum == 11){
+//        if ((*m_reg)[11] == 0) return "Frame_Cnt";
+//        else if ((*m_reg)[11] == 1) return "Global_Frame_Cnt";
+//        else if ((*m_reg)[11] == 2) return "Timestamp+Frame_Cnt";
+//        else return "ERROR";
+//    }
+//    else if (regnum == 12){
+//        if ((*m_reg)[12] == 0) return "HINFO+Datalength";
+//        else if ((*m_reg)[12] == 1) return "Trigger_Cnt+Datalength";
+//        else if ((*m_reg)[12] == 2) return "Trigger_Cnt";
+//        else if ((*m_reg)[12] == 3) return "Trigger_Timestamp+Datalength";
+//        else if ((*m_reg)[12] == 4) return "Trigger_Timestamp";
+//        else if ((*m_reg)[12] == 5) return "Trigger_Cnt+Trigger_Timestamp";
+//        else return "ERROR";
+//    }
+//    else if (regnum == 13){// give the name of the value
+//        if ((*m_reg)[13] == 0 || (*m_reg)[13] == 2 ) return "false";
+//        else if ((*m_reg)[13] == 1 || (*m_reg)[13] == 3) return "true";
+//        else return "ERROR";
+//    }
     else return "ERROR";
 }
 

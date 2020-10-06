@@ -101,6 +101,15 @@ void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_ind
 
 }
 
+void DAQ::ApplyHybrids(int fec_index, int hdmi_index, int hybrid_index){
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if ( GetFEC(j) ){
+            m_fecs[j].m_fecConfigModule->HybridLoadEmit();//dirty trick, does not work to emit signal on daq level
+        }
+    }
+
+}
+
 
 void DAQ::ACQHandler(bool on){
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){

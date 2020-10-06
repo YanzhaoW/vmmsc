@@ -35,7 +35,7 @@ using namespace std;
 class MainWindow;
 class QCustomPlot;
 
-#define TIME_FACTOR 4
+#define TIME_FACTOR 3
 
 class CalibrationModule : public QObject
 {
@@ -89,8 +89,7 @@ private:
     std::map<QString, QString> mapIPFirmware;
     std::map<QString, int> mapIPFecId;
 
-    //void startReceiver();
-    //void stopReceiver();
+
     bool CheckModes();
     int GetCalibrationModeIndex(QString mode);
     bool IsCalibration();
@@ -110,7 +109,7 @@ private:
 
     QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1,int bcclock=-1);
 
-    int Receive_VMM3(const char* buffer, int size, int fecId);
+    int Receive_VMM3(const char* buffer, long size, int fecId);
     int Parse_VMM3(uint32_t data1, uint16_t data2, int fecId);
 
     uint32_t Reversebits32(uint32_t x);
@@ -158,8 +157,7 @@ private:
 
     static const int m_maxHits_VMM2 { static_cast<int>(m_JumboFrameSize / m_hitSize_VMM2) };
     static const int m_maxHits_VMM3 { static_cast<int>(m_JumboFrameSize / m_hitAndMarkerSize_VMM3) };
-    /// Maximum capacity of data array
-    // static const int m_maxHits { (int) (m_JumboFrameSize / m_hitAndMarkerSize) };
+
 
     /// Holds data common to all readouts in a packet
     CommonData_VMM3 m_commonData;
@@ -168,12 +166,11 @@ private:
     int m_numHits = 0;
     int m_bitCount=-1;
     int m_number_bits = 0;
-    int m_vmmIndex=0;
     int m_theChannel = 0;
     int m_theVMM = 0;
     int m_theFEC = 0;
     int m_theDirection = 0;
-    //double m_rateLimit = 0;
+
     int m_maxThreshold = 0;
     int m_minThreshold = 0;
     int m_threshold = 0;
@@ -189,8 +186,8 @@ private:
 
     int m_thresholdTable[8] = {220,220,250,250,250,300,300,300};
 
-    double m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
-    double m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
+    int m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
+    int m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
 
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
@@ -249,17 +246,13 @@ private:
     QString m_jsonObjectName = "vmm_calibration";
     std::ofstream m_outFile;
 
-
-    int m_old_sdp2[1000];
-    int m_old_TP_skew[1000];
-    int m_old_sdt[1000];
 signals:
 
 public slots:
     void readEvent();
     void updatePlot();
     void setPlotChoice();
-    void Receive(const char* buffer, int size, QString ip);
+    void Receive(const char* buffer, long size, QString ip);
 };
 
 #endif // CALIBRATION_MODULE_H

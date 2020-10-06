@@ -48,10 +48,10 @@ public:
     void SetS6clocks(int hdmi_index, int hybrid_index);
     void SetTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index);
     void SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm_index);
-    void SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
+    //void SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index);
     void CheckLinkStatus(bool& readOK, QString & message);
     void ResetLinks();
-    void ResetFEC(bool do_reset);
+    void ResetFEC();
     void ReadSystemRegisters(QMap<QString, QString>& registers);
     void writeFECip(int FECip);
     void writeDAQip(int DAQip);
@@ -61,8 +61,10 @@ public:
     void SetMask();
     int ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan);
     QString ReadI2C(int hdmi_index, int hybrid_index, int choice);
+    QString ReadGeoPos(int hdmi_index, int hybrid_index);
+    QString ReadIDChip(int hdmi_index, int hybrid_index);
     void VMMLoadEmit();
-
+    void HybridLoadEmit();
 private:
     FEC *m_fec;
     bool m_dbg;
@@ -74,6 +76,7 @@ private:
 signals:
     void CheckLinks();
     void ReloadVMM();
+    void ReloadHybrid();
 
 public slots:
 };

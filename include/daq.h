@@ -54,6 +54,7 @@ public:
     bool CheckIP(QString ip, int fec_index);
 
     void ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index);
+    void ApplyHybrids(int fec_index, int hdmi_index, int hybrid_index);
     void ACQHandler(bool on);
 
 private:

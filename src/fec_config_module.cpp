@@ -9,6 +9,18 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
   //    m_configHandler(0)
 {
     m_hdmi_i2c.clear();
+
+//On adapter card for assister, the I2C lines are not swapped
+#ifdef ASSISTER
+    m_hdmi_i2c.push_back(0);
+    m_hdmi_i2c.push_back(1);
+    m_hdmi_i2c.push_back(2);
+    m_hdmi_i2c.push_back(3);
+    m_hdmi_i2c.push_back(4);
+    m_hdmi_i2c.push_back(5);
+    m_hdmi_i2c.push_back(6);
+    m_hdmi_i2c.push_back(7);
+#else
     m_hdmi_i2c.push_back(3);
     m_hdmi_i2c.push_back(2);
     m_hdmi_i2c.push_back(1);
@@ -17,6 +29,7 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_hdmi_i2c.push_back(6);
     m_hdmi_i2c.push_back(5);
     m_hdmi_i2c.push_back(4);
+#endif
     //    std::cout<<"FEC -ip4 orig: "<<fec->GetRegVal("ip4") <<std::endl;
     //    std::cout<<"FEC -ip4 Set: "<<fec->SetReg("ip4",(unsigned long) 23) <<std::endl;
     //    std::cout<<"FEC -ip4 changed: "<<fec->GetRegVal("ip4") <<std::endl;
@@ -30,6 +43,11 @@ void FECConfigModule::LoadMessageHandler(MessageHandler& m)
 // ------------------------------------------------------------------------- //
 void FECConfigModule::VMMLoadEmit(){
     emit ReloadVMM();
+}
+
+// ------------------------------------------------------------------------- //
+void FECConfigModule::HybridLoadEmit(){
+    emit ReloadHybrid();
 }
 // ------------------------------------------------------------------------ //
 FECConfigModule& FECConfigModule::LoadSocket(SocketHandler& socket)
@@ -957,84 +975,84 @@ void FECConfigModule::ConfigTP( int hdmi_index, int hybrid_index)
 
 
 // ------------------------------------------------------------------------ //
-void FECConfigModule::SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index)
-{
-    if(IsDbgEnabled())GetMessageHandler()("Setting event headers...","FEC_config_module::setEventHeaders");
+//void FECConfigModule::SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index)
+//{
+//    if(IsDbgEnabled())GetMessageHandler()("Setting event headers...","FEC_config_module::setEventHeaders");
 
-    bool ok;
-    QByteArray datagram;
+//    bool ok;
+//    QByteArray datagram;
 
-    // send trigger mode to VMMAPP port
-    int send_to_port = m_fec->GetRegVal("vmmapp_port");
-    //get settings
-    const int bld_info = m_fec->GetRegVal("evbld_infodata");
-    const int bld_mode = m_fec->GetRegVal("evbld_mode");
-    bool highRes = m_fec->GetRegVal("highres");
+//    // send trigger mode to VMMAPP port
+//    int send_to_port = m_fec->GetRegVal("vmmapp_port");
+//    //get settings
+//    const int bld_info = m_fec->GetRegVal("evbld_infodata");
+//    const int bld_mode = m_fec->GetRegVal("evbld_mode");
+//    bool highRes = m_fec->GetRegVal("highres");
 
-    // headers
-    QString cmd, msbCounter;
-    cmd = "AAAAFFFF";
-    msbCounter = "0x80000000";
+//    // headers
+//    QString cmd, msbCounter;
+//    cmd = "AAAAFFFF";
+//    msbCounter = "0x80000000";
 
-    // setup the word
-    quint32 evbldinfo = 0;
-    if(bld_info==0)             evbldinfo = 0;
-    else if(bld_info==1)        evbldinfo = 256;
-    else if(bld_info==2)        evbldinfo = 512;
-    else if(bld_info==3)        evbldinfo = 768;
-    else if(bld_info==4)        evbldinfo = 1024;
-    else if(bld_info==5)        evbldinfo = 1280;
-    //quint32 evbldinfo = (quint32) 256*bld_info;
-    quint32 evbldmode = (quint32)bld_mode;
+//    // setup the word
+//    quint32 evbldinfo = 0;
+//    if(bld_info==0)             evbldinfo = 0;
+//    else if(bld_info==1)        evbldinfo = 256;
+//    else if(bld_info==2)        evbldinfo = 512;
+//    else if(bld_info==3)        evbldinfo = 768;
+//    else if(bld_info==4)        evbldinfo = 1024;
+//    else if(bld_info==5)        evbldinfo = 1280;
+//    //quint32 evbldinfo = (quint32) 256*bld_info;
+//    quint32 evbldmode = (quint32)bld_mode;
 
-    //resolution
-    quint32 resolutionBits = 0;
-    if(highRes)
-        resolutionBits = 32768;
+//    //resolution
+//    quint32 resolutionBits = 0;
+//    if(highRes)
+//        resolutionBits = 32768;
 
-    QString ip = m_fec->GetIP();
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); //rewind
+//    QString ip = m_fec->GetIP();
+//    datagram.clear();
+//    QDataStream out (&datagram, QIODevice::WriteOnly);
+//    out.device()->seek(0); //rewind
 
-    GetSocketHandler().UpdateCommandCounter();
+//    GetSocketHandler().UpdateCommandCounter();
 
-    ///////////////////////////
-    // header info
-    ///////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
+//    ///////////////////////////
+//    // header info
+//    ///////////////////////////
+//    QString chMapString = "0000000000000000";
+//    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
+//    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint32) chMap //[4,7]
-        << (quint32) cmd.toUInt(&ok,16) //[8,11]
-        << (quint32) 0; //[12,15]
+//    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+//        << (quint32) chMap //[4,7]
+//        << (quint32) cmd.toUInt(&ok,16) //[8,11]
+//        << (quint32) 0; //[12,15]
 
-    ///////////////////////////
-    // event header
-    ///////////////////////////
-    out << (quint32) 10 //[16,19]
-        << (quint32) evbldmode //[20,23]
-        << (quint32) 12 //[24,27]
-        << (quint32) (evbldinfo + resolutionBits); //[28,31]
+//    ///////////////////////////
+//    // event header
+//    ///////////////////////////
+//    out << (quint32) 10 //[16,19]
+//        << (quint32) evbldmode //[20,23]
+//        << (quint32) 12 //[24,27]
+//        << (quint32) (evbldinfo + resolutionBits); //[28,31]
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::setEventHeaders");
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setEventHeaders");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::setEventHeaders",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setEventHeaders");
-        return;
-    }
+//    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
+//                                    "FEC_config_module::setEventHeaders");
+//    bool readOK = true;
+//    readOK = GetSocketHandler().WaitForReadyRead("fec");
+//    if(readOK) {
+//        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setEventHeaders");
+//        GetSocketHandler().ProcessReply("fec", ip);
+//    } else {
+//        GetMessageHandler()("Timeout while waiting for replies from VMM",
+//                            "FEC_config_module::setEventHeaders",true);
+//        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setEventHeaders");
+//        return;
+//    }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::setEventHeaders");
-}
+//    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::setEventHeaders");
+//}
 
 
 // ------------------------------------------------------------------------ //
@@ -1477,78 +1495,9 @@ void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
     }
 
 }
+
 // ------------------------------------------------------------------------ //
-void FECConfigModule::ResetLinks()
-{
-    //    if(dbg())
-    GetMessageHandler()("Resetting links...","FEC_config_module::resetLinks");
-
-    bool ok;
-    QByteArray datagram;
-
-    // send call to vmmapp port
-    int send_to_port = m_fec->GetRegVal("vmmapp_port");
-
-    QString cmd, cmdType, cmdLength, msbCounter, cmdReset;
-    cmd = "AA";
-    cmdType = "AA";
-    cmdLength = "FFFF";
-    msbCounter = "0x80000000";
-    cmdReset = "FF";
-
-    QString ip = m_fec->GetIP();
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); //rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    ////////////////////////////
-    // header (1)
-    ////////////////////////////
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint16) 0 //[4,5]
-        << (quint16) m_fec->GetChMap() //[6,7]
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-    ////////////////////////////
-    // command (1)
-    ////////////////////////////
-    out << (quint32) 13 //[12,15]
-        << (quint32) cmdReset.toUInt(&ok,16); //[16,19]
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::resetLinks");
-
-    datagram.clear();
-    out.device()->seek(0);
-    GetSocketHandler().UpdateCommandCounter();
-    ////////////////////////////
-    // header (2)
-    ////////////////////////////
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint16) 0 //[4,5]
-        << (quint16) m_fec->GetChMap() //[6,7]
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
-
-    ////////////////////////////
-    // command (2)
-    ////////////////////////////
-    out << (quint32) 13 //[12,15]
-        << (quint32) 0; //[16,19]
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::resetLinks");
-
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::resetLinks");
-
-}
-// ------------------------------------------------------------------------ //
-void FECConfigModule::ResetFEC(bool do_reset)
+void FECConfigModule::ResetFEC()
 {
     //    if(dbg())
     GetMessageHandler()("Resetting FEC...","FEC_config_module::resetFEC");
@@ -1567,14 +1516,9 @@ void FECConfigModule::ResetFEC(bool do_reset)
 
     // setup
     QString address = "FFFFFFFF";
-    QString value = "";
-    if(do_reset) {
-        value = "FFFF8000";
-        if(IsDbgEnabled())GetMessageHandler()("Rebooting FEC...","FEC_config_module::resetFEC");
-    } else {
-        value = "FFFF0001";
-        if(IsDbgEnabled())GetMessageHandler()("WarmInit FEC...","FEC_config_module::resetFEC");
-    }
+    QString value = "FFFF0001";
+    if(IsDbgEnabled())GetMessageHandler()("WarmInit FEC...","FEC_config_module::resetFEC");
+
 
     QString ip = m_fec->GetIP();
     datagram.clear();
@@ -2381,9 +2325,21 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
 }
 // ------------------------------------------------------------------------ //
 
-QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
+QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice) {
+    QString result;
+    if(choice == 1) {
+        result = ReadGeoPos(hdmi_index, hybrid_index);
+    }
+    else {
+        result = ReadIDChip(hdmi_index, hybrid_index);
+    }
+    return result;
+}
+
+// ------------------------------------------------------------------------ //
+QString FECConfigModule::ReadGeoPos(int hdmi_index, int hybrid_index)
 {
-    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadI2C");
+    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadGeoPos");
 
     bool ok;
     QByteArray datagram;
@@ -2397,19 +2353,6 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
     cmdType = "AA";
     cmdLength = "FFFF";
     msbCounter = "0x80000000";
-
-    int i2c_addr = 0;
-    //Geographical Position
-    if(choice == 0)
-    {
-        i2c_addr = 33;
-    }
-    //Hybrid ID
-    else {
-        i2c_addr = 88;
-    }
-
-
     QString ip = m_fec->GetIP();
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
@@ -2420,17 +2363,13 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
     QString hdmiMapString = "00000000";
     hdmiMapString.replace(7 -  m_hdmi_i2c[hdmi_index] , 1 , QString("1") );
     quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
-
-    //////////////////////////////////////////////////////////////////
-    // 1st i2c command: set address pointer to chip register (Geo or ID chip) //
-    //////////////////////////////////////////////////////////////////
     bool readOK = true;
-
+    int i2c_addr = 33;
     int reg = 0x0;
-    if(choice == 1)
-    {
-        reg = 0x80;
-    }
+    //////////////////////////////////////////////////////////////////
+    // 1st i2c command: set address pointer to chip register (Geo chip) //
+    //////////////////////////////////////////////////////////////////
+
     ////////////////////////////
     // header
     ////////////////////////////
@@ -2446,21 +2385,21 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
     // word
     ////////////////////////////
     out << (quint32) 0 //[12,15]
-        << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
+        << (quint32) 0 //[16,19] // goes to sc_address, for the ID chip determines at which position for bytes of the 16 byte ID are read
         << (quint32) reg; //[20,23] //defines which register of Geocode chip or ID chip is going to be read
 
-    std::cout << datagram.toHex().toStdString() << std::endl;
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadI2C");
+    //std::cout << datagram.toHex().toStdString() << std::endl;
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadGeoPos");
 
     readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadI2C");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadGeoPos");
         GetSocketHandler().ProcessReply("fec",ip);
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::ReadI2C", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadI2C");
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadGeoPos");
         //        exit(1);
         return 0;
     }
@@ -2489,10 +2428,10 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
     ////////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
-        << (quint32) 0x000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
+        << (quint32) 0x00000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
     // can be anything here but needs to be 3 byte long
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
-    std::cout << datagram.toHex().toStdString() << std::endl;
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadGeoPos");
+    //std::cout << datagram.toHex().toStdString() << std::endl;
     readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
 
@@ -2503,27 +2442,154 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice)
         read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
         GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
         std::cout << read_datagram.toHex().toStdString() << std::endl;
-        if(choice == 0)
-        {
-            result = read_datagram.mid(23,1).toHex();
-        }
-        else {
-            result = read_datagram.mid(20,4).toHex();
-        }
-
+        result = read_datagram.mid(23,1).toHex();
     } // while loop
 
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadI2C");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadGeoPos");
         GetSocketHandler().ProcessReply("fec",ip);
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::ReadI2C", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadI2C");
+                            "FEC_config_module::ReadGeoPos", true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadGeoPos");
         //        exit(1);
         return 0;
     }
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadI2C");
+
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadGeoPos");
+    return result;
+}
+// ------------------------------------------------------------------------ //
+
+
+
+QString FECConfigModule::ReadIDChip(int hdmi_index, int hybrid_index)
+{
+    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadIDChip");
+    QString result;
+    bool ok;
+    QByteArray datagram;
+
+    // send call to i2c port
+    int send_to_port = m_fec->GetRegVal("i2c_port");
+
+    //header
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+    QString ip = m_fec->GetIP();
+    QString hdmiMapString = "00000000";
+    hdmiMapString.replace(7 -  m_hdmi_i2c[hdmi_index] , 1 , QString("1") );
+    quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
+    bool readOK = true;
+    int i2c_addr = 88;
+    int reg = 0x80;
+    for(uint32_t n=3; n<5; n++) {
+
+        datagram.clear();
+        QDataStream out (&datagram, QIODevice::WriteOnly);
+        out.device()->seek(0); //rewind
+        GetSocketHandler().UpdateCommandCounter();
+
+        uint32_t byte_position_id = n*4;
+        //////////////////////////////////////////////////////////////////
+        // 1st i2c command: set address pointer to chip register (chip) //
+        //////////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////
+        // header
+        ////////////////////////////
+        out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+            << (quint16) 0 //[4,5]
+            << (quint8) hdmiMap//146 //[6] Subaddress: enable MUX channels
+            << (quint8) ((i2c_addr << 1) | 0) //[7]  I2C address, last bit: read/not write (1 = read);
+            << (quint8) cmd.toUInt(&ok,16) //[8]
+            << (quint8) cmdType.toUInt(&ok,16) //[9]
+            << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+        ////////////////////////////
+        // word
+        ////////////////////////////
+        out << (quint32) 0 //[12,15]
+            << (quint32) 0 //[16,19] // goes to sc_address, for the ID chip determines at which position for bytes of the 16 byte ID are read
+            << (quint32) reg; //[20,23] //defines which register of Geocode chip or ID chip is going to be read
+
+        //std::cout << datagram.toHex().toStdString() << std::endl;
+        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadIDChip");
+
+        readOK = true;
+        readOK = GetSocketHandler().WaitForReadyRead("fec");
+        if(readOK) {
+            if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadIDChip");
+            GetSocketHandler().ProcessReply("fec",ip);
+        } else {
+            GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                "FEC_config_module::ReadI2C", true);
+            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadI2C");
+            //        exit(1);
+            return 0;
+        }
+
+        ///////////////////////////////////////////////////////////
+        // 2nd i2c command: read result form register //
+        ///////////////////////////////////////////////////////////
+        datagram.clear();
+        out.device()->seek(0); //rewind
+
+
+        GetSocketHandler().UpdateCommandCounter();
+
+        ////////////////////////////
+        // header
+        ////////////////////////////
+        out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+            << (quint16) 0 //[4,5]
+            << (quint8) hdmiMap//146 //[6] Subaddress: enable MUX channels
+            << (quint8) ((i2c_addr << 1) | 1) //[7] I2C address, last bit: read/not write (1 = read)
+            << (quint8) cmd.toUInt(&ok,16) //[8]
+            << (quint8) cmdType.toUInt(&ok,16) //[9]
+            << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+        ////////////////////////////
+        // word
+        ////////////////////////////
+        out << (quint32) 0 //[12,15]
+            << (quint32) byte_position_id //[16,19] // defines which part of the chip id is read
+            << (quint32) 0x00000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
+        // can be anything here but needs to be 3 byte long
+        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadIDChip");
+        //std::cout << datagram.toHex().toStdString() << std::endl;
+        readOK = true;
+        readOK = GetSocketHandler().WaitForReadyRead("fec");
+
+        QByteArray read_datagram;
+        while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
+
+            read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
+            GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
+            QString id_part = read_datagram.mid(20,4).toHex();
+            std::cout << "ID Part " << byte_position_id << " " << id_part.toStdString()  << std::endl;
+            result.append(id_part);
+        } // while loop
+
+        if(readOK) {
+            if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadIDChip");
+            GetSocketHandler().ProcessReply("fec",ip);
+        } else {
+            GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                "FEC_config_module::ReadIDChip", true);
+            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadIDChip");
+            //        exit(1);
+            return 0;
+        }
+
+    }
+
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadIDChip");
+    std::cout << "ID: " << result.toStdString() << std::endl;
     return result;
 }
 // ------------------------------------------------------------------------ //

@@ -36,7 +36,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT +=widgets printsupport
 CONFIG  += console
 CONFIG  +=declarative_debug
 CONFIG  +=c++11
-CONFIG += sanitizer sanitize_address
+CONFIG  += sanitizer sanitize_address
 
 TARGET   = vmmdcs
 TEMPLATE = app

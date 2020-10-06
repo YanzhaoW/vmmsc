@@ -15,9 +15,9 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     LoadSettings();
     //    this->setStyleSheet("QWidget {background: 'white';}");
     m_ui->linkPB->setEnabled(false);
-    m_ui->resetLinks->setEnabled(false);
+    m_ui->readSystemParams->setEnabled(false);
     m_ui->fec_WarmInit->setEnabled(false);
-    m_ui->fec_reset->setEnabled(false);
+    //m_ui->fec_reset->setEnabled(false);
     m_ui->trgPulser->setEnabled(false);
     m_ui->trgExternal->setEnabled(false);
     m_ui->onACQ->setEnabled(false);
@@ -30,12 +30,12 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
 
     //    connect(ui->setEvbld, SIGNAL(pressed()),
     //                                            this, SLOT(updateSettings()));
-    connect(m_ui->evbld_mode, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->evbld_infodata, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->timeStampResCheckBox, SIGNAL(stateChanged(int)),
-            this, SLOT(onUpdateSettings()));
+//    connect(m_ui->evbld_mode, SIGNAL(currentIndexChanged(int)),
+//            this, SLOT(onUpdateSettings()));
+//    connect(m_ui->evbld_infodata, SIGNAL(currentIndexChanged(int)),
+//            this, SLOT(onUpdateSettings()));
+//    connect(m_ui->timeStampResCheckBox, SIGNAL(stateChanged(int)),
+//            this, SLOT(onUpdateSettings()));
     connect(m_ui->readoutCycle, SIGNAL(editingFinished()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->pulserDelay, SIGNAL(valueChanged(int)),
@@ -86,12 +86,10 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
 
     connect(m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->resetLinks, SIGNAL(clicked()),
-            this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
             this, SLOT( onResetFEC() ));
-    connect(m_ui->fec_reset, SIGNAL(clicked()),
-            this, SLOT( onResetFEC() ));
+    //connect(m_ui->fec_reset, SIGNAL(clicked()),
+    //        this, SLOT( onResetFEC() ));
     connect(m_ui->trgPulser, SIGNAL(clicked()),
             this, SLOT( onUpdateSettings() ));
     connect(m_ui->trgExternal, SIGNAL(clicked()),
@@ -145,16 +143,17 @@ void FECWindow::onUpdateSettings(){
     //    if(QObject::sender() == ui->setEvbld){
     //        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->testing();
     //    }
-    if(QObject::sender() == m_ui->evbld_mode){
-        SetFec("evbld_mode",  m_ui->evbld_mode->currentIndex() );
-    }
-    else if(QObject::sender() == m_ui->evbld_infodata){
-        SetFec("evbld_infodata",  m_ui->evbld_infodata->currentIndex() );
-    }
-    else if(QObject::sender() == m_ui->timeStampResCheckBox){
-        SetFec("highres",  m_ui->timeStampResCheckBox->isChecked() );
-    }
-    else if(QObject::sender() == m_ui->readoutCycle && m_ui->readoutCycle->isModified()){
+//    if(QObject::sender() == m_ui->evbld_mode){
+//        SetFec("evbld_mode",  m_ui->evbld_mode->currentIndex() );
+//    }
+//    else if(QObject::sender() == m_ui->evbld_infodata){
+//        SetFec("evbld_infodata",  m_ui->evbld_infodata->currentIndex() );
+//    }
+//    else if(QObject::sender() == m_ui->timeStampResCheckBox){
+//        SetFec("highres",  m_ui->timeStampResCheckBox->isChecked() );
+//    }
+    //else
+     if(QObject::sender() == m_ui->readoutCycle && m_ui->readoutCycle->isModified()){
         QString val_trg = m_ui->readoutCycle->text();
         bool ok;
         int value = val_trg.toInt(&ok,16);
@@ -261,10 +260,10 @@ void FECWindow::onUpdateSettings(){
     else if(QObject::sender() == m_daqWindow->ui->openConnection_2){
         if(m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
-            //            ui->resetLinks->setEnabled(true);
+            m_ui->readSystemParams->setEnabled(true);
             if(!m_daqWindow->ui->checkBoxGlobalDAQ->isChecked()){
                 m_ui->fec_WarmInit->setEnabled(true);
-                m_ui->fec_reset->setEnabled(true);
+                //m_ui->fec_reset->setEnabled(true);
                 m_ui->trgPulser->setEnabled(true);
                 m_ui->trgExternal->setEnabled(true);
                 m_ui->onACQ->setEnabled(true);
@@ -273,17 +272,13 @@ void FECWindow::onUpdateSettings(){
         }
         else{
             m_ui->linkPB->setEnabled(false);
-            m_ui->resetLinks->setEnabled(false);
             m_ui->fec_WarmInit->setEnabled(false);
-            m_ui->fec_reset->setEnabled(false);
+            m_ui->readSystemParams->setEnabled(false);
             m_ui->trgPulser->setEnabled(false);
             m_ui->trgExternal->setEnabled(false);
             m_ui->onACQ->setEnabled(false);
             m_ui->offACQ->setEnabled(false);
         }
-    }
-    else if(QObject::sender() == m_ui->resetLinks){
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetLinks();
     }
 
 
@@ -389,9 +384,9 @@ void FECWindow::LoadSettings(){
 
     m_ui->Stamp_ext_trg->setChecked( GetFec( "ts_ext_trg" ) );
 
-    m_ui->evbld_mode->setCurrentIndex( GetFec( "evbld_mode" ) );
-    m_ui->evbld_infodata->setCurrentIndex( GetFec( "evbld_infodata" ) );
-    m_ui->timeStampResCheckBox->setChecked( GetFec( "highres" ) );
+//    m_ui->evbld_mode->setCurrentIndex( GetFec( "evbld_mode" ) );
+//    m_ui->evbld_infodata->setCurrentIndex( GetFec( "evbld_infodata" ) );
+//    m_ui->timeStampResCheckBox->setChecked( GetFec( "highres" ) );
 
     //L0
     m_ui->L0BCoffset->setValue( GetFec( "l0offset" ) );
@@ -578,8 +573,8 @@ void FECWindow::onCheckLinkStatus(){
 // ------------------------------------------------------------------------- //
 void FECWindow::onResetFEC()
 {
-    bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC(do_reset);
+    //bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
+    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC();
     m_ui->trgExternal->setChecked(false);
     m_ui->trgPulser->setChecked(false);
     m_ui->onACQ->setChecked(false);
