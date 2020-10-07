@@ -128,18 +128,24 @@ void DAQWindow::fecBoxLogic(bool checked, unsigned short fec){
         ui->onACQ->setEnabled(false);
         ui->offACQ->setEnabled(false);
     }
-    unsigned short NotActiveBefore = 0;
+
     QList<QCheckBox*> a = ui->Fec_group_box->findChildren<QCheckBox*>();
+    std::sort(a.begin(), a.end(),
+          [](const QCheckBox* x, const QCheckBox* y) -> bool { return x->text() <  y->text();
+    });
+
+    unsigned short ActiveBefore = 0;
     for (unsigned short i = 0; i < a.size(); i++){
-        if(i<fec && !a.at(i)->isChecked()) NotActiveBefore++;
+        if(i<fec && a.at(i)->isChecked()) ActiveBefore++;
     }
+
     if (checked){
-        ui->tabWidget->insertTab(fec-NotActiveBefore, new FECWindow(this,fec), QString(" FEC %0").arg(fec+1));
-        ui->tabWidget->setCurrentIndex(fec-NotActiveBefore);
+        ui->tabWidget->insertTab(ActiveBefore, new FECWindow(this,fec), QString(" FEC %0").arg(fec+1));
+        ui->tabWidget->setCurrentIndex(ActiveBefore);
         m_mainWindow->m_daqs[0].SetFEC(fec,true);
     }
     else {
-        ui->tabWidget->removeTab(fec-NotActiveBefore);
+        ui->tabWidget->removeTab(ActiveBefore);
         m_mainWindow->m_daqs[0].SetFEC(fec,false);
     }
 }
