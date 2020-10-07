@@ -36,14 +36,7 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot6);
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot7);
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot8);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot1);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot2);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot3);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot4);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot5);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot6);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot7);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot8);
+
     for(int n=0; n<8;n++)
     {
         plotVector[n]->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
