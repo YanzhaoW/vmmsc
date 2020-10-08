@@ -1,6 +1,8 @@
 #ifndef CALIBRATION_MODULE_H
 #define CALIBRATION_MODULE_H
 
+#define TIME_FACTOR 3
+
 #include <QObject>
 
 // qt
@@ -30,15 +32,13 @@ class QUdpSocket;
 #include "globparameter.h"
 // vmm
 #include "message_handler.h"
-#include "mainwindow.h"
+
 
 
 
 using namespace std;
 class MainWindow;
 class QCustomPlot;
-
-#define TIME_FACTOR 3
 
 class CalibrationModule : public QObject
 {

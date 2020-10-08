@@ -113,6 +113,7 @@
           </property>
           <property name="font">
            <font>
+            <family>Arial</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -143,6 +144,7 @@
           </property>
           <property name="font">
            <font>
+            <family>Arial</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -167,6 +169,7 @@
           </property>
           <property name="font">
            <font>
+            <family>Arial</family>
             <pointsize>10</pointsize>
            </font>
           </property>
@@ -635,6 +638,7 @@
                 </property>
                 <property name="font">
                  <font>
+                  <family>Arial</family>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
@@ -671,6 +675,7 @@
                <widget class="QCheckBox" name="AccWin">
                 <property name="font">
                  <font>
+                  <family>Arial</family>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
@@ -688,6 +693,7 @@ window</string>
                <widget class="QCheckBox" name="OpenWrFifo">
                 <property name="font">
                  <font>
+                  <family>Arial</family>
                   <pointsize>10</pointsize>
                  </font>
                 </property>
@@ -742,6 +748,7 @@ open FEC wr FIFO</string>
            <widget class="QCheckBox" name="Box_hdmi3">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -754,6 +761,7 @@ open FEC wr FIFO</string>
            <widget class="QCheckBox" name="Box_hdmi2">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -779,6 +787,7 @@ open FEC wr FIFO</string>
            <widget class="QCheckBox" name="Box_hdmi5">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -791,6 +800,7 @@ open FEC wr FIFO</string>
            <widget class="QCheckBox" name="Box_hdmi6">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -803,6 +813,7 @@ open FEC wr FIFO</string>
            <widget class="QCheckBox" name="Box_hdmi7">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -815,6 +826,7 @@ open FEC wr FIFO</string>
            <widget class="QCheckBox" name="Box_hdmi8">
             <property name="font">
              <font>
+              <family>Arial</family>
               <pointsize>10</pointsize>
              </font>
             </property>
@@ -865,6 +877,7 @@ open FEC wr FIFO</string>
               </property>
               <property name="font">
                <font>
+                <family>Arial</family>
                 <pointsize>10</pointsize>
                </font>
               </property>

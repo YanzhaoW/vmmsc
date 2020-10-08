@@ -63,8 +63,8 @@ void FEC::SendAll(){
                             //sleep(1);
                             m_fecConfigModule->SendConfig(k, l, m);
                             //m_fecConfigModule->SetEventHeaders(k, l, m);
-                            m_fecConfigModule->SetTriggerAcqConstants(k, l, m);
-                            m_fecConfigModule->SetTriggeredMode(k, l, m);
+                            m_fecConfigModule->SetTriggerAcqConstants(k, m);
+                            m_fecConfigModule->SetTriggeredMode(k, m);
 
                         }
                     }

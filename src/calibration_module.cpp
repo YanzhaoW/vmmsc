@@ -3,6 +3,7 @@
 #include <QJsonArray>
 #include <QFileInfo>
 #include "calibration_module.h"
+#include "mainwindow.h"
 
 #ifdef __linux__
 #include <arpa/inet.h>
@@ -1111,7 +1112,6 @@ void CalibrationModule::AccumulateData(){
             double pulseHeight = PulserDAC_to_PulseHeight_mV(m_pulser_dac, gain);
             double threshold_mV = ThresholdDAC_to_mV(m_threshold) ;
 
-            double delay_s = static_cast<double>(delay_ns)*0.000000001;
             for(unsigned int ch = 0; ch<64; ch++){
                 double cnt = 0;
                 double rate = 0;

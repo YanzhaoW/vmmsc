@@ -974,89 +974,9 @@ void FECConfigModule::ConfigTP( int hdmi_index, int hybrid_index)
 }
 
 
-// ------------------------------------------------------------------------ //
-//void FECConfigModule::SetEventHeaders(int hdmi_index, int hybrid_index, int vmm_index)
-//{
-//    if(IsDbgEnabled())GetMessageHandler()("Setting event headers...","FEC_config_module::setEventHeaders");
-
-//    bool ok;
-//    QByteArray datagram;
-
-//    // send trigger mode to VMMAPP port
-//    int send_to_port = m_fec->GetRegVal("vmmapp_port");
-//    //get settings
-//    const int bld_info = m_fec->GetRegVal("evbld_infodata");
-//    const int bld_mode = m_fec->GetRegVal("evbld_mode");
-//    bool highRes = m_fec->GetRegVal("highres");
-
-//    // headers
-//    QString cmd, msbCounter;
-//    cmd = "AAAAFFFF";
-//    msbCounter = "0x80000000";
-
-//    // setup the word
-//    quint32 evbldinfo = 0;
-//    if(bld_info==0)             evbldinfo = 0;
-//    else if(bld_info==1)        evbldinfo = 256;
-//    else if(bld_info==2)        evbldinfo = 512;
-//    else if(bld_info==3)        evbldinfo = 768;
-//    else if(bld_info==4)        evbldinfo = 1024;
-//    else if(bld_info==5)        evbldinfo = 1280;
-//    //quint32 evbldinfo = (quint32) 256*bld_info;
-//    quint32 evbldmode = (quint32)bld_mode;
-
-//    //resolution
-//    quint32 resolutionBits = 0;
-//    if(highRes)
-//        resolutionBits = 32768;
-
-//    QString ip = m_fec->GetIP();
-//    datagram.clear();
-//    QDataStream out (&datagram, QIODevice::WriteOnly);
-//    out.device()->seek(0); //rewind
-
-//    GetSocketHandler().UpdateCommandCounter();
-
-//    ///////////////////////////
-//    // header info
-//    ///////////////////////////
-//    QString chMapString = "0000000000000000";
-//    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
-//    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
-//    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-//        << (quint32) chMap //[4,7]
-//        << (quint32) cmd.toUInt(&ok,16) //[8,11]
-//        << (quint32) 0; //[12,15]
-
-//    ///////////////////////////
-//    // event header
-//    ///////////////////////////
-//    out << (quint32) 10 //[16,19]
-//        << (quint32) evbldmode //[20,23]
-//        << (quint32) 12 //[24,27]
-//        << (quint32) (evbldinfo + resolutionBits); //[28,31]
-
-//    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-//                                    "FEC_config_module::setEventHeaders");
-//    bool readOK = true;
-//    readOK = GetSocketHandler().WaitForReadyRead("fec");
-//    if(readOK) {
-//        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setEventHeaders");
-//        GetSocketHandler().ProcessReply("fec", ip);
-//    } else {
-//        GetMessageHandler()("Timeout while waiting for replies from VMM",
-//                            "FEC_config_module::setEventHeaders",true);
-//        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setEventHeaders");
-//        return;
-//    }
-
-//    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::setEventHeaders");
-//}
-
 
 // ------------------------------------------------------------------------ //
-void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, int vmm_index)
+void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
 
@@ -1147,7 +1067,7 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int hybrid_index, i
 
 
 // ------------------------------------------------------------------------ //
-void FECConfigModule::SetTriggeredMode(int hdmi_index, int hybrid_index, int vmm_index)
+void FECConfigModule::SetTriggeredMode(int hdmi_index, int vmm_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
 
@@ -1292,117 +1212,7 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
 
 }
 
-// ------------------------------------------------------------------------ //
-/*
-void FECConfigModule::SetS6Resets(int hdmi_index, int hybrid_index)
-{
-    if(IsDbgEnabled())GetMessageHandler()("Setting s6 reset settings...","FEC_config_module::setS6Resets");
 
-    bool ok;
-    QByteArray datagram;
-
-    // send call to s6 port
-    int send_to_port = m_fec->GetRegVal("s6_port");
-    //get settings
-    int s6_tk_pulses = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("TK_Pulses");
-    bool set_s6_autoReset = false;
-    bool set_s6_fecReset = false;
-    int s6_fec_periodRest=m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("period");
-
-    // header
-    QString cmd, msbCounter;
-    cmd = "AAAAFFFF";
-    msbCounter = "0x80000000";
-    int s6_auto_reset = 0;
-    int s6_fec_reset = 0;
-    bool fec_reset = false;
-    if(set_s6_autoReset) s6_auto_reset = 8;
-    if(set_s6_fecReset) { s6_fec_reset = 32; fec_reset = true; }
-
-    QString ip = m_fec->GetIP();
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); //rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    ////////////////////////////
-    // header
-    ////////////////////////////
-    QString hdmiMapString = "00000000";
-    hdmiMapString.replace( 7 - hdmi_index , 1 , QString("1") );
-    quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
-
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint32) hdmiMap //[4,7]
-        << (quint32) cmd.toUInt(&ok,16); //[8,11]
-
-    ////////////////////////////
-    // command
-    ////////////////////////////
-    out << (quint32) 0; //[12,15]
-
-    out << (quint32) 9 //[16,19]
-        << (quint32)( s6_tk_pulses + s6_auto_reset + s6_fec_reset); //[20,23]
-
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::setS6Resets");
-
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...", "FEC_config_module::setS6Resets");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::setS6Resets", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setS6Resets");
-        return;
-    }
-
-    ////////////////////////////////
-    // set periodic reset
-    ////////////////////////////////
-
-    bool resetSeek = out.device()->reset();
-    if(resetSeek) {
-        //        emit s6resetStatus(true);
-        GetSocketHandler().UpdateCommandCounter();
-        out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16))
-            << (quint32) hdmiMap
-            << (quint32) cmd.toUInt(&ok,16);
-
-        /////////////////////
-        // command
-        /////////////////////
-        out << (quint32) 9
-            << (quint32) s6_fec_periodRest;
-
-        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                        "FEC_config_module::setS6Resets");
-
-        readOK = GetSocketHandler().WaitForReadyRead("fec");
-        if(readOK) {
-            if(IsDbgEnabled())GetMessageHandler()("Processing replies [2]...", "FEC_config_module::setS6Resets");
-            GetSocketHandler().ProcessReply("fec", ip);
-        } else {
-            GetMessageHandler()("Timeout while waiting for replies from VMM [2]",
-                                "FEC_config_module::setS6Resets", true);
-            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setS6Resets");
-            return;
-        } // readok
-    } //resetSeek
-    else {
-        GetMessageHandler()("Error upon resetting datastream seek. Unable to send period reset command for FEC",
-                            "FEC_config_module::setS6Resets");
-        //        emit s6resetStatus(false);
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setS6Resets");
-
-}
-*/
 
 // ------------------------------------------------------------------------ //
 void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
@@ -2043,20 +1853,6 @@ void FECConfigModule::ACQoff(bool broadcast)
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ACQoff");
         QByteArray buffer;
         buffer = GetSocketHandler().GetFECSocket().ProcessReply(ip, 0, GetSocketHandler().GetCommandCounter()); //.processReply("fec", ip);
-
-        //QByteArray buffer = socket().buffer("fec");
-
-        // dantrim May 26 not sure why this second word is sent -- legacy from VMM1/MCgill code?
-        //QString bin, hex;
-        //QDataStream out (&buffer, QIODevice::WriteOnly);
-        //hex = buffer.mid(12,4).toHex();
-        //quint32 tmp32 = DataHandler::ValueToReplaceHEX32(hex, 0, false);
-        //out.device()->seek(12);
-        //out << tmp32;
-        //out.device()->seek(6);
-        //out << (quint16) 2; // change to write mode ?
-        //socket().SendDatagram(buffer, ip, send_to_port, "fec",
-        //                                    "FEC_config_module::ACQoff [2]");
     }
     else {
         GetMessageHandler()("Timeout [1] while waiting for replies from VMM",
@@ -2065,18 +1861,6 @@ void FECConfigModule::ACQoff(bool broadcast)
         //        exit(1);
         return;
     }
-
-    // not doing second loop
-    //readOK = socket().waitForReadyRead("fec");
-    //if(readOK) {
-    //    socket().processReply("fec", ip);
-    //}
-    //else {
-    //   GetMessageHandler()("Timeout [2] while waiting for replies from VMM",
-    //            "FEC_config_module::ACQoff", true);
-    //    socket().closeAndDisconnect("fec","FEC_config_module::ACQoff");
-    //    exit(1);
-    //}
 
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ACQoff");
 }

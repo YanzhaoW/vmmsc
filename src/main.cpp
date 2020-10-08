@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
     QFont Font;
     Font.setFamily("Arial");
-    Font.setPixelSize(10);
+    Font.setPixelSize(12);
     QApplication::setFont(Font);
 
     QApplication a(argc, argv);
