@@ -17,8 +17,6 @@ HybridWindow::HybridWindow(HDMIWindow *top, unsigned short fec, unsigned short h
                                     this, SLOT(onUpdateSettings()));
     connect(m_ui->position, SIGNAL(valueChanged(int)),
                                     this, SLOT(onUpdateSettings()));
-    connect(m_ui->cktk_s6, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
     connect(m_ui->ckbc_s6, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(onUpdateSettings()));
     connect(m_ui->ckbc_duty_s6, SIGNAL(currentIndexChanged(int)),
@@ -106,7 +104,6 @@ void HybridWindow::LoadSettings(){
 
     m_ui->Xaxis->setCurrentIndex(GetHybrid("Xaxis"));
     m_ui->position->setValue(GetHybrid("position"));
-    m_ui->cktk_s6->setCurrentIndex(GetHybrid("CKTK"));
     m_ui->ckbc_s6->setCurrentIndex(GetHybrid("CKBC"));
     m_ui->ckbc_duty_s6->setCurrentIndex(GetHybrid("CKBC_duty"));
     m_ui->ckbc_skew_s6->setCurrentIndex(GetHybrid("CKBC_skew"));
@@ -118,7 +115,6 @@ void HybridWindow::LoadSettings(){
 
 // ------------------------------------------------------------------------- //
 void HybridWindow::onReloadSettings(){
-    m_ui->cktk_s6->setCurrentIndex(GetHybrid("CKTK"));
     m_ui->ckbc_s6->setCurrentIndex(GetHybrid("CKBC"));
     m_ui->ckbc_duty_s6->setCurrentIndex(GetHybrid("CKBC_duty"));
     m_ui->ckbc_skew_s6->setCurrentIndex(GetHybrid("CKBC_skew"));
@@ -163,9 +159,6 @@ void HybridWindow::onUpdateSettings(){
         }
 
     }
-    else if(QObject::sender() == m_ui->cktk_s6){
-        SetHybrid("CKTK", m_ui->cktk_s6->currentIndex());
-    }
     else if(QObject::sender() == m_ui->ckbc_s6){
         SetHybrid("CKBC", m_ui->ckbc_s6->currentIndex());
     }
@@ -194,7 +187,6 @@ void HybridWindow::onUpdateSettings(){
                     if( m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) ){
                         for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
                             if (m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid)){
-                                m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKTK", m_ui->cktk_s6->currentIndex());
                                 m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKBC", m_ui->ckbc_s6->currentIndex());
                                 m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKBC_duty", m_ui->ckbc_duty_s6->currentIndex());
                                 m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].SetReg("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());

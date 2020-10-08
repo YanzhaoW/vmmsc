@@ -13,9 +13,9 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKTK",0}, {"CKBC",0}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TK_Pulses",2},{"period",4094}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKBC",3}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
     SetReg("CKBC", (std::string)"80");
-    SetReg("CKBC_duty", (std::string)"18.725 ns high (standard)");
+    SetReg("CKBC_duty", (std::string)"50 % high");
     SetReg("CKDT", (std::string)"80");
 }
 
@@ -74,7 +74,6 @@ bool Hybrid::SetReg(std::string feature, int val){
 
 
 bool Hybrid::SetRegister(std::string feature, std::string value){
-//{"Xaxis",0}, {"position", 65534}, {"CKTK",0}, {"CKBC",0}, {CKBC_duty,3}, {"CKBC_skew",0}, {"CKDT",1} ,{"TK_Pulses",2},{"period",4094}
     typedef std::map<std::string, unsigned short> InMap;
     typedef std::pair<std::string, unsigned short> BiPair;
     if(m_hybrid.find(feature)==m_hybrid.end()) return false;
@@ -98,25 +97,9 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
            else return false;
         }
 
-        if(feature=="CKTK"){
-            if(value == "0"){
-                m_hybrid[feature] = 0;
-                return true;
-            }
-            else if(value == "1" || value == "12.5"){
-                m_hybrid[feature] = 1;
-                return true;
-            }
-            else if(value == "2" || value == "25"){
-                m_hybrid[feature] = 2;
-                return true;
-            }
-            else return false;
-        }
-
         if(feature=="CKBC"){
             InMap m_val;
-            std::string v_val[8] = {"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
+            std::string v_val[8] = {"80", "80inv", "40", "20", "10", "5", "2.5", "1.25"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));
@@ -131,7 +114,7 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
 
         if(feature=="CKBC_duty"){
             InMap m_val;
-            std::string v_val[4] = {"50 % high", "75 % high", "25 % high", "18.725 ns high (standard)"};
+            std::string v_val[3] = {"50 % high", "75 % high", "25 % high"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));
@@ -172,30 +155,6 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
               return true;
             }
             else return false;
-        }
-
-        else if(feature == "TK_Pulses" ){
-            InMap m_val;
-            for(unsigned short i=0 ; i<=7; i++){
-                m_val.insert(BiPair(std::to_string(i), i));
-            }
-            if(m_val.find(value)!=m_val.end()){
-               m_hybrid[feature] = m_val[value];
-              return true;
-            }
-            return false;
-        }
-
-        else if(feature == "period" ){
-            InMap m_val;
-            for(unsigned short i=0 ; i<=4096; i++){
-                m_val.insert(BiPair(std::to_string(i), i));
-            }
-            if(m_val.find(value)!=m_val.end()){
-               m_hybrid[feature] = m_val[value];
-              return true;
-            }
-            return false;
         }
         else if(feature=="TP_skew"){
             InMap m_val;
