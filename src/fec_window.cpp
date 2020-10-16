@@ -261,8 +261,8 @@ void FECWindow::onUpdateSettings(){
         if(m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
             m_ui->readSystemParams->setEnabled(true);
+            m_ui->fec_WarmInit->setEnabled(true);
             if(!m_daqWindow->ui->checkBoxGlobalDAQ->isChecked()){
-                m_ui->fec_WarmInit->setEnabled(true);
                 //m_ui->fec_reset->setEnabled(true);
                 m_ui->trgPulser->setEnabled(true);
                 m_ui->trgExternal->setEnabled(true);

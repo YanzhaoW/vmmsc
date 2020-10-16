@@ -806,14 +806,12 @@ void CalibrationModule::StartCalibration(){
     GetSettings();
     PlotData();
 
-    if(!IsCalibration())
+    if(IsCalibration())
     {
-        m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-        m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-        return;
+        m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
+        SaveSettings();
     }
-    m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
-    SaveSettings();
+
     GetActiveVMMs();
     InitializeDataStructures();
 
@@ -986,9 +984,10 @@ void CalibrationModule::StartCalibration(){
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::DoCalibrationStep(){
+    m_bitCount++;
     //Offline or online ADC or time/TDC
     if(m_modeIndex <= 4) {
-        m_bitCount++;
+
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int hdmi = GetHDMI(vmm);
@@ -1080,7 +1079,7 @@ void CalibrationModule::AccumulateData(){
         m_nodata_end = std::chrono::high_resolution_clock::now();
         auto nodata_duration = std::chrono::duration_cast<std::chrono::milliseconds>( m_nodata_end - m_nodata_start ).count();
         //If for ADC or TDC calibrations there is not data for longer than 10 s, hard reset the VMMs
-        if((m_modeIndex != 5 && nodata_duration >= 2000))
+        if((IsCalibration() && m_modeIndex != 5 && nodata_duration >= 5000))
         {
             StopDataTaking();
             Reset();
@@ -1326,11 +1325,11 @@ void CalibrationModule::CalculateCorrections(){
 void CalibrationModule::ConnectDAQSocket()
 {
     stringstream sx;
-    quint16 daqport = 6006;
+    int daqport = 6006;
     if(!m_udpSocket) {
         GetMessageHandler()("Initializing DAQ socket...","calibration_module::connectDAQSocket");
         m_udpSocket = new QUdpSocket();
-        //connect(m_udpSocket, SIGNAL(readyRead()), this, SLOT(readEvent()), Qt::QueuedConnection);
+        connect(m_udpSocket, SIGNAL(readyRead()), this, SLOT(readEvent()));
     }
     //if(m_udpSocket->state() == QAbstractSocket::UnconnectedState) {
     if(m_udpSocket->state() != m_udpSocket->BoundState) {
@@ -1338,7 +1337,7 @@ void CalibrationModule::ConnectDAQSocket()
             sx << "About to re-bind DAQ socket";
             GetMessageHandler()(sx,"calibration_module::connectDAQSocket"); sx.str("");
         }
-        bool bnd = m_udpSocket->bind(static_cast<quint16>(daqport), QUdpSocket::ShareAddress);
+        bool bnd = m_udpSocket->bind(daqport, QUdpSocket::ShareAddress);
         if(!bnd) {
             sx << "ERROR Unable to re-bind DAQ socket to port " << daqport;
             GetMessageHandler()(sx, "calibration_module::connectDAQSocket"); sx.str("");
@@ -1354,9 +1353,7 @@ void CalibrationModule::ConnectDAQSocket()
                 sx << "DAQ socket successfully bound to port " << daqport;
                 GetMessageHandler()(sx,"calibration_module::connectDAQSocket"); sx.str("");
             }
-            connect(m_udpSocket, &QUdpSocket::readyRead, this, &CalibrationModule::readEvent, Qt::QueuedConnection);
         } // bnd ok
-
     }
 
 }
