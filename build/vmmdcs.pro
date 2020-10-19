@@ -43,6 +43,8 @@ QT      += network
 QT      += widgets
 QT      += xml
 QT      += concurrent
+QT      += serialport
+QT      += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT +=widgets printsupport
 CONFIG  += console
@@ -96,7 +98,9 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/hybrid_config_handler.cpp \
             $$sourcepath/calibration_module.cpp \
             $$sourcepath/qcustomplot.cpp \
-            $$sourcepath/fec_config_module.cpp
+            $$sourcepath/fec_config_module.cpp \
+            $$sourcepath/test_module.cpp \
+            $$sourcepath/currentmonitor.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
             $$includepath/socket_handler.h\
@@ -120,7 +124,10 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/vmm_window.h \
             $$includepath/hybrid_config_handler.h \
             $$includepath/fec_config_handler.h \
-            $$includepath/fec_config_module.h
+            $$includepath/fec_config_module.h \
+            $$includepath/test_module.h \
+            $$includepath/currentmonitor.h \
+            $$includepath/PolynomialRegression.h
 
 
 

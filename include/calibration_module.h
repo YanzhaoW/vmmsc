@@ -43,6 +43,7 @@ class QCustomPlot;
 class CalibrationModule : public QObject
 {
     Q_OBJECT
+    friend class TestModule;
 public:
     explicit CalibrationModule(MainWindow *top, QObject *parent = nullptr);
     bool IsDbgActive() { return m_dbg; }
@@ -220,6 +221,8 @@ private:
     //Data containers for data in Parse_VMM3
     std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
     std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_dac;
+    QVector<QVector<double>> m_allhitdata[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     //Containers for calculated data
     //S-curve
@@ -259,6 +262,3 @@ private:
 };
 
 #endif // CALIBRATION_MODULE_H
-
-
-

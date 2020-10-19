@@ -24,6 +24,7 @@ public:
     friend class Commandline;
     friend class VMMWindow;
     friend class CalibrationModule;
+    friend class TestModule;
     FEC m_fecs[FECS_PER_DAQ];
 
     MessageHandler& GetMessageHandler() { return *m_messageHandler; }

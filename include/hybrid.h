@@ -14,6 +14,7 @@ public:
     friend class VMM;
     friend class HybridConfigHandler;
     friend class CalibrationModule;
+    friend class TestModule;
     VMM m_vmms[VMMS_PER_HYBRID];
 
     void LoadDefault();
@@ -41,4 +42,3 @@ private:
 };
 
 #endif // HYBRID_H
-

@@ -528,3 +528,124 @@ void DAQWindow::on_pushButtonAbort_pressed()
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 }
 
+
+void DAQWindow::on_pushButtonStartTest_pressed()
+{
+    m_mainWindow->m_test->StartTest();
+}
+
+
+void DAQWindow::on_pushButtonClearTestLog_pressed()
+{
+    m_mainWindow->m_daqWindow->ui->TestLogScreen->clear();
+}
+
+
+void DAQWindow::on_pushButtonSavePlotL_clicked()
+{
+    QCustomPlot* plot = m_mainWindow->m_daqWindow->ui->customPlotVMM1;
+    QString fileName = QFileDialog::getSaveFileName(this,tr("Save Plot as PDF"), "",tr("PDF File (*.pdf);;All Files (*)"));
+    fileName.remove(".pdf");
+    fileName.remove(".png");
+    if(fileName.isEmpty()){
+        return;
+    }
+    else{
+        plot->savePdf(fileName+".pdf");
+        return;
+    }
+}
+
+void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
+{
+    QHash<QString, QString> labelmap = m_mainWindow->m_test->m_hResults.h_plotslabel.value(arg1);
+    QString type = labelmap.value("type");
+    if(type == "histo"){
+        QHash<QString, QVector<double>> datamap = m_mainWindow->m_test->m_hResults.h_histodata.value(arg1);
+        QVector<double> x = datamap.value("x");
+        QVector<double> y1 = datamap.value("y1");
+        QVector<double> y2 = datamap.value("y2");
+        QVector<double> lims = m_mainWindow->m_test->m_hResults.h_histodata.value(arg1).value("lims");
+        QString xlabel = labelmap.value("x");
+        QString ylabel = labelmap.value("y");
+        QString graphlabel = labelmap.value("graph");
+        if(datamap.empty()){
+            return;
+        }
+        QVector<double> y[2] = {y1,y2};
+        double low = lims[0];
+        double high = lims[1];
+        int bins = int(lims[2]);
+        cout << low <<","<< high<<","<<bins;
+        m_mainWindow->m_test->PlotHistogram(y,0,4096,4096,xlabel,ylabel,arg1,graphlabel);
+    }
+    else if(type == "channels"){
+        QHash<QString, QVector<double>> datamap = m_mainWindow->m_test->m_hResults.h_plotsdata.value(arg1);
+        QVector<double> x = datamap.value("x");
+        QVector<double> y[64];
+        for(int i=0;i<64;i++){
+            QString key = "y"+QString::number(i+1);
+            QVector<double> yi = datamap.value(key);
+            y[i] = yi;
+        }
+        QString xlabel = labelmap.value("x");
+        QString ylabel = labelmap.value("y");
+        QString graphlabel = labelmap.value("graph");
+        if(datamap.empty()){
+            return;
+        }
+        m_mainWindow->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel,64);
+    }
+    else{
+        QHash<QString, QVector<double>> datamap = m_mainWindow->m_test->m_hResults.h_plotsdata.value(arg1);
+        QVector<double> x = datamap.value("x");
+        QVector<double> y1 = datamap.value("y1");
+        QVector<double> y2 = datamap.value("y2");
+        QVector<double> lims = m_mainWindow->m_test->m_hResults.h_plotsdata.value(arg1).value("lims");
+        QString xlabel = labelmap.value("x");
+        QString ylabel = labelmap.value("y");
+        QString graphlabel = labelmap.value("graph");
+        QVector<double> y[2] = {y1,y2};
+        if(datamap.empty()){
+            return;
+        }
+        m_mainWindow->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel);
+        if(QString::compare(arg1,"ADCCalibrationInternal",Qt::CaseInsensitive)==0){
+            QVector<double>pars;
+            QVector<double> fits [2] = {m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[0],"internal",0,pars),m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[1],"internal",1,pars)};
+            m_mainWindow->m_test->AddFitToPlot(x,fits);
+        }
+        if(QString::compare(arg1,"ADCCalibrationExternal",Qt::CaseInsensitive)==0){
+            QVector<double>pars;
+            QVector<double> fits [2] = {m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[0],"external",0,pars),m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[1],"external",1,pars)};
+            m_mainWindow->m_test->AddFitToPlot(x,fits);
+        }
+
+    }
+}
+
+void DAQWindow::on_checkBox_readcurrent_stateChanged(int arg1)
+{
+    m_mainWindow->m_daqWindow->ui->lineEdit_1_9V->setReadOnly(arg1);
+    m_mainWindow->m_daqWindow->ui->lineEdit_2_9V->setReadOnly(arg1);
+}
+
+void DAQWindow::on_lineEdit_1_9V_textChanged(const QString &arg1)
+{
+    m_mainWindow->m_test->m_hResults.h_current_1_9V = arg1.toDouble();
+}
+
+void DAQWindow::on_lineEdit_2_9V_textChanged(const QString &arg1)
+{
+    m_mainWindow->m_test->m_hResults.h_current_2_9V = arg1.toDouble();
+}
+
+void DAQWindow::on_pushButtonDeleteLast_clicked()
+{
+    m_mainWindow->m_test->DeleteLastMeasurement();
+}
+
+void DAQWindow::on_pushButtonNewHybrid_clicked()
+{
+    m_mainWindow->m_test->ResetHybrid();
+}

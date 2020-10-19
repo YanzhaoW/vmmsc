@@ -21,6 +21,7 @@ public:
     friend class DAQWindow;
     friend class DAQ;
     friend class CalibrationModule;
+    friend class TestModule;
     HDMI m_hdmis[HDMIS_PER_FEC];
 
     void LoadDefault();
@@ -79,4 +80,3 @@ private:
 
 };
 #endif // FEC_H
-

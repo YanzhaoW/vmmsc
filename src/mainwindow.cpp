@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dbg = false;
     m_socketHandler ->SetDebugMode(false);
     m_calib = new CalibrationModule(this);
+    m_test = new TestModule(this);
 
 
 }
@@ -75,3 +76,4 @@ void MainWindow::ResetAll(){// for test purpose, not functioning correctly
     //    delete daq_act;
     m_daq_act[DAQS_PER_GUIWINDOW];
 }
+

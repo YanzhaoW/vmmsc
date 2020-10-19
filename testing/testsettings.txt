@@ -1,0 +1,30 @@
+MonitoringADCSlope 0.75 0.85 0.7 0.9
+MonitoringADCIntercept 0   50 0   70
+Pedestal    150 190 140 200
+BaselineNoise   2   3
+Threshold   15  20
+ADCCalibrationCurvatureInternIdeal  -0.0604396074478
+ADCCalibrationCurvatureExternIdeal  -0.070142162122
+ADCCalibrationCurvatureInternStddev 0.00896593791387
+ADCCalibrationCurvatureExternStddev 0.01
+ADCCalibrationChannelDeviation  40  50
+ADCCalibrationVertexPosIntern   28.23   34.45
+ADCCalibrationVertexPosExtern   27.28   35.99
+AverageTDCRange 50  100 50  110
+WorkingChannelsExternal 64  61
+WorkingChannelsInternal 64  61
+Location BonnPI
+FlashFirmware   false
+ForceFlash  false
+AutoreadCurrent true
+TestExternal    true
+AutomaticTemperatureStop    true
+NeighboringTest false
+EnableSbip  true
+WarningTemp 65
+DatabaseIP  127.0.0.1
+DatabaseName    testdb
+DatabasePort    5432
+DatabaseUser    fjaekel
+DatabasePassword    1234
+DatabaseFileFolder /home/fjaekel/VMM-test-result-database

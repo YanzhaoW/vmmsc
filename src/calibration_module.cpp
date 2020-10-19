@@ -1700,6 +1700,7 @@ void CalibrationModule::InitializeDataStructures()
 
                         }
                         m_mean[bit][fec][hdmi][hybrid][vmm].clear();
+                        m_allhitdata[bit][fec][hdmi][hybrid][vmm].clear();
                         for (unsigned int ch=0; ch < 64; ch++){
                             m_data[bit][fec][hdmi][hybrid][vmm][ch].clear();
                             //m_mean[bit][fec][hdmi][0][vmm].push_back(0);
@@ -1891,7 +1892,13 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                     {
                         m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
                     }
-
+                    QVector<double> hit;
+                    hit.push_back(chNo);
+                    hit.push_back(bcid);
+                    hit.push_back(tdc);
+                    hit.push_back(adc);
+                    hit.push_back(double(overThreshold));
+                    m_allhitdata[m_bitCount][fecId][hdmi][0][chip].push_back(hit);
                     m_numHits++;
                 }
             }

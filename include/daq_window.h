@@ -21,6 +21,7 @@ class DAQWindow : public QMainWindow
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;
+    friend class TestModule;
 
 public:
     explicit DAQWindow(MainWindow *top, QWidget *parent = 0);
@@ -78,8 +79,23 @@ private slots:
 
     void on_pushButtonAbort_pressed();
 
+    void on_pushButtonStartTest_pressed();
 
+    void on_pushButtonClearTestLog_pressed();
 
+    void on_pushButtonSavePlotL_clicked();
+
+    void on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1);
+
+    void on_checkBox_readcurrent_stateChanged(int arg1);
+
+    void on_lineEdit_1_9V_textChanged(const QString &arg1);
+
+    void on_lineEdit_2_9V_textChanged(const QString &arg1);
+
+    void on_pushButtonDeleteLast_clicked();
+
+    void on_pushButtonNewHybrid_clicked();
 
 
 public slots:
