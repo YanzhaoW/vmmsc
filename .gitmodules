@@ -1,3 +1,6 @@
 [submodule "testing/bit_mcs_files"]
 	path = testing/bit_mcs_files
 	url = https://gitlab.cern.ch/SRS_firmware/bit_mcs_files
+[submodule "testing/VMM-test-result-database"]
+	path = testing/VMM-test-result-database
+	url = https://github.com/FinnJaekel/VMM-test-result-database
