@@ -33,8 +33,10 @@ The nominal use case is to check out the current version of the software.
 To do this, run the following command from a terminal in a directory where you would like the software to reside:
 
 ```
-git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc.git
+git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc.git --recursive
 ```
+To use the extensive testing feature, the command above also checks out two other git repositories as submodules.
+The firmware files for FEC and hybrid, and the database for the test results can subsequently be found linked inside the testing folder. 
 
 ### Compile the software
 
