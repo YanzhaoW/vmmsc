@@ -1,4 +1,3 @@
 [submodule "testing/bit_mcs_files"]
 	path = testing/bit_mcs_files
 	url = https://gitlab.cern.ch/SRS_firmware/bit_mcs_files
-
