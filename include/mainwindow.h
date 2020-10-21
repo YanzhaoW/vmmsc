@@ -7,8 +7,11 @@
 #include <QFuture>
 #include <QtConcurrent/QtConcurrent>
 #include "calibration_module.h"
+#ifdef TEST_MODULE
 #include "test_module.h"
 #include "currentmonitor.h"
+#endif
+
 
 // vmm
 #include "socket_handler.h"
@@ -37,8 +40,10 @@ class MainWindow : public QMainWindow
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;
+    #ifdef TEST_MODULE
     friend class currentmonitor;
     friend class TestModule;
+    #endif
     DAQ m_daqs[DAQS_PER_GUIWINDOW];
 
 
@@ -61,8 +66,9 @@ public:
     MessageHandler& GetMessageHandler()         { return *m_messageHandler; }
 
     CalibrationModule *m_calib;
+    #ifdef TEST_MODULE
     TestModule *m_test;
-
+    #endif
     
 private:
     bool m_dbg;

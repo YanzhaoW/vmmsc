@@ -1,5 +1,5 @@
 #include "fec.h"
-//#include <unistd.h>
+#include <QMessageBox>
 
 FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
@@ -8,7 +8,8 @@ FEC::FEC():
     numberOfRegisters(42),
     m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
     m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
-    m_chr ( new char[1000] ) //need for returning const char * in GetReg functions
+    m_chr ( new char[1000] ), //need for returning const char * in GetReg functions
+    m_fecID(0)
 {
     LoadDefault();
 
@@ -16,6 +17,15 @@ FEC::FEC():
     m_fecConfigModule = new FECConfigModule(this);
     m_fecConfigModule->LoadSocket( GetSocketHandler() );
 }
+
+void FEC::SetFECID(unsigned int id) {
+    m_fecID = id;
+}
+
+unsigned int FEC::GetFECID() {
+    return m_fecID;
+}
+
 
 QString FEC::GetIP(){
     QString ip;
@@ -48,7 +58,9 @@ void FEC::LoadMessageHandler(MessageHandler& m)
 
 void FEC::SendAll(){
     /// function to send all configurations to fec, hybrid and vmm
-
+    for(int n=0; n< HDMIS_PER_FEC*VMMS_PER_HYBRID; n++) {
+        config_error[n] = 0;
+    }
     m_fecConfigModule->SetMask();
     m_fecConfigModule->SetReadoutMode();
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
@@ -57,24 +69,35 @@ void FEC::SendAll(){
                 if (m_hdmis[k].GetHybrid(l)){
                     m_fecConfigModule->ConfigTP(k, l);
                     m_fecConfigModule->SetS6clocks(k, l);
-                    //m_fecConfigModule->SetS6Resets(k, l);
                     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                         if (m_hdmis[k].m_hybrids[l].GetVMM(m)){
                             //sleep(1);
-                            m_fecConfigModule->SendConfig(k, l, m);
-                            //m_fecConfigModule->SetEventHeaders(k, l, m);
+                            bool result = m_fecConfigModule->SendConfig(k, l, m);
+                            if(!result) {
+                                config_error[k*VMMS_PER_HYBRID+m] = 1;
+                            }
                             m_fecConfigModule->SetTriggerAcqConstants(k, m);
                             m_fecConfigModule->SetTriggeredMode(k, m);
-
-                        }
+                         }
                     }
                 }
             }
         }
     }
 
+    bool iserror = false;
+    QString message = "Configuration not loaded on FEC " + QString::number(m_fecID) + ":\n";
+    for (unsigned short k=0; k < VMMS_PER_HYBRID*HDMIS_PER_FEC; k++){
+        if(config_error[k] == 1) {
+            iserror = true;
+            message = message + "\nVMM " + QString::number(k);
+        }
+    }
+    if(iserror) {
+        QMessageBox::warning(nullptr,"Config load error..", message,
+                                        QMessageBox::Ok,QMessageBox::NoButton);
 
-
+    }
 }
 
 // ------------------------------------------------------------------------- //

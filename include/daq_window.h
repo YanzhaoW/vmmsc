@@ -21,7 +21,9 @@ class DAQWindow : public QMainWindow
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;
+    #ifdef TEST_MODULE
     friend class TestModule;
+    #endif
 
 public:
     explicit DAQWindow(MainWindow *top, QWidget *parent = 0);
@@ -29,8 +31,8 @@ public:
 
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& GetMessageHandler() { return *m_msg; }
-    void SetWarning(QString warning, QString bkgcol );
-    void SetWarning2(QString warning, QString bkgcol );
+    void SetConnectionMessage(QString warning, QString bkgcol );
+    void SetWarningMessage(QString warning, QString bkgcol );
 
     void LoadConfig(QString text);
     bool FileExists(const char *fileName);
@@ -47,7 +49,7 @@ private slots:
     void on_Box_fec7_clicked();
     void on_Box_fec8_clicked();
 
-    void on_openConnection_2_clicked();
+    void on_openConnection_clicked();
     void on_readLog();
 
     void on_reset_warnings_clicked();
@@ -78,7 +80,7 @@ private slots:
     void on_pushButtonSavePDF_pressed();
 
     void on_pushButtonAbort_pressed();
-
+#ifdef TEST_MODULE
     void on_pushButtonStartTest_pressed();
 
     void on_pushButtonClearTestLog_pressed();
@@ -96,7 +98,7 @@ private slots:
     void on_pushButtonDeleteLast_clicked();
 
     void on_pushButtonNewHybrid_clicked();
-
+#endif
 
 public slots:
     // select the output directory

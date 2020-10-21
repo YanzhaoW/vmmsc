@@ -57,6 +57,8 @@ public:
     QString GetFirmwareVersion();
 
     FECConfigModule *m_fecConfigModule;
+    void SetFECID(unsigned int id);
+    unsigned int GetFECID();
 private:
     bool Set(unsigned short reg, unsigned long val);
     bool CheckAllowedVal(unsigned short reg, const char *val);
@@ -71,12 +73,13 @@ private:
     std::vector<const char*> *m_regNames;
     std::vector<unsigned long> *m_reg;
     char *m_chr;
-
+    int config_error[HDMIS_PER_FEC*VMMS_PER_HYBRID];
     unsigned short GetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
     bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
     bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
 
     QString m_firmwareVersion;
+    unsigned int m_fecID;
 
 };
 #endif // FEC_H

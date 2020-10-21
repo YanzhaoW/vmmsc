@@ -144,7 +144,7 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
             this, SLOT(onUpdateSettings()));
 
 
-    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
+    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
     connect(m_ui->ApplyAll, SIGNAL(clicked()),
@@ -540,8 +540,8 @@ void VMMWindow::onUpdateSettings()
     else if(QObject::sender() == m_ui->slvs6b){
         SetVMM("slvs6b", !m_ui->slvs6b->isChecked());
     }
-    else if(QObject::sender() == m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection_2){
-        if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
+    else if(QObject::sender() == m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection){
+        if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->vmmReset->setEnabled(true);
             m_ui->readADC->setEnabled(true);}
         else {

@@ -1,4 +1,5 @@
 #include <cmath>
+#include <numeric>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QFileInfo>
@@ -793,9 +794,9 @@ void CalibrationModule::StartCalibration(){
         m_isCalibrated[n] = false;
     }
     m_dataAvailable = false;
-    emit m_mainWindow->m_daqWindow->ui->openConnection_2->clicked();
+    emit m_mainWindow->m_daqWindow->ui->openConnection->clicked();
     QThread::usleep(1000);
-    if(! (m_mainWindow->m_daqWindow->ui->connectionLabel_2->text()==QString("all alive"))) {
+    if(! (m_mainWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive"))) {
         std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
         m_mainWindow->m_daqWindow->ui->InfoScreen->setTextColor(Qt::red);
         m_mainWindow->m_daqWindow->ui->InfoScreen->append(QString("Communication couldn't be established! \n exit calibration"));

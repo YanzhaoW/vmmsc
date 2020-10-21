@@ -1,3 +1,4 @@
+#ifdef TEST_MODULE
 #ifndef TEST_MODULE_H
 #define TEST_MODULE_H
 
@@ -146,4 +147,6 @@ public slots:
 #endif
 #ifndef _CURRENTMONITOR_H
 #include "currentmonitor.h"
+#endif
+
 #endif

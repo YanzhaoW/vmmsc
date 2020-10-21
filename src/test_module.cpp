@@ -1,3 +1,4 @@
+#ifdef TEST_MODULE
 #include "test_module.h"
 #include "currentmonitor.h"
 #include <set>
@@ -9,7 +10,13 @@
 #include <QtSql/QSqlError>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
 #include <unistd.h>
+#endif
+
 #include <PolynomialRegression.h>
 
 /*Constructor of TestModule: A new MessageHandler is used and connected to the Test Log Window on the UI
@@ -46,8 +53,12 @@ TestModule::TestModule(MainWindow *top, QObject *parent) :
         plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
         plot->replot();
     }
-    m_db = QSqlDatabase::addDatabase("QPSQL");
-    readSettingFile();
+    try {
+        m_db = QSqlDatabase::addDatabase("QPSQL");
+        readSettingFile();
+    } catch (...) {
+        std::cout << "Error setting up database!" << std::endl;
+    }
 }
 
 void TestModule::LoadCalibrationModule(CalibrationModule& calibmod){
@@ -345,6 +356,7 @@ bool TestModule::MaskNoisyChannels(){
     PlotData(chans,hits,"Channel","Hits","maskingtest");
     GetMessageHandler()(sx,"TestModule::MaskNoisyChannels");
     handleTemperatures();
+    return true;
 }
 
 void TestModule::exportConfig(QString filename)
@@ -1050,10 +1062,10 @@ int TestModule::GetTestMode(){
 
 bool TestModule::ConnectToSRS(){
     stringstream sx;
-    emit m_mainWindow->m_daqWindow->ui->openConnection_2->clicked();
-    usleep(1000);
+    emit m_mainWindow->m_daqWindow->ui->openConnection->clicked();
+    QThread::usleep(1000);
     m_labelstoclear.push_back(m_mainWindow->m_daqWindow->ui->test_connection_status_label);
-    if(! (m_mainWindow->m_daqWindow->ui->connectionLabel_2->text()==QString("all alive"))) {
+    if(! (m_mainWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive"))) {
         sx << "Critical Error: Communication to SRS could not be established! Exit testing!" << std::endl;
         if(IsDbg()){
             GetMessageHandler()(sx, "TestModule::ConnectToSRS");
@@ -1205,14 +1217,14 @@ double TestModule::ReadTemperature(int vmmnr)
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     vmm->SetRegi("monitoring","Temperature_sensor");
     m_mainWindow->m_daqs[0].SendAll();
-    usleep(1000);
+    QThread::usleep(1000);
     int adc_result = fcm->ReadADC(m_HDMI_test,0,vmmnr,2);
     double temperature = (725-adc_result)/1.85;
     return temperature;
 }
 
 QString TestModule::GetHybridID()
-{   QString id = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule->ReadI2C(m_HDMI_test,0,0);
+{   QString id = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule->ReadI2C(m_HDMI_test,0);
     if(id!="ffffffff"){
         m_mainWindow->m_daqWindow->ui->hybridIDlabel->setStyleSheet("background-color: lightgreen");
     }
@@ -1487,7 +1499,7 @@ string TestModule::TestBaselineWidth(int nruns)
             vmm[0]->SetRegi("monitoring",i);
             vmm[1]->SetRegi("monitoring",i);
             m_mainWindow->m_daqs[0].SendAll();
-            usleep(1000);
+            QThread::usleep(1000);
             for(int j=0; j< nruns; j++){
                 blines[0][i].resize(nruns);
                 blines[1][i].resize(nruns);
@@ -1510,7 +1522,7 @@ string TestModule::TestBaselineWidth(int nruns)
         advance->startDetached(program,arguments);
         advance->waitForFinished();
     }
-    usleep(100);
+    QThread::usleep(100);
     for(int i=0; i<64;i++){
         if(i%8==1 || i%8==6 || i%8==0 || i%8==7 && i!=0){
             /*vmm[0]->SetRegi("st",0,i);
@@ -1520,7 +1532,7 @@ string TestModule::TestBaselineWidth(int nruns)
             vmm[0]->SetRegi("monitoring",i);
             vmm[1]->SetRegi("monitoring",i);
             m_mainWindow->m_daqs[0].SendAll();
-            usleep(1000);
+            QThread:: usleep(1000);
             for(int j=0; j< nruns; j++){
                 blines[0][i].resize(nruns);
                 blines[1][i].resize(nruns);
@@ -1546,7 +1558,7 @@ string TestModule::TestBaselineWidth(int nruns)
     vmm[0]->SetRegi("monitoring",0);
     vmm[1]->SetRegi("monitoring",0);
     m_mainWindow->m_daqs[0].SendAll();
-    usleep(1000);
+    QThread::usleep(1000);
     for(int j=0; j< nruns; j++){
         blines[0][0].resize(nruns);
         blines[1][0].resize(nruns);
@@ -1873,7 +1885,7 @@ std::string TestModule::TestMonitoringADC()
     vmm[0]->SetRegi("monitoring","Threshold_DAC");
     vmm[1]->SetRegi("monitoring","Threshold_DAC");
     m_mainWindow->m_daqs[0].SendAll();
-    usleep(1000);
+    QThread::usleep(1000);
 
     //Acquisition of Data
 
@@ -1966,7 +1978,7 @@ std::string TestModule::TestNeighbouring()
     vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     m_mainWindow->m_daqs[0].SendAll();
-    usleep(1000);
+    QThread::usleep(1000);
 
     int runmode = m_mainWindow->m_daqWindow->ui->comboBoxRunMode->findText("user settings");
     m_mainWindow->m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(runmode);
@@ -2158,9 +2170,9 @@ std::string TestModule::TestThrTrimmability()
     QVector<double> ranges[2];
     QVector<double> chans;
     double thresholdrange [2] = {m_mainWindow->m_daqWindow->ui->thresholdstatuslabel1->text().remove("mV").toDouble(),m_mainWindow->m_daqWindow->ui->thresholdstatuslabel2->text().remove("mV").toDouble()};
-    usleep(1000000);
+    QThread::usleep(1000000);
     cout << "Thresholdranges" <<  thresholdrange[0] << thresholdrange[1]<<endl;
-    usleep(1000000);
+    QThread::usleep(1000000);
     VMM* vmm[2];
     vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
     vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
@@ -3136,7 +3148,7 @@ void TestModule::PlotData(QVector<double> x, QVector<double> y[], QString xlabel
     plot->xAxis->rescale();
     plot->yAxis->rescale();
     plot->replot();
-    QColor colors[datalen];
+    QColor* colors = new QColor[datalen];
     if(datalen==2){
         colors[0] = Qt::blue;
         colors[1] = Qt::red;
@@ -3201,6 +3213,7 @@ void TestModule::PlotData(QVector<double> x, QVector<double> y[], QString xlabel
             m_mainWindow->m_daqWindow->ui->comboBox_selectPlotL->setCurrentIndex(m_mainWindow->m_daqWindow->ui->comboBox_selectPlotL->findText(name));
         }
     }
+    delete[] colors;
 }
 
 void TestModule::PlotHistogram(QVector<double> y[2], double xlow, double xhigh,int nbins, QString xlabel, QString ylabel, QString name, QString graphlabel){
@@ -3292,7 +3305,7 @@ void TestModule::PlotHistogram(QVector<double> y[2], double xlow, double xhigh,i
 void TestModule::AddFitToPlot(QVector<double> x, QVector<double> y[], QString graphlabel, int datalen)
 {
     QCustomPlot* plot = plotVector[0];
-    QColor colors[datalen];
+    QColor* colors = new QColor[datalen];
     if(datalen==2){
         colors[0] = Qt::blue;
         colors[1] = Qt::red;
@@ -3311,6 +3324,7 @@ void TestModule::AddFitToPlot(QVector<double> x, QVector<double> y[], QString gr
     }
     plot->yAxis->scaleRange(1.1);
     plot->replot(QCustomPlot::RefreshPriority(QCustomPlot::rpImmediateRefresh));
+    delete[] colors;
 }
 
 bool TestModule::DeleteLastMeasurement()
@@ -3338,7 +3352,7 @@ bool TestModule::DeleteLastMeasurement()
     query.prepare(prepare3);
     query.bindValue(0,lastmeasure);
     query.exec();
-
+    return true;
 }
 
 bool TestModule::ResetHybrid()
@@ -3390,7 +3404,7 @@ bool TestModule::ResetHybrid()
     m_mainWindow->m_daqWindow->ui->customPlotVMM1->clearPlottables();
     m_mainWindow->m_daqWindow->ui->customPlotVMM1->clearGraphs();
     m_mainWindow->m_daqWindow->ui->customPlotVMM1->plotLayout()->removeAt(1);
-
+    return true;
 }
 
 void TestModule::enableSbip(bool ena)
@@ -3413,6 +3427,7 @@ void TestModule::enableSbip(bool ena)
 bool TestModule::SetTermination()
 {
     m_terminator = true;
+    return true;
 }
 
 void TestModule::GetOptionalSettings()
@@ -3858,3 +3873,4 @@ void TestModule::handleTemperatures(bool end)
         GetMessageHandler()("Handled Temperatures","TestModule::handleTemperatures");
     }
 }
+#endif

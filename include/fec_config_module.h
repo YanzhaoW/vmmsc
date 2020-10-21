@@ -35,7 +35,7 @@ public:
 
     FECConfigModule& LoadSocket(SocketHandler& GetSocketHandler);
 
-    void SendConfig(int hdmi_index, int hybrid_index, int vmm_index);
+    bool SendConfig(int hdmi_index, int hybrid_index, int vmm_index);
     void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
     void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
     void FillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int hybrid_index, int vmm_index);
@@ -58,9 +58,11 @@ public:
     void ACQoff(bool broadcast=false);
     void SetMask();
     int ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan);
-    QString ReadI2C(int hdmi_index, int hybrid_index, int choice);
-    QString ReadGeoPos(int hdmi_index, int hybrid_index);
-    QString ReadIDChip(int hdmi_index, int hybrid_index);
+    QString ReadI2C(int hdmi_index, int choice);
+    QString ReadGeoPos(int hdmi_index);
+    QString ReadIDChip(int hdmi_index);
+    bool CheckConfigurationOfVMMs(int hdmi_index, int vmm_index);
+    QString CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes);
     void VMMLoadEmit();
     void HybridLoadEmit();
 private:

@@ -11,7 +11,9 @@ DAQ::DAQ():
     m_messageHandler(0)
 {
     //fec_act[0] = 1;
-
+    for(int n=0; n<FECS_PER_DAQ; n++) {
+        m_fecs[n].SetFECID(n+1);
+    }
     (*m_regNames)[0] ="ignore16";                (*m_reg)[0] = 0;   (*m_regVals)[0]={"0", "1", "false", "true"};
     (*m_regNames)[1] ="debug";                   (*m_reg)[1] = 0;   (*m_regVals)[1]={"0", "1", "false", "true"};
     (*m_regNames)[2] ="run_count";               (*m_reg)[2] = 20;  // lets allow 16 bit, so unsigned short is ok

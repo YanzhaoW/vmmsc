@@ -84,7 +84,7 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     // connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
     //        this, SLOT(onWriteFECStatus()));
 
-    connect(m_daqWindow->ui->openConnection_2, SIGNAL(clicked()),
+    connect(m_daqWindow->ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
             this, SLOT( onResetFEC() ));
@@ -257,8 +257,8 @@ void FECWindow::onUpdateSettings(){
             }
         }
     }
-    else if(QObject::sender() == m_daqWindow->ui->openConnection_2){
-        if(m_daqWindow->ui->connectionLabel_2->text()==QString("all alive")){
+    else if(QObject::sender() == m_daqWindow->ui->openConnection){
+        if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
             m_ui->readSystemParams->setEnabled(true);
             m_ui->fec_WarmInit->setEnabled(true);
@@ -303,7 +303,7 @@ void FECWindow::onUpdateSettings(){
             emit m_ui->trgPulser->clicked();
         }
         else{
-            m_daqWindow->SetWarning2("Select Trigger Mode","red");
+            m_daqWindow->SetWarningMessage("Select Trigger Mode","red");
             m_ui->onACQ->setChecked(false);
             return;
         }
@@ -522,7 +522,7 @@ void FECWindow::on_ip4_2_textChanged()
     if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex )) m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip4", (unsigned long)m_ui->ip4_2->text().toInt());
     else {
         m_ui->ip4_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
     }
 }
 
@@ -532,7 +532,7 @@ void FECWindow::on_ip3_2_textChanged()
     if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip3", (unsigned long)m_ui->ip3_2->text().toInt());
     else {
         m_ui->ip3_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" ));
-        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
     }
 }
 
@@ -542,7 +542,7 @@ void FECWindow::on_ip2_2_textChanged()
     if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip2", (unsigned long)m_ui->ip2_2->text().toInt());
     else {
         m_ui->ip2_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" ));
-        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
     }
 }
 
@@ -552,7 +552,7 @@ void FECWindow::on_ip1_2_textChanged()
     if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip1", (unsigned long)m_ui->ip1_2->text().toInt());
     else {
         m_ui->ip1_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" ));
-        m_daqWindow->SetWarning2("IP already exists- resetted!", "orange");
+        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
     }
 }
 

@@ -144,7 +144,7 @@ void HybridWindow::onUpdateSettings(){
         }
         else{
             m_ui->Xaxis->setCurrentIndex( GetHybrid("Xaxis") );
-            m_hdmiWindow->m_fecWindow->m_daqWindow->SetWarning2("Hybrid position occupied- resetted!", "orange");
+            m_hdmiWindow->m_fecWindow->m_daqWindow->SetWarningMessage("Hybrid position occupied- resetted!", "orange");
         }
 
 
@@ -155,7 +155,7 @@ void HybridWindow::onUpdateSettings(){
         }
         else{
             m_ui->position->setValue( GetHybrid("position") );
-            m_hdmiWindow->m_fecWindow->m_daqWindow->SetWarning2("Hybrid position occupied- resetted!", "orange");
+            m_hdmiWindow->m_fecWindow->m_daqWindow->SetWarningMessage("Hybrid position occupied- resetted!", "orange");
         }
 
     }
@@ -207,7 +207,7 @@ void HybridWindow::onUpdateSettings(){
 
 void HybridWindow::on_pbReadI2C_pressed()
 {
-  QString result = m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadI2C(m_hdmiIndex, m_hybridIndex, m_ui->cbChoiceI2C->currentIndex());
+  QString result = m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadI2C(m_hdmiIndex, m_ui->cbChoiceI2C->currentIndex());
   m_ui->lineEditResultI2C->setText(result.toUpper());
 }
 

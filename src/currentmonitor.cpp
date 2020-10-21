@@ -1,3 +1,4 @@
+#ifdef TEST_MODULE
 #include "currentmonitor.h"
 #include "message_handler.h"
 #include <QSerialPort>
@@ -108,10 +109,10 @@ void CurrentMonitor::startMonitoring()
     m_monitor->open(QIODevice::ReadWrite);
     const QByteArray msg1("VSET2:2.9\r\nVSET1:1.9\r\nISET2:0.4\r\nISET1:2.0\r\n");
     m_monitor->write(msg1);
-    m_monitor->waitForBytesWritten();
+    m_monitor->waitForBytesWritten(5);
     const QByteArray msg("OUT1\r\n");
     m_monitor->write(msg);
-    m_monitor->waitForBytesWritten();
+    m_monitor->waitForBytesWritten(5);
     timer.start(500);
     sendQuery();
 }
@@ -122,7 +123,7 @@ void CurrentMonitor::finishMonitor()
     const QByteArray msg("OUT0\r\n");
     GetMessageHandler()("Turning off the Power Supply", "CurrentMonitor::finishMonitor");
     m_monitor->write(msg);
-    m_monitor->waitForBytesWritten();
+    m_monitor->waitForBytesWritten(5);
     QThread::usleep(1000);
     m_monitor->write(msg);
     QThread::usleep(1000);
@@ -151,15 +152,15 @@ void CurrentMonitor::processFinished(int code)
 void CurrentMonitor::sendQuery(){
     const QByteArray msg("IOUT1?\r\nIOUT2?\r\n");
     m_monitor->write(msg);
-    m_monitor->waitForBytesWritten();
-//    m_monitor->waitForReadyRead();
+    m_monitor->waitForBytesWritten(5);
+//    m_monitor->waitForReadyRead(5);
 }
 
 void CurrentMonitor::forceRead(){
     const QByteArray msg("IOUT1?\r\nIOUT2?\r\n");
     m_monitor->write(msg);
-    m_monitor->waitForBytesWritten();
-    m_monitor->waitForReadyRead();
+    m_monitor->waitForBytesWritten(5);
+    m_monitor->waitForReadyRead(5);
     this->readCurrent();
 }
 
@@ -247,9 +248,10 @@ void CurrentMonitor::emergencyStop(){
     const QByteArray msg("OUT0\r\n");
     GetMessageHandler()("Emergency Shutoff, stopping tests and turning off power","CurrentMonitor::emergencyStop");
     m_monitor->write(msg);
-    m_monitor->waitForBytesWritten();
+    m_monitor->waitForBytesWritten(5);
     QThread::usleep(1000);
     m_monitor->write(msg);
-    m_monitor->waitForBytesWritten();
+    m_monitor->waitForBytesWritten(5);
     emit emergencystopped();
 }
+#endif

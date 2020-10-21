@@ -64,9 +64,15 @@ FECConfigModule& FECConfigModule::LoadSocket(SocketHandler& socket)
 
     return *this;
 }
+
 // ------------------------------------------------------------------------ //
-void FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index)
+bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index)
 {
+    bool result = true;
+
+    //reset I2C address 65 register 0
+    CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 2);
+
     stringstream sx;
     // NEED TO ADD SOCKET STATE CHECK
 
@@ -88,7 +94,7 @@ void FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     FillGlobalRegisters(globalRegisters, hdmi_index,  hybrid_index,  vmm_index);
     if(globalRegisters.size()!=3){
         GetMessageHandler()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
-        return;
+        return -1;
     }
     ///////////////////////////////////////////////////
     // Channel Registers
@@ -98,7 +104,7 @@ void FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     FillChannelRegisters(channelRegisters, hdmi_index,  hybrid_index,  vmm_index);
     if(channelRegisters.size()!=64){
         GetMessageHandler()("ERROR Channel registers do not have 64 values", "FEC_config_module::SendConfig", true);
-        return;
+        return -1;
     }
     ///////////////////////////////////////////////////
     // Global SPI_2
@@ -108,7 +114,7 @@ void FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     FillGlobalRegisters2(globalRegisters2, hdmi_index,  hybrid_index,  vmm_index);
     if(globalRegisters2.size()!=3){
         GetMessageHandler()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
-        return;
+        return -1;
     }
     ///////////////////////////////////////////////////
     // Now begin to send out the word
@@ -189,12 +195,15 @@ void FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     else {
         GetMessageHandler()("Timeout while waiting for replies from VMM", "FEC_config_module::SendConfig");
         GetSocketHandler().CloseAndDisconnect("fec","Configuration::SendConfig");
-        return;
+        return -1;
     }
 
-    //send config
-    // socket().closeAndDisconnect("fec","Configuration::SendConfig");
+    //poll I2C address 65 register 0
+    result = CheckConfigurationOfVMMs(hdmi_index, vmm_index);
+    return result;
 }
+
+
 // ------------------------------------------------------------------------ //
 void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi_index, int hybrid_index, int vmm_index)
 {
@@ -2109,19 +2118,173 @@ int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, in
 }
 // ------------------------------------------------------------------------ //
 
-QString FECConfigModule::ReadI2C(int hdmi_index, int hybrid_index, int choice) {
+QString FECConfigModule::ReadI2C(int hdmi_index, int choice) {
     QString result;
     if(choice == 1) {
-        result = ReadGeoPos(hdmi_index, hybrid_index);
+        result = ReadGeoPos(hdmi_index);
     }
     else {
-        result = ReadIDChip(hdmi_index, hybrid_index);
+        result = ReadIDChip(hdmi_index);
     }
     return result;
 }
 
+
 // ------------------------------------------------------------------------ //
-QString FECConfigModule::ReadGeoPos(int hdmi_index, int hybrid_index)
+QString FECConfigModule::CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes)
+{
+    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::CommunicateWithHybridI2C");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send call to i2c port
+    int send_to_port = m_fec->GetRegVal("i2c_port");
+
+    //header
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+    QString ip = m_fec->GetIP();
+
+    QString hdmiMapString = "00000000";
+    hdmiMapString.replace(7 -  m_hdmi_i2c[hdmi_index] , 1 , QString("1") );
+    quint8 hdmiMap = (quint8)hdmiMapString.toInt(&ok,2);
+    bool readOK = true;
+    int i2c_addr = 65;
+    QString result ="-1";
+
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+
+
+    datagram.clear();
+    out.device()->seek(0); //rewind
+    GetSocketHandler().UpdateCommandCounter();
+
+    ////////////////////////////
+    // header
+    ////////////////////////////
+    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
+        << (quint16) 0 //[4,5]
+        << (quint8) hdmiMap//146 //[6] Subaddress: enable MUX channels
+        << (quint8) ((i2c_addr << 1) | rw) //[7]  I2C address, last bit: read/not write (1 = read);
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+    ////////////////////////////
+    // word
+    ////////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) bytes //[16,19] //sc_address: write two bytes
+        << (quint32) value; //[20,23] //sc_value: first byte 0x0 register, second byte 0x0 value
+
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::");
+
+
+
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+
+    if(rw == 1) {
+        QByteArray read_datagram;
+
+        while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
+
+            read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
+            GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
+            result = read_datagram.mid(23,1).toHex();
+        } // while loop
+
+    }
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::");
+        GetSocketHandler().ProcessReply("fec",ip);
+    } else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::", true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::");
+    }
+    if(readOK) {
+        if(rw == 0) {
+            result = "1";
+        }
+    }
+    return result;
+ }
+
+
+
+// ------------------------------------------------------------------------ //
+bool FECConfigModule::CheckConfigurationOfVMMs(int hdmi_index, int vmm_index)
+{
+    //different phases of check
+    //phase 0: BEFORE sending the VMM config, reset the register 0 (see send config method)
+    //phase 1: read 1 byte from register 0 (poll bits 3 and 4)
+    //phase 2: read 1 byte from register 0 (check bits 5 and 6)
+
+    //Phase 1
+    int counter = 0;
+    int bitToPoll=0;
+    int bitToCheck=0;
+    QString result="0";
+    if(vmm_index == 0) {
+        bitToPoll = 0x08;
+        bitToCheck = 0x20;
+    }
+    else {
+        bitToPoll = 0x10;
+        bitToCheck = 0x40;
+    }
+    while(counter < 10) {
+        counter++;
+        //CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes)
+        //send 1 byte of 0x00 to choose register 0
+        result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 1);
+        //If I2C is not implemented, return true to avoid pop-up message
+        if(result == "-1") {
+            return true;
+        }
+        //read 1 byte from register 0x00
+        result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 0, 1);
+
+        //If I2C is not implemented, return true to avoid pop-up message
+        if(result == "-1") {
+            return true;
+        }
+        int res = result.toUInt();
+        if((res & bitToPoll) ==  bitToPoll) {
+            counter = 0;
+            break;
+        }
+    }
+    result = "0";
+    if(counter == 0) {
+        //Phase 2
+        //send 1 byte of 0x00 to choose register 0
+        result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 1);
+        //If I2C is not implemented, return true to avoid pop-up message
+        if(result == "-1") {
+            return true;
+        }
+        //read 1 byte from register 0x00
+        result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 0, 1);
+
+        //If I2C is not implemented, return true to avoid pop-up message
+        if(result == "-1") {
+            return true;
+        }
+        int res = result.toUInt();
+        if((res & bitToCheck) ==  0x00) {
+           return true;
+        }
+    }
+    return false;
+}
+
+// ------------------------------------------------------------------------ //
+QString FECConfigModule::ReadGeoPos(int hdmi_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadGeoPos");
 
@@ -2182,7 +2345,7 @@ QString FECConfigModule::ReadGeoPos(int hdmi_index, int hybrid_index)
         GetSocketHandler().ProcessReply("fec",ip);
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::ReadI2C", true);
+                            "FEC_config_module::ReadGeoPos", true);
         GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadGeoPos");
         //        exit(1);
         return 0;
@@ -2247,7 +2410,7 @@ QString FECConfigModule::ReadGeoPos(int hdmi_index, int hybrid_index)
 
 
 
-QString FECConfigModule::ReadIDChip(int hdmi_index, int hybrid_index)
+QString FECConfigModule::ReadIDChip(int hdmi_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadIDChip");
     QString result;
@@ -2270,7 +2433,7 @@ QString FECConfigModule::ReadIDChip(int hdmi_index, int hybrid_index)
     bool readOK = true;
     int i2c_addr = 88;
     int reg = 0x80;
-    for(uint32_t n=3; n<5; n++) {
+    for(uint32_t n=3; n<=4; n++) {
 
         datagram.clear();
         QDataStream out (&datagram, QIODevice::WriteOnly);
@@ -2311,8 +2474,8 @@ QString FECConfigModule::ReadIDChip(int hdmi_index, int hybrid_index)
             GetSocketHandler().ProcessReply("fec",ip);
         } else {
             GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                "FEC_config_module::ReadI2C", true);
-            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadI2C");
+                                "FEC_config_module::ReadIDChip", true);
+            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadIDChip");
             //        exit(1);
             return 0;
         }

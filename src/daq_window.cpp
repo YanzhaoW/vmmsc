@@ -11,7 +11,7 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->Send->setEnabled(false);
     LoadMessageHandler(m_mainWindow->m_daqs[0].GetMessageHandler());
     connect(m_msg, SIGNAL(on_log_ready()), this, SLOT(on_readLog()));
-    ui->openConnection_2->setToolTip("Open communication");
+    ui->openConnection->setToolTip("Open communication");
 
     //    this->setStyleSheet("QMainWindow {background: 'lightgray';}");
 
@@ -31,6 +31,11 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     if(FileExists(correctedFileName.toStdString().c_str())){
         LoadConfig("default");
     }
+#ifdef TEST_MODULE
+    ui->tab_4->setEnabled(true);
+#else
+    ui->tab_4->setEnabled(false);
+#endif
 
 }
 bool DAQWindow::FileExists(const char *fileName)
@@ -58,17 +63,17 @@ void DAQWindow::on_readLog()
     GetMessageHandler().ClearBuffer();
 }
 // ------------------------------------------------------------------------- //
-void DAQWindow::SetWarning(QString warning, QString bkgcol ){
+void DAQWindow::SetConnectionMessage(QString warning, QString bkgcol ){
 
-    ui->connectionLabel_2->setWordWrap(true);
-    ui->connectionLabel_2->setText( warning );
-    ui->connectionLabel_2->setStyleSheet("background-color: "+bkgcol);
+    ui->connectionLabel->setWordWrap(true);
+    ui->connectionLabel->setText( warning );
+    ui->connectionLabel->setStyleSheet("background-color: "+bkgcol);
 }
 // ------------------------------------------------------------------------- //
-void DAQWindow::SetWarning2(QString warning, QString bkgcol ){
-    ui->connectionLabel_3->setWordWrap(true);
-    ui->connectionLabel_3->setText( warning );
-    ui->connectionLabel_3->setStyleSheet("background-color: "+bkgcol);
+void DAQWindow::SetWarningMessage(QString warning, QString bkgcol ){
+    ui->connectionWarning->setWordWrap(true);
+    ui->connectionWarning->setText( warning );
+    ui->connectionWarning->setStyleSheet("background-color: "+bkgcol);
 }
 // ------------------------------------------------------------------------- //
 
@@ -171,7 +176,6 @@ void DAQWindow::LoadConfig(QString text){
             m_mainWindow->m_hybridConfigHandler->LoadAllHybridConf(filename);
             m_mainWindow->m_fecConfigHandler->LoadAllFECConf(filename);
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-
                 if (j==0) {ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
                 if (j==1 ){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
                 if (j==2 ){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
@@ -251,7 +255,7 @@ void DAQWindow::on_Button_save_clicked()
     }
 }
 
-void DAQWindow::on_openConnection_2_clicked()
+void DAQWindow::on_openConnection_clicked()
 {
     if(!ui->onACQ->isDown())
     {
@@ -264,13 +268,13 @@ void DAQWindow::on_openConnection_2_clicked()
                         if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
                             int id =  m_mainWindow->m_daqs[i].m_fecs[j].GetIP_id();
                             m_ip_fec.insert(std::make_pair(j,id));
-                            SetWarning("all alive","green");
+                            SetConnectionMessage("all alive","green");
                             ui->Send->setEnabled(true);
                             ui->checkBoxGlobalDAQ->setEnabled(true);
                         }
                         else{
 
-                            SetWarning("ping failed", "red");
+                            SetConnectionMessage("ping failed", "red");
                             ui->Send->setEnabled(false);
                             ui->checkBoxGlobalDAQ->setChecked(false);
                             ui->checkBoxGlobalDAQ->setEnabled(false);
@@ -303,7 +307,7 @@ int DAQWindow::GetFecIP(int id)
 
 void DAQWindow::on_reset_warnings_clicked()
 {
-    SetWarning2("","light");
+    SetWarningMessage("","light");
 }
 
 void DAQWindow::on_Send_clicked()
@@ -371,7 +375,7 @@ void DAQWindow::on_onACQ_clicked()
         emit ui->trgPulser->clicked();
     }
     else{
-        SetWarning2("Select Trigger Mode","red");
+        SetWarningMessage("Select Trigger Mode","red");
         ui->onACQ->setChecked(false);
         return;
     }
@@ -450,7 +454,7 @@ void DAQWindow::on_selectDir_clicked()
 
 void DAQWindow::on_pushButtonTakeData_pressed()
 {
-    if(ui->connectionLabel_2->text()==QString("all alive")){
+    if(ui->connectionLabel->text()==QString("all alive")){
         if(!ui->pushButtonTakeData->isChecked()){
             ui->pushButtonTakeData->setCheckable(true);
             m_mainWindow->m_calib->StartCalibration();
@@ -528,6 +532,7 @@ void DAQWindow::on_pushButtonAbort_pressed()
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 }
 
+#ifdef TEST_MODULE
 
 void DAQWindow::on_pushButtonStartTest_pressed()
 {
@@ -649,3 +654,5 @@ void DAQWindow::on_pushButtonNewHybrid_clicked()
 {
     m_mainWindow->m_test->ResetHybrid();
 }
+
+#endif
