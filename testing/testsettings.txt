@@ -27,4 +27,4 @@ DatabaseName    testdb
 DatabasePort    5432
 DatabaseUser    fjaekel
 DatabasePassword    1234
-DatabaseFileFolder ../VMM-test-result-database
+DatabaseFileFolder ./../testing/VMM-test-result-database
