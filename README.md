@@ -82,6 +82,14 @@ Detailed instructions on how to download, setup the installation, and install Qt
 [Qt installation slides](https://twiki.cern.ch/twiki/pub/Atlas/NSWVmmDaqSoftware/qt_installation_PDF.pdf). Please
 use these instructions to setup Qt for use with **VMM Software**.
 
+## Test module
+
+The test module has been written by Finn Jaekel (<s6fijaek@uni-bonn.de>). 
+The module writes the test results to a database, and the results can be viewed with the additional tool
+[VMM-Database-Browser](https://github.com/FinnJaekel/VMM-Database-Browser)
+Please follow the instructions there to install the tool.
+
+
 ## Contact
 
 Questions, comments, suggestions, or help?
