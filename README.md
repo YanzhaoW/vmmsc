@@ -86,7 +86,7 @@ use these instructions to setup Qt for use with **VMM Software**.
 
 The test module has been written by Finn Jaekel (<s6fijaek@uni-bonn.de>). 
 The module writes the test results to a database, and the results can be viewed with the additional tool
-[VMM-Database-Browser](https://github.com/FinnJaekel/VMM-Database-Browser)
+[VMM-Database-Browser](https://github.com/FinnJaekel/VMM-Database-Browser).
 Please follow the instructions there to install the tool.
 
 
