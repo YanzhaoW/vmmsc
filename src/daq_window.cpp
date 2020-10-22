@@ -31,11 +31,6 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     if(FileExists(correctedFileName.toStdString().c_str())){
         LoadConfig("default");
     }
-#ifdef TEST_MODULE
-    ui->tab_4->setEnabled(true);
-#else
-    ui->tab_4->setEnabled(false);
-#endif
 
 }
 bool DAQWindow::FileExists(const char *fileName)

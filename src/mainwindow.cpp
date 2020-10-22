@@ -55,9 +55,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dbg = false;
     m_socketHandler ->SetDebugMode(false);
     m_calib = new CalibrationModule(this);
-#ifdef TEST_MODULE
     m_test = new TestModule(this);
-#endif
+
 
 }
 

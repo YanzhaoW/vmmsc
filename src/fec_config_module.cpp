@@ -70,8 +70,10 @@ bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
 {
     bool result = true;
 
+#ifdef CONFIG_CHECK
     //reset I2C address 65 register 0
     CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 2);
+#endif
 
     stringstream sx;
     // NEED TO ADD SOCKET STATE CHECK
@@ -198,8 +200,10 @@ bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
         return -1;
     }
 
+#ifdef CONFIG_CHECK
     //poll I2C address 65 register 0
     result = CheckConfigurationOfVMMs(hdmi_index, vmm_index);
+#endif
     return result;
 }
 
@@ -2196,7 +2200,6 @@ QString FECConfigModule::CommunicateWithHybridI2C(int hdmi_index, int rw, int re
             GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
             result = read_datagram.mid(23,1).toHex();
         } // while loop
-
     }
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::");
@@ -2242,19 +2245,21 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hdmi_index, int vmm_index)
         //CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes)
         //send 1 byte of 0x00 to choose register 0
         result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 1);
-        //If I2C is not implemented, return true to avoid pop-up message
+        //If problem with I2C, avoid pop-up message
         if(result == "-1") {
             return true;
         }
         //read 1 byte from register 0x00
         result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 0, 1);
 
-        //If I2C is not implemented, return true to avoid pop-up message
+        //If problem with I2C, avoid pop-up message
         if(result == "-1") {
             return true;
         }
-        int res = result.toUInt();
+        bool ok;
+        int res = result.toUInt(&ok, 16);
         if((res & bitToPoll) ==  bitToPoll) {
+
             counter = 0;
             break;
         }
@@ -2264,19 +2269,19 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hdmi_index, int vmm_index)
         //Phase 2
         //send 1 byte of 0x00 to choose register 0
         result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 1);
-        //If I2C is not implemented, return true to avoid pop-up message
         if(result == "-1") {
             return true;
         }
         //read 1 byte from register 0x00
         result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 0, 1);
 
-        //If I2C is not implemented, return true to avoid pop-up message
         if(result == "-1") {
             return true;
         }
-        int res = result.toUInt();
+        bool ok;
+        int res = result.toUInt(&ok, 16);
         if((res & bitToCheck) ==  0x00) {
+
            return true;
         }
     }

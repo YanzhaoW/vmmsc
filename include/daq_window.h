@@ -21,9 +21,7 @@ class DAQWindow : public QMainWindow
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;
-    #ifdef TEST_MODULE
     friend class TestModule;
-    #endif
 
 public:
     explicit DAQWindow(MainWindow *top, QWidget *parent = 0);

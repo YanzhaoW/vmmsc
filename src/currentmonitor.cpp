@@ -1,4 +1,3 @@
-#ifdef TEST_MODULE
 #include "currentmonitor.h"
 #include "message_handler.h"
 #include <QSerialPort>
@@ -254,4 +253,4 @@ void CurrentMonitor::emergencyStop(){
     m_monitor->waitForBytesWritten(5);
     emit emergencystopped();
 }
-#endif
+

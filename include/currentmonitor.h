@@ -1,5 +1,3 @@
-#ifdef TEST_MODULE
-
 #ifndef CURRENTMONITOR_H
 #define CURRENTMONITOR_H
 
@@ -62,5 +60,3 @@ public slots:
 };
 
 #endif // CURRENTMONITOR_H
-
-#endif

@@ -1,4 +1,3 @@
-#ifdef TEST_MODULE
 #include "test_module.h"
 #include "currentmonitor.h"
 #include <set>
@@ -3873,4 +3872,4 @@ void TestModule::handleTemperatures(bool end)
         GetMessageHandler()("Handled Temperatures","TestModule::handleTemperatures");
     }
 }
-#endif
+
