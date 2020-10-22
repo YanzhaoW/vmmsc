@@ -78,7 +78,7 @@ private slots:
     void on_pushButtonSavePDF_pressed();
 
     void on_pushButtonAbort_pressed();
-#ifdef TEST_MODULE
+
     void on_pushButtonStartTest_pressed();
 
     void on_pushButtonClearTestLog_pressed();
@@ -96,7 +96,7 @@ private slots:
     void on_pushButtonDeleteLast_clicked();
 
     void on_pushButtonNewHybrid_clicked();
-#endif
+
 
 public slots:
     // select the output directory

@@ -527,8 +527,6 @@ void DAQWindow::on_pushButtonAbort_pressed()
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 }
 
-#ifdef TEST_MODULE
-
 void DAQWindow::on_pushButtonStartTest_pressed()
 {
     m_mainWindow->m_test->StartTest();
@@ -650,4 +648,3 @@ void DAQWindow::on_pushButtonNewHybrid_clicked()
     m_mainWindow->m_test->ResetHybrid();
 }
 
-#endif

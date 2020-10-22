@@ -52,12 +52,9 @@ TestModule::TestModule(MainWindow *top, QObject *parent) :
         plot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
         plot->replot();
     }
-    try {
-        m_db = QSqlDatabase::addDatabase("QPSQL");
-        readSettingFile();
-    } catch (...) {
-        std::cout << "Error setting up database!" << std::endl;
-    }
+
+    m_db = QSqlDatabase::addDatabase("QPSQL");
+    readSettingFile();
 }
 
 void TestModule::LoadCalibrationModule(CalibrationModule& calibmod){
