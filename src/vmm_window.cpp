@@ -17,8 +17,10 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     //    ui->stackedWidgetPage1->setStyleSheet("QTabBar::tab { height: 18px; width: 100px; }");
     //    ui->stackedWidgetPage1->setTabText(0,"Channel Registers");
 
-    channelGridLayout = new QGridLayout(this);
     dummy = new QWidget(this);
+
+    channelGridLayout = new QGridLayout(this);
+
     CreateChannelsFields();
     SetToolTips();
     LoadSettings();
@@ -254,7 +256,6 @@ void VMMWindow::LoadSettings()
     int gain = GetVMM("gain");
     m_ui->sg->setCurrentIndex(gain);
     if(!GetVMM("scmx")){
-        //     std::cout<<"Settings Monitoring: "<<VMM_Get("monitoring")-63<<std::endl;
         m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")-1);
     }
     else m_ui->sm5_sm0->setCurrentIndex(GetVMM("monitoring")+4);
@@ -330,7 +331,6 @@ void VMMWindow::LoadSettings()
     m_ui->slvstki->setChecked(GetVMM("slvstki"));
     m_ui->slvsena->setChecked(GetVMM("slvsena"));
     m_ui->slvs6b->setChecked(GetVMM("slvs6b"));
-
 }
 // ------------------------------------------------------------------------- //
 void VMMWindow::onReloadSettings(){
@@ -552,7 +552,6 @@ void VMMWindow::onUpdateSettings()
     else if(QObject::sender() == m_ui->ApplyAll){
         m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex);
     }
-
 }
 
 // ------------------------------------------------------------------------- //
@@ -579,13 +578,11 @@ void VMMWindow::CreateChannelsFields()
     //    channelGridLayout->setContentsMargins(margin*0.75, margin, margin*2*10, margin);
     channelGridLayout->setHorizontalSpacing(1);
     channelGridLayout->setVerticalSpacing(1);
-
     //    ui->gridLayout_channels->setContentsMargins(margin*0.75, margin, margin*4.4*5, margin);
     m_ui->gridLayout_channels->setHorizontalSpacing(1);
     m_ui->gridLayout_channels->setVerticalSpacing(1);
     m_ui->gridLayout_channels->setGeometry(QRect(700,10,420, 12));
     //    ui->gridLayout_channels->setSpacing(1);
-
     QString initialValueRadio = "";
     QString counter;
 
@@ -705,8 +702,6 @@ void VMMWindow::CreateChannelsFields()
     m_ui->gridLayout_channels->addWidget(SZ08bLabel,  1, col, Qt::AlignCenter); col++;
     m_ui->gridLayout_channels->addWidget(SZ06bLabel,  1, col, Qt::AlignCenter);
 
-
-
     for (int i = 0; i<64; i++){
         //VMMChannel[i] = new QLineEdit(counter.setNum(i+1),m_ui->stackedWidgetPage1);
         VMMChannel[i] = new QLineEdit(counter.setNum(i),m_ui->stackedWidgetPage1);
@@ -824,8 +819,10 @@ void VMMWindow::CreateChannelsFields()
     channelGridLayout->setSpacing(1);
     channelGridLayout->setGeometry(QRect(700,12,400,2000));
     dummy->setLayout(channelGridLayout);
+
     //ui->scrollArea->setLayout(channelGridLayout);
     m_ui->scrollArea->setWidget(dummy);
+
     m_ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
     //ui->tab_3->setGeometry(QRect(620,12,50,50));
@@ -1168,7 +1165,6 @@ void VMMWindow::on_readADC_clicked()
     }
     QDateTime current = QDateTime::currentDateTime();
     QString str =  current.toString(Qt::TextDate) ;
-    std::cout << str.toStdString() << "," << temperature << std::endl;
 }
 
 

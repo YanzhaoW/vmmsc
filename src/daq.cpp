@@ -10,10 +10,6 @@ DAQ::DAQ():
     m_chr ( new char[1000] ), //need for returning const char * in GetReg functions
     m_messageHandler(0)
 {
-    //fec_act[0] = 1;
-    for(int n=0; n<FECS_PER_DAQ; n++) {
-        m_fecs[n].SetFECID(n+1);
-    }
     (*m_regNames)[0] ="ignore16";                (*m_reg)[0] = 0;   (*m_regVals)[0]={"0", "1", "false", "true"};
     (*m_regNames)[1] ="debug";                   (*m_reg)[1] = 0;   (*m_regVals)[1]={"0", "1", "false", "true"};
     (*m_regNames)[2] ="run_count";               (*m_reg)[2] = 20;  // lets allow 16 bit, so unsigned short is ok
@@ -34,7 +30,6 @@ DAQ::DAQ():
 
 }
 
-
 void DAQ::SendAll(){
 
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
@@ -44,7 +39,7 @@ void DAQ::SendAll(){
     }
 }
 
-bool DAQ::CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index){
+bool DAQ::CheckHybridPos(unsigned short axis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index){
     bool check = true;
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){
@@ -52,9 +47,9 @@ bool DAQ::CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec
                 if( m_fecs[j].GetHDMI(k) ){
                     for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
                         if (m_fecs[j].m_hdmis[k].GetHybrid(l) && !(fec_index==j && hdmi_index==k && hybrid_index==l) ){
-                            bool checkX   = m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("Xaxis") == Xaxis;
+                            bool checkAxis   = m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("axis") == axis;
                             bool checkPos = m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") == position;
-                            if(checkX && checkPos){
+                            if(checkAxis && checkPos){
                                 return false;
                             }
                             else check = true;
@@ -68,16 +63,39 @@ bool DAQ::CheckHybridPos(unsigned short Xaxis,  unsigned short position, int fec
     return check;
 }
 
-bool DAQ::CheckIP(QString ip, int fec_index){
-    bool check = true;
-    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-        if ( GetFEC(j) && j!=fec_index){
-            bool checkip = m_fecs[j].GetIP()==ip;
-            if(checkip) return false;
-            else check = true;
+int DAQ::CheckIP_FEC(long ip, int fec_index){
+    long lastByte = ip & 0x000000FF;
+     for (unsigned short n=0; n < FECS_PER_DAQ; n++){
+        if ( GetFEC(n)){
+            if(fec_index == -1) {
+                if(m_fecs[n].GetIP_FEC()==ip) {
+                    return n;
+                }
+            }
+            else {
+                if(n != fec_index) {
+                    long lastByteTest = m_fecs[n].GetIP_FEC() & 0x000000FF;
+                    if(lastByteTest==lastByte) {
+                        return n;
+                    }
+                }
+            }
         }
     }
-    return check;
+    return -1;
+}
+
+int DAQ::CheckIP_DAQ(long ip){
+     int cnt = 0;
+     for (unsigned short n=0; n < FECS_PER_DAQ; n++){
+        if ( GetFEC(n)){
+            cnt++;
+            if(m_fecs[n].GetIP_DAQ()==ip) {
+                return n;
+            }
+        }
+    }
+    return -1;
 }
 
 

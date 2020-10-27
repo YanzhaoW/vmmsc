@@ -48,8 +48,7 @@ public:
     const char *GetRegName(unsigned short regnum);
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
-    QString GetIP();
-    int GetIP_id();
+
     void SendAll();
     quint16 GetChMap();
 
@@ -57,8 +56,14 @@ public:
     QString GetFirmwareVersion();
 
     FECConfigModule *m_fecConfigModule;
-    void SetFECID(unsigned int id);
-    unsigned int GetFECID();
+
+    long GetID();
+    QString GetIP();
+    long GetIP_FEC();
+    void SetIP_FEC(long ip);
+    long GetIP_DAQ();
+    void SetIP_DAQ(long ip);
+
 private:
     bool Set(unsigned short reg, unsigned long val);
     bool CheckAllowedVal(unsigned short reg, const char *val);
@@ -79,7 +84,5 @@ private:
     bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
 
     QString m_firmwareVersion;
-    unsigned int m_fecID;
-
 };
 #endif // FEC_H

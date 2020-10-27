@@ -15,8 +15,8 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
 
     //    this->setStyleSheet("QMainWindow {background: 'lightgray';}");
 
-   //connect(ui->selectDir, SIGNAL(clicked()),
-   //        this, SLOT(on_selectDir_clicked()));
+    //connect(ui->selectDir, SIGNAL(clicked()),
+    //        this, SLOT(on_selectDir_clicked()));
     ui->selectDir->setToolTip("Opens file browser to select config file");
     ui->Button_load->setToolTip("Loading config file");
     ui->Button_save->setToolTip("Saving settings into config file");
@@ -131,14 +131,13 @@ void DAQWindow::fecBoxLogic(bool checked, unsigned short fec){
 
     QList<QCheckBox*> a = ui->Fec_group_box->findChildren<QCheckBox*>();
     std::sort(a.begin(), a.end(),
-          [](const QCheckBox* x, const QCheckBox* y) -> bool { return x->text() <  y->text();
+              [](const QCheckBox* x, const QCheckBox* y) -> bool { return x->text() <  y->text();
     });
 
     unsigned short ActiveBefore = 0;
     for (unsigned short i = 0; i < a.size(); i++){
         if(i<fec && a.at(i)->isChecked()) ActiveBefore++;
     }
-
     if (checked){
         ui->tabWidget->insertTab(ActiveBefore, new FECWindow(this,fec), QString(" FEC %0").arg(fec+1));
         ui->tabWidget->setCurrentIndex(ActiveBefore);
@@ -148,6 +147,7 @@ void DAQWindow::fecBoxLogic(bool checked, unsigned short fec){
         ui->tabWidget->removeTab(ActiveBefore);
         m_mainWindow->m_daqs[0].SetFEC(fec,false);
     }
+
 }
 
 
@@ -181,7 +181,6 @@ void DAQWindow::LoadConfig(QString text){
                 if (j==7 ){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
             }
             m_mainWindow->m_daqConfigHandler->LoadDAQConf(fname.c_str());
-            std::cout << "loading file " << fname << std::endl;
             for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
                 if (m_mainWindow->m_daq_act[i]){
                     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
@@ -194,13 +193,13 @@ void DAQWindow::LoadConfig(QString text){
                             if (j==5 && !ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(true);on_Box_fec6_clicked();}
                             if (j==6 && !ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(true);on_Box_fec7_clicked();}
                             if (j==7 && !ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(true);on_Box_fec8_clicked();}
-                            for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+                             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
                                 if(m_mainWindow->m_daqs[i].m_fecs[j].GetHDMI(k)){
                                     for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
                                         if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].GetHybrid(l)){
                                             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                                                 if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)){
-                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo()<< ", " <<m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosX() << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
+                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position")<< ", " <<m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("axis") << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
                                                 }
                                             }
                                         }
@@ -254,15 +253,57 @@ void DAQWindow::on_openConnection_clicked()
 {
     if(!ui->onACQ->isDown())
     {
-        m_ip_fec.clear();
+        SetConnectionMessage("ping failed", "red");
+        ui->Send->setEnabled(false);
+        ui->checkBoxGlobalDAQ->setChecked(false);
+        ui->checkBoxGlobalDAQ->setEnabled(false);
+        ui->trgPulser->setEnabled(false);
+        ui->trgExternal->setEnabled(false);
+        ui->onACQ->setEnabled(false);
+        ui->offACQ->setEnabled(false);
+        for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
+            if (m_mainWindow->m_daq_act[i]){
+                for (unsigned short j=FECS_PER_DAQ-1; j >0; j--){
+                    if (m_mainWindow->m_daqs[i].GetFEC(j)){
+                        QHostAddress ipAddress;
+                        ipAddress.setAddress(m_mainWindow->m_daqs[i].m_fecs[j].GetReg("ip_fec"));
+                        long theIP = ipAddress.toIPv4Address();
+                        int res = m_mainWindow->m_daqs[i].CheckIP_FEC(theIP, j);
+                        if(res > -1) {
+                            int ret = QMessageBox::warning(this, tr("FEC IPv4 address"),
+                                                           "The last octet of the IP address is the FEC ID, and has to be hence unique.\nLast octet of FEC "
+                                                           + QString::number(j+1) + " IP address already in use in FEC " + QString::number(res+1) + "\n\n"
+                                                           +"To change the IP address of a FEC in case you use multiple FECs, connect the FECs one by one and change the IP.\n"
+                                                           +"The default IP address for FECs is 10.0.0.2.\n",
+                                                           QMessageBox::Ok);
+                            return;
+                        }
+                        res = m_mainWindow->m_daqs[0].CheckIP_DAQ(theIP);
+                        if(res > -1) {
+                            int ret = QMessageBox::warning(this, tr("FEC IPv4 address"),
+                                                           "FEC " + QString::number(j+1) + " IP address already used as DAQ IP in FEC " + QString::number(res+1),
+                                                           QMessageBox::Ok);
+                            return;
+                        }
+                        ipAddress.setAddress(m_mainWindow->m_daqs[i].m_fecs[j].GetReg("ip_daq"));
+                        theIP = ipAddress.toIPv4Address();
+                        res = m_mainWindow->m_daqs[0].CheckIP_DAQ(theIP);
+                        if(res == -1) {
+                            int ret = QMessageBox::warning(this, tr("DAQ IPv4 address"),
+                                                           "All FECs have to use the same DAQ IP address (IP of the computer where the slow control runs)!",
+                                                           QMessageBox::Ok);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
         for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
             if (m_mainWindow->m_daq_act[i]){
                 for (unsigned short j=0; j < FECS_PER_DAQ; j++){
                     if (m_mainWindow->m_daqs[i].GetFEC(j)){
 
                         if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
-                            int id =  m_mainWindow->m_daqs[i].m_fecs[j].GetIP_id();
-                            m_ip_fec.insert(std::make_pair(j,id));
                             SetConnectionMessage("all alive","green");
                             ui->Send->setEnabled(true);
                             ui->checkBoxGlobalDAQ->setEnabled(true);
@@ -279,25 +320,12 @@ void DAQWindow::on_openConnection_clicked()
                             ui->offACQ->setEnabled(false);
                             return;
                         }
-
                     }
                 }
             }
         }
     }
 }
-
-
-int DAQWindow::GetFecIP(int id)
-{
-    auto search = m_ip_fec.find(id);
-    if(search != m_ip_fec.end())
-    {
-        return m_ip_fec[id];
-    }
-    return -1;
-}
-
 
 
 void DAQWindow::on_reset_warnings_clicked()

@@ -96,15 +96,23 @@ bool FECConfigHandler::LoadFECConfig(std::string fname){ //load the FEC configur
     std::ifstream f; f.open(fname,std::ifstream::in);
     if(!f.is_open()) {std::cout<< "file "<<fname<<" not found"<<std::endl;return false;}
     while (!f.eof() ){
-        std::string s, val;
+        std::string s, val, s2;
         const char *a, *b;
         f >> s >> val;
         if (s == empty && val == empty) break; // for empty line at end of file
         else if (s == "daq") {daq = atoi(val.c_str());}
         else if (s == "fec") {fec = atoi(val.c_str());}
         else {
-            a = s.c_str(); b = val.c_str();
+            a = s.c_str();
+            b = val.c_str();
+            if(a == tr("ip_fec") || a == tr("ip_daq")) {
+                QHostAddress ip;
+                ip.setAddress(b);
+                s2 = std::to_string(ip.toIPv4Address());
+                b = s2.c_str();  //use char const* as target type
+            }
             if (!m_mainWindow->m_daqs[daq].m_fecs[fec].SetReg(a,b)) return false;
+
         }
         if( (f.fail()) ) {return false;}
     }
@@ -119,8 +127,17 @@ bool FECConfigHandler::WriteFECConfig(std::string fname, unsigned short daq, uns
     f << "fec " << fec << std::endl;
     f << "\n";
     for(unsigned short j=0;j<m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegSize() ;j++){
-        f << m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegName(j) << " " << m_mainWindow->m_daqs[daq].m_fecs[fec].GetReg(j) << std::endl;
-        if(f.fail()) {return false;}
+        if(m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegName(j) != tr("not_used")) {
+            if(m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegName(j) ==  tr("ip_fec") || m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegName(j) ==  tr("ip_daq")) {
+                QHostAddress ip;
+                ip.setAddress(m_mainWindow->m_daqs[daq].m_fecs[fec].GetReg(j));
+                f << m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegName(j) << " " << ip.toString().toStdString() << std::endl;
+            }
+            else {
+                f << m_mainWindow->m_daqs[daq].m_fecs[fec].GetRegName(j) << " " << m_mainWindow->m_daqs[daq].m_fecs[fec].GetReg(j) << std::endl;
+            }
+            if(f.fail()) {return false;}
+        }
     }
 
     f.close();

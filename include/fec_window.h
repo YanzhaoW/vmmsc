@@ -33,10 +33,6 @@ private slots:
     void on_Box_hdmi6_clicked();
     void on_Box_hdmi7_clicked();
     void on_Box_hdmi8_clicked();
-    void on_ip4_2_textChanged();
-    void on_ip3_2_textChanged();
-    void on_ip2_2_textChanged();
-    void on_ip1_2_textChanged();
     void on_clearDebugScreen_clicked();
 
     void onUpdateSettings();
@@ -47,18 +43,10 @@ private slots:
     void onACQHandler();
 
     void on_readSystemParams_pressed();
+
     void on_pushButtonFECIP_pressed();
 
-    void on_lineEdit_triggerOffset_editingFinished();
-
-    void on_lineEdit_triggerWindow_editingFinished();
-
-    void on_checkBox_TriggeredMode_clicked();
-
-
     void on_pushButtonDAQIP_pressed();
-
-    void on_lineEdit_triggerPulseDelay_editingFinished();
 
 private:
     DAQWindow *m_daqWindow;
@@ -71,7 +59,7 @@ private:
     void SetToolTips();
     bool SetFec(const char *feature, unsigned long val);
     unsigned long GetFec(const char *feature);
-    unsigned int BC_period;
+
     unsigned int internalClockPeriod;
     std::string m_sendstate = "";
 

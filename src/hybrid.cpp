@@ -5,15 +5,13 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
     LoadDefault();
     m_vmmActs[0] = 1;
     m_vmmActs[1] = 1;
-    m_posX = true;
-    m_posNo = -1;
     m_art = 0;
 
 
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"Xaxis",0}, {"position", 65535}, {"CKBC",3}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",3}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
     SetReg("CKBC", (std::string)"80");
     SetReg("CKBC_duty", (std::string)"50 % high");
     SetReg("CKDT", (std::string)"80");
@@ -37,8 +35,9 @@ bool Hybrid::GetART(){
     return m_art;
 }
 
-void Hybrid::SetPosX(bool IsX){
-    m_posX = IsX;
+/*
+void Hybrid::SetAxis(int axis){
+    m_axis = axis;
 }
 
 bool Hybrid::SetPosNo(unsigned short PosNr){
@@ -46,14 +45,14 @@ bool Hybrid::SetPosNo(unsigned short PosNr){
     else {m_posNo=PosNr;return true;}
 }
 
-bool Hybrid::GetPosX(){
-    return m_posX;
+bool Hybrid::GetAxis(){
+    return m_axis;
 }
 
 unsigned short Hybrid::GetPosNo(){
     return m_posNo;
 }
-
+*/
 
 bool Hybrid::SetReg(std::string feature, std::string val){
     if (SetRegister(feature, val)) return true;
@@ -78,13 +77,17 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
     typedef std::pair<std::string, unsigned short> BiPair;
     if(m_hybrid.find(feature)==m_hybrid.end()) return false;
     else{
-        if(feature=="Xaxis"){
-            if(value == "0" || value == "false"){
+        if(feature=="axis"){
+            if(value == "0"){
                 m_hybrid[feature] = 0;
                 return true;
             }
-            else if(value == "1" || value == "true"){
+            else if(value == "1"){
                 m_hybrid[feature] = 1;
+                return true;
+            }
+            else if(value == "2"){
+                m_hybrid[feature] = 2;
                 return true;
             }
            else return false;

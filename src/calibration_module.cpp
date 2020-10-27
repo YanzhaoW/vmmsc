@@ -282,7 +282,7 @@ void CalibrationModule::FitOfflineCalibrationData()
         meanOffset = meanOffset/cnt;
         for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
-            int fecId = m_mainWindow->m_daqs[0].m_fecs[fec].GetIP_id();
+            int fecId = m_fecPosID[fec];
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
             QJsonObject calibrationObject;
@@ -728,9 +728,11 @@ void CalibrationModule::setPlotChoice(){
 // ------------------------------------------------------------------------ //
 void CalibrationModule::GetActiveVMMs(){
     m_vmmActs.clear();
+    m_fecPosID.clear();
 
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
+            m_fecPosID[fec] = m_mainWindow->m_daqs[0].m_fecs[fec].GetID();
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 if( m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) ){
                     for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
@@ -749,6 +751,7 @@ void CalibrationModule::GetActiveVMMs(){
             }
         }
     }
+
     setPlotChoice();
 }
 
@@ -1370,13 +1373,13 @@ void CalibrationModule::SaveCorrections(){
         int lastFEC = -1;
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
-            int fecId = m_mainWindow->m_daqs[0].m_fecs[fec].GetIP_id();
+            int fecId = m_fecPosID[fec];
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
-            if(lastFEC != fecId) {
+            if(lastFEC != fec+1) {
                 name += "_FEC" + QString::number(fecId);
             }
-            lastFEC = fecId;
+            lastFEC = fec+1;
             name += "_VMM" + QString::number(hdmi*2+chip);
         }
         QString theName = CreateFileName(name);
@@ -1387,7 +1390,7 @@ void CalibrationModule::SaveCorrections(){
         QJsonArray calibrationArray;
         for(int vmm = 0; vmm <static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
-            int fecId = m_mainWindow->m_daqs[0].m_fecs[fec].GetIP_id();
+            int fecId = m_fecPosID[fec];
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
 
@@ -1428,7 +1431,7 @@ void CalibrationModule::SaveCorrections(){
                             }
                         }
                     }
-                    if(theVmmId == hdmi*2+chip &&  fecId == theFECId) {
+                    if(theVmmId == hdmi*2+chip &&  fec+1 == theFECId) {
                         adcOffsetArray = tempOffsetArray;
                         adcSlopeArray = tempSlopeArray;
                         break;
@@ -1462,7 +1465,7 @@ void CalibrationModule::SaveCorrections(){
                             }
                         }
                     }
-                    if(theVmmId == hdmi*2+chip &&  fecId == theFECId) {
+                    if(theVmmId == hdmi*2+chip &&  fec+1 == theFECId) {
                         timeOffsetArray = tempOffsetArray;
                         timeSlopeArray = tempSlopeArray;
                         break;
@@ -1554,9 +1557,8 @@ void CalibrationModule::readEvent()
         long size = m_udpSocket->pendingDatagramSize();
         m_udpSocket->readDatagram(datagram.data(), size, &vmmip, &port);
         char *buffer=datagram.data();
-        QString strIP = vmmip.toString();
-        QString ip = strIP.mid(7,strIP.size()-7);
-        Receive(buffer, size, ip);
+        long fecid = (vmmip.toIPv4Address() & 0x000000FF);
+        Receive(buffer, size, fecid);
     } // while loop
 
     return;
@@ -1629,8 +1631,6 @@ void CalibrationModule::GetSettings()
 
 void CalibrationModule::InitializeDataStructures()
 {
-    mapIPFecId.clear();
-    mapIPFirmware.clear();
     m_x.clear();
     m_dac_x.clear();
     m_max_value_x.clear();
@@ -1792,12 +1792,12 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
 
 
 // ------------------------------------------------------------------------ //
-void CalibrationModule::Receive(const char* buffer, long size, QString ip)
+void CalibrationModule::Receive(const char* buffer, long size, int fecId)
 {
     stringstream sx;
     m_lastUdpTimeStamp = m_commonData.m_udpTimeStamp;
     m_numHitsInFrame=0;
-    m_numHitsInFrame = Receive_VMM3(buffer, size, mapIPFecId[ip]);
+    m_numHitsInFrame = Receive_VMM3(buffer, size, fecId);
 
     //std::cout << ip.toStdString() << " " << m_bitCount << " " <<  m_numHitsInFrame << std::endl;
     AccumulateData();
@@ -2001,7 +2001,7 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
         }
         return 0;
     }
-    m_commonData.m_fecId = (((m_commonData.m_dataId & 0xF0) >> 4)-1);
+    m_commonData.m_fecId = (((m_commonData.m_dataId & 0xF0) >> 4));
     m_commonData.m_udpTimeStamp = ntohl(hdr->m_udpTimeStamp);
     m_commonData.m_offsetOverflow = ntohl(hdr->m_offsetOverflow);
     auto dataLength = size - m_SRSHeaderSize_VMM3;

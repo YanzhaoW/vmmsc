@@ -73,10 +73,15 @@ bool DAQConfigHandler::LoadDAQConfig(std::string fname){ //load the DAQ configur
                             iss >> word; if(word!= "hybrid") {std::cout  << "Syntax error in file, looking for \"hybrid\" in line "<< line << std::endl;return false;}
                             iss >> val; std::string hybridnrst = val.substr(0, val.size()-1); unsigned short hybridnr = atoi(hybridnrst.c_str()); if(hybridnr != k) {std::cout  << "Syntax error in file, expecting "<< k << " instead of " << hybridnr << " in line "<< line << std::endl;return false;}
                             m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].SetHybrid(k,true);
-                            iss >> val; if(val[0]!= 'x' && val[0] != 'y') {std::cout  << "Syntax error in file, looking for \"x\" or \"y\" in line "<< line << ", got " << val << std::endl;return false;}
-                            else if (val == "x"){ m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetPosX(true);}
-                            else if (val == "y"){ m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetPosX(false);}
-                            iss >> val; std::string posnrst = val.substr(0, val.size()-1); m_mainWindow->m_daqs[0].m_fecs[i].m_hdmis[hdminr].m_hybrids[k].SetPosNo(atoi(posnrst.c_str()));
+                            iss >> val;
+                            if(val[0]!= 'x' && val[0] != 'y') {std::cout  << "Syntax error in file, looking for \"x\" or \"y\" in line "<< line << ", got " << val << std::endl;return false;}
+                            else if (val == "x"){
+                                m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetReg("axis",0);
+                            }
+                            else if (val == "y"){ m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetReg("axis",1);}
+                            else if (val == "z"){ m_mainWindow->m_daqs[0].m_fecs[fecnr].m_hdmis[hdminr].m_hybrids[hybridnr].SetReg("axis",2);}
+                            iss >> val; std::string posnrst = val.substr(0, val.size()-1);
+                            m_mainWindow->m_daqs[0].m_fecs[i].m_hdmis[hdminr].m_hybrids[k].SetReg("position",atoi(posnrst.c_str()));
                             iss >> word; if(word!= "vmms:") {std::cout  << "Syntax error in file, looking for \"vmms:\" in line "<< line << std::endl;return false;}
                             iss >> val; unsigned short vmms = atoi(val.c_str());
                             std::cout<<"No. VMMS: "<<vmms<<std::endl;
@@ -181,13 +186,17 @@ bool DAQConfigHandler::WriteDAQConfig(std::string fname){
                                             countVMMS++;
                                         }
                                     }
-                                    if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosX()){
-                                        f << "\t\t\thybrid "<< l << ": x " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
-                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << " on x axis has " << countVMMS << " active VMMS" << std::endl;
+                                    if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("axis") == 0){
+                                        f << "\t\t\thybrid "<< l << ": x " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") << ", vmms: "<< countVMMS << std::endl;
+                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") << " on x axis has " << countVMMS << " active VMMS" << std::endl;
+                                    }
+                                    else if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("axis") == 1){
+                                        f << "\t\t\thybrid "<< l << ": y " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") << ", vmms: "<< countVMMS << std::endl;
+                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") << " on y axis has " << countVMMS << " active VMMS" << std::endl;
                                     }
                                     else {
-                                        f << "\t\t\thybrid "<< l << ": y " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << ", vmms: "<< countVMMS << std::endl;
-                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetPosNo() << " on y axis has " << countVMMS << " active VMMS" << std::endl;
+                                        f << "\t\t\thybrid "<< l << ": z " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") << ", vmms: "<< countVMMS << std::endl;
+                                        std::cout << "DAQ " << i << ", FEC " << j << ", HDMI " << k << ", hybrid " << l << " at position " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position") << " on y axis has " << countVMMS << " active VMMS" << std::endl;
                                     }
                                     for (unsigned short m = 0; m < VMMS_PER_HYBRID; m++){
                                        if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)) f << "\t\t\t\tvmm "<< m<< std::endl;

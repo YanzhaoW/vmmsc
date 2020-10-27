@@ -75,9 +75,6 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_ui->sL0cktest, SIGNAL(pressed()),
             this, SLOT(onUpdateSettings()));
 
-    connect(m_ui->box_globalCKBC, SIGNAL(currentIndexChanged(int)),
-                                    this, SLOT(onUpdateSettings()));
-
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
 
@@ -139,59 +136,7 @@ void FECWindow::onACQHandler(){
 
 
 void FECWindow::onUpdateSettings(){
-
-    //    if(QObject::sender() == ui->setEvbld){
-    //        root_daq->root_main->daq[0].fec[fec_index].fec_conf_mod->testing();
-    //    }
-//    if(QObject::sender() == m_ui->evbld_mode){
-//        SetFec("evbld_mode",  m_ui->evbld_mode->currentIndex() );
-//    }
-//    else if(QObject::sender() == m_ui->evbld_infodata){
-//        SetFec("evbld_infodata",  m_ui->evbld_infodata->currentIndex() );
-//    }
-//    else if(QObject::sender() == m_ui->timeStampResCheckBox){
-//        SetFec("highres",  m_ui->timeStampResCheckBox->isChecked() );
-//    }
-    //else
-     if(QObject::sender() == m_ui->readoutCycle && m_ui->readoutCycle->isModified()){
-        QString val_trg = m_ui->readoutCycle->text();
-        bool ok;
-        int value = val_trg.toInt(&ok,16);
-
-        if(value != 4094 && value != 8190 && value != 16382 &&value !=32766){
-            m_ui->readoutCycle->blockSignals(true);
-            QMessageBox::StandardButton reply;
-            reply = QMessageBox::warning(this, "Readout cycle", "The readout cycle is normally adapted to the BC clock of the hybrids.\nThe following values are foreseen:\n\n"
-                                                                    " FFE (40 MHz) \n 1FFE (20 MHz) \n 3FFE (10 MHz) \n 7FFE (5 MHz)",  QMessageBox::Ok);
-            m_ui->readoutCycle->blockSignals(false);
-        }
-
-        /*
-            40 MHz 4096-2 = 4094
-            20 MHz 2*4096 -2 = 8190
-            10 MHz 4 * 4096 -2 = 16382
-            5 MHz 8*4096-2 = 32766
-        */
-
-        BC_period = 25;
-
-        if(value > 32000)
-        {
-            BC_period = 200;
-        }
-        else if(value > 16000)
-        {
-            BC_period = 100;
-        }
-        else if(value > 8000)
-        {
-            BC_period = 50;
-        }
-        SetFec("readout_cycle", value );
-        on_lineEdit_triggerOffset_editingFinished();
-        on_lineEdit_triggerWindow_editingFinished();
-    }
-    else if(QObject::sender() == m_ui->pulserDelay){
+     if(QObject::sender() == m_ui->pulserDelay){
         SetFec("tp_delay",  m_ui->pulserDelay->value() );
     }
     else if(QObject::sender() == m_ui->bcid_reset){
@@ -245,18 +190,7 @@ void FECWindow::onUpdateSettings(){
         SetFec("sL0cktest", !m_ui->sL0cktest->isChecked());
     }
 
-    else if(QObject::sender() == m_ui->box_globalCKBC){
-        SetFec("globalCKBC", m_ui->box_globalCKBC->currentIndex());
-        for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-            if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHDMI(k)){
-                for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                     if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].GetHybrid(l)){
-                         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].m_hybrids[l].SetReg("CKBC", m_ui->box_globalCKBC->currentIndex());
-                     }
-                }
-            }
-        }
-    }
+
     else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
@@ -335,45 +269,14 @@ void FECWindow::onSetReadoutMode(int mode){
 
 
 void FECWindow::LoadSettings(){
-    //Test only, set default value
-    m_ui->lineEdit_triggerOffset->setText("1024000");
-    m_ui->lineEdit_triggerWindow->setText("102350");
-    m_ui->lineEdit_triggerPulseDelay->setText("0");
-
-    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-
-    while( !m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ) ){
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg( "ip4",(unsigned long) m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetRegVal( "ip4" )+1 );
-        ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-    }
-
-    m_ui->ip1_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" ) );
-    m_ui->ip2_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" ) );
-    m_ui->ip3_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" ) );
-    m_ui->ip4_2->setText( m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ) );
+    QHostAddress ipAddress;
+    ipAddress.setAddress(GetFec( "ip_fec" ));
+    m_ui->ip_fec->setText( ipAddress.toString());
+    ipAddress.setAddress(GetFec( "ip_daq" ));
+    m_ui->ip_daq->setText( ipAddress.toString());
 
     m_ui->pulserDelay->setValue( GetFec( "tp_delay" ) );
     m_ui->readoutCycle->setText( QString::number( GetFec( "readout_cycle" ), 16 ) );
-
-
-
-    unsigned int triggerPeriod = GetFec( "readout_cycle" );
-
-    BC_period = 25;
-
-    if(triggerPeriod > 32000)
-    {
-        BC_period = 200;
-    }
-    else if(triggerPeriod > 16000)
-    {
-        BC_period = 100;
-    }
-    else if(triggerPeriod > 8000)
-    {
-        BC_period = 50;
-    }
-
 
     m_ui->bcid_reset->setValue( GetFec( "bcid_reset" ) );
     m_ui->acqSync->setValue( GetFec( "acq_sync" ) );
@@ -399,23 +302,6 @@ void FECWindow::LoadSettings(){
     m_ui->sL0ena->setChecked( GetFec( "sL0ena" ) );
     m_ui->sL0cktest->setChecked( GetFec( "sL0cktest" ) );
 
-    //Trigger Mode
-    m_ui->checkBox_TriggeredMode->setChecked( GetFec("triggered_mode"));
-    if ( GetFec("triggered_mode")){
-        m_ui->box_globalCKBC->setEnabled( true);
-        m_sendstate = "globalCKBCon";
-    }
-    else {
-        m_ui->box_globalCKBC->setEnabled( false);
-        m_sendstate = "globalCKBCoff";
-    }
-    emit ChangeState_FEC();
-    m_ui->lineEdit_triggerOffset->setText( QString::number( ( (GetFec("time_offset_triggerperiod")*(4096*BC_period))+GetFec("time_offset_BCID")*BC_period ), 10 ) );
-    m_ui->lineEdit_triggerWindow->setText( QString::number( GetFec("time_window_BCID")*BC_period, 10) );
-    m_ui->lineEdit_triggerPulseDelay->setText( QString::number( GetFec("trigger_pulse_delay")*internalClockPeriod, 10) );
-    m_ui->box_globalCKBC->setCurrentIndex( GetFec("globalCKBC"));
-
-
 }
 
 void FECWindow::SetToolTips(){
@@ -433,7 +319,6 @@ unsigned long FECWindow::GetFec(const char *feature){
 
 void FECWindow::on_Box_hdmi1_clicked()
 {
-    std::cout << " Box_hdmi1 clicked" << std::endl;
     if (m_ui->Box_hdmi1->isChecked()){HDMIBoxLogic(true,0);}
     else {HDMIBoxLogic(false,0);}
 }
@@ -516,45 +401,6 @@ void FECWindow::UpdateWindow(){
     }
 }
 
-void FECWindow::on_ip4_2_textChanged()
-{
-    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_ui->ip4_2->text().toInt());
-    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex )) m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip4", (unsigned long)m_ui->ip4_2->text().toInt());
-    else {
-        m_ui->ip4_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
-    }
-}
-
-void FECWindow::on_ip3_2_textChanged()
-{
-    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_ui->ip3_2->text().toInt()).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip3", (unsigned long)m_ui->ip3_2->text().toInt());
-    else {
-        m_ui->ip3_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" ));
-        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
-    }
-}
-
-void FECWindow::on_ip2_2_textChanged()
-{
-    QString ip =  QString("%1.%2.%3.%4").arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" )).arg(m_ui->ip2_2->text().toInt()).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip2", (unsigned long)m_ui->ip2_2->text().toInt());
-    else {
-        m_ui->ip2_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" ));
-        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
-    }
-}
-
-void FECWindow::on_ip1_2_textChanged()
-{
-    QString ip =  QString("%1.%2.%3.%4").arg(m_ui->ip3_2->text().toInt()).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip2" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip3" )).arg(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip4" ));
-    if(m_daqWindow->m_mainWindow->m_daqs[0].CheckIP( ip, m_fecIndex ))m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("ip1", (unsigned long)m_ui->ip1_2->text().toInt());
-    else {
-        m_ui->ip1_2->setText(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetReg( "ip1" ));
-        m_daqWindow->SetWarningMessage("IP already exists- resetted!", "orange");
-    }
-}
 
 void FECWindow::onCheckLinkStatus(){
     QString message;
@@ -612,141 +458,90 @@ void FECWindow::on_readSystemParams_pressed()
 
 void FECWindow::on_pushButtonFECIP_pressed()
 {
-    int FECip = 0x0a000000;
+    long theIP = 0x0a000002;
     bool ok;
-    QString result = QString::number(QInputDialog::getInt(this,"Set FEC IP Adress","10.0.0.X",1,1,4,1,&ok));
+    theIP = GetFec("ip_fec");
+    QHostAddress ipAddress;
+    ipAddress.setAddress(theIP);
+    QString result = QInputDialog::getText(this, tr("FEC IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal, ipAddress.toString(), &ok);
 
     if (ok && !result.isEmpty())
     {
-        FECip = FECip + result.toInt();
-
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(FECip);
-        QThread::usleep(1000);
-        m_ui->ip4_2->setText(result);
-    }
-}
-
-
-
-void FECWindow::on_lineEdit_triggerOffset_editingFinished()
-{
-
-    long val = m_ui->lineEdit_triggerOffset->text().toInt();
-    if(val < 0)
-    {
-        val = -val;
-    }
-    if(val > 31*4096*BC_period)
-    {
-        val = 31*4096*BC_period;
-    }
-
-    long div = val/BC_period;
-    long mod = val%BC_period;
-    if(mod !=0)
-    {
-        val = abs((double)div*BC_period);
-
-    }
-    m_ui->lineEdit_triggerOffset->setText( QString::number( val, 10 ) );
-
-    long offset = val/(4096*BC_period);
-    long bcid = val%(4096*BC_period);
-    bcid = bcid/BC_period;
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("time_offset_triggerperiod",(unsigned long)offset);
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("time_offset_BCID",(unsigned long)bcid);
-
-}
-
-void FECWindow::on_lineEdit_triggerWindow_editingFinished()
-{
-    long val = m_ui->lineEdit_triggerWindow->text().toLong();
-    if(val < 0)
-    {
-        val = -val;
-    }
-    if(val > 4095*BC_period)
-    {
-        val = 4095*BC_period;
-    }
-
-    long div = val/BC_period;
-    long mod = val%BC_period;
-    if(mod !=0)
-    {
-        val = div*BC_period;
-
-    }
-    m_ui->lineEdit_triggerWindow->setText( QString::number( val, 10 ) );
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("time_window_BCID",(unsigned long)div);
-}
-
-void FECWindow::on_checkBox_TriggeredMode_clicked()
-{
-    if(m_ui->checkBox_TriggeredMode->isChecked())
-    {
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)1);
-        m_ui->box_globalCKBC->setEnabled(true);
-        SetFec("globalCKBC", m_ui->box_globalCKBC->currentIndex());
-        m_sendstate = "globalCKBCon";
-        emit ChangeState_FEC();
-        for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-            if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHDMI(k)){
-                for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                     if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].GetHybrid(l)){
-                         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[k].m_hybrids[l].SetReg("CKBC", m_ui->box_globalCKBC->currentIndex());
-                     }
-                }
-            }
+        if (!ipAddress.setAddress(result)){
+            int ret = QMessageBox::warning(this, tr("FEC IPv4 address setting"),
+                                           tr("Invalid IPv4 address!"),
+                                           QMessageBox::Ok);
         }
-    }
-    else
-    {
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("triggered_mode",(unsigned long)0);
-        m_ui->box_globalCKBC->setEnabled(false);
-        m_sendstate = "globalCKBCoff";
-        emit ChangeState_FEC();
-    }
-}
+        else {
+            theIP = ipAddress.toIPv4Address();
+            int res = m_daqWindow->m_mainWindow->m_daqs[0].CheckIP_FEC(theIP, m_fecIndex);
+            if(res > -1) {
+                int ret = QMessageBox::warning(this, tr("FEC IPv4 address setting"),
+                                               "The last octet of the IP address is the FEC ID, and has to be hence unique.\n"
+                                               "Last octet of FEC IP address already in use in FEC " + QString::number(res+1),
+                                               QMessageBox::Ok);
+                return;
+            }
+            res = m_daqWindow->m_mainWindow->m_daqs[0].CheckIP_DAQ(theIP);
+            if(res > -1) {
+                int ret = QMessageBox::warning(this, tr("FEC IPv4 address setting"),
+                                               "FEC IP address already in use as DAQ IP in FEC " + QString::number(res+1),
+                                               QMessageBox::Ok);
+                return;
+            }
+            QMessageBox::StandardButton reply;
 
-
-
-
-void FECWindow::on_pushButtonDAQIP_pressed()
-{
-    long DAQip = 0x0a000003;
-    bool ok;
-    QString result = QString::number(QInputDialog::getDouble(this,"Set DAQ IP Adress","x.x.x.x",167772163,1,0xffffffff,1,&ok));
-
-    if (ok && !result.isEmpty())
-    {
-        DAQip = result.toLong();
-        DAQip = 0x0a000003;
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(DAQip);
-        QThread::usleep(1000);
+            reply = QMessageBox::question(this, "FEC IPv4 address setting", "Do you want to also program the FEC with this IP address?", QMessageBox::Yes | QMessageBox::No );
+            if(reply == QMessageBox::Yes) {
+               m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
+            }
+            QThread::usleep(1000);
+            SetFec("ip_fec", theIP);
+            m_ui->ip_fec->setText(result);
+            QThread::usleep(1000);
+        }
      }
 }
 
 
-void FECWindow::on_lineEdit_triggerPulseDelay_editingFinished()
+void FECWindow::on_pushButtonDAQIP_pressed()
 {
-    long val = m_ui->lineEdit_triggerPulseDelay->text().toLong();
-    if(val < 0)
-    {
-        val = -val;
-    }
-    if(val > 255*internalClockPeriod)
-    {
-        val = 255*internalClockPeriod;
-    }
+    long theIP = 0x0a000003;
+    bool ok;
+    theIP = GetFec("ip_daq");
+    QHostAddress ipAddress;
+    ipAddress.setAddress(theIP);
 
-    long div = val/internalClockPeriod;
-    long mod = val%internalClockPeriod;
-    if(mod !=0)
-    {
-        val = div*internalClockPeriod;
+    QString result = QInputDialog::getText(this, tr("DAQ IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal,  ipAddress.toString(), &ok);
 
-    }
-    m_ui->lineEdit_triggerPulseDelay->setText( QString::number( val, 10 ) );
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg("trigger_pulse_delay",(unsigned long)div);
+    if (ok && !result.isEmpty())
+    {
+        if (!ipAddress.setAddress(result)){
+            int ret = QMessageBox::warning(this, tr("DAQ IPv4 address"),
+                                           tr("Invalid IPv4 address!"),
+                                           QMessageBox::Ok);
+        }
+        else {
+            theIP = ipAddress.toIPv4Address();
+            int res = m_daqWindow->m_mainWindow->m_daqs[0].CheckIP_FEC(theIP, -1);
+            if(res > -1) {
+                int ret = QMessageBox::warning(this, tr("DAQ IPv4 address"),
+                                               "DAQ IP address already in use as FEC IP in FEC " + QString::number(res+1),
+                                               QMessageBox::Ok);
+                return;
+            }
+
+            QMessageBox::StandardButton reply;
+
+            reply = QMessageBox::question(this, "DAQ IPv4 address setting", "Do you want to also program the FEC with this DAQ IP address?", QMessageBox::Yes | QMessageBox::No );
+            if(reply == QMessageBox::Yes) {
+                m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
+            }
+            QThread::usleep(1000);
+            SetFec("ip_daq", theIP);
+            m_ui->ip_daq->setText(result);
+            QThread::usleep(1000);
+        }
+     }
 }
+

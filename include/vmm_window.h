@@ -20,8 +20,8 @@ public:
 
 
     QFont Font;
-    QGridLayout *channelGridLayout;
-    QWidget* dummy;
+    QGridLayout *channelGridLayout= nullptr;
+    QWidget* dummy= nullptr;
     void CreateChannelsFields();
     void SetInitialState();
     void SetToolTips();

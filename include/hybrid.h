@@ -23,10 +23,10 @@ public:
     bool GetVMM(unsigned short vmm);
     bool GetART();
 
-    void SetPosX(bool);
-    bool SetPosNo(unsigned short);
-    bool GetPosX();
-    unsigned short GetPosNo();
+    //void SetAxis(int);
+    //bool SetPosNo(unsigned short);
+    //bool GetAxis();
+    //unsigned short GetPosNo();
 
     bool SetReg(std::string feature, std::string val);
     bool SetReg(std::string feature, int val);
@@ -35,8 +35,8 @@ private:
     std::vector<bool> m_vmmActs;//binary to store which vmms are activated
     bool m_art; // binary to store if ART is active
 
-    bool m_posX; // hybrid is reading x (true) or y (false)
-    unsigned short m_posNo; // hybrid is number ? on its axis
+    //int m_axis; // hybrid is reading on x (0) or y(1) or z(2)
+    //unsigned short m_posNo; // hybrid is number ? on its axis
     bool SetRegister(std::string feature, std::string value);
     std::map<std::string, unsigned short> m_hybrid;
 };

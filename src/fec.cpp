@@ -8,8 +8,7 @@ FEC::FEC():
     numberOfRegisters(42),
     m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
     m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
-    m_chr ( new char[1000] ), //need for returning const char * in GetReg functions
-    m_fecID(0)
+    m_chr ( new char[1000] ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
 
@@ -18,23 +17,31 @@ FEC::FEC():
     m_fecConfigModule->LoadSocket( GetSocketHandler() );
 }
 
-void FEC::SetFECID(unsigned int id) {
-    m_fecID = id;
+
+long FEC::GetID(){
+    return  (m_reg->at(26) & 0x000000FF);
 }
 
-unsigned int FEC::GetFECID() {
-    return m_fecID;
+QString FEC::GetIP() {
+    QHostAddress ip;
+    ip.setAddress(m_reg->at(26));
+    return ip.toString();
 }
 
-
-QString FEC::GetIP(){
-    QString ip;
-    ip = QString("%1.%2.%3.%4").arg(m_reg->at(26)).arg(m_reg->at(27)).arg(m_reg->at(28)).arg(m_reg->at(29));
-    return ip;
+long FEC::GetIP_FEC(){
+    return m_reg->at(26);
 }
 
-int FEC::GetIP_id(){
-    return m_reg->at(29);
+void FEC::SetIP_FEC(long ip) {
+   (*m_reg)[26] = ip;
+}
+
+long FEC::GetIP_DAQ(){
+    return m_reg->at(27);
+}
+
+void FEC::SetIP_DAQ(long ip) {
+   (*m_reg)[27] = ip;
 }
 
 void FEC::SetFirmwareVersion(QString version)
@@ -78,7 +85,7 @@ void FEC::SendAll(){
                             }
                             m_fecConfigModule->SetTriggerAcqConstants(k, m);
                             m_fecConfigModule->SetTriggeredMode(k, m);
-                         }
+                        }
                     }
                 }
             }
@@ -86,7 +93,7 @@ void FEC::SendAll(){
     }
 
     bool iserror = false;
-    QString message = "Configuration not loaded on FEC " + QString::number(m_fecID) + ":\n";
+    QString message = "Configuration not loaded on FEC " + QString::number(GetID()) + ":\n";
     for (unsigned short k=0; k < VMMS_PER_HYBRID*HDMIS_PER_FEC; k++){
         if(config_error[k] == 1) {
             iserror = true;
@@ -95,7 +102,7 @@ void FEC::SendAll(){
     }
     if(iserror) {
         QMessageBox::warning(nullptr,"Config load error..", message,
-                                        QMessageBox::Ok,QMessageBox::NoButton);
+                             QMessageBox::Ok,QMessageBox::NoButton);
 
     }
 }
@@ -135,9 +142,9 @@ void FEC::LoadDefault(){
     (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
     (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
     (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
-    (*m_regNames)[11]="evbld_mode";              (*m_reg)[11] = 0;   //{"Frame_Cnt", "Global_Frame_Cnt", "Timestamp+Frame_Cnt" }
-    (*m_regNames)[12]="evbld_infodata";          (*m_reg)[12] = 0;   //{"HINFO+Datalength", "Trigger_Cnt+Datalength", "Trigger_Cnt", "Trigger_Timestamp+Datalength", "Trigger_Timestamp", "Trigger_Cnt+Trigger_Timestamp"}
-    (*m_regNames)[13]="highres";                 (*m_reg)[13] = 0;   //{"0", "1", "false", "true"};
+    (*m_regNames)[11]="not_used";              (*m_reg)[11] = 0;
+    (*m_regNames)[12]="not_used";          (*m_reg)[12] = 0;
+    (*m_regNames)[13]="not_used";                 (*m_reg)[13] = 0;
 
     (*m_regNames)[14]="triggermode";             (*m_reg)[14] = 0;   // 0 for external and 1 for pulser
     (*m_regNames)[15]="res2";                    (*m_reg)[15] = 0;   //
@@ -152,10 +159,10 @@ void FEC::LoadDefault(){
     (*m_regNames)[23]="truncate";                 (*m_reg)[23] = 0;   //6 bit
     (*m_regNames)[24]="nskip";                    (*m_reg)[24] = 0;   //7 bit
     (*m_regNames)[25]="sL0cktest";                (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
-    (*m_regNames)[26]="ip1";                      (*m_reg)[26] = 10;   //
-    (*m_regNames)[27]="ip2";                      (*m_reg)[27] = 0;   //
-    (*m_regNames)[28]="ip3";                      (*m_reg)[28] = 0;   //
-    (*m_regNames)[29]="ip4";                      (*m_reg)[29] = 2;   //
+    (*m_regNames)[26]="ip_fec";                      (*m_reg)[26] = 0x0a000002;   //
+    (*m_regNames)[27]="ip_daq";                      (*m_reg)[27] = 0x0a000003;   //
+    (*m_regNames)[28]="not_used";                      (*m_reg)[28] = 0;   //
+    (*m_regNames)[29]="not_used";                      (*m_reg)[29] = 0;   //
 
     (*m_regNames)[30]="i2c_port";                 (*m_reg)[30] = 6604;   //32 bit
     (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
@@ -226,15 +233,6 @@ bool FEC::CheckAllowedVal(unsigned short reg, const char *val){
     else if (reg < m_reg->size()){// && reg != 4 && reg != 5  && reg != 11 && reg != 12 && reg != 13){ //others are 32 bit
         if (intValue < 4294967296)found = true;
     }
-    //if (reg == 11){ //evbld_mode
-    //    if (ConstCharStar_comp(val,"Frame_Cnt") || ConstCharStar_comp(val,"Global_Frame_Cnt") || ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) found = true;
-    //}
-    //if (reg == 12){ //evbld_info
-    //    if (ConstCharStar_comp(val,"HINFO+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt+Datalength") || ConstCharStar_comp(val,"Trigger_Cnt") || ConstCharStar_comp(val,"Trigger_Timestamp+Datalength") || ConstCharStar_comp(val,"Trigger_Timestamp") || ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp") ) found = true;
-    //}
-    //if (reg == 13){ //timeStampHighRes
-    //    if (ConstCharStar_comp(val,"0") || ConstCharStar_comp(val,"1") || ConstCharStar_comp(val,"false") || ConstCharStar_comp(val,"true") ) found = true;
-    //}
     return found;
 }
 
@@ -310,25 +308,6 @@ unsigned long FEC::FindVecEntry(unsigned short regnum, const char *val){
         else if (ConstCharStar_comp(val,"pulser")) pos = 2;
         else if (ConstCharStar_comp(val,"external")) pos = 3;
     }
-    else if (regnum == 11) {// need to compare the strings at the const char * addresses
-        if (ConstCharStar_comp(val,"Frame_Cnt")) pos = 0;
-        else if (ConstCharStar_comp(val,"Global_Frame_Cnt")) pos = 1;
-        else if (ConstCharStar_comp(val,"Timestamp+Frame_Cnt")) pos = 2;
-    }
-    else if (regnum == 12) {// need to compare the strings at the const char * addresses
-        if (ConstCharStar_comp(val,"HINFO+Datalength")) pos = 0;
-        else if (ConstCharStar_comp(val,"Trigger_Cnt+Datalength")) pos = 1;
-        else if (ConstCharStar_comp(val,"Trigger_Cnt")) pos = 2;
-        else if (ConstCharStar_comp(val,"Trigger_Timestamp+Datalength")) pos = 3;
-        else if (ConstCharStar_comp(val,"Trigger_Timestamp")) pos = 4;
-        else if (ConstCharStar_comp(val,"Trigger_Cnt+Trigger_Timestamp")) pos = 5;
-    }
-    else if (regnum == 13) {// need to compare the strings at the const char * addresses
-        if (ConstCharStar_comp(val,"0")) pos = 0;
-        else if (ConstCharStar_comp(val,"1")) pos = 1;
-        else if (ConstCharStar_comp(val,"false")) pos = 2;
-        else if (ConstCharStar_comp(val,"true")) pos = 3;
-    }
     else {
         std::stringstream strValue;
         strValue << val;
@@ -360,26 +339,6 @@ const char * FEC::GetReg(int regnum){
         std::strcpy(m_chr,str1.str().c_str());
         return m_chr;
     }
-//    else if (regnum == 11){
-//        if ((*m_reg)[11] == 0) return "Frame_Cnt";
-//        else if ((*m_reg)[11] == 1) return "Global_Frame_Cnt";
-//        else if ((*m_reg)[11] == 2) return "Timestamp+Frame_Cnt";
-//        else return "ERROR";
-//    }
-//    else if (regnum == 12){
-//        if ((*m_reg)[12] == 0) return "HINFO+Datalength";
-//        else if ((*m_reg)[12] == 1) return "Trigger_Cnt+Datalength";
-//        else if ((*m_reg)[12] == 2) return "Trigger_Cnt";
-//        else if ((*m_reg)[12] == 3) return "Trigger_Timestamp+Datalength";
-//        else if ((*m_reg)[12] == 4) return "Trigger_Timestamp";
-//        else if ((*m_reg)[12] == 5) return "Trigger_Cnt+Trigger_Timestamp";
-//        else return "ERROR";
-//    }
-//    else if (regnum == 13){// give the name of the value
-//        if ((*m_reg)[13] == 0 || (*m_reg)[13] == 2 ) return "false";
-//        else if ((*m_reg)[13] == 1 || (*m_reg)[13] == 3) return "true";
-//        else return "ERROR";
-//    }
     else return "ERROR";
 }
 
@@ -395,7 +354,6 @@ unsigned long FEC::GetRegVal(const char *reg){
     for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
         if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             return GetRegVal((int)i);
-            std::cout<<"Position: "<<i<<std::endl;
         }
     }
     return -1;

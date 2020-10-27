@@ -79,7 +79,7 @@ public slots:
     void readEvent();
     void updatePlot();
     void setPlotChoice();
-    void Receive(const char* buffer, long size, QString ip);
+    void Receive(const char* buffer, long size, int fecId);
 
 private:
 
@@ -97,8 +97,10 @@ private:
     std::chrono::high_resolution_clock::time_point m_nodata_start;
     std::chrono::high_resolution_clock::time_point m_nodata_end;
     vector<int> m_vmmActs;
-    std::map<QString, QString> mapIPFirmware;
-    std::map<QString, int> mapIPFecId;
+    std::map<int,int> m_fecPosID;
+
+    //std::map<QString, QString> mapIPFirmware;
+    //std::map<QString, int> mapIPFecId;
 
 
     bool CheckModes();
