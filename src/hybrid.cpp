@@ -11,10 +11,10 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",3}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
-    SetReg("CKBC", (std::string)"80");
+    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",2}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    SetReg("CKBC", (std::string)"40");
     SetReg("CKBC_duty", (std::string)"50 % high");
-    SetReg("CKDT", (std::string)"80");
+    SetReg("CKDT", (std::string)"90");
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){

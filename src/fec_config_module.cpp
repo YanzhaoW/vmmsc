@@ -1079,84 +1079,6 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
 }
 
 
-// ------------------------------------------------------------------------ //
-void FECConfigModule::SetTriggeredMode(int hdmi_index, int vmm_index)
-{
-    if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
-
-    bool ok;
-    QByteArray datagram;
-
-    // send T/DAQ constants to VMMAPP port
-    int send_to_port = m_fec->GetRegVal("vmmapp_port");
-
-    QString ip = m_fec->GetIP();
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); // rewind
-
-    ///////////////////////////
-    // header info
-    ///////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
-
-    QString cmd, cmdType, cmdLength, msbCounter;
-    cmd         = "AA";
-    cmdType     = "AA";
-    cmdLength   = "FFFF";
-    msbCounter  = "0x80000000";
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint16) 0 //[4,5]
-        << (quint16) chMap //[6,7]
-           //<< (quint32) config().getHDMIChannelMap() //[8,11]
-        << (quint8)  cmd.toUInt(&ok,16) //[8]
-        << (quint8)  cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
-
-    quint32 val = 0x00000000;
-    quint32 val2 = 0x00000000;
-    if(m_fec->GetRegVal("triggered_mode") == 1)
-    {
-        val = 0x80000000; // first bit=enable triggered mode
-        val += (m_fec->GetRegVal("time_offset_triggerperiod") << 24);
-        val += (m_fec->GetRegVal("time_offset_BCID") << 12);
-        val += (m_fec->GetRegVal("time_window_BCID"));
-        val2 = (m_fec->GetRegVal("trigger_pulse_delay") << 8);
-     }
-
-    ///////////////////////////
-    // trigger constants
-    ///////////////////////////
-    out << (quint32) 0 //[12,15]
-           //triggered mode
-        << (quint32) 11 //[16,19]
-        << (quint32) val //[20,23]
-        << (quint32) 15 //[24,27]
-        << (quint32) val2; //[28,31]
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::SetTriggeredMode");
-
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::SetTriggeredMode");
-        GetSocketHandler().ProcessReply("fec", ip);
-    }
-    else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::SetTriggeredMode", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
-        return;
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetTriggeredMode");
-}
-
 
 // ------------------------------------------------------------------------ //
 void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
@@ -1197,14 +1119,15 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
         << (quint32) hdmiMap //[4,7]
         << (quint32) cmd.toUInt(&ok,16); //[8,11]
 
+
     ////////////////////////////
     // command
     ////////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 7 //[24,27]
-        << (quint32) ( ckbc + (ckbc_skew*16) + (ckbc_duty*64)) //[32,35] // +192 added for VMM3 to make ckbc high very short. Implemented in firmware: highest bits "11" 18.75 ns long high, "10"/"01" 25%/75% duty cycle, "00" is 50% duty cycle. From George: ckbc must be shorter than 20 ns and longer than 12.5 ns. With this hack, the ckbc of higher than 40 MHz will not work.
+        << (quint32) ( ckbc + (ckbc_skew*16) + (ckbc_duty*64)) //[32,35]
         << (quint32) 5 //[36,39], CKDT control register
-        << (quint32) 0 + (ckdt*2); //[40,43] lowest bit: old clock selector, unused, put to 0, bits [1,2,3] CKDT selection (readout clock)
+        << (quint32) 0 + (ckdt*2); //[40,43] lowest bit: dynamic reconfiguration of clock, bits [1,2,3] CKDT selection (readout clock)
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::s6clocks");

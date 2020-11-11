@@ -209,7 +209,6 @@ void CalibrationModule::FitOfflineCalibrationData()
 
         }
         baseLine[bit] = baseLine[bit]/numVMMwithData;
-        std::cout << "Baseline " << bit << " " << baseLine[bit] << std::endl;
     }
 
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
@@ -618,7 +617,6 @@ void CalibrationModule::PlotData(){
                     }
                     if(m_channel_y[idx][i] == 0.0 && m_min_value_x[idx]  == -1.0 && i > 0) {
                         m_min_value_x[idx]  = ThresholdDAC_to_mV(m_minThreshold+static_cast<int>(i));
-                        std::cout << i << " " << idx << " " << m_min_value_x[idx]<< std::endl;
                     }
                 }
                 double width = m_min_value_x[idx] -  m_max_value_x[idx];
@@ -729,10 +727,12 @@ void CalibrationModule::setPlotChoice(){
 void CalibrationModule::GetActiveVMMs(){
     m_vmmActs.clear();
     m_fecPosID.clear();
+    m_fecIDPos.clear();
 
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
             m_fecPosID[fec] = m_mainWindow->m_daqs[0].m_fecs[fec].GetID();
+            m_fecIDPos[m_mainWindow->m_daqs[0].m_fecs[fec].GetID()] = fec;
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 if( m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) ){
                     for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
@@ -1093,7 +1093,6 @@ void CalibrationModule::AccumulateData(){
     bool continueCalibration = true;
 
     uint64_t delay_ns = m_end - m_start;
-
     //convert run value from ms to ns
     if(delay_ns >= static_cast<uint64_t>(m_mainWindow->m_daqWindow->ui->Runs->value())*1000000)
     {
@@ -1119,15 +1118,15 @@ void CalibrationModule::AccumulateData(){
                 double cnt = 0;
                 double rate = 0;
 
-                if(!m_data[m_bitCount][fec][hdmi][0][chip][ch].empty())
+                if(!m_data[0][fec][hdmi][0][chip][ch].empty())
                 {
-                    cnt = m_data[m_bitCount][fec][hdmi][0][chip][ch][0];
+                    cnt = m_data[0][fec][hdmi][0][chip][ch][0];
                     if(delay_s > 0) {
                         rate = cnt/delay_s;
                     }
                 }
                 m_channel_y[ch][static_cast<unsigned long>(m_threshold-m_minThreshold)] = rate;
-                m_data[m_bitCount][fec][hdmi][0][chip][ch].clear();
+                m_data[0][fec][hdmi][0][chip][ch].clear();
 
                 m_outFile << delay_ns  << "," << fec << "," << hdmi <<"," << chip << "," << ch << ","
                           << m_gainTable[gain] << "," << m_pulser_dac << "," << pulseHeight << ","
@@ -1704,7 +1703,6 @@ void CalibrationModule::InitializeDataStructures()
                         m_allhitdata[bit][fec][hdmi][hybrid][vmm].clear();
                         for (unsigned int ch=0; ch < 64; ch++){
                             m_data[bit][fec][hdmi][hybrid][vmm][ch].clear();
-                            //m_mean[bit][fec][hdmi][0][vmm].push_back(0);
                         }
                     }
                 }
@@ -1799,7 +1797,6 @@ void CalibrationModule::Receive(const char* buffer, long size, int fecId)
     m_numHitsInFrame=0;
     m_numHitsInFrame = Receive_VMM3(buffer, size, fecId);
 
-    //std::cout << ip.toStdString() << " " << m_bitCount << " " <<  m_numHitsInFrame << std::endl;
     AccumulateData();
 }
 
@@ -1818,6 +1815,7 @@ int CalibrationModule::GetVMM(int vmmId) {
 }
 
 int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
+    int fec =  m_fecIDPos[fecId];
     stringstream sx;
     int dataflag = (data2 >> 15) & 0x1;
     if (dataflag) {
@@ -1846,52 +1844,52 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         {
             int hdmi = vmmid/2;
             int chip = vmmid%2;
-            double tac_slope_ns = m_tac_slope[fecId][hdmi][0][chip];
-            double bc_period_ns = m_bc_period[fecId][hdmi][0];
+            double tac_slope_ns = m_tac_slope[fec][hdmi][0][chip];
+            double bc_period_ns = m_bc_period[fec][hdmi][0];
 
             double theTdc = tdc;
             double theTime =  ((bcid+1)*bc_period_ns - theTdc*tac_slope_ns/255);
 
-            if(m_srs_timestamp_start[fecId][hdmi][0][chip] > 0)
+            if(m_srs_timestamp_start[fec][hdmi][0][chip] > 0)
             {
-                uint64_t delay = m_srs_timestamp_end[fecId][hdmi][0][chip] - m_srs_timestamp_start[fecId][hdmi][0][chip];
+                uint64_t delay = m_srs_timestamp_end[fec][hdmi][0][chip] - m_srs_timestamp_start[fec][hdmi][0][chip];
                 if(delay <= static_cast<uint64_t>(m_mainWindow->m_daqWindow->ui->Runs->value())*1000000)
                 {
                     //ADC calibrations or user settings average ADC
                     if(m_modeIndex == 1 || m_modeIndex == 3  || m_modeIndex == 11)
                     {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(adc);
+                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(adc);
                     }
                     //Time calibration
                     else if(m_modeIndex == 2 )
                     {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(theTime);
+                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(theTime);
                     }
                     //TDC calibration or user settings average TDC per channel
                     else if(m_modeIndex == 4|| m_modeIndex == 12)
                     {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(tdc);
+                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(tdc);
                     }
                     //S-curve
                     else if(m_modeIndex == 5)
                     {
-                        if(m_data[m_bitCount][fecId][hdmi][0][chip][chNo].empty())
+                        if(m_data[0][fec][hdmi][0][chip][chNo].empty())
                         {
-                            m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
+                            m_data[0][fec][hdmi][0][chip][chNo].push_back(1);
                         }
                         else {
-                            m_data[m_bitCount][fecId][hdmi][0][chip][chNo][0]++;
+                            m_data[0][fec][hdmi][0][chip][chNo][0]++;
                         }
                     }
                     //User settings average bcid per channel
                     else if(m_modeIndex == 13)
                     {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(bcid);
+                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(bcid);
                     }
                     //User settings counts per channel
                     else if(m_modeIndex == 10)
                     {
-                        m_data[m_bitCount][fecId][hdmi][0][chip][chNo].push_back(1);
+                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(1);
                     }
                     QVector<double> hit;
                     hit.push_back(chNo);
@@ -1899,7 +1897,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                     hit.push_back(tdc);
                     hit.push_back(adc);
                     hit.push_back(double(overThreshold));
-                    m_allhitdata[m_bitCount][fecId][hdmi][0][chip].push_back(hit);
+                    m_allhitdata[m_bitCount][fec][hdmi][0][chip].push_back(hit);
                     m_numHits++;
                 }
             }
@@ -1913,18 +1911,18 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         uint64_t timestamp_42bit = (timestamp_upper_32bit << 10) + timestamp_lower_10bit;
         int hdmi = vmmid/2;
         int chip = vmmid%2;
-        uint64_t delay = m_srs_timestamp_end[fecId][hdmi][0][chip] - m_srs_timestamp_start[fecId][hdmi][0][chip];
+        uint64_t delay = m_srs_timestamp_end[fec][hdmi][0][chip] - m_srs_timestamp_start[fec][hdmi][0][chip];
         if(delay <= static_cast<uint64_t>(m_mainWindow->m_daqWindow->ui->Runs->value())*1000000)
         {
             //first timestamp/marker for this VMM
-            if(m_srs_timestamp_start[fecId][hdmi][0][chip] == 0)
+            if(m_srs_timestamp_start[fec][hdmi][0][chip] == 0)
             {
                 //42 bit timestamp, giving number of 40 MHz clock cycles
-                m_srs_timestamp_start[fecId][hdmi][0][chip] = timestamp_42bit*25;
+                m_srs_timestamp_start[fec][hdmi][0][chip] = timestamp_42bit*25;
                 m_start = timestamp_42bit*25;
                 m_numHits=0;
             }
-            m_srs_timestamp_end[fecId][hdmi][0][chip] = timestamp_42bit*25;
+            m_srs_timestamp_end[fec][hdmi][0][chip] = timestamp_42bit*25;
             m_end = timestamp_42bit*25;
         }
 

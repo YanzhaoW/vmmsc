@@ -98,6 +98,7 @@ private:
     std::chrono::high_resolution_clock::time_point m_nodata_end;
     vector<int> m_vmmActs;
     std::map<int,int> m_fecPosID;
+    std::map<int,int> m_fecIDPos;
 
     //std::map<QString, QString> mapIPFirmware;
     //std::map<QString, int> mapIPFecId;
