@@ -11,7 +11,6 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     internalClockPeriod = 25;
     m_ui->setupUi(this);
     UpdateWindow();
-    SetToolTips();
     LoadSettings();
     //    this->setStyleSheet("QWidget {background: 'white';}");
     m_ui->linkPB->setEnabled(false);
@@ -53,26 +52,6 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_ui->OpenWrFifo, SIGNAL(stateChanged(int)),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->Stamp_ext_trg, SIGNAL(stateChanged(int)),
-            this, SLOT(onUpdateSettings()));
-
-    //L0
-    connect(m_ui->L0BCoffset, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->L0_offset, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->L0_rollover, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->L0_window, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->L0_truncate, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->L0_nskip, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->sL0enaV, SIGNAL(pressed()),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->sL0ena, SIGNAL(pressed()),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->sL0cktest, SIGNAL(pressed()),
             this, SLOT(onUpdateSettings()));
 
     connect(m_ui->linkPB, SIGNAL(clicked()),
@@ -160,36 +139,6 @@ void FECWindow::onUpdateSettings(){
     else if(QObject::sender() == m_ui->Stamp_ext_trg){
         SetFec("ts_ext_trg",  m_ui->Stamp_ext_trg->isChecked() );
     }
-
-    //L0
-    else if(QObject::sender() == m_ui->L0BCoffset){
-        SetFec("l0offset",  m_ui->L0BCoffset->value() );
-    }
-    else if(QObject::sender() == m_ui->L0_offset){
-        SetFec("offset",  m_ui->L0_offset->value() );
-    }
-    else if(QObject::sender() == m_ui->L0_rollover){
-        SetFec("rollover",  m_ui->L0_rollover->value() );
-    }
-    else if(QObject::sender() == m_ui->L0_window){
-        SetFec("window",  m_ui->L0_window->value() );
-    }
-    else if(QObject::sender() == m_ui->L0_truncate){
-        SetFec("truncate",  m_ui->L0_truncate->value() );
-    }
-    else if(QObject::sender() == m_ui->L0_nskip){
-        SetFec("nskip",  m_ui->L0_nskip->value() );
-    }
-    else if(QObject::sender() == m_ui->sL0enaV){
-        SetFec("sL0enaV", !m_ui->sL0enaV->isChecked());
-    }
-    else if(QObject::sender() == m_ui->sL0ena){
-        SetFec("sL0ena", !m_ui->sL0ena->isChecked());
-    }
-    else if(QObject::sender() == m_ui->sL0cktest){
-        SetFec("sL0cktest", !m_ui->sL0cktest->isChecked());
-    }
-
 
     else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
@@ -287,29 +236,8 @@ void FECWindow::LoadSettings(){
 
     m_ui->Stamp_ext_trg->setChecked( GetFec( "ts_ext_trg" ) );
 
-//    m_ui->evbld_mode->setCurrentIndex( GetFec( "evbld_mode" ) );
-//    m_ui->evbld_infodata->setCurrentIndex( GetFec( "evbld_infodata" ) );
-//    m_ui->timeStampResCheckBox->setChecked( GetFec( "highres" ) );
-
-    //L0
-    m_ui->L0BCoffset->setValue( GetFec( "l0offset" ) );
-    m_ui->L0_offset->setValue( GetFec( "offset" ) );
-    m_ui->L0_rollover->setValue( GetFec( "rollover" ) );
-    m_ui->L0_window->setValue( GetFec( "window" ) );
-    m_ui->L0_truncate->setValue( GetFec( "truncate" ) );
-    m_ui->L0_nskip->setValue( GetFec( "nskip" ) );
-    m_ui->sL0enaV->setChecked( GetFec( "sL0enaV" ) );
-    m_ui->sL0ena->setChecked( GetFec( "sL0ena" ) );
-    m_ui->sL0cktest->setChecked( GetFec( "sL0cktest" ) );
-
 }
 
-void FECWindow::SetToolTips(){
-    m_ui->sL0enaV->setToolTip("disable mixed signal functions when L0 enabled");
-    m_ui->sL0ena->setToolTip("enable L0 core / reset core & gate clk if 0");
-    m_ui->sL0cktest->setToolTip("enable clocks when L0 core disabled (test)");
-
-}
 bool FECWindow::SetFec(const char *feature, unsigned long val){
     return m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg(feature,  (unsigned long) val );
 }

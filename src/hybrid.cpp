@@ -11,10 +11,10 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",3}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",1}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
-    SetReg("CKBC", (std::string)"80");
+    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",2}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",2}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    SetReg("CKBC", (std::string)"40");
     SetReg("CKBC_duty", (std::string)"50 % high");
-    SetReg("CKDT", (std::string)"80");
+    SetReg("CKDT", (std::string)"90");
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){
@@ -35,24 +35,6 @@ bool Hybrid::GetART(){
     return m_art;
 }
 
-/*
-void Hybrid::SetAxis(int axis){
-    m_axis = axis;
-}
-
-bool Hybrid::SetPosNo(unsigned short PosNr){
-    if(false) return false; //TODO: check if this number is already given to another hybrid on the same axis
-    else {m_posNo=PosNr;return true;}
-}
-
-bool Hybrid::GetAxis(){
-    return m_axis;
-}
-
-unsigned short Hybrid::GetPosNo(){
-    return m_posNo;
-}
-*/
 
 bool Hybrid::SetReg(std::string feature, std::string val){
     if (SetRegister(feature, val)) return true;
@@ -147,7 +129,7 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
 
         if(feature=="CKDT"){
             InMap m_val;
-            std::string v_val[5] = {"10", "40", "80", "160", "160 (will be 200)"};
+            std::string v_val[4] = {"22.5", "45", "90", "180"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));

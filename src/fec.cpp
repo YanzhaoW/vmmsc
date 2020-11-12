@@ -84,7 +84,6 @@ void FEC::SendAll(){
                                 config_error[k*VMMS_PER_HYBRID+m] = 1;
                             }
                             m_fecConfigModule->SetTriggerAcqConstants(k, m);
-                            m_fecConfigModule->SetTriggeredMode(k, m);
                         }
                     }
                 }
@@ -401,6 +400,6 @@ FEC::~FEC()
     m_reg = NULL;
 
     if( m_chr != NULL ){
-        delete m_chr;}
+        delete[] m_chr;}
     m_chr = NULL;
 }

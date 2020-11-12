@@ -910,27 +910,22 @@ skew</string>
             </property>
             <item>
              <property name="text">
-              <string>10 MHz</string>
+              <string>22.5 MHz</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>40 MHz</string>
+              <string>45 MHz</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>80 MHz</string>
+              <string>90 MHz</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>160 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>160 MHz (will be 200 MHz)</string>
+              <string>180 MHz</string>
              </property>
             </item>
            </widget>

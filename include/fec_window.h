@@ -56,7 +56,6 @@ private:
     void HDMIBoxLogic(bool checked, unsigned short hdmi);
     void UpdateWindow();
     void LoadSettings();
-    void SetToolTips();
     bool SetFec(const char *feature, unsigned long val);
     unsigned long GetFec(const char *feature);
 

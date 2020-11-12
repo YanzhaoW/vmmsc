@@ -358,6 +358,6 @@ DAQ::~DAQ(){
     m_regVals = NULL;
 
     if( m_chr != NULL ){
-        delete m_chr;}
+        delete[] m_chr;}
     m_chr = NULL;
 }

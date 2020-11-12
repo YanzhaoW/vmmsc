@@ -26,6 +26,7 @@ public:
     friend class CalibrationModule;
     friend class TestModule;
     FEC m_fecs[FECS_PER_DAQ];
+
     int CheckIP_DAQ(long ip);
     int CheckIP_FEC(long ip, int fec_index);
 
