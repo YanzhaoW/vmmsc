@@ -14,7 +14,6 @@
 // vmm
 #include "socket_handler.h"
 #include "message_handler.h"
-#include "commandline.h"
 #include "vmm_config_handler.h"
 #include "hybrid_config_handler.h"
 #include "daq_config_handler.h"
@@ -47,7 +46,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    Commandline *m_commandLine;
     VMMConfigHandler *m_vmmConfigHandler;
     HybridConfigHandler *m_hybridConfigHandler;
     DAQConfigHandler *m_daqConfigHandler;

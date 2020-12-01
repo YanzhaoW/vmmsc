@@ -35,28 +35,27 @@ public:
 
     FECConfigModule& LoadSocket(SocketHandler& GetSocketHandler);
 
-    bool SendConfig(int hdmi_index, int hybrid_index, int vmm_index);
-    void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
-    void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int hybrid_index, int vmm_index);
-    void FillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int hybrid_index, int vmm_index);
+    bool SendConfig(int hdmi_index, int vmm_index);
+    void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int vmm_index);
+    void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int vmm_index);
+    void FillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int vmm_index);
 
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }
     int Connect();
 
-    void ConfigTP( int hdmi_index, int hybrid_index);
-    void SetS6clocks(int hdmi_index, int hybrid_index);
-    void SetTriggerAcqConstants(int hdmi_index, int vmm_index);
+    void ConfigTP( int hdmi_index);
+    void SetS6clocks(int hdmi_index);
+    void SetTriggerAcqConstants();
     void CheckLinkStatus(bool& readOK, QString & message);
     void ResetLinks();
     void ResetFEC();
     void ReadSystemRegisters(QMap<QString, QString>& registers);
     void writeFECip(int FECip);
     void writeDAQip(int DAQip);
-    void SetReadoutMode();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
     void SetMask();
-    int ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan);
+    int ReadADC(int hdmi_index, int vmm_index, int adc_chan);
     QString ReadI2C(int hdmi_index, int choice);
     QString ReadGeoPos(int hdmi_index);
     QString ReadIDChip(int hdmi_index);

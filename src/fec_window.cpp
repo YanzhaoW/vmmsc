@@ -16,60 +16,37 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     m_ui->linkPB->setEnabled(false);
     m_ui->readSystemParams->setEnabled(false);
     m_ui->fec_WarmInit->setEnabled(false);
-    //m_ui->fec_reset->setEnabled(false);
-    m_ui->trgPulser->setEnabled(false);
-    m_ui->trgExternal->setEnabled(false);
     m_ui->onACQ->setEnabled(false);
     m_ui->offACQ->setEnabled(false);
 
     m_ui->debugScreen->setReadOnly(true);
-    m_ui->OpenWrFifo->setChecked(false); SetFec("open_fec_wr_fifo_outside_acq_win",  m_ui->OpenWrFifo->isChecked() );
+    m_ui->debug_data_format->setChecked(false); SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
+    SetToolTips();
 
-
-
-    //    connect(ui->setEvbld, SIGNAL(pressed()),
-    //                                            this, SLOT(updateSettings()));
-//    connect(m_ui->evbld_mode, SIGNAL(currentIndexChanged(int)),
-//            this, SLOT(onUpdateSettings()));
-//    connect(m_ui->evbld_infodata, SIGNAL(currentIndexChanged(int)),
-//            this, SLOT(onUpdateSettings()));
-//    connect(m_ui->timeStampResCheckBox, SIGNAL(stateChanged(int)),
-//            this, SLOT(onUpdateSettings()));
-    connect(m_ui->readoutCycle, SIGNAL(editingFinished()),
+    connect(m_ui->latency_reset, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->pulserDelay, SIGNAL(valueChanged(int)),
+    connect(m_ui->latency_data_max, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->bcid_reset, SIGNAL(valueChanged(int)),
+    connect(m_ui->latency_data_error, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->acqSync, SIGNAL(valueChanged(int)),
+    connect(m_ui->tp_latency, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->acqWindow, SIGNAL(valueChanged(int)),
+    connect(m_ui->tp_offset_first, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->ClearS6FIFI, SIGNAL(stateChanged(int)),
+    connect(m_ui->tp_offset, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->AccWin, SIGNAL(stateChanged(int)),
+    connect(m_ui->tp_number, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->OpenWrFifo, SIGNAL(stateChanged(int)),
+    connect(m_ui->debug_data_format, SIGNAL(stateChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->Stamp_ext_trg, SIGNAL(stateChanged(int)),
-            this, SLOT(onUpdateSettings()));
-
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
 
-    // connect(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(CheckLinks()),
-    //        this, SLOT(onWriteFECStatus()));
 
     connect(m_daqWindow->ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
             this, SLOT( onResetFEC() ));
-    //connect(m_ui->fec_reset, SIGNAL(clicked()),
-    //        this, SLOT( onResetFEC() ));
-    connect(m_ui->trgPulser, SIGNAL(clicked()),
-            this, SLOT( onUpdateSettings() ));
-    connect(m_ui->trgExternal, SIGNAL(clicked()),
-            this, SLOT( onUpdateSettings() ));
     connect(m_ui->onACQ, SIGNAL(clicked()),
             this, SLOT( onUpdateSettings() ));
     connect(m_ui->offACQ, SIGNAL(clicked()),
@@ -85,112 +62,127 @@ FECWindow::~FECWindow()
     delete m_ui;
 }
 
+// ------------------------------------------------------------------------- //
+void FECWindow::SetToolTips()
+{
+    //////////////////////////////////////////////////////////////////////////
+    // -------------------------------------------------------------------- //
+    // Creates all the ToolTips for Push bottons etc.
+    // -------------------------------------------------------------------- //
+    //////////////////////////////////////////////////////////////////////////
+
+
+
+    m_ui->latency_reset->setToolTip("At the start of the acquisition, the VMM BCID is reset.\nAdjust the reset latency so that the BCID of a VMM hit is identical to the trigger counter on the FEC (enable debug data format, pulse only one channel)");
+    m_ui->label_latency_reset->setToolTip("At the start of the acquisition, the VMM BCID is reset.\nAdjust the reset latency so that the BCID of a VMM hit is identical to the trigger counter on the FEC (enable debug data format, pulse only one channel)");
+    m_ui->latency_data_max->setToolTip("Maximum latency of VMM data to arrive at FEC.\nData that arrives on FEC after the maximum latency period will be marked as error data (offset 16)");
+    m_ui->label_latency_data_max->setToolTip("Maximum latency of VMM data to arrive at FEC.\nData that arrives on FEC after the maximum latency period will be marked as error data (offset 16)");
+    m_ui->latency_data_error->setToolTip("Maximum allowed fluctuation of arrival time of VMM data on FEC in 40 mHz clock cycles.\nData that arrives on FEC earlier than the latency error will be marked as error data (offset 16)");
+    m_ui->label_latency_data_error->setToolTip("Maximum allowed fluctuation of arrival time of VMM data on FEC in 40 mHz clock cycles.\nData that arrives on FEC earlier than the latency error will be marked as error data (offset 16)");
+    m_ui->tp_number->setToolTip("Number of test pulses from VMM internal pulser within a BCID cycle (0-4095)");
+    m_ui->label_tp_number->setToolTip("Number of test pulses from VMM internal pulser within a BCID cycle (0-4095)");
+    m_ui->tp_offset_first->setToolTip("Desired BCID of the first test pulse of the VMM internal pulser");
+    m_ui->label_tp_offset_first->setToolTip("Desired BCID of the first test pulse of the VMM internal pulser");
+    m_ui->tp_offset->setToolTip("BCID offset for subsequent pulses from VMM internal pulser");
+    m_ui->label_tp_offset->setToolTip("BCID offset for subsequent pulses from VMM internal pulser");
+    m_ui->tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
+    m_ui->label_tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
+    m_ui->debug_data_format->setToolTip("Enable the debug data format.\nThe debug data format shows the trigger counter (FEC counter counting 40 MHz clock cycles) at which the hits from the VMM arrive.");
+    m_ui->register_trigger_timestamp->setToolTip("Record the time of external trigger signal.\nThe trigger signal will appear as 25 ns resolution timestamp for VMM 31.");
+    m_ui->first_trigger_starts_acq->setToolTip("If an external trigger signal is connected to the FEC,\nthe first trigger signal will start the acquisition (useful to synchronize multiple FECs");
+}
+
 void FECWindow::onACQHandler(){
     if(m_daqWindow->m_sendstate == "GlobalACQon" ){
         emit m_ui->offACQ->clicked();
-        m_ui->trgPulser->setChecked(false);
-        m_ui->trgExternal->setChecked(false);
         m_ui->onACQ->setChecked(false);
         m_ui->offACQ->setChecked(false);
 
-        m_ui->trgPulser->setEnabled(false);
-        m_ui->trgExternal->setEnabled(false);
         m_ui->onACQ->setEnabled(false);
         m_ui->offACQ->setEnabled(false);
     }
     else if(m_daqWindow->m_sendstate == "GlobalACQoff" ){
-        m_ui->trgPulser->setEnabled(true);
-        m_ui->trgExternal->setEnabled(true);
+
         m_ui->onACQ->setEnabled(true);
         m_ui->offACQ->setEnabled(true);
     }
-    else if(m_daqWindow->m_sendstate == "trigPulser" ){
-        onSetReadoutMode(1);
-    }
-    else if(m_daqWindow->m_sendstate == "trigExternal" ){
-        onSetReadoutMode(0);
-    }
-
 }
 
 
 void FECWindow::onUpdateSettings(){
-     if(QObject::sender() == m_ui->pulserDelay){
-        SetFec("tp_delay",  m_ui->pulserDelay->value() );
+   if(QObject::sender() == m_ui->tp_offset_first){
+       if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
+            SetFec("tp_offset_first",  m_ui->tp_offset_first->value() );
+        }
+       else {
+            m_ui->tp_offset_first->setValue(GetFec("tp_offset_first"));
+       }
     }
-    else if(QObject::sender() == m_ui->bcid_reset){
-        SetFec("bcid_reset",  m_ui->bcid_reset->value() );
+    else if(QObject::sender() == m_ui->tp_offset){
+        if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
+            SetFec("tp_offset",  m_ui->tp_offset->value() );
+        }
+        else {
+             m_ui->tp_offset->setValue(GetFec("tp_offset"));
+        }
     }
-    else if(QObject::sender() == m_ui->acqSync){
-        SetFec("acq_sync",  m_ui->acqSync->value() );
+    else if(QObject::sender() == m_ui->tp_number){
+       if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
+            SetFec("tp_number",  m_ui->tp_number->value() );
+            if(GetFec( "tp_number" ) == 1) {
+                m_ui->tp_offset->setEnabled(false);
+            }
+            else {
+               m_ui->tp_offset->setEnabled(true);
+            }
+       }
+       else {
+            m_ui->tp_number->setValue(GetFec("tp_number"));
+       }
+
     }
-    else if(QObject::sender() == m_ui->acqWindow){
-        SetFec("acq_window",  m_ui->acqWindow->value() );
+    else if(QObject::sender() == m_ui->tp_latency){
+         SetFec("tp_latency",  m_ui->tp_latency->value() );
+     }
+    else if(QObject::sender() == m_ui->latency_reset){
+        SetFec("latency_reset",  m_ui->latency_reset->value() );
     }
-    else if(QObject::sender() == m_ui->ClearS6FIFI){
-        SetFec("clear_S6_fifo",  m_ui->ClearS6FIFI->isChecked() );
+    else if(QObject::sender() == m_ui->latency_data_max){
+         SetFec("latency_data_max",  m_ui->latency_data_max->value() );
     }
-    else if(QObject::sender() == m_ui->AccWin){
-        SetFec("acceptance_window",  m_ui->AccWin->isChecked() );
+    else if(QObject::sender() == m_ui->latency_data_error){
+         SetFec("latency_data_error",  m_ui->latency_data_error->value() );
     }
-    else if(QObject::sender() == m_ui->OpenWrFifo){
-        SetFec("open_fec_wr_fifo_outside_acq_win",  m_ui->OpenWrFifo->isChecked() );
+    else if(QObject::sender() == m_ui->debug_data_format){
+        SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
     }
-    else if(QObject::sender() == m_ui->Stamp_ext_trg){
-        SetFec("ts_ext_trg",  m_ui->Stamp_ext_trg->isChecked() );
+    else if(QObject::sender() == m_ui->register_trigger_timestamp){
+       SetFec("register_trigger_timestamp",  m_ui->register_trigger_timestamp->isChecked() );
     }
+    else if(QObject::sender() == m_ui->first_trigger_starts_acq){
+       SetFec("first_trigger_starts_acq",  m_ui->first_trigger_starts_acq->isChecked() );
+    }
+
 
     else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
             m_ui->readSystemParams->setEnabled(true);
             m_ui->fec_WarmInit->setEnabled(true);
-            if(!m_daqWindow->ui->checkBoxGlobalDAQ->isChecked()){
-                //m_ui->fec_reset->setEnabled(true);
-                m_ui->trgPulser->setEnabled(true);
-                m_ui->trgExternal->setEnabled(true);
-                m_ui->onACQ->setEnabled(true);
-                m_ui->offACQ->setEnabled(true);
-            }
+            m_ui->onACQ->setEnabled(true);
+            m_ui->offACQ->setEnabled(true);
         }
         else{
             m_ui->linkPB->setEnabled(false);
             m_ui->fec_WarmInit->setEnabled(false);
             m_ui->readSystemParams->setEnabled(false);
-            m_ui->trgPulser->setEnabled(false);
-            m_ui->trgExternal->setEnabled(false);
             m_ui->onACQ->setEnabled(false);
             m_ui->offACQ->setEnabled(false);
         }
     }
 
-
-    else if(QObject::sender() == m_ui->trgPulser){
-        m_ui->trgPulser->setCheckable(true);
-        m_ui->trgPulser->setChecked(true);
-        m_ui->trgExternal->setChecked(false);
-        onSetReadoutMode(1);
-    }
-    else if(QObject::sender() == m_ui->trgExternal){
-        m_ui->trgExternal->setCheckable(true);
-        m_ui->trgExternal->setChecked(true);
-        m_ui->trgPulser->setChecked(false);
-        onSetReadoutMode(0);
-    }
     else if(QObject::sender() == m_ui->onACQ){
         m_ui->onACQ->setCheckable(true);
-        if(m_ui->trgExternal->isChecked()){
-            emit m_ui->trgExternal->clicked();
-        }
-        else if(m_ui->trgPulser->isChecked()){
-            emit m_ui->trgPulser->clicked();
-        }
-        else{
-            m_daqWindow->SetWarningMessage("Select Trigger Mode","red");
-            m_ui->onACQ->setChecked(false);
-            return;
-        }
-
         m_ui->onACQ->setChecked(true);
         m_ui->offACQ->setChecked(false);
         m_daqWindow->ui->Send->setEnabled(false);
@@ -210,12 +202,6 @@ void FECWindow::onUpdateSettings(){
 
 }
 
-void FECWindow::onSetReadoutMode(int mode){
-    SetFec("triggermode", mode);
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SetReadoutMode();
-}
-
-
 
 void FECWindow::LoadSettings(){
     QHostAddress ipAddress;
@@ -224,18 +210,30 @@ void FECWindow::LoadSettings(){
     ipAddress.setAddress(GetFec( "ip_daq" ));
     m_ui->ip_daq->setText( ipAddress.toString());
 
-    m_ui->pulserDelay->setValue( GetFec( "tp_delay" ) );
-    m_ui->readoutCycle->setText( QString::number( GetFec( "readout_cycle" ), 16 ) );
 
-    m_ui->bcid_reset->setValue( GetFec( "bcid_reset" ) );
-    m_ui->acqSync->setValue( GetFec( "acq_sync" ) );
-    m_ui->acqWindow->setValue( GetFec( "acq_window" ) );
-    m_ui->ClearS6FIFI->setChecked( GetFec( "clear_S6_fifo" ) );
-    m_ui->AccWin->setChecked( GetFec( "acceptance_window" ) );
-    m_ui->OpenWrFifo->setChecked( GetFec( "open_fec_wr_fifo_outside_acq_win" ) );
+    if(GetFec( "tp_offset_first" ) + (GetFec( "tp_number" )-1)*GetFec( "tp_offset" )  > 4095) {
+         SetFec("tp_number", 1);
+         SetFec("tp_offset_first", 100);
+         SetFec("tp_offset", 1000);
+    }
+    m_ui->tp_number->setValue( GetFec( "tp_number" ) );
+    m_ui->tp_offset->setValue( GetFec( "tp_offset" ) );
+    m_ui->tp_offset_first->setValue( GetFec( "tp_offset_first" ) );
 
-    m_ui->Stamp_ext_trg->setChecked( GetFec( "ts_ext_trg" ) );
+    m_ui->tp_latency->setValue( GetFec( "tp_latency" ) );
+    m_ui->latency_reset->setValue( GetFec( "latency_reset" ) );
+    m_ui->latency_data_max->setValue( GetFec( "latency_data_max" ) );
+    m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
 
+    m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
+    if(GetFec( "tp_number" ) == 1) {
+        m_ui->tp_offset->setEnabled(false);
+    }
+    else {
+       m_ui->tp_offset->setEnabled(true);
+    }
+    m_ui->register_trigger_timestamp->setChecked(GetFec("register_trigger_timestamp"));
+    m_ui->first_trigger_starts_acq->setChecked(GetFec("first_trigger_starts_acq"));
 }
 
 bool FECWindow::SetFec(const char *feature, unsigned long val){
@@ -349,8 +347,6 @@ void FECWindow::onResetFEC()
 {
     //bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
     m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC();
-    m_ui->trgExternal->setChecked(false);
-    m_ui->trgPulser->setChecked(false);
     m_ui->onACQ->setChecked(false);
     m_ui->offACQ->setChecked(false);
 }
@@ -419,7 +415,7 @@ void FECWindow::on_pushButtonFECIP_pressed()
             }
             QMessageBox::StandardButton reply;
 
-            reply = QMessageBox::question(this, "FEC IPv4 address setting", "Do you want to also program the FEC with this IP address?", QMessageBox::Yes | QMessageBox::No );
+            reply = QMessageBox::question(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC stores its own IP address on the FEC EEPROM.\nATTENTION: Do you only want to change the FEC IP address in the slow control GUI (press NO), or re-program the FEC IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
             if(reply == QMessageBox::Yes) {
                m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
             }
@@ -461,7 +457,7 @@ void FECWindow::on_pushButtonDAQIP_pressed()
 
             QMessageBox::StandardButton reply;
 
-            reply = QMessageBox::question(this, "DAQ IPv4 address setting", "Do you want to also program the FEC with this DAQ IP address?", QMessageBox::Yes | QMessageBox::No );
+            reply = QMessageBox::question(this, "DAQ IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The DAQ IP address is the address of this network card, and the FEC card has to know it to send data to the PC.\nATTENTION: Do you only want to change the DAQ IP address in the slow control GUI (press NO), or re-program the DAQ IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
             if(reply == QMessageBox::Yes) {
                 m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
             }

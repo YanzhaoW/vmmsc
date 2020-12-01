@@ -24,10 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
         m_execPath += "/..";
     }
     m_daq_act[0] = 1;
-    std::cout << "stating commandline" << std::endl;
-    m_commandLine = new Commandline(this,1);
-    m_future1 = QtConcurrent::run(m_commandLine, &Commandline::StartCommandline);
-    std::cout << "commandline started" << std::endl;
 
     m_vmmConfigHandler = new VMMConfigHandler(this);
     m_hybridConfigHandler = new HybridConfigHandler(this);

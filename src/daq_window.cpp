@@ -20,11 +20,8 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->selectDir->setToolTip("Opens file browser to select config file");
     ui->Button_load->setToolTip("Loading config file");
     ui->Button_save->setToolTip("Saving settings into config file");
-    ui->trgPulser->setEnabled(false);
-    ui->trgExternal->setEnabled(false);
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
-    ui->checkBoxGlobalDAQ->setEnabled(false);
 
     QString correctedFileName = m_mainWindow->GetApplicationPath() +  "/../configs/default.txt";
 
@@ -121,10 +118,6 @@ void DAQWindow::on_Box_fec8_clicked()
 void DAQWindow::fecBoxLogic(bool checked, unsigned short fec){
     if(checked) {
         ui->Send->setEnabled(false);
-        ui->checkBoxGlobalDAQ->setChecked(false);
-        ui->checkBoxGlobalDAQ->setEnabled(false);
-        ui->trgPulser->setEnabled(false);
-        ui->trgExternal->setEnabled(false);
         ui->onACQ->setEnabled(false);
         ui->offACQ->setEnabled(false);
     }
@@ -255,10 +248,6 @@ void DAQWindow::on_openConnection_clicked()
     {
         SetConnectionMessage("ping failed", "red");
         ui->Send->setEnabled(false);
-        ui->checkBoxGlobalDAQ->setChecked(false);
-        ui->checkBoxGlobalDAQ->setEnabled(false);
-        ui->trgPulser->setEnabled(false);
-        ui->trgExternal->setEnabled(false);
         ui->onACQ->setEnabled(false);
         ui->offACQ->setEnabled(false);
         for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
@@ -306,16 +295,13 @@ void DAQWindow::on_openConnection_clicked()
                         if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
                             SetConnectionMessage("all alive","green");
                             ui->Send->setEnabled(true);
-                            ui->checkBoxGlobalDAQ->setEnabled(true);
+                            ui->onACQ->setEnabled(true);
+                            ui->offACQ->setEnabled(true);
                         }
                         else{
 
                             SetConnectionMessage("ping failed", "red");
                             ui->Send->setEnabled(false);
-                            ui->checkBoxGlobalDAQ->setChecked(false);
-                            ui->checkBoxGlobalDAQ->setEnabled(false);
-                            ui->trgPulser->setEnabled(false);
-                            ui->trgExternal->setEnabled(false);
                             ui->onACQ->setEnabled(false);
                             ui->offACQ->setEnabled(false);
                             return;
@@ -345,63 +331,10 @@ void DAQWindow::on_Send_clicked()
     }
 }
 
-void DAQWindow::on_checkBoxGlobalDAQ_stateChanged()
-{
-    if(ui->checkBoxGlobalDAQ->isChecked()){
-        ui->trgPulser->setEnabled(true);
-        ui->trgExternal->setEnabled(true);
-        ui->onACQ->setEnabled(true);
-        ui->offACQ->setEnabled(true);
-        m_sendstate = "GlobalACQon";
-        emit ChangeState();
-    }
-    else if(!ui->checkBoxGlobalDAQ->isChecked()){
-        emit ui->offACQ->clicked();
-        ui->trgPulser->setChecked(false);
-        ui->trgExternal->setChecked(false);
-        ui->onACQ->setChecked(false);
-        ui->offACQ->setChecked(false);
-
-        ui->trgPulser->setEnabled(false);
-        ui->trgExternal->setEnabled(false);
-        ui->onACQ->setEnabled(false);
-        ui->offACQ->setEnabled(false);
-        m_sendstate = "GlobalACQoff";
-        emit ChangeState();
-    }
-}
-void DAQWindow::on_trgPulser_clicked()
-{
-    ui->trgPulser->setCheckable(true);
-    ui->trgPulser->setChecked(true);
-    ui->trgExternal->setChecked(false);
-    m_sendstate = "trigPulser";
-    emit ChangeState();
-}
-
-void DAQWindow::on_trgExternal_clicked()
-{
-    ui->trgExternal->setCheckable(true);
-    ui->trgExternal->setChecked(true);
-    ui->trgPulser->setChecked(false);
-    m_sendstate = "trigExternal";
-    emit ChangeState();
-}
 
 void DAQWindow::on_onACQ_clicked()
 {
     ui->onACQ->setCheckable(true);
-    if(ui->trgExternal->isChecked()){
-        emit ui->trgExternal->clicked();
-    }
-    else if(ui->trgPulser->isChecked()){
-        emit ui->trgPulser->clicked();
-    }
-    else{
-        SetWarningMessage("Select Trigger Mode","red");
-        ui->onACQ->setChecked(false);
-        return;
-    }
     ui->onACQ->setChecked(true);
     ui->offACQ->setChecked(false);
     ui->Send->setEnabled(false);

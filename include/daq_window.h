@@ -52,15 +52,9 @@ private slots:
 
     void on_Send_clicked();
 
-    void on_checkBoxGlobalDAQ_stateChanged();
-
     void on_onACQ_clicked();
 
     void on_offACQ_clicked();
-
-    void on_trgPulser_clicked();
-
-    void on_trgExternal_clicked();
 
     void on_Debug_pressed();
 

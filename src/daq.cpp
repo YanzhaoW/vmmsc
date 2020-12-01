@@ -145,7 +145,6 @@ void DAQ::ACQHandler(bool on){
 void DAQ::SetMessageHandler(){
     for(int i=0; i<FECS_PER_DAQ; i++){
         m_fecs[i].LoadMessageHandler(GetMessageHandler() );
-        //        fec[i].fec_conf_mod->LoadMessageHandler(GetMessageHandler() );
     }
 }
 

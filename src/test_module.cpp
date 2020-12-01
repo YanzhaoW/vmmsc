@@ -1214,7 +1214,7 @@ double TestModule::ReadTemperature(int vmmnr)
     vmm->SetRegi("monitoring","Temperature_sensor");
     m_mainWindow->m_daqs[0].SendAll();
     QThread::usleep(1000);
-    int adc_result = fcm->ReadADC(m_HDMI_test,0,vmmnr,2);
+    int adc_result = fcm->ReadADC(m_HDMI_test,vmmnr,2);
     double temperature = (725-adc_result)/1.85;
     return temperature;
 }
@@ -1499,8 +1499,8 @@ string TestModule::TestBaselineWidth(int nruns)
             for(int j=0; j< nruns; j++){
                 blines[0][i].resize(nruns);
                 blines[1][i].resize(nruns);
-                int bline1 = fcm->ReadADC(m_HDMI_test,0,0,2);
-                int bline2 = fcm->ReadADC(m_HDMI_test,0,1,2);
+                int bline1 = fcm->ReadADC(m_HDMI_test,0,2);
+                int bline2 = fcm->ReadADC(m_HDMI_test,1,2);
                 baselines[0].push_back(bline1);
                 baselines[1].push_back(bline2);
                 blines[0][i][j] = bline1;
@@ -1532,8 +1532,8 @@ string TestModule::TestBaselineWidth(int nruns)
             for(int j=0; j< nruns; j++){
                 blines[0][i].resize(nruns);
                 blines[1][i].resize(nruns);
-                int bline1 = fcm->ReadADC(m_HDMI_test,0,0,2);
-                int bline2 = fcm->ReadADC(m_HDMI_test,0,1,2);
+                int bline1 = fcm->ReadADC(m_HDMI_test,0,2);
+                int bline2 = fcm->ReadADC(m_HDMI_test,1,2);
                 baselines[0].push_back(bline1);
                 baselines[1].push_back(bline2);
                 blines[0][i][j] = bline1;
@@ -1558,8 +1558,8 @@ string TestModule::TestBaselineWidth(int nruns)
     for(int j=0; j< nruns; j++){
         blines[0][0].resize(nruns);
         blines[1][0].resize(nruns);
-        int bline1 = fcm->ReadADC(m_HDMI_test,0,0,2);
-        int bline2 = fcm->ReadADC(m_HDMI_test,0,1,2);
+        int bline1 = fcm->ReadADC(m_HDMI_test,0,2);
+        int bline2 = fcm->ReadADC(m_HDMI_test,1,2);
         baselines[0].push_back(bline1);
         baselines[1].push_back(bline2);
         blines[0][0][j] = bline1;
@@ -1794,8 +1794,8 @@ string TestModule::TestThreshold()
         vmm[0]->SetRegi("monitoring",i);
         vmm[1]->SetRegi("monitoring",i);
         m_mainWindow->m_daqs[0].SendAll();
-        int thrval1 = fcm->ReadADC(m_HDMI_test,0,0,2);
-        int thrval2 = fcm->ReadADC(m_HDMI_test,0,1,2);
+        int thrval1 = fcm->ReadADC(m_HDMI_test,0,2);
+        int thrval2 = fcm->ReadADC(m_HDMI_test,1,2);
         thresholds[0].push_back(thrval1);
         thresholds[1].push_back(thrval2);
         channels.push_back(i);
@@ -1889,8 +1889,8 @@ std::string TestModule::TestMonitoringADC()
         vmm[0]->SetRegi("sdt",i);
         vmm[1]->SetRegi("sdt",i);
         m_mainWindow->m_daqs[0].SendAll();
-        int ADCval1 = fcm->ReadADC(m_HDMI_test, 0,0, 2);
-        int ADCval2 = fcm->ReadADC(m_HDMI_test, 0,1, 2);
+        int ADCval1 = fcm->ReadADC(m_HDMI_test, 0, 2);
+        int ADCval2 = fcm->ReadADC(m_HDMI_test, 1, 2);
         thrDACvals.push_back(i);
         readADC[0].push_back(ADCval1);
         readADC[1].push_back(ADCval2);
@@ -2184,8 +2184,8 @@ std::string TestModule::TestThrTrimmability()
             vmm[0]->SetRegi("smx",1,i);
             vmm[1]->SetRegi("smx",1,i);
             m_mainWindow->m_daqs[0].SendAll();
-            int thr0 = fcm->ReadADC(m_HDMI_test,0,0,2);
-            int thr1 = fcm->ReadADC(m_HDMI_test,0,1,2);
+            int thr0 = fcm->ReadADC(m_HDMI_test,0,2);
+            int thr1 = fcm->ReadADC(m_HDMI_test,1,2);
             thrs[0][i].push_back(thr0);
             thrs[1][i].push_back(thr1);
             vmm[0]->SetRegi("smx",0,i);

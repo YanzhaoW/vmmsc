@@ -1139,11 +1139,11 @@ void VMMWindow::on_vmmReset_clicked()
 {
     SetVMM("reset1", 1);
     SetVMM("reset2", 1);
-    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_hybridIndex, m_vmmIndex);
+    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
     QThread::sleep(1);
     SetVMM("reset1", 0);
     SetVMM("reset2", 0);
-    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_hybridIndex, m_vmmIndex);
+    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
 
 }
 
@@ -1151,7 +1151,7 @@ void VMMWindow::on_readADC_clicked()
 {
     int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | prepare to read other channels
 
-    int adc_result = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hdmiIndex, m_hybridIndex, m_vmmIndex, adc_chan);
+    int adc_result = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hdmiIndex, m_vmmIndex, adc_chan);
     double temperature = (725-adc_result)/1.85;
 
     if(m_ui->sm5_sm0->currentIndex()==3){

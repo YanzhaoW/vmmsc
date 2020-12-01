@@ -98,48 +98,10 @@
               </font>
              </property>
              <property name="title">
-              <string>ACQ</string>
+              <string>ACQ for all FECs</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
-              <item row="1" column="0" colspan="2">
-               <widget class="QPushButton" name="trgPulser">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>11</pointsize>
-                 </font>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::NoFocus</enum>
-                </property>
-                <property name="text">
-                 <string>Internal (default)</string>
-                </property>
-                <property name="checkable">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0" colspan="2">
-               <widget class="QPushButton" name="offACQ">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>11</pointsize>
-                 </font>
-                </property>
-                <property name="focusPolicy">
-                 <enum>Qt::NoFocus</enum>
-                </property>
-                <property name="text">
-                 <string>ACQ Off</string>
-                </property>
-                <property name="checkable">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0" colspan="2">
+              <item row="0" column="0" colspan="2">
                <widget class="QPushButton" name="onACQ">
                 <property name="font">
                  <font>
@@ -158,8 +120,8 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QPushButton" name="trgExternal">
+              <item row="1" column="0" colspan="2">
+               <widget class="QPushButton" name="offACQ">
                 <property name="font">
                  <font>
                   <family>Arial</family>
@@ -169,30 +131,11 @@
                 <property name="focusPolicy">
                  <enum>Qt::NoFocus</enum>
                 </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
                 <property name="text">
-                 <string>External</string>
+                 <string>ACQ Off</string>
                 </property>
                 <property name="checkable">
                  <bool>false</bool>
-                </property>
-                <property name="autoDefault">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="2">
-               <widget class="QCheckBox" name="checkBoxGlobalDAQ">
-                <property name="font">
-                 <font>
-                  <family>Arial</family>
-                  <pointsize>11</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string> Global ACQ</string>
                 </property>
                </widget>
               </item>

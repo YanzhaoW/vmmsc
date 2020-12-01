@@ -906,13 +906,7 @@ void CalibrationModule::StartCalibration(){
     }
 
 
-
-    m_mainWindow->m_daqWindow->ui->checkBoxGlobalDAQ->setChecked(true);
-    emit m_mainWindow->m_daqWindow->ui->checkBoxGlobalDAQ->stateChanged(true);
-    emit m_mainWindow->m_daqWindow->ui->trgPulser->clicked();
     QThread::usleep(1000);
-    //m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
-    //m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
 
     if(IsCalibration())
     {
@@ -1233,11 +1227,11 @@ void CalibrationModule::Reset()
         LoadSettings();
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 1);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, chip);
         QThread::msleep(100);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 0);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 0);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, 0, chip);
+        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, chip);
         QThread::msleep(100);
 
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC();
@@ -1724,7 +1718,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",0,ch);
                 m_mainWindow->m_daqs[0].SendAll();
                 QThread::usleep(10000);
-                int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
+                int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
                 m_mean[0][fec][hdmi][0][chip].push_back(val);
             }
         }
@@ -1744,7 +1738,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",bit,ch);
                         m_mainWindow->m_daqs[0].SendAll();
                         QThread::usleep(10000);
-                        int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
+                        int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi,chip, 2);
                         m_mean[bit][fec][hdmi][0][chip].push_back(val);
                     }
                 }
@@ -1763,7 +1757,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",1,ch);
                     m_mainWindow->m_daqs[0].SendAll();
                     QThread::usleep(10000);
-                    int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, 0,chip, 2);
+                    int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
                     m_mean[0][fec][hdmi][0][chip].push_back(val);
                 }
             }

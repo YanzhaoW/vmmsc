@@ -79,9 +79,9 @@ private:
     std::vector<unsigned long> *m_reg;
     char *m_chr;
     int config_error[HDMIS_PER_FEC*VMMS_PER_HYBRID];
-    unsigned short GetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
-    bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
-    bool SetVMM(int hdmi_index, int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
+    unsigned short GetVMM(int hdmi_index, int vmm_index, std::string feature, int ch=-9999);
+    bool SetVMM(int hdmi_index, int vmm_index, std::string feature, int value ,int ch=-9999);
+    bool SetVMM(int hdmi_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
 
     QString m_firmwareVersion;
 };

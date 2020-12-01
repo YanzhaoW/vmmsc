@@ -11,10 +11,9 @@ Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",2}, {"CKBC_duty",0}, {"CKBC_skew",0}, {"CKDT",2}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",2}, {"CKBC_skew",0}, {"CKDT",2}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
     SetReg("CKBC", (std::string)"40");
-    SetReg("CKBC_duty", (std::string)"50 % high");
-    SetReg("CKDT", (std::string)"90");
+    SetReg("CKDT", (std::string)"180");
 }
 
 bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){
@@ -97,22 +96,7 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
             else return false;
         }
 
-        if(feature=="CKBC_duty"){
-            InMap m_val;
-            std::string v_val[3] = {"50 % high", "75 % high", "25 % high"};
-            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
-                unsigned short bin_val=i;
-                m_val.insert(BiPair(v_val[i], bin_val));
-                m_val.insert(BiPair(std::to_string(i), bin_val));
-            }
-            if(m_val.find(value)!=m_val.end()){
-              m_hybrid[feature] = m_val[value];
-              return true;
-            }
-            else return false;
-        }
-
-        if(feature=="CKBC_skew"){
+       if(feature=="CKBC_skew"){
             InMap m_val;
             std::string v_val[4] = {"0", "6.26", "12.52", "18.78"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){

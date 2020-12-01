@@ -66,7 +66,7 @@ FECConfigModule& FECConfigModule::LoadSocket(SocketHandler& socket)
 }
 
 // ------------------------------------------------------------------------ //
-bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index)
+bool FECConfigModule::SendConfig(int hdmi_index, int vmm_index)
 {
     bool result = true;
 
@@ -93,7 +93,7 @@ bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     /////////////////////////////////////////////////
     std::vector<QString> globalRegisters;
     globalRegisters.clear();
-    FillGlobalRegisters(globalRegisters, hdmi_index,  hybrid_index,  vmm_index);
+    FillGlobalRegisters(globalRegisters, hdmi_index,  vmm_index);
     if(globalRegisters.size()!=3){
         GetMessageHandler()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
         return -1;
@@ -103,7 +103,7 @@ bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     ///////////////////////////////////////////////////
     std::vector<QString> channelRegisters;
     channelRegisters.clear();
-    FillChannelRegisters(channelRegisters, hdmi_index,  hybrid_index,  vmm_index);
+    FillChannelRegisters(channelRegisters, hdmi_index,  vmm_index);
     if(channelRegisters.size()!=64){
         GetMessageHandler()("ERROR Channel registers do not have 64 values", "FEC_config_module::SendConfig", true);
         return -1;
@@ -113,7 +113,7 @@ bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
     ///////////////////////////////////////////////////
     std::vector<QString> globalRegisters2;
     globalRegisters2.clear();
-    FillGlobalRegisters2(globalRegisters2, hdmi_index,  hybrid_index,  vmm_index);
+    FillGlobalRegisters2(globalRegisters2, hdmi_index,  vmm_index);
     if(globalRegisters2.size()!=3){
         GetMessageHandler()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
         return -1;
@@ -209,7 +209,7 @@ bool FECConfigModule::SendConfig(int hdmi_index, int hybrid_index, int vmm_index
 
 
 // ------------------------------------------------------------------------ //
-void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi_index, int hybrid_index, int vmm_index)
+void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi_index, int vmm_index)
 {
     stringstream sx;
 
@@ -231,103 +231,103 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
     //direct output IOs
     // [4]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvs" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvs" ) ) );
     sequence++;
 
     // skips ch 16-47
     // [5]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"s32" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"s32" ) ) );
     sequence++;
 
     //auto-reset at end ramp
     // [6]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"stcr" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index, vmm_index,"stcr" ) ) );
     sequence++;
 
     // ART flag synchronization
     // [7]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"ssart" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"ssart" ) ) );
     sequence++;
 
     // fast recovery from high charge
     // [8]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"srec" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"srec" ) ) );
     sequence++;
 
     // mild tail cancellation
     // [9]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"stlc" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"stlc" ) ) );
     sequence++;
 
     // bipolar shape
     // [10]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sbip" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sbip" ) ) );
     sequence++;
 
     // timing ramp at threshold
     // [11]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"srat" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"srat" ) ) );
     sequence++;
 
     // fast reset at 6-b completion
     // [12]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sfrst" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sfrst" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on ckbc
     // [13]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvsbc" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvsbc" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on cktp
     // [14]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvstp" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvstp" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on cktk
     // [15]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvstk" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvstk" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on ckdt
     // [16]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvsdt" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvsdt" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on ckart
     // [17]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvsart" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvsart" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on cktki
     // [18]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvstki" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvstki" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on ckena
     // [19]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvsena" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvsena" ) ) );
     sequence++;
 
     // slvs 100 Ohm termination on ck6b
     // [20]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slvs6b" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slvs6b" ) ) );
     sequence++;
 
     // mixed signal functions
@@ -342,13 +342,13 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
     // reset (1)
     // [30]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"reset1" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"reset1" ) ) );
     sequence++;
 
     // reset (2)
     // [31]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"reset2" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"reset2" ) ) );
     sequence++;
 
 
@@ -376,7 +376,7 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
 
     //threshold DAC lowest 6 bits
     // [0,5]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdt" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"sdt" ) ,
                              10,2,QChar('0'));
     spi1.replace(sequence,1,tmp[4]);
     sequence += 1;
@@ -393,75 +393,75 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
 
     //pulse DAC
     // [6,15]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdp_2" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"sdp_2" ) ,
                              10,2,QChar('0'));
     spi1.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
 
     //10bit ADC
     // [16,17]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "convtime_10" ) ,2,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index, "convtime_10" ) ,2,2,QChar('0'));
     spi1.replace(sequence, tmp.size(), tmp);
     sequence += tmp.size();
 
     //8bit ADC
     // [18,19]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "convtime_8" ) ,2,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index, "convtime_8" ) ,2,2,QChar('0'));
     spi1.replace(sequence, tmp.size(), tmp);
     sequence += tmp.size();
 
     //6bit
     // [20,22]
-    tmp = QString("%1").arg(  m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "convtime_6" )  ,3,2,QChar('0'));
+    tmp = QString("%1").arg(  m_fec->GetVMM( hdmi_index,  vmm_index, "convtime_6" )  ,3,2,QChar('0'));
     spi1.replace(sequence, tmp.size(), tmp);
     sequence += tmp.size();
 
     //8-bit enable
     // [23]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"s8b" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"s8b" ) ) );
     sequence++;
 
     //6-bit enable
     // [24]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"s6b" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"s6b" ) ) );
     sequence++;
 
     //ADC enable
     // [25]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"s10b" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"s10b" ) ) );
     sequence++;
 
     //dual clock serialized
     // [26]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdcks" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sdcks" ) ) );
     sequence++;
 
     //dual clock ART
     // [27]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdcka" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sdcka" ) ) );
     sequence++;
 
     //dual clock 6-bit
     // [28]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdck6b" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sdck6b" ) ) );
     sequence++;
 
     //analog tri-states
     // [29]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdrv" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sdrv" ) ) );
     sequence++;
 
     //timing out 2
     // [30]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"stpp" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"stpp" ) ) );
     sequence++;
 
     //[31] reserved
@@ -486,48 +486,48 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
     //polarity, sp
     //[0]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sp" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sp" ) ) );
     sequence++;
 
     //disable at peak, sdp
     //[1]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdp" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sdp" ) ) );
     sequence++;
 
     //analog monitor to pdo, sbmx
     //[2]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sbmx" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sbmx" ) ) );
     sequence++;
 
     //tdo buffer
     //[3]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sbft" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sbft" ) ) );
     sequence++;
 
     //pdo buffer
     //[4]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sbfp" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sbfp" ) ) );
     sequence++;
 
     //mo buffer
     //[5]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sbfm" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sbfm" ) ) );
     sequence++;
 
     //leakage current
     //[6]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"slg" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"slg" ) ) );
     sequence++;
 
     //channel to monitor
     //[7,12]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"monitoring" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"monitoring" ) ,
                              6,2,QChar('0'));
     spi2.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
@@ -535,73 +535,73 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
     //multiplexer
     //[13]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"scmx" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"scmx" ) ) );
     sequence++;
 
     //ART enable
     //[14]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sfa" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sfa" ) ) );
     sequence++;
 
     //ART mode
     //[15]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sfam" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sfam" ) ) );
     sequence++;
 
     //peak_time
     // [16,17]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"peaktime" ) ,2,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"peaktime" ) ,2,2,QChar('0'));
     spi2.replace(sequence, tmp.size(),tmp);
     sequence += tmp.size();
 
     //double leakage (doubles the leakage current)
     // [18]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sfm" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sfm" ) ) );
     sequence++;
 
     //gain
     // [19,21]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"gain" ) ,3,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"gain" ) ,3,2,QChar('0'));
     spi2.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
 
     //neighbor trigger
     // [22]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sng" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sng" ) ) );
     sequence++;
 
     //direct outputs settings
     // [23]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"stot" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"stot" ) ) );
     sequence++;
 
     //direct timing
     // [24]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sttt" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sttt" ) ) );
     sequence++;
 
     //sub-hysteresis
     // [25]
     spi2.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"ssh" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"ssh" ) ) );
     sequence++;
 
     //TAC slope adjustment
     // [26,27]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"stc" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"stc" ) ,
                              2,2,QChar('0'));
     spi2.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
 
     //threshold DAC highest 4 bits
     // [28,31]
-    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sdt" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index,"sdt" ) ,
                              10,2,QChar('0'));
     spi2.replace(sequence,1,tmp[0]);
     sequence += 1;
@@ -624,7 +624,7 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hdmi
 
 }
 // ------------------------------------------------------------------------ //
-void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int hdmi_index, int hybrid_index, int vmm_index)
+void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int hdmi_index, int vmm_index)
 {
     stringstream sx;
     if(IsDbgEnabled())GetMessageHandler()("Loading channel configuration...", "Configuration::fillChannelRegisters");
@@ -641,43 +641,43 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
 
         //SC [8]
         reg.replace(sequence,1,
-                    QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "sc", i ) ) );
+                    QString::number( m_fec->GetVMM( hdmi_index,  vmm_index, "sc", i ) ) );
         sequence++;
         if(do_check) std::cout << " SC : " << reg.toStdString() << std::endl;
 
         //SL [9]
         reg.replace(sequence,1,
-                    QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "sl", i ) ) );
+                    QString::number( m_fec->GetVMM( hdmi_index,  vmm_index, "sl", i ) ) );
         sequence++;
         if(do_check) std::cout << " SL : " << reg.toStdString() << std::endl;
 
         //ST [10]
         reg.replace(sequence,1,
-                    QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "st", i ) ) );
+                    QString::number( m_fec->GetVMM( hdmi_index,  vmm_index, "st", i ) ) );
         sequence++;
         if(do_check) std::cout << " ST : " << reg.toStdString() << std::endl;
 
         //STH [11]
         reg.replace(sequence,1,
-                    QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "sth", i ) ) );
+                    QString::number( m_fec->GetVMM( hdmi_index,  vmm_index, "sth", i ) ) );
         sequence++;
         if(do_check) std::cout << " STH : " << reg.toStdString() << std::endl;
 
         //SM [12]
         reg.replace(sequence,1,
-                    QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "sm", i ) ) );
+                    QString::number( m_fec->GetVMM( hdmi_index,  vmm_index, "sm", i ) ) );
         sequence++;
         if(do_check) std::cout << " SM : " << reg.toStdString() << std::endl;
 
         //SMX [13]
         reg.replace(sequence,1,
-                    QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "smx", i ) ) );
+                    QString::number( m_fec->GetVMM( hdmi_index,  vmm_index, "smx", i ) ) );
         sequence++;
         if(do_check) std::cout << " SMX : " << reg.toStdString() << std::endl;
 
         //trim [14,18]
         tmp = "0000";
-        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "sd", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index, "sd", i ) ,
                                  5,2,QChar('0'));
         //According to ATLAS software, still needed
         std::reverse(tmp.begin(),tmp.end()); //bug in VMM2, needs to be reversed
@@ -688,7 +688,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
 
 
         //10 bit adc lsb [19,23]
-        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "ADC0_10", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index, "ADC0_10", i ) ,
                                  5,2,QChar('0'));
         //According to ATLAS software, has to be reversed
         std::reverse(tmp.begin(),tmp.end());
@@ -697,7 +697,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
         if(do_check) std::cout << " 10bit : " << reg.toStdString() << std::endl;
 
         //8 bit adc lsb [24,27]
-        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "ADC0_8", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index, "ADC0_8", i ) ,
                                  4,2,QChar('0'));
         //According to ATLAS software, has to be reversed
         std::reverse(tmp.begin(),tmp.end());
@@ -706,7 +706,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
         if(do_check) std::cout << " 8bit : " << reg.toStdString() << std::endl;
 
         //6 bit adc lsb [28,30]
-        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index, "ADC0_6", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hdmi_index,  vmm_index, "ADC0_6", i ) ,
                                  3,2,QChar('0'));
         //According to ATLAS software, has to be reversed
         std::reverse(tmp.begin(),tmp.end());
@@ -738,7 +738,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
 
 
 
-void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hdmi_index, int hybrid_index, int vmm_index)
+void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hdmi_index, int vmm_index)
 {
     stringstream sx;
 
@@ -760,7 +760,7 @@ void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hdm
     // magic number on BCID
     // [31]
     spi0.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"nskipm_i" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"nskipm_i" ) ) );
     sequence++;
 
 
@@ -790,13 +790,13 @@ void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hdm
     //invert DCK
     // [1]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sL0dckinv" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sL0dckinv" ) ) );
     sequence++;
 
     //invert BCCLK
     // [2]
     spi1.replace(sequence,1,
-                 QString::number( m_fec->GetVMM( hdmi_index,  hybrid_index,  vmm_index,"sL0ckinv" ) ) );
+                 QString::number( m_fec->GetVMM( hdmi_index,  vmm_index,"sL0ckinv" ) ) );
     sequence++;
 
     //L0 core
@@ -923,7 +923,7 @@ int FECConfigModule::Connect()
 
 
 
-void FECConfigModule::ConfigTP( int hdmi_index, int hybrid_index)
+void FECConfigModule::ConfigTP( int hdmi_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Configuring the pulser...","FEC_config_module::configTP");
 
@@ -945,9 +945,9 @@ void FECConfigModule::ConfigTP( int hdmi_index, int hybrid_index)
 
     GetSocketHandler().UpdateCommandCounter();
 
-    int tpskew = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("TP_skew");
-    int tpwidth = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("TP_width");
-    int tppolarity = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("TP_pol");
+    int tpskew = m_fec->m_hdmis[hdmi_index].m_hybrids[0].GetReg("TP_skew");
+    int tpwidth = m_fec->m_hdmis[hdmi_index].m_hybrids[0].GetReg("TP_width");
+    int tppolarity = m_fec->m_hdmis[hdmi_index].m_hybrids[0].GetReg("TP_pol");
 
     ////////////////////////////
     // header
@@ -989,7 +989,7 @@ void FECConfigModule::ConfigTP( int hdmi_index, int hybrid_index)
 
 
 // ------------------------------------------------------------------------ //
-void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
+void FECConfigModule::SetTriggerAcqConstants()
 {
     if(IsDbgEnabled())GetMessageHandler()("Sending trigger ACQ constants...","FEC_config_module::setTriggerAcqConstants");
 
@@ -1007,24 +1007,9 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); // rewind
 
-    // bcid reset and clear S6 fifo
-    quint32 clear_S6_fifo = 0;
-    if (m_fec->GetRegVal("clear_S6_fifo")) clear_S6_fifo = 32768; // goes as highest bit to 16 bit bcid reset
-
-    // bcid reset and acceptanc _window
-    quint32 acceptance_window = 0;
-    if (m_fec->GetRegVal("acceptance_window")) acceptance_window = 16384; // goes as second highest bit to 16 bit bvid reset
-
-    //"Close FEC write FIFO outside ACQ win (default true)
-    quint32 open_fec_wr_fifo_outside_acq_win = 0;
-    if (m_fec->GetRegVal("open_fec_wr_fifo_outside_acq_win")) open_fec_wr_fifo_outside_acq_win = 8192; // goes as third highest bit to 16 bit bvid reset
-
     ///////////////////////////
     // header info
     ///////////////////////////
-    QString chMapString = "0000000000000000";
-    chMapString.replace( 15 - (hdmi_index*2+1-vmm_index) , 1 , QString("1") );
-    quint16 chMap = (quint16)chMapString.toInt(&ok,2);
 
     QString cmd, cmdType, cmdLength, msbCounter;
     cmd         = "AA";
@@ -1033,8 +1018,7 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
     msbCounter  = "0x80000000";
     out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
         << (quint16) 0 //[4,5]
-        << (quint16) chMap //[6,7]
-           //<< (quint32) config().getHDMIChannelMap() //[8,11]
+        << (quint16) m_fec->GetChMap() //[6,7]
         << (quint8)  cmd.toUInt(&ok,16) //[8]
         << (quint8)  cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
@@ -1044,20 +1028,29 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
     ///////////////////////////
     out << (quint32) 0 //[12,15]
            //trigger period
+        << (quint32) 0 //[16,19]
+        << (quint32) 7 //[20,23]
+        << (quint32) 1 //[16,19]
+        << (quint32) m_fec->GetRegVal("debug_data_format") //[20,23]
         << (quint32) 2 //[16,19]
-        << (quint32) m_fec->GetRegVal("readout_cycle") //[20,23]
-           //pulser delay
-        << (quint32) 4 //[24,27]
-        << (quint32) m_fec->GetRegVal("tp_delay") //[28,31]
-           //acq. sync
-        << (quint32) 5 //[32,35]
-        << (quint32) m_fec->GetRegVal("acq_sync") //[36,39]
-           //acq. window
-        << (quint32) 6 //[40,43]
-        << (quint32) m_fec->GetRegVal("acq_window") //[44,47]
-           //bcid reset
-        << (quint32) 9 //[48,51]
-        << (quint32) m_fec->GetRegVal("bcid_reset") + clear_S6_fifo + acceptance_window + open_fec_wr_fifo_outside_acq_win; //[52,55] is acctually 16 bit in FEC frimware. Highest bit is clear_S6_fifo, second highest is acceptance_window, third highest is open_fec_wr_fifo_outside_acq_win
+        << (quint32) m_fec->GetRegVal("latency_reset") //[20,23]
+        << (quint32) 3 //[16,19]
+        << (quint32) m_fec->GetRegVal("latency_data_max") //[20,23]
+        << (quint32) 4 //[16,19]
+        << (quint32) m_fec->GetRegVal("latency_data_error") //[20,23]
+        << (quint32) 5 //[16,19]
+        << (quint32) m_fec->GetRegVal("register_trigger_timestamp") //[20,23]
+        << (quint32) 6 //[16,19]
+        << (quint32) m_fec->GetRegVal("first_trigger_starts_acq") //[20,23]
+        << (quint32) 9 //[16,19]
+        << (quint32) m_fec->GetRegVal("tp_offset_first") //[20,23]
+        << (quint32) 10 //[16,19]
+        << (quint32) m_fec->GetRegVal("tp_offset") //[20,23]
+        << (quint32) 11 //[16,19]
+        << (quint32) m_fec->GetRegVal("tp_latency") //[20,23]
+        << (quint32) 12 //[16,19]
+        << (quint32) m_fec->GetRegVal("tp_number"); //[20,23]
+
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::setTriggerAcqConstants");
@@ -1081,7 +1074,7 @@ void FECConfigModule::SetTriggerAcqConstants(int hdmi_index, int vmm_index)
 
 
 // ------------------------------------------------------------------------ //
-void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
+void FECConfigModule::SetS6clocks(int hdmi_index)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting S6 clocks...","FEC_config_module::s6clocks");
 
@@ -1089,10 +1082,9 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
     QByteArray datagram;
 
     //get settings
-    int ckbc = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKBC");
-    int ckbc_duty = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKBC_duty");
-    int ckbc_skew = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKBC_skew");
-    int ckdt = m_fec->m_hdmis[hdmi_index].m_hybrids[hybrid_index].GetReg("CKDT");
+    int ckbc = m_fec->m_hdmis[hdmi_index].m_hybrids[0].GetReg("CKBC");
+    int ckbc_skew = m_fec->m_hdmis[hdmi_index].m_hybrids[0].GetReg("CKBC_skew");
+    int ckdt = m_fec->m_hdmis[hdmi_index].m_hybrids[0].GetReg("CKDT");
 
     // send call to s6 port
     int send_to_port = m_fec->GetRegVal("s6_port");
@@ -1125,7 +1117,7 @@ void FECConfigModule::SetS6clocks(int hdmi_index, int hybrid_index)
     ////////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 7 //[24,27]
-        << (quint32) ( ckbc + (ckbc_skew*16) + (ckbc_duty*64)) //[32,35]
+        << (quint32)  ckbc + (ckbc_skew*16) //[32,35]
         << (quint32) 5 //[36,39], CKDT control register
         << (quint32) 0 + (ckdt*2); //[40,43] lowest bit: dynamic reconfiguration of clock, bits [1,2,3] CKDT selection (readout clock)
 
@@ -1595,82 +1587,7 @@ void FECConfigModule::writeDAQip(int DAQip)
 
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeDAQip");
 }
-// ------------------------------------------------------------------------ //
 
-
-
-void FECConfigModule::SetReadoutMode()
-{
-    if(IsDbgEnabled())GetMessageHandler()("Setting trigger mode...","FEC_config_module::SetReadoutMode");
-
-    bool ok;
-    QByteArray datagram;
-
-    // send trigger mode to VMMAPP port
-    int send_to_port = m_fec->GetRegVal("vmmapp_port");
-
-    QString ip = m_fec->GetIP();
-
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); // rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    ///////////////////////////
-    // header info
-    ///////////////////////////
-
-    QString cmd, cmdType, cmdLength, msbCounter;
-    cmd         = "AA";
-    cmdType     = "AA";
-    cmdLength   = "FFFF";
-    msbCounter  = "0x80000000";
-
-    int globalCKBC = m_fec->GetRegVal("globalCKBC");
-    int ts_ext_trg = m_fec->GetRegVal("ts_ext_trg");
-
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint16) 0 //[4,5]
-        << (quint16) m_fec->GetChMap() //[6,7]
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-    ///////////////////////////
-    // trigger mode
-    ///////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 0; //[16,19]
-    if(m_fec->GetRegVal("triggermode") == 0){//external trigger
-        out << (quint32) 4 + (globalCKBC*8) + (ts_ext_trg*64) ; //[20,23] bit 0: enable periodic trigger, bit 1: enable t_pulse, bit 2: enable acq win, bit 3-5:GlobalCKBC, bit 6: ts_ext_trg
-        if(IsDbgEnabled())GetMessageHandler()("External trigger enabled","FEC_config_module::SetReadoutMode");
-    } // external
-    else {
-        out << (quint32) 7 + (globalCKBC*8) + (ts_ext_trg*64); //[20,23]bit 0: enable periodic trigger, bit 1: enable t_pulse, bit 2: enable acq win, bit 3-5:GlobalCKBC, bit 6: ts_ext_trg
-        if(IsDbgEnabled())GetMessageHandler()("Internal trigger enabled","FEC_config_module::SetReadoutMode");
-    }
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::SetReadoutMode");
-
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::SetReadoutMode");
-        GetSocketHandler().ProcessReply("fec", ip);
-    }
-    else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::SetReadoutMode",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetReadoutMode");
-        //        exit(1);
-        return;
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::SetReadoutMode");
-
-}
 // ------------------------------------------------------------------------ //
 void FECConfigModule::ACQon(bool broadcast)
 {
@@ -1708,14 +1625,12 @@ void FECConfigModule::ACQon(bool broadcast)
         << (quint8) cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
 
-    quint32 val2 = (m_fec->GetRegVal("trigger_pulse_delay") << 8);
     ///////////////////////////
     // ACQ on
     ///////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 15 //[16,19]
-        << (quint32) 1 + val2; //[20,23] x val2 to not overwrite other config parameters sent to reg 15.
-
+        << (quint32) 1; //[20,23]
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::ACQon");
     bool readOK = true;
@@ -1862,7 +1777,7 @@ void FECConfigModule::SetMask()
 
 }
 // ------------------------------------------------------------------------ //
-int FECConfigModule::ReadADC(int hdmi_index, int hybrid_index, int vmm_index, int adc_chan)
+int FECConfigModule::ReadADC(int hdmi_index, int vmm_index, int adc_chan)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadADC");
 

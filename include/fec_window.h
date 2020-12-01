@@ -38,8 +38,6 @@ private slots:
     void onUpdateSettings();
     void onCheckLinkStatus();
     void onResetFEC();
-
-    void onSetReadoutMode(int mode);
     void onACQHandler();
 
     void on_readSystemParams_pressed();
@@ -56,6 +54,7 @@ private:
     void HDMIBoxLogic(bool checked, unsigned short hdmi);
     void UpdateWindow();
     void LoadSettings();
+    void SetToolTips();
     bool SetFec(const char *feature, unsigned long val);
     unsigned long GetFec(const char *feature);
 
