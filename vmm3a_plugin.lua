@@ -131,8 +131,8 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 						local vmmid =  bit.band(bit.rshift(d2:uint(), 10), 0x1F) 
 						
 						local hit = srshdr:add(buffer(16 + (i-1)*data_length_byte, data_length_byte),
-							string.format("Marker: %3d, SRS timestamp: %d, vmmid: %d",
-							marker_id, i64_toInt(timestamp), vmmid))
+							string.format("Marker: %3d, SRS timestamp: %15.0f, vmmid: %d",
+							22, i64_toInt(timestamp), vmmid))
 
 						local d1handle = hit:add(d1, "Data1 " .. d1)
 						d1handle:add(d1, "timestamp: " .. i64_toString(timestamp))
