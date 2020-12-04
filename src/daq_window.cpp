@@ -152,7 +152,9 @@ void DAQWindow::LoadConfig(QString text){
         ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
-        fname+=".txt";
+        if(!text.contains(".txt")) {
+            fname+=".txt";
+        }
         bool found = m_mainWindow->m_daqConfigHandler->LoadDAQConf(fname.c_str());
         if (!found){
             std::cout << "File not found" << std::endl;

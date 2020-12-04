@@ -69,9 +69,9 @@ void CalibrationModule::StopDataTaking()
 {
     m_start = 0;
     m_end = 0;
-    m_mainWindow->m_daqWindow->ui->offACQ->setCheckable(true);
-    m_mainWindow->m_daqWindow->ui->offACQ->setChecked(true);
-    m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
+    m_mainWindow->m_daqWindow->ui->onACQ->setEnabled(true);
+    m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
+    //m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
     m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
     m_mainWindow->m_daqs[0].ACQHandler(false);
     QThread::usleep(1000);
@@ -1150,8 +1150,18 @@ void CalibrationModule::AccumulateData(){
             {
                 m_outFile.close();
             }
+            /*
+            m_mainWindow->m_daqWindow->ui->offACQ->setCheckable(true);
+            m_mainWindow->m_daqWindow->ui->offACQ->setChecked(true);
+            m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
+            m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
+            m_mainWindow->m_daqWindow->ui->onACQ->setEnabled(true);
+            m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
+            m_mainWindow->m_daqs[0].ACQHandler(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+*/
+
             m_dataAvailable = true;
             m_isCalibrated[m_modeIndex] = true;
             if(IsCalibration())

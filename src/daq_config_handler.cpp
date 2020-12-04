@@ -7,7 +7,9 @@ DAQConfigHandler::DAQConfigHandler(MainWindow *top, QObject *parent) :QObject(pa
 
 bool DAQConfigHandler::LoadDAQConf(const char* filename){
     //add config path before file name
-    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_mainWindow->GetApplicationPath().toStdString();
+    fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::cout << fname << std::endl;
     return LoadDAQConfig(fname);
 }
 

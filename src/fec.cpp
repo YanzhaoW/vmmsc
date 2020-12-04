@@ -68,6 +68,29 @@ void FEC::SendAll(){
     for(int n=0; n< HDMIS_PER_FEC*VMMS_PER_HYBRID; n++) {
         config_error[n] = 0;
     }
+
+    unsigned long first = 0;
+    unsigned long ckbc = 0;
+    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+        if(GetHDMI(k)){
+            if(k == 0) {
+                first = this->m_hdmis[k].m_hybrids[0].GetReg("CKBC");
+            }
+            else {
+                ckbc = this->m_hdmis[k].m_hybrids[0].GetReg("CKBC");
+                if(first != ckbc) {
+                    int ret = QMessageBox::warning(nullptr, tr("Hybrid BC clock"),
+                                                   tr("Invalid hybrid BC clock setting! All hybrids on the same FEC have to have the same BC clock!"),
+                                                   QMessageBox::Ok);
+                    return;
+                }
+            }
+        }
+    }
+    if(ckbc >= 2) {
+        SetReg("bcclock_factor",ckbc-2);
+    }
+
     m_fecConfigModule->SetMask();
     m_fecConfigModule->SetTriggerAcqConstants();
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
@@ -130,7 +153,7 @@ void FEC::LoadDefault(){
     (*m_regNames)[1] ="tp_offset";               (*m_reg)[1] = 1000;  //12 bit
     (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 71;  //8 bit
     (*m_regNames)[3] ="tp_number";               (*m_reg)[3] = 1;    //8 bit
-    (*m_regNames)[4] ="not_used";                (*m_reg)[4] = 0;
+    (*m_regNames)[4] ="bcclock_factor";          (*m_reg)[4] = 0;
     (*m_regNames)[5] ="not_used";                (*m_reg)[5] = 0;
 
     (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
@@ -157,22 +180,23 @@ void FEC::LoadDefault(){
     (*m_regNames)[25]="sL0cktest";               (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
     (*m_regNames)[26]="ip_fec";                  (*m_reg)[26] = 0x0a000002;   //
     (*m_regNames)[27]="ip_daq";                  (*m_reg)[27] = 0x0a000003;   //
-    (*m_regNames)[28]="not_used";                (*m_reg)[28] = 0;   //
-    (*m_regNames)[29]="not_used";                (*m_reg)[29] = 0;   //
 
-    (*m_regNames)[30]="i2c_port";                (*m_reg)[30] = 6604;   //32 bit
-    (*m_regNames)[31]="fec_sys_port";            (*m_reg)[31] = 6023;   //32 bit
+    (*m_regNames)[28]="i2c_port";                (*m_reg)[28] = 6604;   //32 bit
+    (*m_regNames)[29]="fec_sys_port";            (*m_reg)[29] = 6023;   //32 bit
 
-    (*m_regNames)[32]="latency_reset";           (*m_reg)[32] = 53;   //8 bit
-    (*m_regNames)[33]="latency_data_max";             (*m_reg)[33] = 2560; //12 bit
-    (*m_regNames)[34]="latency_data_error";           (*m_reg)[34] = 4;    //8 bit
-    (*m_regNames)[35]="not_used";                (*m_reg)[35] = 0;
-    (*m_regNames)[36]="not_used";                (*m_reg)[36] = 0;
-    (*m_regNames)[37]="not_used";                (*m_reg)[37] = 0;
-    (*m_regNames)[38]="not_used";                (*m_reg)[38] = 0;
-    (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
-    (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;
-    (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;
+    (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 53;   //8 bit
+    (*m_regNames)[31]="latency_data_max";             (*m_reg)[31] = 2560; //12 bit
+    (*m_regNames)[32]="latency_data_error";           (*m_reg)[32] = 4;    //8 bit
+    (*m_regNames)[33]="half_eye_width_0";                (*m_reg)[33] = 8;
+    (*m_regNames)[34]="half_eye_width_1";                (*m_reg)[34] = 8;
+    (*m_regNames)[35]="half_eye_width_2";                (*m_reg)[35] = 8;
+    (*m_regNames)[36]="half_eye_width_3";                (*m_reg)[36] = 8;
+    (*m_regNames)[37]="half_eye_width_4";                (*m_reg)[37] = 8;
+    (*m_regNames)[38]="half_eye_width_5";                (*m_reg)[38] = 8;
+    (*m_regNames)[39]="half_eye_width_6";                (*m_reg)[39] = 8;
+    (*m_regNames)[40]="half_eye_width_7";                (*m_reg)[40] = 8;   //
+    (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
+
 }
 
 // ------------------------------------------------------------------------- //

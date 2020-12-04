@@ -163,6 +163,11 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 						local trg_lower8bit  = bit.band(d2:uint(), 0xff) 
 					
 						local offset = bit.band(bit.rshift(d1:uint(), 27), 0x1f) 
+						if offset == 16 then
+							offset = -16;
+						elseif offset == 31 then
+							offset = -1;
+						end 
 						local vmmid = bit.band(bit.rshift(d1:uint(), 22), 0x1f) 
 						local adc   = bit.band(bit.rshift(d1:uint(), 12), 0x03FF) 
 						local trg_higher4bit   = bit.band(bit.rshift(d1:uint(), 12), 0x000F) 

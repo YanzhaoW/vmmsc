@@ -90,6 +90,7 @@ void FECWindow::SetToolTips()
     m_ui->debug_data_format->setToolTip("Enable the debug data format.\nThe debug data format shows the trigger counter (FEC counter counting 40 MHz clock cycles) at which the hits from the VMM arrive.");
     m_ui->register_trigger_timestamp->setToolTip("Record the time of external trigger signal.\nThe trigger signal will appear as 25 ns resolution timestamp for VMM 31.");
     m_ui->first_trigger_starts_acq->setToolTip("If an external trigger signal is connected to the FEC,\nthe first trigger signal will start the acquisition (useful to synchronize multiple FECs");
+
 }
 
 void FECWindow::onACQHandler(){
@@ -162,8 +163,30 @@ void FECWindow::onUpdateSettings(){
     else if(QObject::sender() == m_ui->first_trigger_starts_acq){
        SetFec("first_trigger_starts_acq",  m_ui->first_trigger_starts_acq->isChecked() );
     }
-
-
+    else if(QObject::sender() == m_ui->half_eye_width_0){
+       SetFec("half_eye_width_0",  m_ui->half_eye_width_0->value() );
+    }
+   else if(QObject::sender() == m_ui->half_eye_width_1){
+      SetFec("half_eye_width_1",  m_ui->half_eye_width_1->value() );
+   }
+   else if(QObject::sender() == m_ui->half_eye_width_2){
+      SetFec("half_eye_width_2",  m_ui->half_eye_width_2->value() );
+   }
+   else if(QObject::sender() == m_ui->half_eye_width_3){
+      SetFec("half_eye_width_3",  m_ui->half_eye_width_3->value() );
+   }
+   else if(QObject::sender() == m_ui->half_eye_width_4){
+      SetFec("half_eye_width_4",  m_ui->half_eye_width_4->value() );
+   }
+   else if(QObject::sender() == m_ui->half_eye_width_5){
+      SetFec("half_eye_width_5",  m_ui->half_eye_width_5->value() );
+   }
+   else if(QObject::sender() == m_ui->half_eye_width_6){
+      SetFec("half_eye_width_6",  m_ui->half_eye_width_6->value() );
+   }
+   else if(QObject::sender() == m_ui->half_eye_width_7){
+      SetFec("half_eye_width_7",  m_ui->half_eye_width_7->value() );
+   }
     else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
@@ -225,6 +248,16 @@ void FECWindow::LoadSettings(){
     m_ui->latency_data_max->setValue( GetFec( "latency_data_max" ) );
     m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
 
+
+    m_ui->half_eye_width_0->setValue( GetFec( "half_eye_width_0" ) );
+    m_ui->half_eye_width_1->setValue( GetFec( "half_eye_width_1" ) );
+    m_ui->half_eye_width_2->setValue( GetFec( "half_eye_width_2" ) );
+    m_ui->half_eye_width_3->setValue( GetFec( "half_eye_width_3" ) );
+    m_ui->half_eye_width_4->setValue( GetFec( "half_eye_width_4" ) );
+    m_ui->half_eye_width_5->setValue( GetFec( "half_eye_width_5" ) );
+    m_ui->half_eye_width_6->setValue( GetFec( "half_eye_width_6" ) );
+    m_ui->half_eye_width_7->setValue( GetFec( "half_eye_width_7" ) );
+
     m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
     if(GetFec( "tp_number" ) == 1) {
         m_ui->tp_offset->setEnabled(false);
@@ -234,6 +267,7 @@ void FECWindow::LoadSettings(){
     }
     m_ui->register_trigger_timestamp->setChecked(GetFec("register_trigger_timestamp"));
     m_ui->first_trigger_starts_acq->setChecked(GetFec("first_trigger_starts_acq"));
+
 }
 
 bool FECWindow::SetFec(const char *feature, unsigned long val){

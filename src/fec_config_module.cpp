@@ -1023,6 +1023,10 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint8)  cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
+   uint32_t half_eye_width =  m_fec->GetRegVal("half_eye_width_0") + pow(2, 4)*m_fec->GetRegVal("half_eye_width_1") + pow(2, 8)*m_fec->GetRegVal("half_eye_width_2")
+            + pow(2, 12)*m_fec->GetRegVal("half_eye_width_3") + pow(2, 16)*m_fec->GetRegVal("half_eye_width_4")  + pow(2, 20)*m_fec->GetRegVal("half_eye_width_5") + pow(2, 24)*m_fec->GetRegVal("half_eye_width_6")
+            + pow(2, 28)*m_fec->GetRegVal("half_eye_width_7");
+
     ///////////////////////////
     // trigger constants
     ///////////////////////////
@@ -1042,6 +1046,8 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) m_fec->GetRegVal("register_trigger_timestamp") //[20,23]
         << (quint32) 6 //[16,19]
         << (quint32) m_fec->GetRegVal("first_trigger_starts_acq") //[20,23]
+        << (quint32) 7 //[16,19]
+        << (quint32) m_fec->GetRegVal("bcclock_factor") //[20,23]
         << (quint32) 9 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_offset_first") //[20,23]
         << (quint32) 10 //[16,19]
@@ -1049,7 +1055,9 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) 11 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_latency") //[20,23]
         << (quint32) 12 //[16,19]
-        << (quint32) m_fec->GetRegVal("tp_number"); //[20,23]
+        << (quint32) m_fec->GetRegVal("tp_number") //[20,23] //[20,23]
+        << (quint32) 13 //[16,19]
+        << (quint32) half_eye_width; //[20,23] //[20,23]
 
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
