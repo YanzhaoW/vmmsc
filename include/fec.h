@@ -60,9 +60,9 @@ public:
     long GetID();
     QString GetIP();
     long GetIP_FEC();
-    void SetIP_FEC(long ip);
+    void SetIP_FEC(unsigned long  ip);
     long GetIP_DAQ();
-    void SetIP_DAQ(long ip);
+    void SetIP_DAQ(unsigned long  ip);
 
 private:
     bool Set(unsigned short reg, unsigned long val);

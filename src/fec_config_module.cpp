@@ -1023,7 +1023,16 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint8)  cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
-   uint32_t half_eye_width =  m_fec->GetRegVal("half_eye_width_0") + pow(2, 4)*m_fec->GetRegVal("half_eye_width_1") + pow(2, 8)*m_fec->GetRegVal("half_eye_width_2")
+    cfg_trgin_pol <= cfg_reg13(0);
+      cfg_trgout_pol <= cfg_reg13(8);
+      cfg_trgout_sel <= cfg_reg13(16);
+
+      cfg_reg14 <= ireg32(14, appregin);
+
+      cfg_trgout_delay <= cfg_reg14(11 downto 0);
+   uint32_t trgout_delay =
+
+   uint32_t trg_settings =  m_fec->GetRegVal("trgin_pol") +8*m_fec->GetRegVal("trgout_pol") + pow(2, 8)*m_fec->GetRegVal("half_eye_width_2")
             + pow(2, 12)*m_fec->GetRegVal("half_eye_width_3") + pow(2, 16)*m_fec->GetRegVal("half_eye_width_4")  + pow(2, 20)*m_fec->GetRegVal("half_eye_width_5") + pow(2, 24)*m_fec->GetRegVal("half_eye_width_6")
             + pow(2, 28)*m_fec->GetRegVal("half_eye_width_7");
 
@@ -1057,6 +1066,8 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) 12 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_number") //[20,23] //[20,23]
         << (quint32) 13 //[16,19]
+        << (quint32) half_eye_width; //[20,23] //[20,23]
+        << (quint32) 14 //[16,19]
         << (quint32) half_eye_width; //[20,23] //[20,23]
 
 

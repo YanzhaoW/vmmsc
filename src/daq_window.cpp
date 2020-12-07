@@ -23,6 +23,8 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
 
+    ui->first_trigger_starts_acq->setToolTip("If checked, the first trigger signal that occurs at the NIM trigger input of the FEC will start the acquisition.\nUseful to synchronize the start of acquisition in case multiple FECs are used.");
+
     QString correctedFileName = m_mainWindow->GetApplicationPath() +  "/../configs/default.txt";
 
     if(FileExists(correctedFileName.toStdString().c_str())){
@@ -611,3 +613,12 @@ void DAQWindow::on_pushButtonNewHybrid_clicked()
     m_mainWindow->m_test->ResetHybrid();
 }
 
+void DAQWindow::on_first_trigger_starts_acq_stateChanged(int arg1)
+{
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if (m_mainWindow->m_daqs[0].GetFEC(j)){
+            m_mainWindow->m_daqs[0].m_fecs[j].SetReg("first_trigger_starts_acq", ui->first_trigger_starts_acq->isChecked());
+        }
+    }
+
+}

@@ -1150,23 +1150,27 @@ void CalibrationModule::AccumulateData(){
             {
                 m_outFile.close();
             }
-            /*
+
             m_mainWindow->m_daqWindow->ui->offACQ->setCheckable(true);
             m_mainWindow->m_daqWindow->ui->offACQ->setChecked(true);
             m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
             m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
-            m_mainWindow->m_daqWindow->ui->onACQ->setEnabled(true);
-            m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
             m_mainWindow->m_daqs[0].ACQHandler(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-            m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-*/
-
             m_dataAvailable = true;
             m_isCalibrated[m_modeIndex] = true;
             if(IsCalibration())
             {
-                LoadSettings();
+                for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
+                    int fec = GetFEC(vmm);
+                    int hdmi = GetHDMI(vmm);
+                    int chip = GetVMM(vmm);
+
+                    for(int ch = 0; ch<64; ch++){
+                       m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",0,ch);
+                    }
+               }
+               LoadSettings();
             }
             //Not for S-curve
             if(m_modeIndex != 5) {

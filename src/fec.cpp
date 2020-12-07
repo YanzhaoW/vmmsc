@@ -19,29 +19,29 @@ FEC::FEC():
 
 
 long FEC::GetID(){
-    return  (m_reg->at(26) & 0x000000FF);
+    return  ( GetRegVal("ip_fec") & 0x000000FF);
 }
 
 QString FEC::GetIP() {
     QHostAddress ip;
-    ip.setAddress(m_reg->at(26));
+    ip.setAddress(GetReg("ip_fec"));
     return ip.toString();
 }
 
 long FEC::GetIP_FEC(){
-    return m_reg->at(26);
+    return GetRegVal("ip_fec");
 }
 
-void FEC::SetIP_FEC(long ip) {
-    (*m_reg)[26] = ip;
+void FEC::SetIP_FEC(unsigned long ip) {
+    SetReg("ip_fec", ip);
 }
 
 long FEC::GetIP_DAQ(){
-    return m_reg->at(27);
+   return GetRegVal("ip_daq");
 }
 
-void FEC::SetIP_DAQ(long ip) {
-    (*m_reg)[27] = ip;
+void FEC::SetIP_DAQ(unsigned long  ip) {
+    SetReg("ip_daq", ip);
 }
 
 void FEC::SetFirmwareVersion(QString version)
@@ -165,9 +165,9 @@ void FEC::LoadDefault(){
     (*m_regNames)[12]="not_used";                (*m_reg)[12] = 0;
     (*m_regNames)[13]="not_used";                (*m_reg)[13] = 0;
 
-    (*m_regNames)[14]="debug_data_format";              (*m_reg)[14] = 0;   // 1bit: 0 for normal data format, 1 for debug format
-    (*m_regNames)[15]="register_trigger_timestamp";     (*m_reg)[15] = 0;   //
-    (*m_regNames)[16]="first_trigger_starts_acq";       (*m_reg)[16] = 0;   //
+    (*m_regNames)[14]="";       (*m_reg)[14] = 0;
+    (*m_regNames)[15]="";                        (*m_reg)[15] = 0;   //
+    (*m_regNames)[16]="";                        (*m_reg)[16] = 0;   //
 
     (*m_regNames)[17]="sL0enaV";                 (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
     (*m_regNames)[18]="sL0ena";                  (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
@@ -185,16 +185,16 @@ void FEC::LoadDefault(){
     (*m_regNames)[29]="fec_sys_port";            (*m_reg)[29] = 6023;   //32 bit
 
     (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 53;   //8 bit
-    (*m_regNames)[31]="latency_data_max";             (*m_reg)[31] = 2560; //12 bit
+    (*m_regNames)[31]="latency_data_max";             (*m_reg)[31] = 4091; //12 bit
     (*m_regNames)[32]="latency_data_error";           (*m_reg)[32] = 4;    //8 bit
-    (*m_regNames)[33]="half_eye_width_0";                (*m_reg)[33] = 8;
-    (*m_regNames)[34]="half_eye_width_1";                (*m_reg)[34] = 8;
-    (*m_regNames)[35]="half_eye_width_2";                (*m_reg)[35] = 8;
-    (*m_regNames)[36]="half_eye_width_3";                (*m_reg)[36] = 8;
-    (*m_regNames)[37]="half_eye_width_4";                (*m_reg)[37] = 8;
-    (*m_regNames)[38]="half_eye_width_5";                (*m_reg)[38] = 8;
-    (*m_regNames)[39]="half_eye_width_6";                (*m_reg)[39] = 8;
-    (*m_regNames)[40]="half_eye_width_7";                (*m_reg)[40] = 8;   //
+    (*m_regNames)[33]="debug_data_format";            (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
+    (*m_regNames)[34]="first_trigger_starts_acq";     (*m_reg)[34] = 0;
+    (*m_regNames)[35]="trgin_pol";                    (*m_reg)[35] = 0;
+    (*m_regNames)[36]="trgout_pol";                   (*m_reg)[36] = 0;
+    (*m_regNames)[37]="trgout_sel";                (*m_reg)[37] = 0;
+    (*m_regNames)[38]="trgout_delay";                (*m_reg)[38] = 0;
+    (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
+    (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
     (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
 
 }

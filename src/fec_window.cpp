@@ -42,7 +42,12 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
 
-
+    connect(m_ui->trgin_polarity, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->trgout_polarity, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->trgout_time, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
     connect(m_daqWindow->ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
@@ -55,6 +60,12 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_daqWindow, SIGNAL(ChangeState()),
             this, SLOT( onACQHandler() ));
 
+
+    m_ui->trgout_time->clear();
+    m_ui->trgout_time->addItem("trg in");
+    for(int i=0; i<4096; i++) {
+        m_ui->trgout_time->addItem( QString::number(i));
+    }
 }
 
 FECWindow::~FECWindow()
@@ -88,8 +99,18 @@ void FECWindow::SetToolTips()
     m_ui->tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
     m_ui->label_tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
     m_ui->debug_data_format->setToolTip("Enable the debug data format.\nThe debug data format shows the trigger counter (FEC counter counting 40 MHz clock cycles) at which the hits from the VMM arrive.");
-    m_ui->register_trigger_timestamp->setToolTip("Record the time of external trigger signal.\nThe trigger signal will appear as 25 ns resolution timestamp for VMM 31.");
-    m_ui->first_trigger_starts_acq->setToolTip("If an external trigger signal is connected to the FEC,\nthe first trigger signal will start the acquisition (useful to synchronize multiple FECs");
+    m_ui->trgin_polarity->setToolTip("Polarity setting for the NIM trigger input of the FEC. If the setting is positive or negative polarity, the trigger timestamp is appearing in the data as marker of VMM 31.");
+    m_ui->trgout_polarity->setToolTip("Polarity setting for the NIM trigger output of the FEC.");
+    m_ui->trgout_time->setToolTip("Trigger output can either give out the signal from the NIM trigger input, or occur at the chosen BCID.");
+
+
+    connect(m_ui->trgin_polarity, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->trgout_polarity, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+    connect(m_ui->trgout_time, SIGNAL(valueChanged(int)),
+            this, SLOT(onUpdateSettings()));
+
 
 }
 
@@ -157,36 +178,8 @@ void FECWindow::onUpdateSettings(){
     else if(QObject::sender() == m_ui->debug_data_format){
         SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
     }
-    else if(QObject::sender() == m_ui->register_trigger_timestamp){
-       SetFec("register_trigger_timestamp",  m_ui->register_trigger_timestamp->isChecked() );
-    }
-    else if(QObject::sender() == m_ui->first_trigger_starts_acq){
-       SetFec("first_trigger_starts_acq",  m_ui->first_trigger_starts_acq->isChecked() );
-    }
-    else if(QObject::sender() == m_ui->half_eye_width_0){
-       SetFec("half_eye_width_0",  m_ui->half_eye_width_0->value() );
-    }
-   else if(QObject::sender() == m_ui->half_eye_width_1){
-      SetFec("half_eye_width_1",  m_ui->half_eye_width_1->value() );
-   }
-   else if(QObject::sender() == m_ui->half_eye_width_2){
-      SetFec("half_eye_width_2",  m_ui->half_eye_width_2->value() );
-   }
-   else if(QObject::sender() == m_ui->half_eye_width_3){
-      SetFec("half_eye_width_3",  m_ui->half_eye_width_3->value() );
-   }
-   else if(QObject::sender() == m_ui->half_eye_width_4){
-      SetFec("half_eye_width_4",  m_ui->half_eye_width_4->value() );
-   }
-   else if(QObject::sender() == m_ui->half_eye_width_5){
-      SetFec("half_eye_width_5",  m_ui->half_eye_width_5->value() );
-   }
-   else if(QObject::sender() == m_ui->half_eye_width_6){
-      SetFec("half_eye_width_6",  m_ui->half_eye_width_6->value() );
-   }
-   else if(QObject::sender() == m_ui->half_eye_width_7){
-      SetFec("half_eye_width_7",  m_ui->half_eye_width_7->value() );
-   }
+
+
     else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
@@ -196,7 +189,7 @@ void FECWindow::onUpdateSettings(){
             m_ui->offACQ->setEnabled(true);
         }
         else{
-            m_ui->linkPB->setEnabled(false);
+            //m_ui->linkPB->setEnabled(false);
             m_ui->fec_WarmInit->setEnabled(false);
             m_ui->readSystemParams->setEnabled(false);
             m_ui->onACQ->setEnabled(false);
@@ -249,14 +242,6 @@ void FECWindow::LoadSettings(){
     m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
 
 
-    m_ui->half_eye_width_0->setValue( GetFec( "half_eye_width_0" ) );
-    m_ui->half_eye_width_1->setValue( GetFec( "half_eye_width_1" ) );
-    m_ui->half_eye_width_2->setValue( GetFec( "half_eye_width_2" ) );
-    m_ui->half_eye_width_3->setValue( GetFec( "half_eye_width_3" ) );
-    m_ui->half_eye_width_4->setValue( GetFec( "half_eye_width_4" ) );
-    m_ui->half_eye_width_5->setValue( GetFec( "half_eye_width_5" ) );
-    m_ui->half_eye_width_6->setValue( GetFec( "half_eye_width_6" ) );
-    m_ui->half_eye_width_7->setValue( GetFec( "half_eye_width_7" ) );
 
     m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
     if(GetFec( "tp_number" ) == 1) {
@@ -265,8 +250,8 @@ void FECWindow::LoadSettings(){
     else {
        m_ui->tp_offset->setEnabled(true);
     }
-    m_ui->register_trigger_timestamp->setChecked(GetFec("register_trigger_timestamp"));
-    m_ui->first_trigger_starts_acq->setChecked(GetFec("first_trigger_starts_acq"));
+    //m_ui->register_trigger_timestamp->setChecked(GetFec("register_trigger_timestamp"));
+    //m_ui->first_trigger_starts_acq->setChecked(GetFec("first_trigger_starts_acq"));
 
 }
 
