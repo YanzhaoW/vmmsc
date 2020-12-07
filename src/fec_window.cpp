@@ -179,8 +179,23 @@ void FECWindow::onUpdateSettings(){
         SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
     }
 
+   else if(QObject::sender() == m_ui->trgin_polarity){
+        SetFec("trgin_polarity",  m_ui->trgin_polarity->currentIndex() );
+        if(GetFec( "trgin_polarity" ) == 0) {
+            SetFec("register_trigger_timestamp", 0);
+        }
+        else {
+            SetFec("register_trigger_timestamp", 1);
+        }
 
-    else if(QObject::sender() == m_daqWindow->ui->openConnection){
+    }
+   else if(QObject::sender() == m_ui->trgout_polarity){
+       SetFec("trgout_polarity",  m_ui->trgout_polarity->currentIndex() );
+   }
+   else if(QObject::sender() == m_ui->trgout_time){
+        SetFec("trgout_time",  m_ui->trgout_time->currentIndex() );
+   }
+   else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
             m_ui->readSystemParams->setEnabled(true);
@@ -241,8 +256,6 @@ void FECWindow::LoadSettings(){
     m_ui->latency_data_max->setValue( GetFec( "latency_data_max" ) );
     m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
 
-
-
     m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
     if(GetFec( "tp_number" ) == 1) {
         m_ui->tp_offset->setEnabled(false);
@@ -250,8 +263,19 @@ void FECWindow::LoadSettings(){
     else {
        m_ui->tp_offset->setEnabled(true);
     }
-    //m_ui->register_trigger_timestamp->setChecked(GetFec("register_trigger_timestamp"));
-    //m_ui->first_trigger_starts_acq->setChecked(GetFec("first_trigger_starts_acq"));
+
+    m_ui->trgin_polarity->setCurrentIndex( GetFec( "trgin_polarity" ) );
+    if(GetFec( "trgin_polarity" ) == 0) {
+        SetFec("register_trigger_timestamp", 0);
+    }
+    else {
+        SetFec("register_trigger_timestamp", 1);
+    }
+
+    m_ui->trgout_polarity->setCurrentIndex( GetFec( "trgout_polarity" ) );
+    m_ui->trgout_time->setCurrentIndex( GetFec( "trgout_time" ) );
+
+
 
 }
 

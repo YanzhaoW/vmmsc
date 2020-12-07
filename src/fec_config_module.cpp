@@ -1023,18 +1023,20 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint8)  cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
-    cfg_trgin_pol <= cfg_reg13(0);
-      cfg_trgout_pol <= cfg_reg13(8);
-      cfg_trgout_sel <= cfg_reg13(16);
 
-      cfg_reg14 <= ireg32(14, appregin);
+   uint32_t trgout_delay =  m_fec->GetRegVal("trgout_delay");
+   uint32_t trgout_sel = 0;
+   if(trgout_delay > 0) {
+     trgout_sel = 1;
+   }
+   else {
+       trgout_delay =  trgout_delay - 1;
+   }
 
-      cfg_trgout_delay <= cfg_reg14(11 downto 0);
-   uint32_t trgout_delay =
-
-   uint32_t trg_settings =  m_fec->GetRegVal("trgin_pol") +8*m_fec->GetRegVal("trgout_pol") + pow(2, 8)*m_fec->GetRegVal("half_eye_width_2")
-            + pow(2, 12)*m_fec->GetRegVal("half_eye_width_3") + pow(2, 16)*m_fec->GetRegVal("half_eye_width_4")  + pow(2, 20)*m_fec->GetRegVal("half_eye_width_5") + pow(2, 24)*m_fec->GetRegVal("half_eye_width_6")
-            + pow(2, 28)*m_fec->GetRegVal("half_eye_width_7");
+   uint32_t trg_settings =  m_fec->GetRegVal("trgin_pol") +8*m_fec->GetRegVal("trgout_pol") +16*trgout_sel;
+   std::cout << "trg_settings " << trg_settings << " trgout_delay" << std::endl;
+   std::cout << "m_fec->GetRegVal(first_trigger_starts_acq) " << m_fec->GetRegVal("first_trigger_starts_acq") << std::endl;
+   std::cout << "m_fec->GetRegVal(register_trigger_timestamp) " << m_fec->GetRegVal("register_trigger_timestamp") << std::endl;
 
     ///////////////////////////
     // trigger constants
@@ -1066,9 +1068,9 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) 12 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_number") //[20,23] //[20,23]
         << (quint32) 13 //[16,19]
-        << (quint32) half_eye_width; //[20,23] //[20,23]
+        << (quint32) trg_settings //[20,23] //[20,23]
         << (quint32) 14 //[16,19]
-        << (quint32) half_eye_width; //[20,23] //[20,23]
+        << (quint32) trgout_delay; //[20,23] //[20,23]
 
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
