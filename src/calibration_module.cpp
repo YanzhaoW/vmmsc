@@ -57,7 +57,7 @@ void CalibrationModule::SaveSettings() {
     emit m_mainWindow->m_daqWindow->on_Button_save_clicked();
     QThread::usleep(1000);
     m_mainWindow->m_daqWindow->ui->line_configFile->setText("");
-    QThread::sleep(1);
+    QThread::usleep(1000);
     m_mainWindow->m_daqWindow->LoadConfig("Calib_config");
 }
 
@@ -67,13 +67,16 @@ void CalibrationModule::LoadSettings() {
 
 void CalibrationModule::StopDataTaking()
 {
+    std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Stop Data Taking" << std::endl;
     m_start = 0;
     m_end = 0;
     m_mainWindow->m_daqWindow->ui->onACQ->setEnabled(true);
     m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
     //m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
     m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
+
     m_mainWindow->m_daqs[0].ACQHandler(false);
+
     QThread::usleep(1000);
     CloseDAQSocket();
 }
@@ -812,8 +815,10 @@ void CalibrationModule::StartCalibration(){
 
     if(IsCalibration())
     {
-        m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
-        SaveSettings();
+       if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
+         m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
+         SaveSettings();
+       }
     }
 
     GetActiveVMMs();
@@ -1161,16 +1166,20 @@ void CalibrationModule::AccumulateData(){
             m_isCalibrated[m_modeIndex] = true;
             if(IsCalibration())
             {
+
                 for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
                     int fec = GetFEC(vmm);
                     int hdmi = GetHDMI(vmm);
                     int chip = GetVMM(vmm);
 
                     for(int ch = 0; ch<64; ch++){
-                       m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sm",0,ch);
+                       m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
                     }
                }
-               LoadSettings();
+
+               if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
+                    LoadSettings();
+               }
             }
             //Not for S-curve
             if(m_modeIndex != 5) {
@@ -1238,7 +1247,7 @@ void CalibrationModule::Reset()
         int fec = GetFEC(vmm);
         int hdmi = GetHDMI(vmm);
         int chip = GetVMM(vmm);
-        LoadSettings();
+        //LoadSettings();
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset1", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("reset2", 1);
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hdmi, chip);
@@ -1515,26 +1524,28 @@ void CalibrationModule::SaveCorrections(){
     }
     else
     {
-        for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-            for(int ch=0; ch<64; ch++)
-            {
-                int fec = GetFEC(vmm);
-                int hdmi = GetHDMI(vmm);
-                int chip = GetVMM(vmm);
-
-                if(m_modeIndex == 3)
+        if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
+            for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
+                for(int ch=0; ch<64; ch++)
                 {
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi( "ADC0_10", m_bitVal[fec][hdmi][0][chip][static_cast<unsigned int>(ch)]  , ch );
-                }
-                else if(m_modeIndex == 4) {
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi( "ADC0_8", m_bitVal[fec][hdmi][0][chip][static_cast<unsigned int>(ch)]  , ch );
-                }
-                else if(m_modeIndex == 6) {
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi( "sd", m_bitVal[fec][hdmi][0][chip][static_cast<unsigned int>(ch)]  , ch );
+                    int fec = GetFEC(vmm);
+                    int hdmi = GetHDMI(vmm);
+                    int chip = GetVMM(vmm);
+
+                    if(m_modeIndex == 3)
+                    {
+                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi( "ADC0_10", m_bitVal[fec][hdmi][0][chip][static_cast<unsigned int>(ch)]  , ch );
+                    }
+                    else if(m_modeIndex == 4) {
+                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi( "ADC0_8", m_bitVal[fec][hdmi][0][chip][static_cast<unsigned int>(ch)]  , ch );
+                    }
+                    else if(m_modeIndex == 6) {
+                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi( "sd", m_bitVal[fec][hdmi][0][chip][static_cast<unsigned int>(ch)]  , ch );
+                    }
                 }
             }
+            SaveSettings();
         }
-        SaveSettings();
 
     }
 }

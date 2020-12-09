@@ -27,7 +27,6 @@ private slots:
     void on_Box_vmm1_clicked();
     void on_Box_vmm2_clicked();
     void onUpdateSettings();
-    void onGlobalCKBCHandler();
     void on_pbReadI2C_pressed();
 private:
     HDMIWindow *m_hdmiWindow;

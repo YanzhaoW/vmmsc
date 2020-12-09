@@ -10,17 +10,23 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
 {
     internalClockPeriod = 25;
     m_ui->setupUi(this);
+    m_ui->trgout_time->clear();
+    m_ui->trgout_time->addItem("trg in");
+    for(int i=0; i<4096; i++) {
+        m_ui->trgout_time->addItem( QString::number(i));
+    }
     UpdateWindow();
     LoadSettings();
     //    this->setStyleSheet("QWidget {background: 'white';}");
     m_ui->linkPB->setEnabled(false);
     m_ui->readSystemParams->setEnabled(false);
+
     m_ui->fec_WarmInit->setEnabled(false);
     m_ui->onACQ->setEnabled(false);
     m_ui->offACQ->setEnabled(false);
 
     m_ui->debugScreen->setReadOnly(true);
-    m_ui->debug_data_format->setChecked(false); SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
+
     SetToolTips();
 
     connect(m_ui->latency_reset, SIGNAL(valueChanged(int)),
@@ -42,12 +48,13 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
 
-    connect(m_ui->trgin_polarity, SIGNAL(valueChanged(int)),
+    connect(m_ui->trgin_invert, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgout_polarity, SIGNAL(valueChanged(int)),
+    connect(m_ui->trgout_invert, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgout_time, SIGNAL(valueChanged(int)),
+    connect(m_ui->trgout_time, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onUpdateSettings()));
+
     connect(m_daqWindow->ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
@@ -61,11 +68,7 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
             this, SLOT( onACQHandler() ));
 
 
-    m_ui->trgout_time->clear();
-    m_ui->trgout_time->addItem("trg in");
-    for(int i=0; i<4096; i++) {
-        m_ui->trgout_time->addItem( QString::number(i));
-    }
+
 }
 
 FECWindow::~FECWindow()
@@ -99,17 +102,9 @@ void FECWindow::SetToolTips()
     m_ui->tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
     m_ui->label_tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
     m_ui->debug_data_format->setToolTip("Enable the debug data format.\nThe debug data format shows the trigger counter (FEC counter counting 40 MHz clock cycles) at which the hits from the VMM arrive.");
-    m_ui->trgin_polarity->setToolTip("Polarity setting for the NIM trigger input of the FEC. If the setting is positive or negative polarity, the trigger timestamp is appearing in the data as marker of VMM 31.");
-    m_ui->trgout_polarity->setToolTip("Polarity setting for the NIM trigger output of the FEC.");
-    m_ui->trgout_time->setToolTip("Trigger output can either give out the signal from the NIM trigger input, or occur at the chosen BCID.");
-
-
-    connect(m_ui->trgin_polarity, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgout_polarity, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgout_time, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
+    m_ui->trgin_invert->setToolTip("Setting (off/normal/inverted) for the NIM trigger input of the FEC. Inverted means that the signal will be low when the input is high.\nIf the setting normal or inverted, the trigger timestamp is appearing in the data as marker of VMM 31.");
+    m_ui->trgout_invert->setToolTip("Setting (off/normal/inverted) for the NIM trigger output of the FEC. Inverted only works if the trigger input is chosen as signal.\nIf the setting normal or inverted, the trigger timestamp is appearing in the data as marker of VMM 31.");
+    m_ui->trgout_time->setToolTip("Trigger output can either give out the signal from the NIM trigger input, or occur for 25 ns at the chosen BCID.");
 
 
 }
@@ -179,8 +174,29 @@ void FECWindow::onUpdateSettings(){
         SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
     }
 
+   else if(QObject::sender() == m_ui->trgin_invert){
+        SetFec("trgin_invert",  m_ui->trgin_invert->currentIndex() );
+        if(GetFec( "trgin_invert" ) == 0) {
+            SetFec("register_trigger_timestamp", 0);
+        }
+        else {
+            SetFec("register_trigger_timestamp", 1);
+        }
 
-    else if(QObject::sender() == m_daqWindow->ui->openConnection){
+    }
+   else if(QObject::sender() == m_ui->trgout_invert){
+       SetFec("trgout_invert",  m_ui->trgout_invert->currentIndex() );
+       if(GetFec( "trgout_invert" ) == 0) {
+           m_ui->trgout_time->setEnabled(false);
+       }
+       else {
+          m_ui->trgout_time->setEnabled(true);
+       }
+   }
+   else if(QObject::sender() == m_ui->trgout_time){
+        SetFec("trgout_time",  m_ui->trgout_time->currentIndex() );
+   }
+   else if(QObject::sender() == m_daqWindow->ui->openConnection){
         if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->linkPB->setEnabled(true);
             m_ui->readSystemParams->setEnabled(true);
@@ -241,8 +257,6 @@ void FECWindow::LoadSettings(){
     m_ui->latency_data_max->setValue( GetFec( "latency_data_max" ) );
     m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
 
-
-
     m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
     if(GetFec( "tp_number" ) == 1) {
         m_ui->tp_offset->setEnabled(false);
@@ -250,8 +264,23 @@ void FECWindow::LoadSettings(){
     else {
        m_ui->tp_offset->setEnabled(true);
     }
-    //m_ui->register_trigger_timestamp->setChecked(GetFec("register_trigger_timestamp"));
-    //m_ui->first_trigger_starts_acq->setChecked(GetFec("first_trigger_starts_acq"));
+
+    m_ui->trgin_invert->setCurrentIndex( GetFec( "trgin_invert" ) );
+    if(GetFec( "trgin_invert" ) == 0) {
+        SetFec("register_trigger_timestamp", 0);
+    }
+    else {
+        SetFec("register_trigger_timestamp", 1);
+    }
+
+    m_ui->trgout_invert->setCurrentIndex( GetFec( "trgout_invert" ) );
+    if(GetFec( "trgout_invert" ) == 0) {
+        m_ui->trgout_time->setEnabled(false);
+    }
+    else {
+        m_ui->trgout_time->setEnabled(true);
+    }
+    m_ui->trgout_time->setCurrentIndex( GetFec( "trgout_time" ) );
 
 }
 

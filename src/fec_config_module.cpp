@@ -1023,19 +1023,44 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint8)  cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
-    cfg_trgin_pol <= cfg_reg13(0);
-      cfg_trgout_pol <= cfg_reg13(8);
-      cfg_trgout_sel <= cfg_reg13(16);
 
-      cfg_reg14 <= ireg32(14, appregin);
+   uint32_t trgout_time =  m_fec->GetRegVal("trgout_time");
+   uint32_t trgout_sel = 0;
+   // index = 0: input, index 1-4096: generate trigger
+   if(trgout_time > 0) {
+     trgout_sel = 1;
+     trgout_time =  trgout_time - 1;
+   }
 
-      cfg_trgout_delay <= cfg_reg14(11 downto 0);
-   uint32_t trgout_delay =
 
-   uint32_t trg_settings =  m_fec->GetRegVal("trgin_pol") +8*m_fec->GetRegVal("trgout_pol") + pow(2, 8)*m_fec->GetRegVal("half_eye_width_2")
-            + pow(2, 12)*m_fec->GetRegVal("half_eye_width_3") + pow(2, 16)*m_fec->GetRegVal("half_eye_width_4")  + pow(2, 20)*m_fec->GetRegVal("half_eye_width_5") + pow(2, 24)*m_fec->GetRegVal("half_eye_width_6")
-            + pow(2, 28)*m_fec->GetRegVal("half_eye_width_7");
 
+   uint32_t trgin_on = 0;
+   uint32_t trgin_invert = m_fec->GetRegVal("trgin_invert");
+   if(trgin_invert > 0) {
+       // trigger input on, register timestamp
+       trgin_on = 1;
+       // polarity setting, 0 positive, 1 negative
+       trgin_invert = trgin_invert - 1;
+   }
+
+   uint32_t trgout_on = 0;
+   uint32_t trgout_invert = m_fec->GetRegVal("trgout_invert");
+   if(trgout_invert > 0) {
+       // polarity setting, 0 positive, 1 negative
+       trgout_invert = trgout_invert - 1;
+       //create a trigger output
+       trgout_on = 1;
+   }
+   uint32_t trg_on_off =  trgin_on + 2*trgout_on;
+   uint32_t trg_invert =  trgin_invert +2*trgout_invert +4*trgout_sel;
+
+   std::cout << "trgin_on " << trgin_on << std::endl;
+   std::cout << "trgout_on " << trgout_on << std::endl;
+   std::cout << "trgin_invert " << trgin_invert << std::endl;
+   std::cout << "trgout_invert " << trgout_invert << std::endl;
+   std::cout << "trgout_sel " << trgout_sel << std::endl;
+   std::cout << "latency_reset " <<  m_fec->GetRegVal("latency_reset") << std::endl;
+   std::cout << "bcclock_factor " <<  m_fec->GetRegVal("bcclock_factor") << std::endl;
     ///////////////////////////
     // trigger constants
     ///////////////////////////
@@ -1052,7 +1077,7 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) 4 //[16,19]
         << (quint32) m_fec->GetRegVal("latency_data_error") //[20,23]
         << (quint32) 5 //[16,19]
-        << (quint32) m_fec->GetRegVal("register_trigger_timestamp") //[20,23]
+        << (quint32) trg_on_off //[20,23]
         << (quint32) 6 //[16,19]
         << (quint32) m_fec->GetRegVal("first_trigger_starts_acq") //[20,23]
         << (quint32) 7 //[16,19]
@@ -1066,9 +1091,9 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) 12 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_number") //[20,23] //[20,23]
         << (quint32) 13 //[16,19]
-        << (quint32) half_eye_width; //[20,23] //[20,23]
+        << (quint32) trg_invert //[20,23] //[20,23]
         << (quint32) 14 //[16,19]
-        << (quint32) half_eye_width; //[20,23] //[20,23]
+        << (quint32) trgout_time; //[20,23] //[20,23]
 
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
@@ -1129,6 +1154,7 @@ void FECConfigModule::SetS6clocks(int hdmi_index)
     out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
         << (quint32) hdmiMap //[4,7]
         << (quint32) cmd.toUInt(&ok,16); //[8,11]
+
 
 
     ////////////////////////////

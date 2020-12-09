@@ -11,7 +11,6 @@ HybridWindow::HybridWindow(HDMIWindow *top, unsigned short fec, unsigned short h
     m_ui->setupUi(this);
     UpdateWindow();
     LoadSettings();
-    onGlobalCKBCHandler();
 
     connect(m_ui->axis, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(onUpdateSettings()));
@@ -29,8 +28,6 @@ HybridWindow::HybridWindow(HDMIWindow *top, unsigned short fec, unsigned short h
                                     this, SLOT(onUpdateSettings()));
     connect(m_ui->tpPolarity, SIGNAL(currentIndexChanged(int)),
                                     this, SLOT(onUpdateSettings()));
-    connect(m_hdmiWindow->m_fecWindow, SIGNAL(ChangeState_FEC()),
-            this, SLOT( onGlobalCKBCHandler() ));
 
     connect(m_ui->ApplyAll, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
@@ -46,17 +43,6 @@ HybridWindow::~HybridWindow()
     delete m_ui;
 }
 
-void HybridWindow::onGlobalCKBCHandler(){
-    if(m_hdmiWindow->m_fecWindow->m_sendstate == "globalCKBCon" ){
-        m_ui->ckbc_s6->setEnabled(false);
-        SetHybrid("CKBC", m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetRegVal("globalCKBC"));
-
-    }
-    else if(m_hdmiWindow->m_fecWindow->m_sendstate == "globalCKBCoff" ){
-        m_ui->ckbc_s6->setEnabled(true);
-        SetHybrid("CKBC", m_ui->ckbc_s6->currentIndex());
-    }
-}
 
 void HybridWindow::on_Box_vmm1_clicked()
 {

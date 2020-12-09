@@ -70,11 +70,13 @@ void FEC::SendAll(){
     }
 
     unsigned long first = 0;
+    unsigned long firstIndex = 0;
     unsigned long ckbc = 0;
     for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
         if(GetHDMI(k)){
-            if(k == 0) {
+            if(firstIndex == 0) {
                 first = this->m_hdmis[k].m_hybrids[0].GetReg("CKBC");
+                firstIndex = k;
             }
             else {
                 ckbc = this->m_hdmis[k].m_hybrids[0].GetReg("CKBC");
@@ -87,8 +89,9 @@ void FEC::SendAll(){
             }
         }
     }
-    if(ckbc >= 2) {
-        SetReg("bcclock_factor",ckbc-2);
+
+    if(first >= 2) {
+        SetReg("bcclock_factor",first-2);
     }
 
     m_fecConfigModule->SetMask();
@@ -165,9 +168,9 @@ void FEC::LoadDefault(){
     (*m_regNames)[12]="not_used";                (*m_reg)[12] = 0;
     (*m_regNames)[13]="not_used";                (*m_reg)[13] = 0;
 
-    (*m_regNames)[14]="";       (*m_reg)[14] = 0;
-    (*m_regNames)[15]="";                        (*m_reg)[15] = 0;   //
-    (*m_regNames)[16]="";                        (*m_reg)[16] = 0;   //
+    (*m_regNames)[14]="not_used";                        (*m_reg)[14] = 0;
+    (*m_regNames)[15]="not_used";                        (*m_reg)[15] = 0;   //
+    (*m_regNames)[16]="not_used";                        (*m_reg)[16] = 0;   //
 
     (*m_regNames)[17]="sL0enaV";                 (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
     (*m_regNames)[18]="sL0ena";                  (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
@@ -189,10 +192,10 @@ void FEC::LoadDefault(){
     (*m_regNames)[32]="latency_data_error";           (*m_reg)[32] = 4;    //8 bit
     (*m_regNames)[33]="debug_data_format";            (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
     (*m_regNames)[34]="first_trigger_starts_acq";     (*m_reg)[34] = 0;
-    (*m_regNames)[35]="trgin_pol";                    (*m_reg)[35] = 0;
-    (*m_regNames)[36]="trgout_pol";                   (*m_reg)[36] = 0;
-    (*m_regNames)[37]="trgout_sel";                (*m_reg)[37] = 0;
-    (*m_regNames)[38]="trgout_delay";                (*m_reg)[38] = 0;
+    (*m_regNames)[35]="trgin_invert";                    (*m_reg)[35] = 0;
+    (*m_regNames)[36]="trgout_invert";                   (*m_reg)[36] = 0;
+    (*m_regNames)[37]="trgout_time";                (*m_reg)[37] = 1;
+    (*m_regNames)[38]="not_used";               (*m_reg)[38] = 0;
     (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
     (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
     (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //

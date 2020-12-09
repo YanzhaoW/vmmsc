@@ -721,7 +721,7 @@
           <rect>
            <x>0</x>
            <y>20</y>
-           <width>141</width>
+           <width>142</width>
            <height>291</height>
           </rect>
          </property>
@@ -732,6 +732,20 @@
           <property name="rightMargin">
            <number>9</number>
           </property>
+          <item row="1" column="0">
+           <widget class="QLabel" name="ckbcLabel_2">
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>CKBC
+skew</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="ckbc_s6">
             <property name="enabled">
@@ -849,8 +863,8 @@
             </item>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="ckbcLabel">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -864,7 +878,7 @@
              </font>
             </property>
             <property name="text">
-             <string>CKBC</string>
+             <string>CKDT</string>
             </property>
            </widget>
           </item>
@@ -919,8 +933,8 @@
             </item>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label">
+          <item row="0" column="0">
+           <widget class="QLabel" name="ckbcLabel">
             <property name="maximumSize">
              <size>
               <width>16777215</width>
@@ -934,21 +948,29 @@
              </font>
             </property>
             <property name="text">
-             <string>CKDT</string>
+             <string>CKBC</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="ckbcLabel_2">
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="CKDT_calib">
+            <item>
+             <property name="text">
+              <string>LUT</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>auto</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>CKBC
-skew</string>
+             <string>Calib
+CKDT</string>
             </property>
            </widget>
           </item>

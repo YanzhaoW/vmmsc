@@ -182,6 +182,7 @@ void DAQWindow::LoadConfig(QString text){
                 if (m_mainWindow->m_daq_act[i]){
                     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
                         if (m_mainWindow->m_daqs[i].GetFEC(j)){
+                            m_mainWindow->m_daqs[i].m_fecs[j].SetReg("first_trigger_starts_acq", ui->first_trigger_starts_acq->isChecked());
                             if (j==0 && !ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(true);on_Box_fec1_clicked();}
                             if (j==1 && !ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(true);on_Box_fec2_clicked();}
                             if (j==2 && !ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(true);on_Box_fec3_clicked();}
@@ -303,7 +304,6 @@ void DAQWindow::on_openConnection_clicked()
                             ui->offACQ->setEnabled(true);
                         }
                         else{
-
                             SetConnectionMessage("ping failed", "red");
                             ui->Send->setEnabled(false);
                             ui->onACQ->setEnabled(false);
