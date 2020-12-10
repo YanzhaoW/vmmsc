@@ -258,7 +258,7 @@ void FECWindow::LoadSettings(){
     m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
 
     m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
-    if(GetFec( "tp_number" ) == 1) {
+    if(GetFec( "tp_number" ) <= 1) {
         m_ui->tp_offset->setEnabled(false);
     }
     else {

@@ -732,6 +732,76 @@
           <property name="rightMargin">
            <number>9</number>
           </property>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>CKDT</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="ckbc_skew_s6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>0.00 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>-12.5 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>-25.0 ns</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>-37.5 ns</string>
+             </property>
+            </item>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="ckbcLabel_2">
             <property name="font">
@@ -744,6 +814,54 @@
              <string>CKBC
 skew</string>
             </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="ckdt_s6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>75</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Arial</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <item>
+             <property name="text">
+              <string>22.5 MHz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>45 MHz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>90 MHz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>180 MHz</string>
+             </property>
+            </item>
            </widget>
           </item>
           <item row="0" column="1">
@@ -815,124 +933,6 @@ skew</string>
             </item>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QComboBox" name="ckdt_s6">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <item>
-             <property name="text">
-              <string>22.5 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>45 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>90 MHz</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>180 MHz</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>11</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>CKDT</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="ckbc_skew_s6">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>75</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <family>Arial</family>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>0.00 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>-12.5 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>-25.0 ns</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>-37.5 ns</string>
-             </property>
-            </item>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="ckbcLabel">
             <property name="maximumSize">
@@ -949,28 +949,6 @@ skew</string>
             </property>
             <property name="text">
              <string>CKBC</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QComboBox" name="CKDT_calib">
-            <item>
-             <property name="text">
-              <string>LUT</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>auto</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Calib
-CKDT</string>
             </property>
            </widget>
           </item>

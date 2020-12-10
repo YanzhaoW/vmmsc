@@ -1166,7 +1166,7 @@ void CalibrationModule::AccumulateData(){
             m_isCalibrated[m_modeIndex] = true;
             if(IsCalibration())
             {
-
+/*
                 for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
                     int fec = GetFEC(vmm);
                     int hdmi = GetHDMI(vmm);
@@ -1176,7 +1176,7 @@ void CalibrationModule::AccumulateData(){
                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
                     }
                }
-
+*/
                if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
                     LoadSettings();
                }
