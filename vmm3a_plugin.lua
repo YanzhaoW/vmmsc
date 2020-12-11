@@ -7,8 +7,10 @@
 
 local t0=0
 local fc0=0
-local firstMarker = 0
-
+local fc=0
+local last_fc=0
+local error_fc=0
+	
 function i64_ax(h,l)
  local o = {}; o.l = l; o.h = h; return o;
 end -- +assign 64-bit v.as 2 regs
@@ -64,36 +66,37 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 	local data_length_byte = 6
 	local protolen = buffer():len()
 	local srshdr = tree:add(srsvmm_proto,buffer(),"SRS Header")
-	local fc = buffer(0,4):uint()
-    local last_timestamp1 = 0
-    local timestamp1 = 0
-    local last_timestamp2 = 0
-    local timestamp2 = 0
-    local last_timestamp = 0
+	last_fc = fc
+	fc = buffer(0,4):uint()
+    --local last_timestamp1 = 0
+    --local timestamp1 = 0
+    --local last_timestamp2 = 0
+    --local timestamp2 = 0
+    --local last_timestamp = 0
     local time_error = 0
    
-	if (fc0 == 0) and (fc ~= 0xfafafafa) then
+	if (fc0 == 0) then
 		fc0 = fc
 	end
-	if fc == 0xfafafafa then
-		srshdr:add("Frame Counter: 0xfafafafa (End of Frame)")
-		pinfo.cols.info = "End of Frame"
-	else
+      
 		local dataid = buffer(4,3):uint()
-		local time = buffer(8,4):uint()
+		local the_time = buffer(8,4):uint()
 		if (t0 == 0) then
-			t0 = time
+			t0 = the_time
 		end
-
+		if fc - last_fc > 1 or fc - last_fc ==  0 then
+			error_fc = 1
+	    else	
+			error_fc = 0
+		end
 		srshdr:add(buffer(0,4),"Frame Counter: " .. fc .. " (" .. (fc-fc0) .. ")")
 		if dataid == 0x564d33 then
 			local fecid = bit.rshift(buffer(7,1):uint(), 4)
 			local overflow = buffer(12,4):uint()
 			srshdr:add(buffer(4,3),"Data Id: VMM3a Data")
 			srshdr:add(buffer(7,1),"FEC ID: " .. fecid)
-			srshdr:add(buffer(8,4),"UDP Timestamp: " .. time .. " (" .. (time - t0) .. ")")
+			srshdr:add(buffer(8,4),"UDP Timestamp: " .. the_time .. " (" .. 25*(the_time - t0) .. ")")
 			srshdr:add(buffer(12,4),"Offset overflow last frame: " .. overflow)
-			
 			if protolen >= 16 then
 				local hits = (protolen-16)/data_length_byte
 				local hit_id = 0
@@ -115,8 +118,7 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 
 						--data 1 (32 bit):
 						--	timestamp: 0-31: 32 bit
-						last_timestamp1 = timestamp1
-						last_timestamp2 = timestamp2
+					
 						timestamp1 = d1:uint() 
 						timestamp2 = bit.lshift(d2:uint(), 22) 
 						local temp = i64_ax(timestamp1,timestamp2)
@@ -124,15 +126,12 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 						
 						
 						marker_id = marker_id + 1
-						if last_timestamp1 > timestamp1 or (last_timestamp1 == ltimestamp1 and last_timestamp2 > timestamp2) then
-							time_error = time_error + 1
-						end
-						
+												
 						local vmmid =  bit.band(bit.rshift(d2:uint(), 10), 0x1F) 
 						
 						local hit = srshdr:add(buffer(16 + (i-1)*data_length_byte, data_length_byte),
-							string.format("Marker: %3d, SRS timestamp: %15.0f, vmmid: %d",
-							22, i64_toInt(timestamp), vmmid))
+							string.format("Marker: %3d, VMM ID %d, SRS timestamp: %15.0f",
+							marker_id, vmmid, i64_toInt(timestamp)))
 
 						local d1handle = hit:add(d1, "Data1 " .. d1)
 						d1handle:add(d1, "timestamp: " .. i64_toString(timestamp))
@@ -175,12 +174,22 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 
 						local bcid  = gray2bin32(gbcid)
 						local trg = bit.lshift(trg_higher4bit, 8) + trg_lower8bit
-									
-
-						local hit = srshdr:add(buffer(16 + (i-1)*data_length_byte, data_length_byte),
-							string.format("Hit: %3d, offset: %d, vmmID: %2d, ch: %2d, bcid: %4d, tdc: %4d, adc: %4d, over thr: %d, trg: %4d",
-							hit_id, offset, vmmid, chno, bcid, tdc, adc, othr, trg))
-
+						local hit = 0			
+						if adc < 16 then
+							local latency = 0
+							if trg-bcid >= -6 then
+								latency = trg-bcid
+						    else
+								latency = 4096 + trg - bcid
+							end	
+							hit = srshdr:add(buffer(16 + (i-1)*data_length_byte, data_length_byte),
+								string.format("Hit: %3d, offset: %d, vmmID: %2d, ch: %2d, bcid: %4d, trg: %4d, latency: %4d",
+								hit_id, offset, vmmid, chno, bcid, trg, latency))
+						else
+							hit = srshdr:add(buffer(16 + (i-1)*data_length_byte, data_length_byte),
+								string.format("Hit: %3d, offset: %d, vmmID: %2d, ch: %2d, bcid: %4d, tdc: %4d, adc: %4d, over thr: %d",
+								hit_id, offset, vmmid, chno, bcid, tdc, adc, othr))
+						end 
 						local d1handle = hit:add(d1, "Data1 " .. d1)
 						d1handle:add(d1, "offset: " .. offset)
 						d1handle:add(d1, "vmmid: " .. vmmid)
@@ -199,7 +208,7 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 					end
 				end
 		
-		  		pinfo.cols.info = string.format("FEC: %d, Hits: %3d, Markers: %3d, Time error: %3d", fecid, hit_id, marker_id, time_error)
+		  		pinfo.cols.info = string.format("FEC: %d, Hits: %3d, Markers: %3d, FC error: %3d", fecid, hit_id, marker_id, error_fc)
 		  		
 			end
 
@@ -209,7 +218,7 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 		else
 			srshdr:add(buffer(4,4),"Data Id: Unknown data " .. buffer(5,3))
 		end
-	end
+
 end
 
 -- Register the protocol

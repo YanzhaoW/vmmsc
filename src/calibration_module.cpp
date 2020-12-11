@@ -988,6 +988,7 @@ void CalibrationModule::StartCalibration(){
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::DoCalibrationStep(){
+    std::cout << "DoCalibrationStep " << std::endl;
     m_bitCount++;
     //Offline or online ADC or time/TDC
     if(m_modeIndex <= 4) {
@@ -1065,7 +1066,9 @@ void CalibrationModule::DoCalibrationStep(){
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_threshold);
 
     }
+    std::cout << "DoCalibrationStep before SendAll" << std::endl;
     m_mainWindow->m_daqs[0].SendAll();
+    std::cout << "DoCalibrationStep after SendAll" << std::endl;
 }
 
 // ------------------------------------------------------------------------ //
