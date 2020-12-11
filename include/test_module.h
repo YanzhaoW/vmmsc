@@ -125,6 +125,7 @@ private:
     void readSettingFile();
     QString readSettingsDB();
     void getCurveSettings(QString caller, double &ideal, double &range);
+    bool updateGitRepo(QString workingpath, QString measid);
 signals:
 
 private slots:
