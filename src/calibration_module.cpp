@@ -174,6 +174,13 @@ bool CalibrationModule::IsCalibration()
 
 void CalibrationModule::FitOfflineCalibrationData()
 {
+    //If "per System" is checked, the baseline to which the offset refers, is calculated as mean of all channels in the system,
+    //otherwise the baseline is calculated per chip
+    bool perSystem = false;
+    if(m_mainWindow->m_daqWindow->ui->perSystem->isChecked()) {
+        perSystem = true;
+    }
+
     if(m_calibrationArray[m_modeIndex-1] != nullptr)
     {
         while(m_calibrationArray[m_modeIndex-1]->count()) {
@@ -182,17 +189,19 @@ void CalibrationModule::FitOfflineCalibrationData()
         delete m_calibrationArray[m_modeIndex-1];
     }
     m_calibrationArray[m_modeIndex-1] = new QJsonArray();
-    double meanOffset = 0;
 
-
-    double* baseLine = new double[m_number_bits];
+    std::vector<double> mean_y_perSystem;
+    std::vector<std::vector<double>> mean_y_perChip;
 
     for(int n=0; n< m_number_bits;n++)
     {
-        baseLine[n] = 0;
+        mean_y_perSystem[n] = 0;
+        for(unsigned int vmm =0; vmm < m_vmmActs.size(); vmm++){
+            mean_y_perChip[n][vmm] = 0;
+        }
     }
-    int cnt = 0;
 
+    //Calculate the base lines (mean of y-values)
     for(int bit =0; bit<m_number_bits; bit++){
         int numVMMwithData = 0;
         for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
@@ -200,28 +209,41 @@ void CalibrationModule::FitOfflineCalibrationData()
             int hdmi = GetHDMI(vmm);
             int chip = GetVMM(vmm);
 
-            double baseLineChip = 0;
+            double meanY = 0;
             long size = std::count_if(m_mean[bit][fec][hdmi][0][chip].begin(), m_mean[bit][fec][hdmi][0][chip].end(), [](double i){return ((i > -1.0));});
             if(size>0)
             {
-                std::for_each(m_mean[bit][fec][hdmi][0][chip].begin(),m_mean[bit][fec][hdmi][0][chip].end(), [&](double x){if (x > -1.0) baseLineChip += x;});
+                std::for_each(m_mean[bit][fec][hdmi][0][chip].begin(),m_mean[bit][fec][hdmi][0][chip].end(), [&](double x){if (x > -1.0) meanY += x;});
                 numVMMwithData++;
-                baseLineChip = baseLineChip/static_cast<double>(size);
-                baseLine[bit] += baseLineChip;
+                meanY = meanY/static_cast<double>(size);
+                mean_y_perChip[bit][vmm] = meanY;
+                mean_y_perSystem[bit] += meanY;
             }
 
         }
-        baseLine[bit] = baseLine[bit]/numVMMwithData;
+        mean_y_perSystem[bit] = mean_y_perSystem[bit]/numVMMwithData;
     }
 
+    double meanOffset = 0;
+    double meanSlope = 0;
+
+    double mean_offset_perSystem = 0;
+    std::vector<double> mean_offset_perChip;
+
+    double mean_slope_perSystem = 0;
+    std::vector<double> mean_slope_perChip;
+    int cntPerSystem = 0;
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
         int fec = GetFEC(vmm);
         int hdmi = GetHDMI(vmm);
         int chip = GetVMM(vmm);
 
-
+        int cntPerChip = 0;
         double slope=0.0;
         double offset=-1.0;
+
+        meanOffset = 0;
+        meanSlope = 0;
 
         for(unsigned int ch = 0; ch<64; ch++){
             std::vector<double> x;
@@ -229,11 +251,20 @@ void CalibrationModule::FitOfflineCalibrationData()
             slope=0.0;
             offset=-1.0;
             double sumX=0, sumY=0, sumXY=0, sumX2=0;
+            //For each channel, fit a straight line through m_number_bits data points (for ADC calibration: DAC on x-axis, measured ADC on y-axis)
+            //for time calibration: equidistant times, starting at 0 ns on x-axis, measured time on y-axis
             for(int bit =0; bit<m_number_bits; bit++){
                 //Offline Time
                 if(m_modeIndex == 2)
                 {
-                    m_mean[bit][fec][hdmi][0][chip][ch] =  m_mean[bit][fec][hdmi][0][chip][ch] - baseLine[0];
+                    //subtract the measured time offset of the test pulses (pulse does not occur at time 0)
+                    if(perSystem) {
+                        m_mean[bit][fec][hdmi][0][chip][ch] =  m_mean[bit][fec][hdmi][0][chip][ch] - mean_y_perSystem[0];
+                    }
+                    else
+                    {
+                        m_mean[bit][fec][hdmi][0][chip][ch] =  m_mean[bit][fec][hdmi][0][chip][ch] - mean_y_perChip[0][vmm];
+                    }
                 }
                 double theMean = m_mean[bit][fec][hdmi][0][chip][ch];
 
@@ -241,7 +272,8 @@ void CalibrationModule::FitOfflineCalibrationData()
                 //Offline ADC
                 if(m_modeIndex == 1)
                 {
-                    theXValue = baseLine[bit];
+                    //Since we do not know the correct ADC value for the x-axis, we use the pulse height in DAC
+                    theXValue = m_pulseHeight_DAC[bit];
                 }
                 //Offline Time
                 else if(m_modeIndex == 2)
@@ -267,21 +299,35 @@ void CalibrationModule::FitOfflineCalibrationData()
                     slope = (sumXY - sumX * yMean) / denominator;
                     offset = yMean - slope * xMean;
                 }
-                if(slope != 0 && offset != -1)
+                if(slope != 0 && offset != -1.0)
                 {
-                    slope = 1/slope;
-                    slope = std::round(1000*slope)/1000;
-                    meanOffset+=offset;
-                    cnt++;
+                    meanSlope += slope;
+                    meanOffset += offset;
+                    cntPerChip++;
+                    cntPerSystem++;
                 }
             }
             m_slope[fec][hdmi][0][chip].push_back(slope);
             m_offset[fec][hdmi][0][chip].push_back(offset);
+        } //channel
+
+        mean_offset_perSystem += meanOffset;
+        mean_slope_perSystem += meanSlope;
+        mean_offset_perChip[chip] = meanOffset;
+        mean_slope_perChip[chip] = meanSlope;
+        if(cntPerChip > 0) {
+            mean_offset_perChip[chip] = mean_offset_perChip[chip]/cntPerChip;
+            mean_slope_perChip[chip] = mean_slope_perChip[chip]/cntPerChip;
         }
-    }
-    if(cnt > 0)
+
+    } // vmm
+
+    if(cntPerSystem > 0)
     {
-        meanOffset = meanOffset/cnt;
+        mean_offset_perSystem = mean_offset_perSystem/cntPerSystem;
+        mean_slope_perSystem = mean_slope_perSystem/cntPerSystem;
+        double correction_slope_system = 1/mean_slope_perSystem;
+
         for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int fecId = m_fecPosID[fec];
@@ -290,18 +336,34 @@ void CalibrationModule::FitOfflineCalibrationData()
             QJsonObject calibrationObject;
             QJsonArray offsetArray;
             QJsonArray slopeArray;
+            double correction_slope = 1;
+            if(mean_slope_perChip[vmm] > 0) {
+                correction_slope= 1/mean_slope_perChip[vmm];
+            }
             for(unsigned int ch = 0; ch<64; ch++){
                 double slope = m_slope[fec][hdmi][0][chip][ch];
                 double offset = m_offset[fec][hdmi][0][chip][ch];
                 if(slope == 0.0 && offset == -1.0)
                 {
-                    offset = meanOffset;
+                    if(perSystem) {
+                        offset = mean_offset_perSystem;
+                    }
+                    else {
+                        offset = mean_offset_perChip[vmm];
+                    }
+                    slope = 1;
                 }
                 else
                 {
-                    offset = offset - meanOffset;
+                    if(perSystem) {
+                        offset = offset - mean_offset_perSystem;
+                        slope = 1/(slope * correction_slope_system);
+                    }
+                    else {
+                        offset = offset - mean_offset_perChip[vmm];
+                        slope = 1/(slope * correction_slope);
+                    }
                 }
-                offset = std::round(1000*offset)/1000;
                 slopeArray.push_back(slope);
                 offsetArray.push_back(offset);
             }
@@ -320,7 +382,6 @@ void CalibrationModule::FitOfflineCalibrationData()
         }
     }
 
-    delete[] baseLine;
 }
 
 void CalibrationModule::SavePlotsAsPDF(){
@@ -1008,6 +1069,9 @@ void CalibrationModule::DoCalibrationStep(){
                 int max =  m_maxPulseHeightTable[gain];
                 int step = (max - min)/(m_number_bits-1);
                 std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
+                if(vmm == 0) {
+                    m_pulseHeight_DAC[m_bitCount-1] = static_cast<int>(min+m_bitCount*step);
+                }
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
             }
             else if(m_modeIndex == 2)
@@ -1265,6 +1329,7 @@ void CalibrationModule::Reset()
         m_mainWindow->m_daqs[0].SendAll();
     }
 }
+
 double CalibrationModule::SortVectors( vector<double>& sortedMin, vector<double>& sortedMax){
     stringstream sx;
     std::sort(sortedMin.begin(), sortedMin.end());
@@ -1649,6 +1714,7 @@ void CalibrationModule::GetSettings()
 
 void CalibrationModule::InitializeDataStructures()
 {
+    m_pulseHeight_DAC.clear();
     m_x.clear();
     m_dac_x.clear();
     m_max_value_x.clear();

@@ -202,6 +202,7 @@ private:
 
     int m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
     int m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
+    std::vector<int> m_pulseHeight_DAC;
 
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
