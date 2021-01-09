@@ -192,14 +192,9 @@ void CalibrationModule::FitOfflineCalibrationData()
 
     std::vector<double> mean_y_perSystem;
     std::vector<std::vector<double>> mean_y_perChip;
+    mean_y_perSystem.resize(m_number_bits,0);
+    mean_y_perChip.resize(m_number_bits, std::vector<double>(m_vmmActs.size(), 0));
 
-    for(int n=0; n< m_number_bits;n++)
-    {
-        mean_y_perSystem[n] = 0;
-        for(unsigned int vmm =0; vmm < m_vmmActs.size(); vmm++){
-            mean_y_perChip[n][vmm] = 0;
-        }
-    }
 
     //Calculate the base lines (mean of y-values)
     for(int bit =0; bit<m_number_bits; bit++){
@@ -229,9 +224,12 @@ void CalibrationModule::FitOfflineCalibrationData()
 
     double mean_offset_perSystem = 0;
     std::vector<double> mean_offset_perChip;
+    mean_offset_perChip.resize(m_vmmActs.size(), 0);
 
     double mean_slope_perSystem = 0;
     std::vector<double> mean_slope_perChip;
+    mean_slope_perChip.resize(m_vmmActs.size(), 0);
+
     int cntPerSystem = 0;
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
         int fec = GetFEC(vmm);
@@ -343,6 +341,8 @@ void CalibrationModule::FitOfflineCalibrationData()
             for(unsigned int ch = 0; ch<64; ch++){
                 double slope = m_slope[fec][hdmi][0][chip][ch];
                 double offset = m_offset[fec][hdmi][0][chip][ch];
+
+
                 if(slope == 0.0 && offset == -1.0)
                 {
                     if(perSystem) {
@@ -356,14 +356,18 @@ void CalibrationModule::FitOfflineCalibrationData()
                 else
                 {
                     if(perSystem) {
-                        offset = offset - mean_offset_perSystem;
+                        offset = offset - mean_offset_perSystem*slope*correction_slope_system;
                         slope = 1/(slope * correction_slope_system);
                     }
                     else {
-                        offset = offset - mean_offset_perChip[vmm];
+                        offset = offset - mean_offset_perChip[vmm]*slope*correction_slope;
                         slope = 1/(slope * correction_slope);
                     }
                 }
+                slope = std::round(1000*slope)/1000;
+                offset = std::round(1000*offset)/1000;
+                m_slope[fec][hdmi][0][chip][ch] = slope;
+                m_offset[fec][hdmi][0][chip][ch] = offset;
                 slopeArray.push_back(slope);
                 offsetArray.push_back(offset);
             }
@@ -1070,7 +1074,7 @@ void CalibrationModule::DoCalibrationStep(){
                 int step = (max - min)/(m_number_bits-1);
                 std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
                 if(vmm == 0) {
-                    m_pulseHeight_DAC[m_bitCount-1] = static_cast<int>(min+m_bitCount*step);
+                    m_pulseHeight_DAC[m_bitCount] = static_cast<int>(min+m_bitCount*step);
                 }
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
             }
@@ -1491,7 +1495,6 @@ void CalibrationModule::SaveCorrections(){
                     const auto& obj = value.toObject();
                     const auto& keys = obj.keys();
                     for(const auto& key : keys){
-
                         if(key == "vmmID") {
                             theVmmId = obj[key].toInt();
                         }
@@ -1512,7 +1515,7 @@ void CalibrationModule::SaveCorrections(){
                             }
                         }
                     }
-                    if(theVmmId == hdmi*2+chip &&  fec+1 == theFECId) {
+                    if(theVmmId == hdmi*2+chip &&  m_fecPosID[fec] == theFECId) {
                         adcOffsetArray = tempOffsetArray;
                         adcSlopeArray = tempSlopeArray;
                         break;
@@ -1546,7 +1549,7 @@ void CalibrationModule::SaveCorrections(){
                             }
                         }
                     }
-                    if(theVmmId == hdmi*2+chip &&  fec+1 == theFECId) {
+                    if(theVmmId == hdmi*2+chip &&  m_fecPosID[fec] == theFECId) {
                         timeOffsetArray = tempOffsetArray;
                         timeSlopeArray = tempSlopeArray;
                         break;
@@ -1727,6 +1730,7 @@ void CalibrationModule::InitializeDataStructures()
     }
 
     for(unsigned int bit = 0; bit < 32; bit++) {
+        m_pulseHeight_DAC.push_back(0);
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){

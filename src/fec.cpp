@@ -64,7 +64,7 @@ void FEC::LoadMessageHandler(MessageHandler& m)
 // ------------------------------------------------------------------------- //
 
 void FEC::SendAll(){
-    /// function to send all configurations to fec, hybrid and vmm
+    // function to send all configurations to fec, hybrid and vmm
     for(int n=0; n< HDMIS_PER_FEC*VMMS_PER_HYBRID; n++) {
         config_error[n] = 0;
     }

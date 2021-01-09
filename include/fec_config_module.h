@@ -60,7 +60,7 @@ public:
     QString ReadGeoPos(int hdmi_index);
     QString ReadIDChip(int hdmi_index);
     bool CheckConfigurationOfVMMs(int hdmi_index, int vmm_index);
-    QString CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes);
+    QString CommunicateWithHybridI2C(int hdmi_index, int rw, int reg_value, int bytes);
     void VMMLoadEmit();
     void HybridLoadEmit();
 private:

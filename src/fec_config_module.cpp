@@ -2018,7 +2018,7 @@ QString FECConfigModule::ReadI2C(int hdmi_index, int choice) {
 
 
 // ------------------------------------------------------------------------ //
-QString FECConfigModule::CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes)
+QString FECConfigModule::CommunicateWithHybridI2C(int hdmi_index, int rw, int reg_value, int bytes)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::CommunicateWithHybridI2C");
 
@@ -2066,7 +2066,7 @@ QString FECConfigModule::CommunicateWithHybridI2C(int hdmi_index, int rw, int re
     ////////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) bytes //[16,19] //sc_address: write two bytes
-        << (quint32) value; //[20,23] //sc_value: first byte 0x0 register, second byte 0x0 value
+        << (quint32) reg_value; //[20,23] //sc_value: first byte 0x0 register, second byte 0x0 value
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::");
 
@@ -2127,13 +2127,13 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hdmi_index, int vmm_index)
         counter++;
         //CommunicateWithHybridI2C(int hdmi_index, int rw, int reg, int value, int bytes)
         //send 1 byte of 0x00 to choose register 0
-        result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 1);
+        result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 1);
         //If problem with I2C, avoid pop-up message
         if(result == "-1") {
             return true;
         }
         //read 1 byte from register 0x00
-        result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 0, 1);
+        result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 1);
 
         //If problem with I2C, avoid pop-up message
         if(result == "-1") {
@@ -2151,12 +2151,12 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hdmi_index, int vmm_index)
     if(counter == 0) {
         //Phase 2
         //send 1 byte of 0x00 to choose register 0
-        result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 1);
+        result = CommunicateWithHybridI2C(hdmi_index, 0, 0, 1);
         if(result == "-1") {
             return true;
         }
         //read 1 byte from register 0x00
-        result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 0, 1);
+        result = CommunicateWithHybridI2C(hdmi_index, 1, 0, 1);
 
         if(result == "-1") {
             return true;
