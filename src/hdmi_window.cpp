@@ -24,18 +24,22 @@ void HDMIWindow::on_Box_hybrid1_clicked()
 }
 
 void HDMIWindow::HybridBoxLogic(bool checked, unsigned short hybrid){
-    unsigned short NotActiveBefore = 0;
     QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
+    std::sort(a.begin(), a.end(),
+              [](const QCheckBox* x, const QCheckBox* y) -> bool { return x->text() <  y->text();
+    });
+
+    unsigned short ActiveBefore = 0;
     for (unsigned short i = 0; i < a.size(); i++){
-        if(i<hybrid && !a.at(i)->isChecked()) NotActiveBefore++;
+        if(i<hybrid && a.at(i)->isChecked()) ActiveBefore++;
     }
     if (checked){
-        m_ui->tabWidget->insertTab(hybrid-NotActiveBefore, new HybridWindow(this,m_fecIndex,m_hdmiIndex,hybrid), QString(" Hybrid %0").arg(hybrid+1));
-        m_ui->tabWidget->setCurrentIndex(hybrid-NotActiveBefore);
-        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].SetHybrid(hybrid, true);
+        m_ui->tabWidget->insertTab(ActiveBefore, new HybridWindow(this,m_fecIndex,m_hdmiIndex,hybrid), QString(" Hybrid %0").arg(hybrid+1));
+        m_ui->tabWidget->setCurrentIndex(ActiveBefore);
+       m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].SetHybrid(hybrid, true);
     }
     else {
-        m_ui->tabWidget->removeTab(hybrid-NotActiveBefore);
+        m_ui->tabWidget->removeTab(ActiveBefore);
         m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].SetHybrid(hybrid, false);
     }
 }

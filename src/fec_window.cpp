@@ -332,19 +332,23 @@ void FECWindow::on_Box_hdmi8_clicked()
     else {HDMIBoxLogic(false,7);}
 }
 void FECWindow::HDMIBoxLogic(bool checked, unsigned short hdmi){
-    unsigned short NotActiveBefore = 0;
+
     QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
+    std::sort(a.begin(), a.end(),
+              [](const QCheckBox* x, const QCheckBox* y) -> bool { return x->text() <  y->text();
+    });
+
+    unsigned short ActiveBefore = 0;
     for (unsigned short i = 0; i < a.size(); i++){
-        if(i<hdmi && !a.at(i)->isChecked()) NotActiveBefore++;
+        if(i<hdmi && a.at(i)->isChecked()) ActiveBefore++;
     }
     if (checked){
-        m_ui->tabWidget->insertTab(hdmi-NotActiveBefore, new HDMIWindow(this,m_fecIndex,hdmi), QString(" HDMI %0").arg(hdmi+1));
-        m_ui->tabWidget->setCurrentIndex(hdmi-NotActiveBefore);
+        m_ui->tabWidget->insertTab(ActiveBefore, new HDMIWindow(this,m_fecIndex,hdmi), QString(" HDMI %0").arg(hdmi+1));
+        m_ui->tabWidget->setCurrentIndex(ActiveBefore);
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHDMI(hdmi, true);
-
     }
     else {
-        m_ui->tabWidget->removeTab(hdmi-NotActiveBefore);
+        m_ui->tabWidget->removeTab(ActiveBefore);
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHDMI(hdmi, false);
     }
 }
