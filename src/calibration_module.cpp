@@ -342,16 +342,16 @@ void CalibrationModule::FitOfflineCalibrationData()
                 double slope = m_slope[fec][hdmi][0][chip][ch];
                 double offset = m_offset[fec][hdmi][0][chip][ch];
 
-
+                //Channel with missing data, use mean offset (chip or system) and set slope to 1
                 if(slope == 0.0 && offset == -1.0)
                 {
+                    slope = 1;
                     if(perSystem) {
-                        offset = mean_offset_perSystem;
+                        offset = mean_offset_perSystem - mean_offset_perSystem*slope*correction_slope_system;
                     }
                     else {
-                        offset = mean_offset_perChip[vmm];
+                        offset = mean_offset_perChip[vmm] - mean_offset_perChip[vmm]*slope*correction_slope;
                     }
-                    slope = 1;
                 }
                 else
                 {
@@ -364,6 +364,7 @@ void CalibrationModule::FitOfflineCalibrationData()
                         slope = 1/(slope * correction_slope);
                     }
                 }
+                //limit the numbers to 3 significant digits
                 slope = std::round(1000*slope)/1000;
                 offset = std::round(1000*offset)/1000;
                 m_slope[fec][hdmi][0][chip][ch] = slope;

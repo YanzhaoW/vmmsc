@@ -86,7 +86,6 @@ SOURCES += $$sourcepath/main.cpp\
            $$sourcepath/socket_handler.cpp\
            $$sourcepath/vmmsocket.cpp\
            $$sourcepath/message_handler.cpp\
-           $$sourcepath/commandline.cpp \
            $$sourcepath/vmm_config_handler.cpp \
            $$sourcepath/daq_config_handler.cpp \
            $$sourcepath/fec_config_handler.cpp \
@@ -114,7 +113,6 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/vmm_config_handler.h\
             $$includepath/calibration_module.h\
             $$includepath/daq_config_handler.h\
-            $$includepath/commandline.h \
             $$includepath/globparameter.h \
             $$includepath/qcustomplot.h \
             $$includepath/vmm.h \
