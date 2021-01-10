@@ -324,7 +324,6 @@ void CalibrationModule::FitOfflineCalibrationData()
     {
         mean_offset_perSystem = mean_offset_perSystem/cntPerSystem;
         mean_slope_perSystem = mean_slope_perSystem/cntPerSystem;
-        double correction_slope_system = 1/mean_slope_perSystem;
 
         for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
@@ -334,35 +333,73 @@ void CalibrationModule::FitOfflineCalibrationData()
             QJsonObject calibrationObject;
             QJsonArray offsetArray;
             QJsonArray slopeArray;
-            double correction_slope = 1;
-            if(mean_slope_perChip[vmm] > 0) {
-                correction_slope= 1/mean_slope_perChip[vmm];
-            }
-            for(unsigned int ch = 0; ch<64; ch++){
-                double slope = m_slope[fec][hdmi][0][chip][ch];
-                double offset = m_offset[fec][hdmi][0][chip][ch];
 
-                //Channel with missing data, use mean offset (chip or system) and set slope to 1
-                if(slope == 0.0 && offset == -1.0)
+            double slope_corr = 1;
+            double mean_offset = 0;
+            if(perSystem) {
+                slope_corr = 1/mean_slope_perSystem;;
+                mean_offset = mean_offset_perSystem;
+            }
+            else {
+                if(mean_slope_perChip[vmm] > 0) {
+                    slope_corr = 1/mean_slope_perChip[vmm];;
+                }
+                mean_offset =  mean_offset_perChip[vmm];
+            }
+            //guess offset and slope by using the mean
+            double slope = 1;
+            double offset = mean_offset - mean_offset*slope_corr;
+            for(unsigned int ch = 0; ch<64; ch++){
+                //Channel with missing data
+                if(m_slope[fec][hdmi][0][chip][ch] == 0.0 && m_offset[fec][hdmi][0][chip][ch] == -1.0)
                 {
-                    slope = 1;
-                    if(perSystem) {
-                        offset = mean_offset_perSystem - mean_offset_perSystem*slope*correction_slope_system;
+                    //in case the neighbouring channels have data, use it (gaps of 1 or 2 missing channels)
+                    if(ch == 0) {
+                       if( m_slope[fec][hdmi][0][chip][1] != 0.0 && m_offset[fec][hdmi][0][chip][1] != -1.0) {
+                           offset =  m_offset[fec][hdmi][0][chip][1] - mean_offset*m_slope[fec][hdmi][0][chip][1]*slope_corr;
+                           slope = 1/(m_slope[fec][hdmi][0][chip][1] * slope_corr);
+                       }
+                       else if( m_slope[fec][hdmi][0][chip][2] != 0.0 && m_offset[fec][hdmi][0][chip][2] != -1.0) {
+                           offset =  m_offset[fec][hdmi][0][chip][2] - mean_offset*m_slope[fec][hdmi][0][chip][2]*slope_corr;
+                           slope = 1/(m_slope[fec][hdmi][0][chip][2] * slope_corr);
+                       }
+                    }
+                    else if(ch == 63) {
+                        if( m_slope[fec][hdmi][0][chip][62] != 0.0 && m_offset[fec][hdmi][0][chip][62] != -1.0) {
+                            offset =  m_offset[fec][hdmi][0][chip][62] - mean_offset*m_slope[fec][hdmi][0][chip][62]*slope_corr;
+                            slope = 1/(m_slope[fec][hdmi][0][chip][62] * slope_corr);
+
+                        }
+                        else if( m_slope[fec][hdmi][0][chip][61] != 0.0 && m_offset[fec][hdmi][0][chip][61] != -1.0) {
+                            offset =  m_offset[fec][hdmi][0][chip][61] - mean_offset*m_slope[fec][hdmi][0][chip][61]*slope_corr;
+                            slope = 1/(m_slope[fec][hdmi][0][chip][61] * slope_corr);
+                        }
                     }
                     else {
-                        offset = mean_offset_perChip[vmm] - mean_offset_perChip[vmm]*slope*correction_slope;
+                        if( m_slope[fec][hdmi][0][chip][ch+1] != 0.0 && m_offset[fec][hdmi][0][chip][ch+1] != -1.0) {
+                            if(m_slope[fec][hdmi][0][chip][ch-1] != 0.0 && m_offset[fec][hdmi][0][chip][ch-1] != -1.0) {
+                                offset =  0.5*(m_offset[fec][hdmi][0][chip][ch+1]+m_offset[fec][hdmi][0][chip][ch-1]) - mean_offset*0.5*(m_slope[fec][hdmi][0][chip][ch+1]+m_slope[fec][hdmi][0][chip][ch-1])*slope_corr;
+                                slope = 1/(0.5*(m_slope[fec][hdmi][0][chip][ch+1]+m_slope[fec][hdmi][0][chip][ch-1]) * slope_corr);
+                            }
+                            else if(ch>=2 && m_slope[fec][hdmi][0][chip][ch-2] != 0.0 && m_offset[fec][hdmi][0][chip][ch-2] != -1.0) {
+                                offset =  0.5*(m_offset[fec][hdmi][0][chip][ch+1]+m_offset[fec][hdmi][0][chip][ch-2]) - mean_offset*0.5*(m_slope[fec][hdmi][0][chip][ch+1]+m_slope[fec][hdmi][0][chip][ch-2])*slope_corr;
+                                slope = 1/(0.5*(m_slope[fec][hdmi][0][chip][ch+1]+m_slope[fec][hdmi][0][chip][ch-2]) * slope_corr);
+                            }
+                        }
+                        else if( ch <= 61 && m_slope[fec][hdmi][0][chip][ch+2] != 0.0 && m_offset[fec][hdmi][0][chip][ch+2] != -1.0) {
+                            if( m_slope[fec][hdmi][0][chip][ch-1] != 0.0 && m_offset[fec][hdmi][0][chip][ch-1] != -1.0) {
+                                offset =  0.5*(m_offset[fec][hdmi][0][chip][ch+2]+m_offset[fec][hdmi][0][chip][ch-1]) - mean_offset*0.5*(m_slope[fec][hdmi][0][chip][ch+2]+m_slope[fec][hdmi][0][chip][ch-1])*slope_corr;
+                                slope = 1/(0.5*(m_slope[fec][hdmi][0][chip][ch+2]+m_slope[fec][hdmi][0][chip][ch-1]) * slope_corr);
+                            }
+                        }
                     }
+
                 }
+                //Channel has data
                 else
                 {
-                    if(perSystem) {
-                        offset = offset - mean_offset_perSystem*slope*correction_slope_system;
-                        slope = 1/(slope * correction_slope_system);
-                    }
-                    else {
-                        offset = offset - mean_offset_perChip[vmm]*slope*correction_slope;
-                        slope = 1/(slope * correction_slope);
-                    }
+                    offset =  m_offset[fec][hdmi][0][chip][ch] - mean_offset*m_slope[fec][hdmi][0][chip][ch]*slope_corr;
+                    slope = 1/(m_slope[fec][hdmi][0][chip][ch] * slope_corr);
                 }
                 //limit the numbers to 3 significant digits
                 slope = std::round(1000*slope)/1000;
