@@ -92,6 +92,8 @@ private slots:
 
     void on_first_trigger_starts_acq_stateChanged(int arg1);
 
+    void on_pushButtonCSV_pressed();
+
 public slots:
     // select the output directory
     //void on_output_directory_select();

@@ -26,10 +26,10 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
 {
     m_calibrationArray[0] = nullptr;
     m_calibrationArray[1] = nullptr;
-    for(int n =0; n<maxModes; n++)
-    {
-        m_isCalibrated[n] = false;
-    }
+//    for(int n =0; n<maxModes; n++)
+//    {
+//        m_isCalibrated[n] = false;
+//    }
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot1);
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot2);
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot3);
@@ -123,8 +123,14 @@ int CalibrationModule::GetCalibrationModeIndex(QString mode)
     {
         return 7;
     }
-
-
+    if(mode == "Pulser DAC")
+    {
+        return 8;
+    }
+    if(mode == "Threshold DAC")
+    {
+        return 9;
+    }
     if(mode == "Channels")
     {
         return 10;
@@ -156,10 +162,10 @@ bool CalibrationModule::CheckModes()
     {
         return false;
     }
-    if(IsCalibration())
-    {
-        return m_isCalibrated[m_modeIndex];
-    }
+    //if(IsCalibration())
+    //{
+    //    return m_isCalibrated[m_modeIndex];
+    //}
     return true;
 }
 
@@ -270,8 +276,9 @@ void CalibrationModule::FitOfflineCalibrationData()
                 //Offline ADC
                 if(m_modeIndex == 1)
                 {
-                    //Since we do not know the correct ADC value for the x-axis, we use the pulse height in DAC
-                    theXValue = m_pulseHeight_DAC[bit];
+                    //Since we do not know the correct ADC value for the x-axis, we use the measured pulse height in DAC
+                    theXValue = m_dac_measured[fec][hdmi][0][chip][bit];
+                    //theXValue = m_dac_setting[bit];
                 }
                 //Offline Time
                 else if(m_modeIndex == 2)
@@ -311,11 +318,11 @@ void CalibrationModule::FitOfflineCalibrationData()
 
         mean_offset_perSystem += meanOffset;
         mean_slope_perSystem += meanSlope;
-        mean_offset_perChip[chip] = meanOffset;
-        mean_slope_perChip[chip] = meanSlope;
+        mean_offset_perChip[vmm] = meanOffset;
+        mean_slope_perChip[vmm] = meanSlope;
         if(cntPerChip > 0) {
-            mean_offset_perChip[chip] = mean_offset_perChip[chip]/cntPerChip;
-            mean_slope_perChip[chip] = mean_slope_perChip[chip]/cntPerChip;
+            mean_offset_perChip[vmm] = mean_offset_perChip[vmm]/cntPerChip;
+            mean_slope_perChip[vmm] = mean_slope_perChip[vmm]/cntPerChip;
         }
 
     } // vmm
@@ -426,7 +433,8 @@ void CalibrationModule::FitOfflineCalibrationData()
 
 }
 
-void CalibrationModule::SavePlotsAsPDF(){
+void CalibrationModule::SavePlotsAsCSV() {
+    if(!m_dataAvailable) return;
     int gain = 0;
     int polarity = 0;
     int peaktime = 0;
@@ -497,6 +505,247 @@ void CalibrationModule::SavePlotsAsPDF(){
         {
             name = "Pedestal";
         }
+        else if(m_modeIndex == 8)
+        {
+            name = "Pulser_DAC";
+        }
+        else if(m_modeIndex == 9)
+        {
+            name = "Threshold_DAC";
+        }
+        else if(m_modeIndex == 10)
+        {
+            name = "Counts_Channels";
+        }
+        else if(m_modeIndex == 11)
+        {
+            name = "Mean_ADC";
+        }
+        else if(m_modeIndex == 12)
+        {
+            name = "Mean_TDC";
+        }
+        else if(m_modeIndex == 13)
+        {
+            name = "Mean_BCID";
+        }
+
+        if(m_modeIndex == 5) {
+            name += "_FEC" + QString::number(m_theFEC);
+            name += "_VMM" + QString::number(m_theVMM);
+        }
+        else {
+            name += "_FEC" + QString::number(fec+1);
+            name += "_VMM" + QString::number(hdmi*2+chip);
+        }
+
+        QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
+        theName += ".csv";
+
+        if(m_outFile.is_open())
+        {
+            m_outFile.close();
+        }
+        m_outFile.open(theName.toStdString().c_str(), std::ofstream::out);
+
+        if(m_modeIndex == 1)
+        {
+            //<< cnt << "," << std::setprecision(6) << rate<< std::endl;
+            m_outFile << "fec,vmm,ch,slope,offset,pulser_dac_setting,pulser_dac_measured, ADC\n";
+            for(int ch = 0; ch<64; ch++){
+                for(int bit=0; bit<m_number_bits;bit++){
+                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_slope[fec][hdmi][0][chip][ch] << "," << m_offset[fec][hdmi][0][chip][ch] << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hdmi][0][chip][bit] << ","  << m_mean[bit][fec][hdmi][0][chip][ch]  << "\n" ;
+                }
+            }
+        }
+        else if(m_modeIndex == 2)
+        {
+            m_outFile << "fec,vmm,ch,slope,offset,pulser_skew,time\n";
+            for(int ch = 0; ch<64; ch++){
+                for(int bit=0; bit<m_number_bits;bit++){
+                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_slope[fec][hdmi][0][chip][ch] << "," << m_offset[fec][hdmi][0][chip][ch] << ","
+                              << m_x[ch] << ","  << m_mean[bit][fec][hdmi][0][chip][ch]  << "\n" ;
+                }
+            }
+        }
+        else if(m_modeIndex == 3)
+        {
+            m_outFile << "fec,vmm,ch, ADC correction [mV], ADC, calibrated value, , best common value\n";
+            for(int ch = 0; ch<64; ch++){
+                for(int bit=0; bit<m_number_bits;bit++){
+                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << m_calVal[fec][hdmi][0][chip][ch] << "," << m_y[fec][hdmi][0][chip][ch] << "\n" ;
+                }
+            }
+
+        }
+        else if(m_modeIndex == 4)
+        {
+            m_outFile << "fec,vmm,ch, TDC correction [mV], TDC, calibrated value, best common value\n";
+            for(int ch = 0; ch<64; ch++){
+                for(int bit=0; bit<m_number_bits;bit++){
+                   m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << m_calVal[fec][hdmi][0][chip][ch] << "," << m_y[fec][hdmi][0][chip][ch] << "\n" ;
+                }
+            }
+        }
+        else if(m_modeIndex == 5)
+        {
+            name = "S-curve_CH" + QString::number(idx);
+        }
+        else if(m_modeIndex == 6)
+        {
+            name = "Threshold";
+            if(m_isThresholdCalibration) {
+                m_outFile << "fec,vmm,ch, threshold correction [mV], threshold [mV], calibrated value, best common value\n";
+                for(int ch = 0; ch<64; ch++){
+                    for(int bit=0; bit<m_number_bits;bit++){
+                        m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << m_calVal[fec][hdmi][0][chip][ch] << "," << m_y[fec][hdmi][0][chip][ch] << "\n" ;
+                    }
+                }
+
+            }
+            else {
+                m_outFile << "fec,vmm,ch, threshold [mV]\n";
+                for(int ch = 0; ch<64; ch++){
+                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+                }
+            }
+
+        }
+        else if(m_modeIndex == 7)
+        {
+            m_outFile << "fec,vmm,ch, pedestal [mV]\n";
+            for(int ch = 0; ch<64; ch++){
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+            }
+        }
+        else if(m_modeIndex == 8)
+        {
+            m_outFile << "fec,vmm, pulser dac setting, pulser dac measured\n";
+            for(int n=0; n<m_dac_x.size();n++){
+                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << m_dac_x[n] << "," << m_y[fec][hdmi][0][chip][n] << "\n" ;
+            }
+        }
+        else if(m_modeIndex == 9)
+        {
+            m_outFile << "fec,vmm, threshold dac setting, threshold dac measured\n";
+            for(int n=0; n<m_dac_x.size();n++){
+                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << m_dac_x[n] << "," << m_y[fec][hdmi][0][chip][n] << "\n" ;
+            }
+        }
+        else if(m_modeIndex == 10)
+        {
+            m_outFile << "fec,vmm,ch, cnt\n";
+            for(int ch = 0; ch<64; ch++){
+                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+            }
+        }
+        else if(m_modeIndex == 11)
+        {
+            m_outFile << "fec,vmm,ch, mean ADC\n";
+            for(int ch = 0; ch<64; ch++){
+                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+            }
+        }
+        else if(m_modeIndex == 12)
+        {
+            m_outFile << "fec,vmm,ch, mean TDC\n";
+            for(int ch = 0; ch<64; ch++){
+                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+            }
+        }
+        else if(m_modeIndex == 13)
+        {
+            m_outFile << "fec,vmm,ch, mean BCID\n";
+            for(int ch = 0; ch<64; ch++){
+                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+            }
+        }
+
+
+        m_outFile.close();
+    }
+}
+
+void CalibrationModule::SavePlotsAsPDF(){
+    if(!m_dataAvailable) return;
+    int gain = 0;
+    int polarity = 0;
+    int peaktime = 0;
+    int tac = 0;
+    int bcclock = 0;
+    int theChoice =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex();
+    int start = theChoice * 8;
+    int end = (theChoice +1)*8;
+    unsigned long limit = 0;
+    //S-curve
+    if(m_modeIndex == 5) {
+        limit = 64;
+    }
+    else {
+        limit = m_vmmActs.size();
+    }
+    for(int idx=start; idx< static_cast<int>(limit)&& idx <end; idx++){
+        int fec = 0;
+        int hdmi = 0;
+        int chip = 0;
+
+        if(m_modeIndex == 5) {
+            fec = m_theFEC-1;
+            hdmi = m_theVMM / 2;
+            chip = m_theVMM % 2;
+        }
+        else {
+            fec = GetFEC(idx);
+            hdmi = GetHDMI(idx);
+            chip = GetVMM(idx);
+        }
+        if(idx==start)
+        {
+
+            gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
+            polarity = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("sp");
+            peaktime = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("peaktime");
+            tac = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("stc");
+            bcclock = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].GetReg("CKBC");
+        }
+        QCustomPlot *plot = plotVector[idx%8];
+        QString name = "";
+        if(m_modeIndex == 1)
+        {
+            name = "Offline_ADC";
+        }
+        else if(m_modeIndex == 2)
+        {
+            name = "Offline_Time";
+        }
+        else if(m_modeIndex == 3)
+        {
+            name = "Online_ADC";
+        }
+        else if(m_modeIndex == 4)
+        {
+            name = "Online_TDC";
+        }
+        else if(m_modeIndex == 5)
+        {
+            name = "S-curve_CH" + QString::number(idx);
+        }
+        else if(m_modeIndex == 6)
+        {
+            name = "Threshold";
+        }
+        else if(m_modeIndex == 7)
+        {
+            name = "Pedestal";
+        }
+        else if(m_modeIndex == 8)
+        {
+            name = "Pulser_DAC";
+        }
+        else if(m_modeIndex == 9)
+        {
+            name = "Threshold_DAC";
+        }
         else if(m_modeIndex == 10)
         {
             name = "Counts_Channels";
@@ -526,7 +775,7 @@ void CalibrationModule::SavePlotsAsPDF(){
         QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
         theName += ".pdf";
         plot->savePdf(theName);
-    }
+     }
 }
 
 
@@ -608,7 +857,6 @@ void CalibrationModule::PlotData(){
         {
             title+= ": Rate [Hz]";
             plot->xAxis->setLabel("threshold [mV]");
-            //plot->yAxis->setRange(0.0, m_rateLimit);
             plot->xAxis->setRange(ThresholdDAC_to_mV(m_minThreshold), ThresholdDAC_to_mV(m_maxThreshold));
         }
         else if(m_modeIndex == 6) {
@@ -619,8 +867,20 @@ void CalibrationModule::PlotData(){
         else if(m_modeIndex == 7)
         {
             title+= ": Pedestal [mV]";
-            colorFactor = 30;
             plot->yAxis->setRange(0.0, 350.0);
+        }
+        else if(m_modeIndex == 8) {
+            title+= ": Pulser [DAC]";
+            plot->xAxis->setLabel("Pulser setting [DAC]");
+            plot->xAxis->setRange(0.0, 1023.0);
+            plot->yAxis->setRange(0.0, 1023.0);
+        }
+        else if(m_modeIndex == 9)
+        {
+            title+= ": Threshold [DAC]";
+            plot->xAxis->setLabel("Threshold setting [DAC]");
+            plot->xAxis->setRange(0.0, 1023.0);
+            plot->yAxis->setRange(0.0, 1023.0);
         }
         else if(m_modeIndex == 10)
         {
@@ -759,16 +1019,50 @@ void CalibrationModule::PlotData(){
             {
                 plot->legend->setVisible(true);
                 plot->legend->setFont(QFont("Helvetica",9));
-                for(int bit=0; bit<m_number_bits;bit++){
-                    plot->addGraph();
-                    plot->graph(bit)->setName(QString("Pedestal"));
-                    plot->graph(bit)->setData(
-                        QVector<double>::fromStdVector(m_x),
-                        QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
-                    plot->graph(bit)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
-                }
-            }
+                plot->addGraph();
+                plot->graph(0)->setName(QString("Pedestal"));
+                plot->graph(0)->setData(
+                    QVector<double>::fromStdVector(m_x),
+                    QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
+                plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
 
+            }
+            //Pulser DAC
+            else if(m_modeIndex == 8)
+            {
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",9));
+                double slope_high = (m_y[fec][hdmi][0][chip][10] - m_y[fec][hdmi][0][chip][2])/(m_dac_x[10] - m_dac_x[2]);
+                double offset_high = m_y[fec][hdmi][0][chip][10] - slope_high*m_dac_x[10];
+
+                double slope_low = (m_y[fec][hdmi][0][chip][1] - m_y[fec][hdmi][0][chip][0])/(m_dac_x[1] - m_dac_x[0]);
+                double offset_low = m_y[fec][hdmi][0][chip][0];
+                plot->addGraph();
+                plot->graph(0)->setName(QString("measured DAC\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
+                                        + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
+                plot->graph(0)->setData(
+                    QVector<double>::fromStdVector(m_dac_x),
+                    QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+            }
+            //Threshold DAC
+            else if(m_modeIndex == 9)
+            {
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",9));
+                double slope_high = (m_y[fec][hdmi][0][chip][10] - m_y[fec][hdmi][0][chip][2])/(m_dac_x[10] - m_dac_x[2]);
+                double offset_high = m_y[fec][hdmi][0][chip][10] - slope_high*m_dac_x[10];
+
+                double slope_low = (m_y[fec][hdmi][0][chip][1] - m_y[fec][hdmi][0][chip][0])/(m_dac_x[1] - m_dac_x[0]);
+                double offset_low = m_y[fec][hdmi][0][chip][0];
+                plot->addGraph();
+                plot->graph(0)->setName(QString("measured DAC\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
+                                        + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
+                plot->graph(0)->setData(
+                    QVector<double>::fromStdVector(m_dac_x),
+                    QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+            }
         }
         plot->replot();
     }
@@ -898,10 +1192,10 @@ void CalibrationModule::StartCalibration(){
     m_lastUdpTimeStamp=0;
     m_start = 0;
     m_end = 0;
-    for(int n =0; n<maxModes; n++)
-    {
-        m_isCalibrated[n] = false;
-    }
+//    for(int n =0; n<maxModes; n++)
+//    {
+//        m_isCalibrated[n] = false;
+//    }
     m_dataAvailable = false;
     emit m_mainWindow->m_daqWindow->ui->openConnection->clicked();
     QThread::usleep(1000);
@@ -1082,6 +1376,15 @@ void CalibrationModule::StartCalibration(){
     {
         MeasurePedestalOrThreshold(false, m_isThresholdCalibration);
     }
+    else if(m_modeIndex == 8)
+    {
+        MeasurePulserOrThresholdDAC(true);
+    }
+    else if(m_modeIndex == 9)
+    {
+        MeasurePulserOrThresholdDAC(false);
+    }
+
     else {
         m_nodata_start = std::chrono::high_resolution_clock::now();
         DoCalibrationStep();
@@ -1089,6 +1392,7 @@ void CalibrationModule::StartCalibration(){
         StartDataTaking();
     }
 }
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::DoCalibrationStep(){
     std::cout << "DoCalibrationStep " << std::endl;
@@ -1104,17 +1408,26 @@ void CalibrationModule::DoCalibrationStep(){
             m_srs_timestamp_end[fec][hdmi][0][chip]=0;
             if(m_modeIndex == 1)
             {
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].SetReg("TP_skew", 0);
-                int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
-                int min = m_minPulseHeightTable[gain];
-                int max =  m_maxPulseHeightTable[gain];
-                int step = (max - min)/(m_number_bits-1);
-                std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
-                if(vmm == 0) {
-                    m_pulseHeight_DAC[m_bitCount] = static_cast<int>(min+m_bitCount*step);
-                }
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
+               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].SetReg("TP_skew", 0);
+               int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
+               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
+               int min = m_minPulseHeightTable[gain];
+               int max =  m_maxPulseHeightTable[gain];
+               int step = (max - min)/(m_number_bits-1);
+               std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
+               if(vmm == 0) {
+                   m_dac_setting.push_back(static_cast<int>(min+m_bitCount*step));
+               }
+               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
+               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+               m_mainWindow->m_daqs[0].SendAll();
+               QThread::usleep(10000);
+               int measured = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
+               m_dac_measured[fec][hdmi][0][chip].push_back(measured);
+
+
+
+
             }
             else if(m_modeIndex == 2)
             {
@@ -1272,20 +1585,9 @@ void CalibrationModule::AccumulateData(){
             m_mainWindow->m_daqs[0].ACQHandler(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
             m_dataAvailable = true;
-            m_isCalibrated[m_modeIndex] = true;
+            //m_isCalibrated[m_modeIndex] = true;
             if(IsCalibration())
             {
-/*
-                for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-                    int fec = GetFEC(vmm);
-                    int hdmi = GetHDMI(vmm);
-                    int chip = GetVMM(vmm);
-
-                    for(int ch = 0; ch<64; ch++){
-                       m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
-                    }
-               }
-*/
                if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
                     LoadSettings();
                }
@@ -1739,23 +2041,19 @@ void CalibrationModule::GetSettings()
     else if(m_modeIndex == 4){
         m_number_bits = m_number_bits_tdc;
     }
-    else if(m_modeIndex == 5){
-        m_number_bits = m_number_bits_s_curve;
-    }
     else if(m_modeIndex == 6){
         m_number_bits = m_number_bits_threshold;
-    }
-    else if(m_modeIndex == 7){
-        m_number_bits = m_number_bits_pedestal;
     }
     else {
         m_number_bits = 1;
     }
+
 }
 
 void CalibrationModule::InitializeDataStructures()
 {
-    m_pulseHeight_DAC.clear();
+    m_dac_setting.clear();
+
     m_x.clear();
     m_dac_x.clear();
     m_max_value_x.clear();
@@ -1768,8 +2066,7 @@ void CalibrationModule::InitializeDataStructures()
     }
 
     for(unsigned int bit = 0; bit < 32; bit++) {
-        m_pulseHeight_DAC.push_back(0);
-        for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
+          for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
                     if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid)){
@@ -1798,8 +2095,11 @@ void CalibrationModule::InitializeDataStructures()
                         m_bc_period[fec][hdmi][hybrid ]= period_ns;
                     }
                     for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
+                        //m_dac_measured[fec][hdmi][0][vmm].clear();
                         if(bit == 0)
                         {
+                            m_dac_measured[fec][hdmi][hybrid][vmm].clear();
+
                             if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) &&
                                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].GetVMM(vmm) ){
                                 int stc = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].m_vmms[vmm].GetRegister("stc");
@@ -1837,6 +2137,54 @@ void CalibrationModule::InitializeDataStructures()
         }
     }
 }
+
+void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
+{
+    const int M = 11;
+    m_dac_x.clear();
+    for(int i=0; i<M; i++) {
+         m_dac_x.push_back(i*100);
+    }
+
+    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
+    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
+
+    for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
+        int fec = GetFEC(vmm);
+        int hdmi = GetHDMI(vmm);
+        int chip = GetVMM(vmm);
+
+        for(int n=0; n<M; n++) {
+             if(measurePulser) {
+                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",(int)m_dac_x[n]);
+             }
+             else {
+                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
+                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt",(int)m_dac_x[n]);
+             }
+             m_mainWindow->m_daqs[0].SendAll();
+              QThread::usleep(10000);
+             int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
+
+             m_y[fec][hdmi][0][chip].push_back(val);
+             std::cout << m_dac_x[n] << ", " << val << std::endl;
+        }
+    }
+
+    m_dataAvailable = true;
+//    if(isPulser) {
+//        m_isCalibrated[8] = true;
+//    }
+//    else {
+//        m_isCalibrated[9] = true;
+//    }
+    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+    PlotData();
+}
+
+
 void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThresholdCalibration)
 {
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
@@ -1900,11 +2248,11 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
         }
     }
     m_dataAvailable = true;
-    if(isPedestal) {
-        m_isCalibrated[7] = true;
-    }
-    else {
-        m_isCalibrated[6] = true;
+    if(!isPedestal) {
+        //m_isCalibrated[7] = true;
+    //}
+    //else {
+        //m_isCalibrated[6] = true;
         if(isThresholdCalibration) {
             CalculateCorrections();
         }
@@ -2164,10 +2512,12 @@ uint32_t CalibrationModule::Reversebits32(uint32_t x) {
     x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
     return ((x >> 16) | (x << 16));
 }
+
 uint16_t CalibrationModule::Reversebits16(uint16_t x) {
     uint32_t temp = Reversebits32(x);
     return (temp >> 16);
 }
+
 uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
     num = num ^ (num >> 16);
     num = num ^ (num >> 8);
@@ -2176,6 +2526,7 @@ uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
     num = num ^ (num >> 1);
     return num;
 }
+
 QString CalibrationModule::CreateFileName(QString name, int polarity, int gain, int peaktime, int tac, int bcclock)
 {
     QString theName = m_mainWindow->GetApplicationPath() + "/" + name;

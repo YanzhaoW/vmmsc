@@ -62,6 +62,7 @@ public:
 
     void SaveCorrections();
     void GetActiveVMMs();
+    void SavePlotsAsCSV();
     void SavePlotsAsPDF();
 
     double ThresholdDAC_to_mV(int dac);
@@ -109,6 +110,7 @@ private:
     bool IsCalibration();
     void PlotData();
     void MeasurePedestalOrThreshold(bool isPedestal, bool isThresholdCalibration);
+    void MeasurePulserOrThresholdDAC(bool measurePulser);
     void FitOfflineCalibrationData();
     void AccumulateData();
     void CalculateCorrections();
@@ -122,7 +124,6 @@ private:
     int GetVMM(int vmmId);
 
     QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1,int bcclock=-1);
-
     int Receive_VMM3(const char* buffer, long size, int fecId);
     int Parse_VMM3(uint32_t data1, uint16_t data2, int fecId);
 
@@ -132,7 +133,7 @@ private:
 
 
     const static int maxModes = 20;
-    bool m_isCalibrated[maxModes];
+    //bool m_isCalibrated[maxModes];
 
     MessageHandler *m_msg;
 
@@ -202,16 +203,15 @@ private:
 
     int m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
     int m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
-    std::vector<int> m_pulseHeight_DAC;
+
+    std::vector<int> m_dac_setting;
+    std::vector<int> m_dac_measured[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
     const static int m_number_bits_threshold = 32;
-    const static int m_number_bits_s_curve = 1;
-
     const static int m_number_bits_offline_time = 4;
     const static int m_number_bits_offline_adc= 4;
-    const static int m_number_bits_pedestal = 1;
 
     uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     uint64_t m_srs_timestamp_start[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -249,7 +249,7 @@ private:
     //Plots with DAC or mV values on x-axis
     std::vector<double> m_dac_x;
 
-    //y values for plots with channels on x-axis
+    //y values for plots with channels or DAC values on x-axis
     std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     //y values for S-curve, the vector contains one value per threshold

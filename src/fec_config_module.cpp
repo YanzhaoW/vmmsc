@@ -1872,8 +1872,8 @@ int FECConfigModule::ReadADC(int hdmi_index, int vmm_index, int adc_chan)
     ///////////////////////////
     // calculate channel to read
     // ch 0: tdo        pattern 100 = 4
-    // ch 1: pdo        patterm 101 = 5
-    // ch 2: Mo         patterm 110 = 6
+    // ch 1: pdo        pattern 101 = 5
+    // ch 2: Mo         pattern 110 = 6
     // ch 3: not used   pattern 111 = 7
     // => adc_chan + 4
 
