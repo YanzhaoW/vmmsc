@@ -30,9 +30,7 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_hdmi_i2c.push_back(5);
     m_hdmi_i2c.push_back(4);
 #endif
-    //    std::cout<<"FEC -ip4 orig: "<<fec->GetRegVal("ip4") <<std::endl;
-    //    std::cout<<"FEC -ip4 Set: "<<fec->SetReg("ip4",(unsigned long) 23) <<std::endl;
-    //    std::cout<<"FEC -ip4 changed: "<<fec->GetRegVal("ip4") <<std::endl;
+
 }
 
 // ------------------------------------------------------------------------ //
@@ -142,7 +140,7 @@ bool FECConfigModule::SendConfig(int hdmi_index, int vmm_index)
         sx << "sending command SPI at comamnd #: " << GetSocketHandler().GetCommandCounter();
         GetMessageHandler()(sx,"Configuration::SendConfig");sx.str("");
     }
-    // std::cout << "datagram clear" << std::endl;
+
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
@@ -717,16 +715,9 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
         //[31] not used
 
         if(m_dbg) {
-            //            using boost::format;
             std::stringstream chan;
             chan.str("");
-            //            chan << " Chan["<< format("%02i") % i <<"]: " << reg.toStdString();
             GetMessageHandler()(chan, "Configuration::fillChannelRegisters");
-            //chan << format("%02i") % i;
-            //
-            //std::cout << "-----------------------------------------------" << std::endl;
-            //std::cout << " Channel [" << chan.str() << "] register "
-            //     << reg.toStdString() << std::endl;
         }
 
         registers.push_back(reg);
@@ -1054,13 +1045,7 @@ void FECConfigModule::SetTriggerAcqConstants()
    uint32_t trg_on_off =  trgin_on + 2*trgout_on;
    uint32_t trg_invert =  trgin_invert +2*trgout_invert +4*trgout_sel;
 
-   std::cout << "trgin_on " << trgin_on << std::endl;
-   std::cout << "trgout_on " << trgout_on << std::endl;
-   std::cout << "trgin_invert " << trgin_invert << std::endl;
-   std::cout << "trgout_invert " << trgout_invert << std::endl;
-   std::cout << "trgout_sel " << trgout_sel << std::endl;
-   std::cout << "latency_reset " <<  m_fec->GetRegVal("latency_reset") << std::endl;
-   std::cout << "bcclock_factor " <<  m_fec->GetRegVal("bcclock_factor") << std::endl;
+
     ///////////////////////////
     // trigger constants
     ///////////////////////////
@@ -1400,10 +1385,7 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
         << (quint32) 14
         << (quint32) 15;
 
-    QString testa= datagram.mid(0,datagram.size()).toHex();
-    std::cout << datagram.size() << std::endl;
-    std::cout << testa.toStdString() << std::endl;
-    std::cout << " " << std::endl;
+
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::ReadSystemRegisters");
     bool readOK = true;
@@ -1414,11 +1396,12 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
 
         read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
         GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
+        /*
         for(int n =0; n< read_datagram.size();n++)
         {
             std::cout << n << " " << read_datagram.mid(n,1).toHex().toStdString() << std::endl;
         }
-
+        */
         QString FirmwareVers = read_datagram.mid(22,2).toHex();
         QString MACvendor = read_datagram.mid(29,3).toHex();
         QString MACdevice = read_datagram.mid(37,3).toHex();
@@ -1613,12 +1596,10 @@ void FECConfigModule::writeDAQip(int DAQip)
         << (quint32) 0xa0f30012 // DAQ ip register on FEC EEPROM (via I2C)
         << (quint32) DAQip; // value 167772162=10.0.0.2
 
-     std::cout << "WRITING TO  IP " << ip.toStdString() << " " << send_to_port << std::endl;
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::writeDAQip");
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
-    std::cout << "RESULT " << readOK << " " << DAQip << std::endl;
     if(readOK) {
         if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeDAQip");
         GetSocketHandler().ProcessReply("fec", ip);
@@ -1882,7 +1863,6 @@ int FECConfigModule::ReadADC(int hdmi_index, int vmm_index, int adc_chan)
         << (quint32) (1*65536) +                      (1*32768 + (adc_chan+4)*4096 + 2*512 + 1*256) +                 131;
     //=116099; //[20,23] //goes to sc_data to ADC, must be 3 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
     // is 00000001 (point to conversion register) 11000101 (start conversion, channel 1, range +-2V, single shot) 10000011 (LSB of conversion register to be written)
-    std::cout << datagram.toHex().toStdString() << std::endl;
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
 
     bool readOK = true;
@@ -1926,7 +1906,7 @@ int FECConfigModule::ReadADC(int hdmi_index, int vmm_index, int adc_chan)
         << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
         << (quint32) 0; //[20,23] //goes to sc_data to ADC, must be 2 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
 
-    std::cout << datagram.toHex().toStdString() << std::endl;
+
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
 
     readOK = true;
@@ -1969,7 +1949,7 @@ int FECConfigModule::ReadADC(int hdmi_index, int vmm_index, int adc_chan)
         << (quint32) 11141120;//65535;//11141120; //7121558; //[20,23] //goes to sc_data to ADC, must be 3 bytes
     // can be anytinh here but needs to be 3 byte long
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
-    std::cout << datagram.toHex().toStdString() << std::endl;
+
     readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
 
@@ -1979,12 +1959,8 @@ int FECConfigModule::ReadADC(int hdmi_index, int vmm_index, int adc_chan)
 
         read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
         GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-        std::cout << read_datagram.toHex().toStdString() << std::endl;
-
         QString ADCresult = read_datagram.mid(22,2).toHex();
-        std::cout << ADCresult.toStdString() << std::endl;
         ADCresult_int_bare = ADCresult.toInt(&ok,16) >> 4; //bit shift
-         std::cout << ADCresult_int_bare << std::endl;
     } // while loop
 
     if(readOK) {
@@ -2223,7 +2199,7 @@ QString FECConfigModule::ReadGeoPos(int hdmi_index)
         << (quint32) 0 //[16,19] // goes to sc_address, for the ID chip determines at which position for bytes of the 16 byte ID are read
         << (quint32) reg; //[20,23] //defines which register of Geocode chip or ID chip is going to be read
 
-    //std::cout << datagram.toHex().toStdString() << std::endl;
+
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadGeoPos");
 
     readOK = true;
@@ -2266,7 +2242,7 @@ QString FECConfigModule::ReadGeoPos(int hdmi_index)
         << (quint32) 0x00000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
     // can be anything here but needs to be 3 byte long
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadGeoPos");
-    //std::cout << datagram.toHex().toStdString() << std::endl;
+
     readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
 
@@ -2276,7 +2252,7 @@ QString FECConfigModule::ReadGeoPos(int hdmi_index)
 
         read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
         GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-        std::cout << read_datagram.toHex().toStdString() << std::endl;
+
         result = read_datagram.mid(23,1).toHex();
     } // while loop
 
@@ -2352,7 +2328,7 @@ QString FECConfigModule::ReadIDChip(int hdmi_index)
             << (quint32) 0 //[16,19] // goes to sc_address, for the ID chip determines at which position for bytes of the 16 byte ID are read
             << (quint32) reg; //[20,23] //defines which register of Geocode chip or ID chip is going to be read
 
-        //std::cout << datagram.toHex().toStdString() << std::endl;
+
         GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadIDChip");
 
         readOK = true;
@@ -2396,7 +2372,7 @@ QString FECConfigModule::ReadIDChip(int hdmi_index)
             << (quint32) 0x00000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
         // can be anything here but needs to be 3 byte long
         GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadIDChip");
-        //std::cout << datagram.toHex().toStdString() << std::endl;
+
         readOK = true;
         readOK = GetSocketHandler().WaitForReadyRead("fec");
 
@@ -2406,7 +2382,7 @@ QString FECConfigModule::ReadIDChip(int hdmi_index)
             read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
             GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
             QString id_part = read_datagram.mid(20,4).toHex();
-            std::cout << "ID Part " << byte_position_id << " " << id_part.toStdString()  << std::endl;
+
             result.append(id_part);
         } // while loop
 
@@ -2424,7 +2400,6 @@ QString FECConfigModule::ReadIDChip(int hdmi_index)
     }
 
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadIDChip");
-    std::cout << "ID: " << result.toStdString() << std::endl;
     return result;
 }
 // ------------------------------------------------------------------------ //

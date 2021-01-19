@@ -17,19 +17,16 @@
 
 
 CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
-                                                                         QObject(parent),
-                                                                         m_mainWindow{top},
-                                                                         m_dbg(false),
-                                                                         m_udpSocket(nullptr),
-                                                                         m_msg(new MessageHandler),
-                                                                         m_ignore16(false)
+    QObject(parent),
+    m_mainWindow{top},
+    m_dbg(false),
+    m_udpSocket(nullptr),
+    m_msg(new MessageHandler),
+    m_ignore16(false)
 {
     m_calibrationArray[0] = nullptr;
     m_calibrationArray[1] = nullptr;
-//    for(int n =0; n<maxModes; n++)
-//    {
-//        m_isCalibrated[n] = false;
-//    }
+
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot1);
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot2);
     plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot3);
@@ -44,11 +41,11 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
         plotVector[n]->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     }
     connect( m_mainWindow->m_daqWindow->ui->comboBoxFec, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updatePlot()));
+             this, SLOT(updatePlot()));
     connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updatePlot()));
+             this, SLOT(updatePlot()));
     connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(setPlotChoice()));
+             this, SLOT(setPlotChoice()));
 }
 
 void CalibrationModule::SaveSettings() {
@@ -162,10 +159,7 @@ bool CalibrationModule::CheckModes()
     {
         return false;
     }
-    //if(IsCalibration())
-    //{
-    //    return m_isCalibrated[m_modeIndex];
-    //}
+
     return true;
 }
 
@@ -196,34 +190,6 @@ void CalibrationModule::FitOfflineCalibrationData()
     }
     m_calibrationArray[m_modeIndex-1] = new QJsonArray();
 
-    std::vector<double> mean_y_perSystem;
-    std::vector<std::vector<double>> mean_y_perChip;
-    mean_y_perSystem.resize(m_number_bits,0);
-    mean_y_perChip.resize(m_number_bits, std::vector<double>(m_vmmActs.size(), 0));
-
-
-    //Calculate the base lines (mean of y-values)
-    for(int bit =0; bit<m_number_bits; bit++){
-        int numVMMwithData = 0;
-        for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
-            int fec = GetFEC(vmm);
-            int hdmi = GetHDMI(vmm);
-            int chip = GetVMM(vmm);
-
-            double meanY = 0;
-            long size = std::count_if(m_mean[bit][fec][hdmi][0][chip].begin(), m_mean[bit][fec][hdmi][0][chip].end(), [](double i){return ((i > -1.0));});
-            if(size>0)
-            {
-                std::for_each(m_mean[bit][fec][hdmi][0][chip].begin(),m_mean[bit][fec][hdmi][0][chip].end(), [&](double x){if (x > -1.0) meanY += x;});
-                numVMMwithData++;
-                meanY = meanY/static_cast<double>(size);
-                mean_y_perChip[bit][vmm] = meanY;
-                mean_y_perSystem[bit] += meanY;
-            }
-
-        }
-        mean_y_perSystem[bit] = mean_y_perSystem[bit]/numVMMwithData;
-    }
 
     double meanOffset = 0;
     double meanSlope = 0;
@@ -255,21 +221,14 @@ void CalibrationModule::FitOfflineCalibrationData()
             slope=0.0;
             offset=-1.0;
             double sumX=0, sumY=0, sumXY=0, sumX2=0;
+            double min_percent = 0.0;
+            double max_percent = 100.0;
+            double min_time = 0.0;
+            double max_time = 0.0;
+
             //For each channel, fit a straight line through m_number_bits data points (for ADC calibration: DAC on x-axis, measured ADC on y-axis)
             //for time calibration: equidistant times, starting at 0 ns on x-axis, measured time on y-axis
             for(int bit =0; bit<m_number_bits; bit++){
-                //Offline Time
-                if(m_modeIndex == 2)
-                {
-                    //subtract the measured time offset of the test pulses (pulse does not occur at time 0)
-                    if(perSystem) {
-                        m_mean[bit][fec][hdmi][0][chip][ch] =  m_mean[bit][fec][hdmi][0][chip][ch] - mean_y_perSystem[0];
-                    }
-                    else
-                    {
-                        m_mean[bit][fec][hdmi][0][chip][ch] =  m_mean[bit][fec][hdmi][0][chip][ch] - mean_y_perChip[0][vmm];
-                    }
-                }
                 double theMean = m_mean[bit][fec][hdmi][0][chip][ch];
 
                 double theXValue = 0;
@@ -278,20 +237,29 @@ void CalibrationModule::FitOfflineCalibrationData()
                 {
                     //Since we do not know the correct ADC value for the x-axis, we use the measured pulse height in DAC
                     theXValue = m_dac_measured[fec][hdmi][0][chip][bit];
-                    //theXValue = m_dac_setting[bit];
                 }
                 //Offline Time
                 else if(m_modeIndex == 2)
                 {
+                    if(m_percent_bcid[bit][fec][hdmi][0][chip][ch] <= 50.0 && m_percent_bcid[bit][fec][hdmi][0][chip][ch] >= min_percent) {
+                        min_percent = m_percent_bcid[bit][fec][hdmi][0][chip][ch];
+                        min_time = bit*3.125*TIME_FACTOR;
+                    }
+                    if(m_percent_bcid[bit][fec][hdmi][0][chip][ch] >= 50.0 && m_percent_bcid[bit][fec][hdmi][0][chip][ch] <= max_percent) {
+                        max_percent = m_percent_bcid[bit][fec][hdmi][0][chip][ch];
+                        max_time = bit*3.125*TIME_FACTOR;
+                    }
                     theXValue = bit*3.125*TIME_FACTOR;
+                    if(ch%10 == 0) std::cout << "vmm << " " << ch << " " << theXValue << " " << theMean " << vmm << " " << ch << " " << theXValue << " " << theMean << std::endl;
                 }
-
-                x.push_back(theXValue);
-                y.push_back(theMean);
-                sumX += theXValue;
-                sumY += theMean;
-                sumXY += theXValue * theMean;
-                sumX2 += theXValue * theXValue;
+                if(theMean != -9999) {
+                    x.push_back(theXValue);
+                    y.push_back(theMean);
+                    sumX += theXValue;
+                    sumY += theMean;
+                    sumXY += theXValue * theMean;
+                    sumX2 += theXValue * theXValue;
+                }
             }
 
             unsigned long nPoints = x.size();
@@ -310,6 +278,36 @@ void CalibrationModule::FitOfflineCalibrationData()
                     meanOffset += offset;
                     cntPerChip++;
                     cntPerSystem++;
+                    if(m_modeIndex == 2) {
+                        /*
+                            1. fit TDC
+                            2. y = -3.5986 x time + 180.79
+                            3. 50% BCID value: 4.878 ns
+                            4. at 4.878 ns, old TDC2 163.2372
+                            5. at 29.878 ns, old TDC1 = 73.27
+                            6. at 4.878 ns, new TDC2 = 255*25 ns/60ns =106.25
+                            7. at 29.878 ns, new TDC1 = 0
+                            8. slope: new TDC2/(old TDC2 - old TDC1)
+                            9. offset: old TDC1*slope
+                        */
+                        double slope_50_percent = (max_percent-min_percent)/(max_time - min_time);
+                        //start time is where the BCID flips from one BCID to the next, e.g. where we have 50% of one BCID
+                        double time_start = (50.0 - min_percent)/slope_50_percent;
+                        //end time is start time plus the period of the BC clock
+                        double time_end =  m_bc_period[fec][hdmi][0] + time_start;
+                        //measured TDC at start
+                        double tdc_start = slope*time_start + offset;
+                        //measured TDC at end
+                        double tdc_end = slope*time_end + offset;
+                        //corrected TDC at start (TDC*tac_slope/255) gives the time
+                        double corr_tdc_start = 255*m_bc_period[fec][hdmi][0]/m_tac_slope[fec][hdmi][0][chip];
+                        double corr_tdc_end = 0;
+                        double corr_slope = (corr_tdc_start-corr_tdc_end)/(tdc_start-tdc_end);
+                        double corr_offset = tdc_end*corr_slope;
+                        if(ch%10 == 0) std::cout << "Fit " << vmm << " " << ch << " " << time_start << " " << time_end << " " << tdc_start << " " << tdc_end << " " << corr_tdc_start << " " << corr_tdc_end << " " << corr_slope << " " << corr_offset << std::endl;
+                        slope = corr_slope;
+                        offset = corr_offset;
+                    }
                 }
             }
             m_slope[fec][hdmi][0][chip].push_back(slope);
@@ -327,6 +325,8 @@ void CalibrationModule::FitOfflineCalibrationData()
 
     } // vmm
 
+
+
     if(cntPerSystem > 0)
     {
         mean_offset_perSystem = mean_offset_perSystem/cntPerSystem;
@@ -340,36 +340,41 @@ void CalibrationModule::FitOfflineCalibrationData()
             QJsonObject calibrationObject;
             QJsonArray offsetArray;
             QJsonArray slopeArray;
-
             double slope_corr = 1;
             double mean_offset = 0;
-            if(perSystem) {
-                slope_corr = 1/mean_slope_perSystem;;
-                mean_offset = mean_offset_perSystem;
-            }
-            else {
-                if(mean_slope_perChip[vmm] > 0) {
-                    slope_corr = 1/mean_slope_perChip[vmm];;
+            double slope = 0;
+            double offset = 0;
+            if(m_modeIndex == 1) {
+                m_dac_slope[fec][hdmi][0][chip] = mean_slope_perChip[vmm];
+                m_dac_offset[fec][hdmi][0][chip] = mean_offset_perChip[vmm];
+                if(perSystem) {
+                    slope_corr = 1/mean_slope_perSystem;;
+                    mean_offset = mean_offset_perSystem;
                 }
-                mean_offset =  mean_offset_perChip[vmm];
+                else {
+                    if(mean_slope_perChip[vmm] > 0) {
+                        slope_corr = 1/mean_slope_perChip[vmm];
+                    }
+                    mean_offset =  mean_offset_perChip[vmm];
+                }
+                //guess offset and slope by using the mean
+                slope = 1;
+                offset = mean_offset - mean_offset*slope_corr;
             }
-            //guess offset and slope by using the mean
-            double slope = 1;
-            double offset = mean_offset - mean_offset*slope_corr;
             for(unsigned int ch = 0; ch<64; ch++){
                 //Channel with missing data
                 if(m_slope[fec][hdmi][0][chip][ch] == 0.0 && m_offset[fec][hdmi][0][chip][ch] == -1.0)
                 {
                     //in case the neighbouring channels have data, use it (gaps of 1 or 2 missing channels)
                     if(ch == 0) {
-                       if( m_slope[fec][hdmi][0][chip][1] != 0.0 && m_offset[fec][hdmi][0][chip][1] != -1.0) {
-                           offset =  m_offset[fec][hdmi][0][chip][1] - mean_offset*m_slope[fec][hdmi][0][chip][1]*slope_corr;
-                           slope = 1/(m_slope[fec][hdmi][0][chip][1] * slope_corr);
-                       }
-                       else if( m_slope[fec][hdmi][0][chip][2] != 0.0 && m_offset[fec][hdmi][0][chip][2] != -1.0) {
-                           offset =  m_offset[fec][hdmi][0][chip][2] - mean_offset*m_slope[fec][hdmi][0][chip][2]*slope_corr;
-                           slope = 1/(m_slope[fec][hdmi][0][chip][2] * slope_corr);
-                       }
+                        if( m_slope[fec][hdmi][0][chip][1] != 0.0 && m_offset[fec][hdmi][0][chip][1] != -1.0) {
+                            offset =  m_offset[fec][hdmi][0][chip][1] - mean_offset*m_slope[fec][hdmi][0][chip][1]*slope_corr;
+                            slope = 1/(m_slope[fec][hdmi][0][chip][1] * slope_corr);
+                        }
+                        else if( m_slope[fec][hdmi][0][chip][2] != 0.0 && m_offset[fec][hdmi][0][chip][2] != -1.0) {
+                            offset =  m_offset[fec][hdmi][0][chip][2] - mean_offset*m_slope[fec][hdmi][0][chip][2]*slope_corr;
+                            slope = 1/(m_slope[fec][hdmi][0][chip][2] * slope_corr);
+                        }
                     }
                     else if(ch == 63) {
                         if( m_slope[fec][hdmi][0][chip][62] != 0.0 && m_offset[fec][hdmi][0][chip][62] != -1.0) {
@@ -408,9 +413,11 @@ void CalibrationModule::FitOfflineCalibrationData()
                     offset =  m_offset[fec][hdmi][0][chip][ch] - mean_offset*m_slope[fec][hdmi][0][chip][ch]*slope_corr;
                     slope = 1/(m_slope[fec][hdmi][0][chip][ch] * slope_corr);
                 }
+
                 //limit the numbers to 3 significant digits
                 slope = std::round(1000*slope)/1000;
                 offset = std::round(1000*offset)/1000;
+
                 m_slope[fec][hdmi][0][chip][ch] = slope;
                 m_offset[fec][hdmi][0][chip][ch] = offset;
                 slopeArray.push_back(slope);
@@ -551,20 +558,26 @@ void CalibrationModule::SavePlotsAsCSV() {
         if(m_modeIndex == 1)
         {
             //<< cnt << "," << std::setprecision(6) << rate<< std::endl;
-            m_outFile << "fec,vmm,ch,slope,offset,pulser_dac_setting,pulser_dac_measured, ADC\n";
+            m_outFile << "fec,vmm,ch,slope,offset,pulser_dac_setting,pulser_dac_measured, adc_measured, adc_corrected_dac_measured, adc_corrected_dac_setting\n";
             for(int ch = 0; ch<64; ch++){
+
                 for(int bit=0; bit<m_number_bits;bit++){
-                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_slope[fec][hdmi][0][chip][ch] << "," << m_offset[fec][hdmi][0][chip][ch] << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hdmi][0][chip][bit] << ","  << m_mean[bit][fec][hdmi][0][chip][ch]  << "\n" ;
+                    double adc_from_setting = m_dac_setting[bit]*m_dac_slope[fec][hdmi][0][chip] + m_dac_offset[fec][hdmi][0][chip];
+                    double adc_from_measurement = m_dac_measured[fec][hdmi][0][chip][bit]*m_dac_slope[fec][hdmi][0][chip] + m_dac_offset[fec][hdmi][0][chip];
+                    double factor = adc_from_setting/adc_from_measurement;
+                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_slope[fec][hdmi][0][chip][ch] << "," << m_offset[fec][hdmi][0][chip][ch] << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hdmi][0][chip][bit] << ","
+                              << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << (m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])* m_slope[fec][hdmi][0][chip][ch]
+                            <<"," << factor*(m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])* m_slope[fec][hdmi][0][chip][ch] << "\n" ;
                 }
             }
         }
         else if(m_modeIndex == 2)
         {
-            m_outFile << "fec,vmm,ch,slope,offset,pulser_skew,time\n";
+            m_outFile << "fec,vmm,ch,slope,offset,pulser_skew,measured time,corrected time\n";
             for(int ch = 0; ch<64; ch++){
                 for(int bit=0; bit<m_number_bits;bit++){
                     m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_slope[fec][hdmi][0][chip][ch] << "," << m_offset[fec][hdmi][0][chip][ch] << ","
-                              << m_x[ch] << ","  << m_mean[bit][fec][hdmi][0][chip][ch]  << "\n" ;
+                              << bit*3.125*TIME_FACTOR << ","  << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << (m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])* m_slope[fec][hdmi][0][chip][ch] << "\n" ;
                 }
             }
         }
@@ -583,7 +596,7 @@ void CalibrationModule::SavePlotsAsCSV() {
             m_outFile << "fec,vmm,ch, TDC correction [mV], TDC, calibrated value, best common value\n";
             for(int ch = 0; ch<64; ch++){
                 for(int bit=0; bit<m_number_bits;bit++){
-                   m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << m_calVal[fec][hdmi][0][chip][ch] << "," << m_y[fec][hdmi][0][chip][ch] << "\n" ;
+                    m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hdmi][0][chip][ch]  << "," << m_calVal[fec][hdmi][0][chip][ch] << "," << m_y[fec][hdmi][0][chip][ch] << "\n" ;
                 }
             }
         }
@@ -622,42 +635,42 @@ void CalibrationModule::SavePlotsAsCSV() {
         {
             m_outFile << "fec,vmm, pulser dac setting, pulser dac measured\n";
             for(int n=0; n<m_dac_x.size();n++){
-                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << m_dac_x[n] << "," << m_y[fec][hdmi][0][chip][n] << "\n" ;
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << m_dac_x[n] << "," << m_y[fec][hdmi][0][chip][n] << "\n" ;
             }
         }
         else if(m_modeIndex == 9)
         {
             m_outFile << "fec,vmm, threshold dac setting, threshold dac measured\n";
             for(int n=0; n<m_dac_x.size();n++){
-                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << m_dac_x[n] << "," << m_y[fec][hdmi][0][chip][n] << "\n" ;
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << m_dac_x[n] << "," << m_y[fec][hdmi][0][chip][n] << "\n" ;
             }
         }
         else if(m_modeIndex == 10)
         {
             m_outFile << "fec,vmm,ch, cnt\n";
             for(int ch = 0; ch<64; ch++){
-                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
             }
         }
         else if(m_modeIndex == 11)
         {
             m_outFile << "fec,vmm,ch, mean ADC\n";
             for(int ch = 0; ch<64; ch++){
-                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
             }
         }
         else if(m_modeIndex == 12)
         {
             m_outFile << "fec,vmm,ch, mean TDC\n";
             for(int ch = 0; ch<64; ch++){
-                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
             }
         }
         else if(m_modeIndex == 13)
         {
             m_outFile << "fec,vmm,ch, mean BCID\n";
             for(int ch = 0; ch<64; ch++){
-                  m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
+                m_outFile << fec+1  << "," << hdmi*2+chip << "," << ch  << "," << m_mean[0][fec][hdmi][0][chip][ch] << "\n" ;
             }
         }
 
@@ -775,7 +788,7 @@ void CalibrationModule::SavePlotsAsPDF(){
         QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
         theName += ".pdf";
         plot->savePdf(theName);
-     }
+    }
 }
 
 
@@ -917,27 +930,74 @@ void CalibrationModule::PlotData(){
         }
         else
         {
-            //Offline ADC or time
-            if(m_modeIndex == 1 || m_modeIndex == 2)
+            //Offline ADC
+            if(m_modeIndex == 1)
             {
                 for(int bit=0; bit<m_number_bits;bit++){
+                    double adc_from_setting = m_dac_setting[bit]*m_dac_slope[fec][hdmi][0][chip] + m_dac_offset[fec][hdmi][0][chip];
+                    double adc_from_measurement = m_dac_measured[fec][hdmi][0][chip][bit]*m_dac_slope[fec][hdmi][0][chip] + m_dac_offset[fec][hdmi][0][chip];
+                    double factor = adc_from_setting/adc_from_measurement;
                     plot->addGraph();
-                    plot->graph(2*bit)->setData(
-                        QVector<double>::fromStdVector(m_x),
-                        QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
-                    plot->graph(2*bit)->setPen(QPen(QColor(static_cast<unsigned int>(bit)*colorFactor)));
+                    plot->graph(bit*3)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                    plot->graph(bit*3)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                     plot->legend->removeItem(plot->legend->itemCount()-1);
                     std::vector<double> y;
                     for(unsigned int ch=0; ch<64; ch++)
                     {
-                        y.push_back((m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])*  m_slope[fec][hdmi][0][chip][ch]);
+                        double adc = (m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])*  m_slope[fec][hdmi][0][chip][ch];
+                        y.push_back(adc);
                     }
                     plot->addGraph();
-                    plot->graph(bit*2+1)->setData(
-                        QVector<double>::fromStdVector(m_x),
-                        QVector<double>::fromStdVector(y));
-                    plot->graph(bit*2+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                    plot->graph(bit*3+1)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(y));
+                    plot->graph(bit*3+1)->setPen(QPen(Qt::blue,1,Qt::DashLine));
                     plot->legend->removeItem(plot->legend->itemCount()-1);
+
+                    std::vector<double> y2;
+                    for(unsigned int ch=0; ch<64; ch++)
+                    {
+                        double adc = (m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])*  m_slope[fec][hdmi][0][chip][ch];
+                        y2.push_back(adc*factor);
+                    }
+                    plot->addGraph();
+                    plot->graph(bit*3+2)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(y2));
+                    plot->graph(bit*3+2)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                    plot->legend->removeItem(plot->legend->itemCount()-1);
+
+
+                }
+                plot->legend->setVisible(false);
+            }
+            //Offline time
+            else if(m_modeIndex == 2)
+            {
+                for(int bit=0; bit<m_number_bits;bit++){
+                    if(m_mean[bit][fec][hdmi][0][chip][0] != -9999) {
+                        plot->addGraph();
+                        plot->graph(bit*2)->setData(
+                                    QVector<double>::fromStdVector(m_x),
+                                    QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                        plot->graph(bit*2)->setPen(QPen(Qt::black,1,Qt::SolidLine));
+                        plot->legend->removeItem(plot->legend->itemCount()-1);
+                        std::vector<double> y;
+                        for(unsigned int ch=0; ch<64; ch++)
+                        {
+                            double theTime = (m_mean[bit][fec][hdmi][0][chip][ch] - m_offset[fec][hdmi][0][chip][ch])*  m_slope[fec][hdmi][0][chip][ch];
+                            y.push_back(theTime);
+                        }
+                        plot->addGraph();
+                        plot->graph(bit*2+1)->setData(
+                                    QVector<double>::fromStdVector(m_x),
+                                    QVector<double>::fromStdVector(y));
+                        plot->graph(bit*2+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                        plot->legend->removeItem(plot->legend->itemCount()-1);
+                    }
+
                 }
                 plot->legend->setVisible(false);
             }
@@ -947,8 +1007,8 @@ void CalibrationModule::PlotData(){
                 for(int bit=0; bit<m_number_bits;bit++){
                     plot->addGraph();
                     plot->graph(bit)->setData(
-                        QVector<double>::fromStdVector(m_x),
-                        QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hdmi][0][chip]));
                     plot->graph(bit)->setPen(QPen(QColor(static_cast<unsigned int>(bit)*colorFactor)));
                     plot->legend->removeItem(plot->legend->itemCount()-1);
                 }
@@ -1009,8 +1069,8 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Threshold"));
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                 plot->yAxis->rescale();
             }
@@ -1022,8 +1082,8 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Pedestal"));
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(m_mean[0][fec][hdmi][0][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
 
             }
@@ -1041,8 +1101,8 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_dac_x),
-                    QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                            QVector<double>::fromStdVector(m_dac_x),
+                            QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
             }
             //Threshold DAC
@@ -1059,8 +1119,8 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_dac_x),
-                    QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
+                            QVector<double>::fromStdVector(m_dac_x),
+                            QVector<double>::fromStdVector(m_y[fec][hdmi][0][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
             }
         }
@@ -1192,10 +1252,7 @@ void CalibrationModule::StartCalibration(){
     m_lastUdpTimeStamp=0;
     m_start = 0;
     m_end = 0;
-//    for(int n =0; n<maxModes; n++)
-//    {
-//        m_isCalibrated[n] = false;
-//    }
+
     m_dataAvailable = false;
     emit m_mainWindow->m_daqWindow->ui->openConnection->clicked();
     QThread::usleep(1000);
@@ -1212,10 +1269,10 @@ void CalibrationModule::StartCalibration(){
 
     if(IsCalibration())
     {
-       if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
-         m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
-         SaveSettings();
-       }
+        if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
+            m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
+            SaveSettings();
+        }
     }
 
     GetActiveVMMs();
@@ -1241,9 +1298,9 @@ void CalibrationModule::StartCalibration(){
             m_theDirection = list[4].toInt();
         }
         if(m_theFEC > 8 || m_theFEC < 1 || m_theVMM > 15 || m_theVMM < 0
-            || m_theDirection < 0 || m_theDirection > 1
-            || pulser_user > 1 || pulser_user < 0
-            || spanWidth < 20 || spanWidth > 200) {
+                || m_theDirection < 0 || m_theDirection > 1
+                || pulser_user > 1 || pulser_user < 0
+                || spanWidth < 20 || spanWidth > 200) {
             return;
         }
 
@@ -1395,7 +1452,6 @@ void CalibrationModule::StartCalibration(){
 
 // ------------------------------------------------------------------------ //
 void CalibrationModule::DoCalibrationStep(){
-    std::cout << "DoCalibrationStep " << std::endl;
     m_bitCount++;
     //Offline or online ADC or time/TDC
     if(m_modeIndex <= 4) {
@@ -1408,25 +1464,22 @@ void CalibrationModule::DoCalibrationStep(){
             m_srs_timestamp_end[fec][hdmi][0][chip]=0;
             if(m_modeIndex == 1)
             {
-               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].SetReg("TP_skew", 0);
-               int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
-               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
-               int min = m_minPulseHeightTable[gain];
-               int max =  m_maxPulseHeightTable[gain];
-               int step = (max - min)/(m_number_bits-1);
-               std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
-               if(vmm == 0) {
-                   m_dac_setting.push_back(static_cast<int>(min+m_bitCount*step));
-               }
-               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
-               m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-               m_mainWindow->m_daqs[0].SendAll();
-               QThread::usleep(10000);
-               int measured = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
-               m_dac_measured[fec][hdmi][0][chip].push_back(measured);
-
-
-
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].SetReg("TP_skew", 0);
+                int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].GetRegister("gain");
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
+                int min = m_minPulseHeightTable[gain];
+                int max =  m_maxPulseHeightTable[gain];
+                int step = (max - min)/(m_number_bits-1);
+                std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
+                if(vmm == 0) {
+                    m_dac_setting.push_back(static_cast<int>(min+m_bitCount*step));
+                }
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                m_mainWindow->m_daqs[0].SendAll();
+                QThread::usleep(10000);
+                int measured = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
+                m_dac_measured[fec][hdmi][0][chip].push_back(measured);
 
             }
             else if(m_modeIndex == 2)
@@ -1485,9 +1538,7 @@ void CalibrationModule::DoCalibrationStep(){
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_threshold);
 
     }
-    std::cout << "DoCalibrationStep before SendAll" << std::endl;
     m_mainWindow->m_daqs[0].SendAll();
-    std::cout << "DoCalibrationStep after SendAll" << std::endl;
 }
 
 // ------------------------------------------------------------------------ //
@@ -1541,7 +1592,7 @@ void CalibrationModule::AccumulateData(){
                 double rate = 0;
                 cnt = m_data[0][fec][hdmi][0][chip][ch][0];
                 if(delay_s > 0) {
-                     rate = cnt/delay_s;
+                    rate = cnt/delay_s;
                 }
                 m_channel_y[ch][static_cast<unsigned long>(m_threshold-m_minThreshold)] = rate;
                 m_data[0][fec][hdmi][0][chip][ch][0]=0;
@@ -1559,7 +1610,7 @@ void CalibrationModule::AccumulateData(){
         }
         else {
             std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Finished calibration acquisition " <<
-                m_bitCount << " after " << delay_ms  << " ms!"  << std::endl;
+                         m_bitCount << " after " << delay_ms  << " ms!"  << std::endl;
             //Finish calibration
             if(m_bitCount == m_number_bits-1) {
                 continueCalibration = false;
@@ -1583,17 +1634,18 @@ void CalibrationModule::AccumulateData(){
             m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
             m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
             m_mainWindow->m_daqs[0].ACQHandler(false);
+            m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
             m_dataAvailable = true;
-            //m_isCalibrated[m_modeIndex] = true;
+
             if(IsCalibration())
             {
-               if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
+                if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
                     LoadSettings();
-               }
+                }
             }
-            //Not for S-curve
-            if(m_modeIndex != 5) {
+            //Not for S-curve and time calibration
+            if(m_modeIndex != 5 && m_modeIndex != 2) {
                 for(int bit =0; bit<m_number_bits; bit++){
                     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
                         int fec = GetFEC(vmm);
@@ -1621,13 +1673,75 @@ void CalibrationModule::AccumulateData(){
                                 std::nth_element(m_data[bit][fec][hdmi][0][chip][ch].begin(), nth, m_data[bit][fec][hdmi][0][chip][ch].end());
                                 median = *nth;
                             }
-                            if(m_modeIndex == 1 || m_modeIndex == 2) {
+                            if(m_modeIndex == 1) {
                                 m_mean[bit][fec][hdmi][0][chip].push_back(median);
                             }
                             else {
                                 m_mean[bit][fec][hdmi][0][chip].push_back(mean);
                             }
 
+                        }
+                    }
+                }
+            }
+            else if(m_modeIndex == 2) {
+                for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
+                    int fec = GetFEC(vmm);
+                    int hdmi = GetHDMI(vmm);
+                    int chip = GetVMM(vmm);
+                    //Determine BCID range from mean BCID, for a 40 MHz BCID we should scan over 2-3 BCIDs
+                    unsigned int min = 0;
+                    unsigned int max = 0;
+                    unsigned int size = m_cnt_bcid[fec][hdmi][0][chip];
+                    double mean = 0;
+                    if(size > 0) {
+                        mean = m_data_bcid[fec][hdmi][0][chip]/size;
+                        if(mean > 0) {
+                            min = mean - 1;
+                        }
+                        if(mean < 4094) {
+                            max = mean + 2;
+                        }
+                    }
+                    std::cout << "bcid " << vmm << " " << mean << " " << min << " " << max << std::endl;
+
+                    for(unsigned int ch = 0; ch<64; ch++){
+                        unsigned long max_cnt = 0;
+                        unsigned int max_bcid = 0;
+                        unsigned int cnt_bcid = 0;
+                        //Determine most common BCID per channel
+                        for(unsigned int bcid = min; bcid <= max; bcid++) {
+                            cnt_bcid = 0;
+                            for(int bit = 0; bit<m_number_bits; bit++){
+                                unsigned int cnt = std::count_if(m_data[bit][fec][hdmi][0][chip][ch].begin(),
+                                        m_data[bit][fec][hdmi][0][chip][ch].end(),
+                                        [bcid](unsigned int val) { return bcid*1000 <=val && bcid*1000+255 >= val; });
+                                cnt_bcid += cnt;
+                            }
+                            if(cnt_bcid > max_cnt) {
+                                max_cnt = cnt_bcid;
+                                max_bcid = bcid;
+                            }
+                        }
+                        //for each time shift, determine how many percent of BCIDs are the most common one
+                        for(int bit = 0; bit<m_number_bits; bit++){
+                           unsigned int total = m_data[bit][fec][hdmi][0][chip][ch].size();
+                           auto it = std::partition(m_data[bit][fec][hdmi][0][chip][ch].begin(),m_data[bit][fec][hdmi][0][chip][ch].end(), [max_bcid](unsigned int val) { return (max_bcid*1000 <=val && max_bcid*1000+255 >= val); });
+                           unsigned long tdc = std::accumulate(m_data[bit][fec][hdmi][0][chip][ch].begin(),it,0);
+                           unsigned long cnt = std::count_if(m_data[bit][fec][hdmi][0][chip][ch].begin(),it, [](unsigned int val) { return true; });
+                           tdc = (tdc - max_bcid*1000*cnt);
+                           //store the percentage of the most common BCID
+                           m_percent_bcid[bit][fec][hdmi][0][chip][ch] = 100.0*(double)cnt/(double)total;
+                           if(100.0*(double)cnt/(double)total >= 99.0) {
+                               double mean_tdc = (double)tdc/(double)cnt;
+                               if(ch%10 == 0) {
+                                  std::cout << bit << " " << vmm << " " << (int)ch << " " << max_bcid <<  " " << cnt << " " << mean_tdc << " " << 100.0*(double)cnt/(double)total << std::endl;
+                               }
+                               m_mean[bit][fec][hdmi][0][chip].push_back(mean_tdc);
+                           }
+                           else {
+                               m_mean[bit][fec][hdmi][0][chip].push_back(-9999);
+                            }
                         }
                     }
                 }
@@ -1993,13 +2107,11 @@ void CalibrationModule::readEvent()
 void CalibrationModule::GetSettings()
 {
     m_BCID.clear();
-    std::string text = m_mainWindow->m_daqWindow->ui->lineEditBCID->text().toStdString();
-
+    QString qtext = m_mainWindow->m_daqWindow->ui->lineEditBCID->text();
+    std::string text = qtext.toStdString();
     if(text.size() > 0) {
-        unsigned long pos = text.find("-");
-
-        if(pos > 0)
-        {
+        if(qtext.contains('-')) {
+            int pos = text.find("-");
             std::string start = text.substr(0, pos);
             std::string end = text.substr(pos+1, text.length()-pos);
             int startChannel = stoi(start);
@@ -2066,7 +2178,7 @@ void CalibrationModule::InitializeDataStructures()
     }
 
     for(unsigned int bit = 0; bit < 32; bit++) {
-          for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
+        for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             for (unsigned short hdmi=0; hdmi < HDMIS_PER_FEC; hdmi++){
                 for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_HDMI; hybrid++){
                     if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid)){
@@ -2088,20 +2200,20 @@ void CalibrationModule::InitializeDataStructures()
                             break;
                         case 6: period_ns = 400.0;
                             break;
-                        case 7: period_ns = 800.0;
-                            break;
-
                         }
                         m_bc_period[fec][hdmi][hybrid ]= period_ns;
                     }
                     for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
+
                         //m_dac_measured[fec][hdmi][0][vmm].clear();
                         if(bit == 0)
                         {
+                            m_data_bcid[fec][hdmi][hybrid][vmm]=0;
+                            m_cnt_bcid[fec][hdmi][hybrid][vmm]=0;
                             m_dac_measured[fec][hdmi][hybrid][vmm].clear();
 
                             if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHDMI(hdmi) &&
-                                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].GetVMM(vmm) ){
+                                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].GetVMM(vmm) ){
                                 int stc = m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[hybrid].m_vmms[vmm].GetRegister("stc");
                                 double tac_ns = 0;
                                 switch (stc)
@@ -2124,11 +2236,13 @@ void CalibrationModule::InitializeDataStructures()
                             m_y[fec][hdmi][hybrid][vmm].clear();
                             m_srs_timestamp_start[fec][hdmi][hybrid][vmm]=0;
                             m_srs_timestamp_end[fec][hdmi][hybrid][vmm]=0;
-
+                            m_dac_slope[fec][hdmi][hybrid][vmm]=0;
+                            m_dac_offset[fec][hdmi][hybrid][vmm]=0;
                         }
                         m_mean[bit][fec][hdmi][hybrid][vmm].clear();
                         m_allhitdata[bit][fec][hdmi][hybrid][vmm].clear();
                         for (unsigned int ch=0; ch < 64; ch++){
+                            m_percent_bcid[bit][fec][hdmi][hybrid][vmm][ch] = 0;
                             m_data[bit][fec][hdmi][hybrid][vmm][ch].clear();
                         }
                     }
@@ -2143,7 +2257,7 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
     const int M = 11;
     m_dac_x.clear();
     for(int i=0; i<M; i++) {
-         m_dac_x.push_back(i*100);
+        m_dac_x.push_back(i*100);
     }
 
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
@@ -2155,30 +2269,24 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
         int chip = GetVMM(vmm);
 
         for(int n=0; n<M; n++) {
-             if(measurePulser) {
-                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",(int)m_dac_x[n]);
-             }
-             else {
-                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
-                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt",(int)m_dac_x[n]);
-             }
-             m_mainWindow->m_daqs[0].SendAll();
-              QThread::usleep(10000);
-             int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
+            if(measurePulser) {
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",(int)m_dac_x[n]);
+            }
+            else {
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
+                m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt",(int)m_dac_x[n]);
+            }
+            m_mainWindow->m_daqs[0].SendAll();
+            QThread::usleep(10000);
+            int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
 
-             m_y[fec][hdmi][0][chip].push_back(val);
-             std::cout << m_dac_x[n] << ", " << val << std::endl;
+            m_y[fec][hdmi][0][chip].push_back(val);
+            std::cout << m_dac_x[n] << ", " << val << std::endl;
         }
     }
 
     m_dataAvailable = true;
-//    if(isPulser) {
-//        m_isCalibrated[8] = true;
-//    }
-//    else {
-//        m_isCalibrated[9] = true;
-//    }
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
     m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
     PlotData();
@@ -2221,7 +2329,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     for(int bit=0; bit<m_number_bits;bit++){
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",bit,ch);
                         m_mainWindow->m_daqs[0].SendAll();
-                        QThread::usleep(10000);
+                        QThread::usleep(1000);
                         int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi,chip, 2);
                         m_mean[bit][fec][hdmi][0][chip].push_back(val);
                     }
@@ -2249,10 +2357,6 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
     }
     m_dataAvailable = true;
     if(!isPedestal) {
-        //m_isCalibrated[7] = true;
-    //}
-    //else {
-        //m_isCalibrated[6] = true;
         if(isThresholdCalibration) {
             CalculateCorrections();
         }
@@ -2294,6 +2398,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
     stringstream sx;
     int dataflag = (data2 >> 15) & 0x1;
     if (dataflag) {
+
         uint8_t overThreshold = (data2 >> 14) & 0x01;
         uint8_t chNo = (data2 >> 8) & 0x3f;
         uint8_t tdc = data2 & 0xff;
@@ -2314,16 +2419,12 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                << "\n";
             GetMessageHandler()(sx,"calibration_module::Parse_VMM3"); sx.str("");
         }
+
         auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
         if ((m_BCID.empty() || it != m_BCID.end()))
         {
             int hdmi = vmmid/2;
             int chip = vmmid%2;
-            double tac_slope_ns = m_tac_slope[fec][hdmi][0][chip];
-            double bc_period_ns = m_bc_period[fec][hdmi][0];
-
-            double theTdc = tdc;
-            double theTime =  ((bcid+1)*bc_period_ns - theTdc*tac_slope_ns/255);
 
             if(m_srs_timestamp_start[fec][hdmi][0][chip] > 0)
             {
@@ -2338,7 +2439,9 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                     //Time calibration
                     else if(m_modeIndex == 2 )
                     {
-                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(theTime);
+                        m_data[m_bitCount][fec][hdmi][0][chip][chNo].push_back(bcid*1000+tdc);
+                        m_data_bcid[fec][hdmi][0][chip] += bcid;
+                        m_cnt_bcid[fec][hdmi][0][chip]++;
                     }
                     //TDC calibration or user settings average TDC per channel
                     else if(m_modeIndex == 4|| m_modeIndex == 12)
@@ -2437,8 +2540,8 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
                 sx.str("");
                 sx << "Overflow: frame counter " << m_commonData.m_frameCounter
                    << ", last frame counter " << m_commonData.m_lastFrameCounter <<
-                    ", difference " << fcDiff <<
-                    ", correction " << m_commonData.m_frameCounter + 0xFFFFFFFF << "\n";
+                      ", difference " << fcDiff <<
+                      ", correction " << m_commonData.m_frameCounter + 0xFFFFFFFF << "\n";
                 GetMessageHandler()(sx,"calibration_module::Receive_VMM3"); sx.str("");
             }
             m_commonData.m_frameCounter = m_commonData.m_frameCounter + 0xFFFFFFFF;

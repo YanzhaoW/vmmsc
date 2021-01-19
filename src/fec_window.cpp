@@ -388,7 +388,6 @@ void FECWindow::onCheckLinkStatus(){
     {
         m_ui->debugScreen->insertPlainText(message);
         m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-        std::cout<< message.toStdString()<<std::endl;
     }
 
 }

@@ -9,7 +9,6 @@ bool DAQConfigHandler::LoadDAQConf(const char* filename){
     //add config path before file name
     std::string fname = m_mainWindow->GetApplicationPath().toStdString();
     fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
-    std::cout << fname << std::endl;
     return LoadDAQConfig(fname);
 }
 
@@ -86,7 +85,6 @@ bool DAQConfigHandler::LoadDAQConfig(std::string fname){ //load the DAQ configur
                             m_mainWindow->m_daqs[0].m_fecs[i].m_hdmis[hdminr].m_hybrids[k].SetReg("position",atoi(posnrst.c_str()));
                             iss >> word; if(word!= "vmms:") {std::cout  << "Syntax error in file, looking for \"vmms:\" in line "<< line << std::endl;return false;}
                             iss >> val; unsigned short vmms = atoi(val.c_str());
-                            std::cout<<"No. VMMS: "<<vmms<<std::endl;
                             for (unsigned short l = 0; l < vmms; l++){
                                 //rootWindow->daq[0].fec[fecnr].hdmi[hdminr].hybrid[hybridnr].SetVMM(l,true);
                                 std::getline (f,line);
@@ -102,27 +100,6 @@ bool DAQConfigHandler::LoadDAQConfig(std::string fname){ //load the DAQ configur
                 }
             }
             else {std::cout << "Syntax error in file, looking for \"fecs\" after daq "<< daq << std::endl;return false;}
-//            for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-//                if (rootWindow->daq_act[i]){
-//                    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-//                        if (rootWindow->daq[i].GetFEC(j)){
-//                            for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-//                                if(rootWindow->daq[i].fec[j].GetHDMI(k)){
-//                                    for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-//                                        if (rootWindow->daq[i].fec[j].hdmi[k].GetHybrid(l)){
-//                                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-//                                                if (rootWindow->daq[i].fec[j].hdmi[k].hybrid[l].GetVMM(m)){
-//                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << rootWindow->daq[i].fec[j].hdmi[k].hybrid[l].GetPosNo()<< ", " <<rootWindow->daq[i].fec[j].hdmi[k].hybrid[l].GetPosX() << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//             }
         }
         else if (word == empty){ // for empty line at end of file
             iss >> val;

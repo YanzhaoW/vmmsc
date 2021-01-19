@@ -152,6 +152,15 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     connect(m_ui->ApplyAll, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
+    connect(m_ui->vmmResetAll, SIGNAL(clicked()),
+            this, SLOT(onUpdateSettings()));
+
+    connect(m_ui->vmmReset, SIGNAL(clicked()),
+            this, SLOT(onUpdateSettings()));
+
+    connect(m_ui->TestPulsesAll, SIGNAL(clicked()),
+            this, SLOT(onUpdateSettings()));
+
     //    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
     //                                    this, SLOT( ReloadSettings() ) );
 
@@ -550,8 +559,30 @@ void VMMWindow::onUpdateSettings()
     }
 
     else if(QObject::sender() == m_ui->ApplyAll){
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex);
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex, false);
     }
+    else if(QObject::sender() == m_ui->vmmResetAll){
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex, true);
+    }
+    else if(QObject::sender() == m_ui->vmmReset){
+        SetVMM("reset1", 1);
+        SetVMM("reset2", 1);
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+        QThread::sleep(1);
+        SetVMM("reset1", 0);
+        SetVMM("reset2", 0);
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+    }
+    else if(QObject::sender() == m_ui->TestPulsesAll){
+        SetVMM("reset1", 1);
+        SetVMM("reset2", 1);
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+        QThread::sleep(1);
+        SetVMM("reset1", 0);
+        SetVMM("reset2", 0);
+        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+    }
+
 }
 
 // ------------------------------------------------------------------------- //
@@ -1135,17 +1166,7 @@ void VMMWindow::onUpdateChannelADCs(int index)
 }
 // ------------------------------------------------------------------------- //
 
-void VMMWindow::on_vmmReset_clicked()
-{
-    SetVMM("reset1", 1);
-    SetVMM("reset2", 1);
-    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
-    QThread::sleep(1);
-    SetVMM("reset1", 0);
-    SetVMM("reset2", 0);
-    m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
 
-}
 
 void VMMWindow::on_readADC_clicked()
 {

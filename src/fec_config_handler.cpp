@@ -85,7 +85,6 @@ bool FECConfigHandler::GenericSingleFECConf(bool load, const char* filename, uns
     fname+=oss.str();
     fname+=oss.str();
     fname+=".txt"; //build file name with path and extension
-    std::cout<< " file name: "  << fname << std::endl;
     if (load) return LoadFECConfig(fname);
     else return WriteFECConfig(fname,daq,fec);
 }

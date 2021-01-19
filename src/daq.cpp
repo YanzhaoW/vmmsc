@@ -1,5 +1,5 @@
 #include "daq.h"
-
+#include <QThread>
 
 DAQ::DAQ():
     m_regNames ( new std::vector<const char*> (11) ),
@@ -65,7 +65,7 @@ bool DAQ::CheckHybridPos(unsigned short axis,  unsigned short position, int fec_
 
 int DAQ::CheckIP_FEC(long ip, int fec_index){
     long lastByte = ip & 0x000000FF;
-     for (unsigned short n=0; n < FECS_PER_DAQ; n++){
+    for (unsigned short n=0; n < FECS_PER_DAQ; n++){
         if ( GetFEC(n)){
             if(fec_index == -1) {
                 if(m_fecs[n].GetIP_FEC()==ip) {
@@ -86,8 +86,8 @@ int DAQ::CheckIP_FEC(long ip, int fec_index){
 }
 
 int DAQ::CheckIP_DAQ(long ip){
-     int cnt = 0;
-     for (unsigned short n=0; n < FECS_PER_DAQ; n++){
+    int cnt = 0;
+    for (unsigned short n=0; n < FECS_PER_DAQ; n++){
         if ( GetFEC(n)){
             cnt++;
             if(m_fecs[n].GetIP_DAQ()==ip) {
@@ -99,7 +99,7 @@ int DAQ::CheckIP_DAQ(long ip){
 }
 
 
-void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index){
+void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index, bool isReset){
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){
             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
@@ -107,8 +107,21 @@ void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_ind
                     for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
                         if (m_fecs[j].m_hdmis[k].GetHybrid(l)){
                             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                if (m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m) && !(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
-                                    (*m_fecs[j].m_hdmis[k].m_hybrids[l].m_vmms[m].m_vmmSettings->m_globalReg1) = (*m_fecs[fec_index].m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].m_vmmSettings->m_globalReg1);
+                                if (m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)) {
+                                    if(isReset) {
+                                        m_fecs[j].SetVMM(k,m,"reset1", 1);
+                                        m_fecs[j].SetVMM(k,m,"reset2", 1);
+                                        m_fecs[j].m_fecConfigModule->SendConfig(k, m);
+                                        QThread::msleep(100);
+                                        m_fecs[j].SetVMM(k,m,"reset1", 0);
+                                        m_fecs[j].SetVMM(k,m,"reset2", 0);
+                                        m_fecs[j].m_fecConfigModule->SendConfig(k, m);
+                                    }
+                                    else {
+                                        if(!(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
+                                            (*m_fecs[j].m_hdmis[k].m_hybrids[l].m_vmms[m].m_vmmSettings->m_globalReg1) = (*m_fecs[fec_index].m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].m_vmmSettings->m_globalReg1);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -160,7 +173,7 @@ bool DAQ::GetFEC(unsigned short FEC){
 
 bool DAQ::Set(unsigned short reg, unsigned short val){
 
-    if (reg < (*m_reg).size() ) { (*m_reg)[reg] = val; std::cout << "Register " << reg << " set to " << val << " ." << std::endl; return true;}
+    if (reg < (*m_reg).size() ) { (*m_reg)[reg] = val; return true;}
     else {std::cout << "ERROR register " << reg << " does not exist." << std::endl;return false;}
 }
 

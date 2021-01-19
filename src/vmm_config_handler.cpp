@@ -124,7 +124,6 @@ bool VMMConfigHandler::GenericSingleVMMConf(bool load, const char* filename, uns
     fname+="_vmm";
     fname+=oss.str();
     fname+=".txt"; //build file name with path and extension
-    std::cout<< " file name: "  << fname << std::endl;
     if (load) return LoadVMMConfig(fname);
     else return WriteVMMConfig(fname,daq,fec,hdmi,hybrid,vmm);
 }

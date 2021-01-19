@@ -1,6 +1,7 @@
 #include "fec.h"
 #include <QMessageBox>
 
+
 FEC::FEC():
     m_hdmiActs (HDMIS_PER_FEC),
     m_msg(0),
@@ -235,7 +236,10 @@ bool FEC::GetHDMI(unsigned short hdmi){
 
 bool FEC::Set(unsigned short reg, unsigned long val){
 
-    if (reg < m_reg->size() ) { (*m_reg)[reg] = val; std::cout << "Register " << reg << " set to " << val << " ." << std::endl; return true;}
+    if (reg < m_reg->size() ) {
+        (*m_reg)[reg] = val;
+        return true;
+    }
     else {std::cout << "ERROR register " << reg << " does not exist." << std::endl;return false;}
 }
 

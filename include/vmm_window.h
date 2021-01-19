@@ -101,7 +101,6 @@ public slots:
     void onReloadSettings();
 
 private slots:
-    void on_vmmReset_clicked();
     void on_readADC_clicked();
 };
 

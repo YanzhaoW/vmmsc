@@ -476,21 +476,33 @@ void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
 void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
 {
     m_mainWindow->m_calib->m_dataAvailable = false;
-    if(ui->comboBoxCalibrationType->currentIndex() == 0 || ui->comboBoxCalibrationType->currentIndex() == 1 ) {
-        ui->perSystem->setEnabled(true);
-    }
-    else {
-        ui->perSystem->setEnabled(false);
-    }
-
-    if(ui->comboBoxCalibrationType->currentIndex() == 0 || ui->comboBoxCalibrationType->currentIndex() == 1 ||
-            ui->comboBoxCalibrationType->currentIndex() == 2 || ui->comboBoxCalibrationType->currentIndex() == 3 ||
-            ui->comboBoxCalibrationType->currentIndex() == 5 ) {
-        ui->pushButtonStoreCorrections->setEnabled(true);
-    }
-    else {
+    if(ui->comboBoxRunMode->currentIndex() == 1) {
         ui->perSystem->setEnabled(false);
         ui->pushButtonStoreCorrections->setEnabled(false);
+        ui->pushButtonCSV->setEnabled(true);
+    }
+    else {
+        if(ui->comboBoxCalibrationType->currentIndex() == 0 || ui->comboBoxCalibrationType->currentIndex() == 1) {
+            ui->perSystem->setEnabled(true);
+        }
+        else {
+            ui->perSystem->setEnabled(false);
+        }
+        if(ui->comboBoxCalibrationType->currentIndex() == 4 ) {
+            ui->pushButtonCSV->setEnabled(false);
+        }
+        else {
+            ui->pushButtonCSV->setEnabled(true);
+        }
+        if(ui->comboBoxCalibrationType->currentIndex() == 0 || ui->comboBoxCalibrationType->currentIndex() == 1 ||
+                ui->comboBoxCalibrationType->currentIndex() == 2 || ui->comboBoxCalibrationType->currentIndex() == 3 ||
+                ui->comboBoxCalibrationType->currentIndex() == 5 ) {
+            ui->pushButtonStoreCorrections->setEnabled(true);
+        }
+        else {
+            ui->perSystem->setEnabled(false);
+            ui->pushButtonStoreCorrections->setEnabled(false);
+        }
     }
 }
 

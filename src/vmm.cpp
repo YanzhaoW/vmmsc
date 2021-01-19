@@ -109,13 +109,11 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
     typedef std::pair<std::string, unsigned short> BiPair;
     InMap m_bin; // map for all settings which are booleans
     std::string bools[14] = {"0","False","false","FALSE", "off", "OFF", "Off", "1", "True", "true", "TRUE", "on", "ON", "On"};
-//    InMap m_bin = {{"0", 0},{"False", 0}};//,"false","FALSE", "off", "OFF", "Off", "1", "True", "true", "TRUE", "on", "ON", "On"};
     for(unsigned int i=0 ; i<sizeof(bools)/sizeof(*bools); i++){
         unsigned short bin_val=0;
                 if(i>=7) bin_val=1;
         m_bin.insert(BiPair(bools[i], bin_val));
     }
-    //std::cout<<"register: "<<feature<<" value: "<<val<<std::endl;
     if(ch==-9999){
 
         if(feature == "monitoring"){
@@ -124,7 +122,6 @@ bool VMM::SetRegister(std::string feature, std::string val, int ch ){
             for(unsigned int i=1 ; i<=sizeof(mm_val)/sizeof(*mm_val); i++){
                 unsigned short bin_val=i;
                 m_mon.insert(BiPair(mm_val[i-1], bin_val+63));
-                std::cout<<"Mon: "<<i-1<<"  "<<mm_val[i-1]<<std::endl;
                 m_mon.insert(BiPair(std::to_string(i+63), bin_val+63));
             }
             if(m_mon.find(val)!=m_mon.end()){

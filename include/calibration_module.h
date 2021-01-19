@@ -1,7 +1,7 @@
 #ifndef CALIBRATION_MODULE_H
 #define CALIBRATION_MODULE_H
 
-#define TIME_FACTOR 3
+#define TIME_FACTOR 1
 
 #include <QObject>
 
@@ -133,7 +133,6 @@ private:
 
 
     const static int maxModes = 20;
-    //bool m_isCalibrated[maxModes];
 
     MessageHandler *m_msg;
 
@@ -195,7 +194,7 @@ private:
     double m_gainTable[8] = {0.5,1,3,4.5,6,9,12,16};
     double m_peaktimeTable[4] = {200,100,50,25};
     double m_tacTable[4] = {60,100,350,650};
-    QString m_bcclock_table[8] = {"160", "160inv", "80", "40", "20", "10", "5", "2.5"};
+    QString m_bcclock_table[8] = {"80", "80inv", "40", "20", "10", "5", "2.5"};
 
     QString m_polarityTable[2] = {"negative", "positive"};
 
@@ -206,11 +205,13 @@ private:
 
     std::vector<int> m_dac_setting;
     std::vector<int> m_dac_measured[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    double m_dac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    double m_dac_offset[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
     const static int m_number_bits_threshold = 32;
-    const static int m_number_bits_offline_time = 4;
+    const static int m_number_bits_offline_time = 16;
     const static int m_number_bits_offline_adc= 4;
 
     uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -224,6 +225,10 @@ private:
     //Data Acquisition
     //Data containers for data in Parse_VMM3
     std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
+    unsigned long m_data_bcid[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    unsigned long m_cnt_bcid[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    double m_percent_bcid[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
+
     std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_dac;
     QVector<QVector<double>> m_allhitdata[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -259,6 +264,7 @@ private:
     bool m_ignore16;
 
     std::vector<int> m_BCID;
+
     QJsonArray *m_calibrationArray[2] ;
     QString m_jsonObjectName = "vmm_calibration";
     std::ofstream m_outFile;

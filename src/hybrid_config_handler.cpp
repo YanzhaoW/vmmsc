@@ -112,7 +112,6 @@ bool HybridConfigHandler::GenericSingleHybridConf(bool load, const char* filenam
     fname+="_hybrid";
     fname+=oss.str();
     fname+=".txt"; //build file name with path and extension
-    std::cout<< " file name: "  << fname << std::endl;
     if (load) return LoadHybridConfig(fname);
     else return WriteHybridConfig(fname,daq,fec,hdmi,hybrid);
 }
