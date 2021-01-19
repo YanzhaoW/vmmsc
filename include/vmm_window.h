@@ -99,6 +99,7 @@ public slots:
     // VMM settings
     void onUpdateSettings();
     void onReloadSettings();
+    void onVMMUpdateChannel();
 
 private slots:
     void on_readADC_clicked();

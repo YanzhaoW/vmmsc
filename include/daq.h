@@ -57,6 +57,7 @@ public:
     bool ValidNewFECIP(unsigned int ip);
 
     void ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index, bool isReset = false);
+    void ApplyChannelSettingsVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index);
     void ApplyHybrids(int fec_index, int hdmi_index, int hybrid_index);
     void ACQHandler(bool on);
    // unsigned int GetFECID_from_IP()

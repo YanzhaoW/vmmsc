@@ -47,6 +47,12 @@ void FECConfigModule::VMMLoadEmit(){
 void FECConfigModule::HybridLoadEmit(){
     emit ReloadHybrid();
 }
+
+// ------------------------------------------------------------------------- //
+void FECConfigModule::VMMUpdateChannelEmit(){
+    emit VMMUpdateChannel();
+}
+
 // ------------------------------------------------------------------------ //
 FECConfigModule& FECConfigModule::LoadSocket(SocketHandler& socket)
 {
@@ -70,7 +76,7 @@ bool FECConfigModule::SendConfig(int hdmi_index, int vmm_index)
 
 #ifdef CONFIG_CHECK
     //reset I2C address 65 register 0
-    CommunicateWithHybridI2C(hdmi_index, 0, 0, 0, 2);
+    CommunicateWithHybridI2C(hdmi_index, 0, 0, 2);
 #endif
 
     stringstream sx;

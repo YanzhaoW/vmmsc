@@ -158,7 +158,7 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     connect(m_ui->vmmReset, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
-    connect(m_ui->TestPulsesAll, SIGNAL(clicked()),
+    connect(m_ui->ChannelSettingsAll, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
     //    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
@@ -166,6 +166,9 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
 
     connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadVMM()),
             this, SLOT( onReloadSettings() ));
+
+    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(VMMUpdateChannel()),
+            this, SLOT( onVMMUpdateChannel() ));
 
 }
 
@@ -346,6 +349,49 @@ void VMMWindow::onReloadSettings(){
     LoadSettings();
 }
 // ------------------------------------------------------------------------- //
+
+
+
+void VMMWindow::onVMMUpdateChannel() {
+    for (int i = 0; i<64; i++){
+        VMMSCBool[i]=GetVMM("sc",i);
+        VMMSMBool[i]=GetVMM("sm",i);
+        VMMSTBool[i]=GetVMM("st",i);
+        VMMSTHBool[i]=GetVMM("sth",i);
+        VMMSLBool[i]=GetVMM("sl",i);
+        VMMSMXBool[i]=GetVMM("smx",i);
+
+        VMMSC[i]->setStyleSheet("background-color: lightGray");
+        VMMSM[i]->setStyleSheet("background-color: lightGray");
+        VMMST[i]->setStyleSheet("background-color: lightGray");
+        VMMSTH[i]->setStyleSheet("background-color: lightGray");
+        VMMSL[i]->setStyleSheet("background-color: lightGray");
+        VMMSMX[i]->setStyleSheet("background-color: lightGray");
+        if(VMMSCBool[i]==1) VMMSC[i]->setStyleSheet("background-color: green");
+        if(VMMSMBool[i]==1) VMMSM[i]->setStyleSheet("background-color: green");
+        if(VMMSTBool[i]==1) VMMST[i]->setStyleSheet("background-color: green");
+        if(VMMSTHBool[i]==1) VMMSTH[i]->setStyleSheet("background-color: green");
+        if(VMMSLBool[i]==1) VMMSL[i]->setStyleSheet("background-color: green");
+        if(VMMSMXBool[i]==1) VMMSMX[i]->setStyleSheet("background-color: green");
+
+        // set initial ADC values
+        unsigned short ADC10_index = GetVMM("ADC0_10",i);
+        unsigned short ADC08_index = GetVMM("ADC0_8",i);
+        unsigned short ADC06_index = GetVMM("ADC0_6",i);
+        VMMSZ010bCBox[i]->setCurrentIndex(ADC10_index);
+        VMMSZ010bValue[i]=ADC10_index;
+        VMMSZ08bCBox[i]->setCurrentIndex(ADC08_index);
+        VMMSZ08bValue[i]=ADC08_index;
+        VMMSZ06bCBox[i]->setCurrentIndex(ADC06_index);
+        VMMSZ06bValue[i]=ADC06_index;
+
+        // set initial channel voltage
+        unsigned short SD_volt = GetVMM("sd",i);
+        VMMSDVoltage[i]->setCurrentIndex(SD_volt);
+        VMMSDValue[i]=SD_volt;
+    }
+}
+
 
 void VMMWindow::onUpdateSettings()
 {
@@ -573,14 +619,8 @@ void VMMWindow::onUpdateSettings()
         SetVMM("reset2", 0);
         m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
     }
-    else if(QObject::sender() == m_ui->TestPulsesAll){
-        SetVMM("reset1", 1);
-        SetVMM("reset2", 1);
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
-        QThread::sleep(1);
-        SetVMM("reset1", 0);
-        SetVMM("reset2", 0);
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+    else if(QObject::sender() == m_ui->ChannelSettingsAll){
+       m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyChannelSettingsVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex);
     }
 
 }

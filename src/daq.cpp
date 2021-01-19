@@ -134,6 +134,37 @@ void DAQ::ApplyVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_ind
 
 }
 
+
+void DAQ::ApplyChannelSettingsVMMs(int fec_index, int hdmi_index, int hybrid_index, int vmm_index){
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if ( GetFEC(j) ){
+            for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
+                if( m_fecs[j].GetHDMI(k) ){
+                    for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
+                        if (m_fecs[j].m_hdmis[k].GetHybrid(l)){
+                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                                if (m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)) {
+                                    if(!(fec_index==j && hdmi_index==k && hybrid_index==l &&vmm_index==m) ){
+                                        //(*m_fecs[j].m_hdmis[k].m_hybrids[l].m_vmms[m].m_vmmSettings->m_channels) = (*m_fecs[fec_index].m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].m_vmmSettings->m_channels);
+                                        for (unsigned short ch=0; ch < 64; ch++){
+                                            for(auto &setting: m_fecs[fec_index].m_hdmis[hdmi_index].m_hybrids[hybrid_index].m_vmms[vmm_index].m_vmmSettings->m_channels[ch].m_channel) {
+                                               m_fecs[j].m_hdmis[k].m_hybrids[l].m_vmms[m].SetRegi(setting.first, setting.second, ch);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            m_fecs[j].m_fecConfigModule->VMMUpdateChannelEmit();//dirty trick, does not work to emit signal on daq level
+        }
+    }
+
+}
+
+
 void DAQ::ApplyHybrids(int fec_index, int hdmi_index, int hybrid_index){
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){

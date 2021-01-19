@@ -63,6 +63,7 @@ public:
     QString CommunicateWithHybridI2C(int hdmi_index, int rw, int reg_value, int bytes);
     void VMMLoadEmit();
     void HybridLoadEmit();
+    void VMMUpdateChannelEmit();
 private:
     FEC *m_fec;
     bool m_dbg;
@@ -75,6 +76,7 @@ signals:
     void CheckLinks();
     void ReloadVMM();
     void ReloadHybrid();
+    void VMMUpdateChannel();
 
 public slots:
 };
