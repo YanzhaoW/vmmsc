@@ -956,12 +956,24 @@ void FECConfigModule::ConfigTP( int hdmi_index)
         << (quint32) hdmiMap //[4,7]
         << (quint32) cmd.toUInt(&ok,16); //[8,11]
 
+#ifdef PULSE_SHIFT
+    ////////////////////////////
+    // command
+    ////////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 2 //[16,19]
+        << (quint32) tpwidth + tppolarity*8 //[20,23]
+        << (quint32) 6 //[16,19]
+        << (quint32) tpskew; //[20,23]
+#else
     ////////////////////////////
     // command
     ////////////////////////////
     out << (quint32) 0 //[12,15]
         << (quint32) 2 //[16,19]
         << (quint32) (tpskew + (tpwidth*16) + (tppolarity*128)); //[20,23]
+#endif
+
 
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",

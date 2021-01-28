@@ -192,7 +192,6 @@ QByteArray VMMSocket::ProcessReply(const QString &ip_to_check, quint32 cmd_delay
 
       //  buffer().resize(socket().pendingDatagramSize());
       //  socket().readDatagram(buffer().data(), buffer().size(), &vmmIP);
-      //  qDebug() << "BLAH BLAHreceived datagram hex: " << buffer().toHex();
        vmmIP = QHostAddress(vmmIP.toIPv4Address());
         if(IsDbgActive()) {
             //debug

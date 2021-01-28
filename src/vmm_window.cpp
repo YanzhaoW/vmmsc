@@ -353,6 +353,10 @@ void VMMWindow::onReloadSettings(){
 
 
 void VMMWindow::onVMMUpdateChannel() {
+    int sd = -1;
+    int SZ010 = -1;
+    int SZ08 = -1;
+    int SZ06 = -1;
     for (int i = 0; i<64; i++){
         VMMSCBool[i]=GetVMM("sc",i);
         VMMSMBool[i]=GetVMM("sm",i);
@@ -389,7 +393,35 @@ void VMMWindow::onVMMUpdateChannel() {
         unsigned short SD_volt = GetVMM("sd",i);
         VMMSDVoltage[i]->setCurrentIndex(SD_volt);
         VMMSDValue[i]=SD_volt;
+        if(sd != -1 && sd != SD_volt) {
+            sd = 0;
+        }
+        else {
+            sd = SD_volt;
+        }
+        if(SZ010 != -1 && SZ010 != ADC10_index) {
+            SZ010 = 0;
+        }
+        else {
+            SZ010 = ADC10_index;
+        }
+        if(SZ08 != -1 && SZ08 != ADC08_index) {
+            SZ08 = 0;
+        }
+        else {
+            SZ08 = ADC08_index;
+        }
+        if(SZ06 != -1 && SZ06 != ADC06_index) {
+            SZ06 = 0;
+        }
+        else {
+            SZ06 = ADC06_index;
+        }
     }
+    SDLabel->setCurrentIndex(sd);
+    SZ010bLabel->setCurrentIndex(SZ010);
+    SZ08bLabel->setCurrentIndex(SZ08);
+    SZ06bLabel->setCurrentIndex(SZ06);
 }
 
 
@@ -1164,7 +1196,7 @@ void VMMWindow::onUpdateChannelVoltages(int index){
     for(int i=0;i<64;i++){
         if(VMMSDVoltage[i] == QObject::sender()){
             VMMSDValue[i]=index;
-            qDebug() << "Voltage of channel " << i << " changed to " << index << ".";
+            //qDebug() << "Voltage of channel " << i << " changed to " << index << ".";
             SetVMM("sd", index, i);
         }
     }

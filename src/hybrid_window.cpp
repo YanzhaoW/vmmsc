@@ -10,6 +10,22 @@ HybridWindow::HybridWindow(HDMIWindow *top, unsigned short fec, unsigned short h
 {
     m_ui->setupUi(this);
     UpdateWindow();
+    m_ui->tpSkew->clear();
+#ifdef PULSE_SHIFT
+    for(int i=0;i < 8; i++) {
+        for(int n=0;n< 8; n++) {
+            QString txt = QStringLiteral("%1 ns").arg((i*25)+n*25/8.0);
+            m_ui->tpSkew->addItem(txt);
+        }
+    }
+#else
+    for(int i=0;i < 2; i++) {
+        for(int n=0;n< 8; n++) {
+            QString txt = QStringLiteral("%1 ns").arg((i*25)+n*25/8.0);
+            m_ui->tpSkew->addItem(txt);
+        }
+    }
+#endif
     LoadSettings();
 
     connect(m_ui->axis, SIGNAL(currentIndexChanged(int)),
@@ -34,7 +50,6 @@ HybridWindow::HybridWindow(HDMIWindow *top, unsigned short fec, unsigned short h
 
     connect(m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadHybrid()),
             this, SLOT( onReloadSettings() ));
-
 
 }
 

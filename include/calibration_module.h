@@ -2,7 +2,8 @@
 #define CALIBRATION_MODULE_H
 
 #define TIME_FACTOR 1
-
+#define MAX_BITS 33
+#define NUM_BCID 5
 #include <QObject>
 
 // qt
@@ -211,7 +212,7 @@ private:
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
     const static int m_number_bits_threshold = 32;
-    const static int m_number_bits_offline_time = 16;
+    int m_number_bits_offline_time = 10;
     const static int m_number_bits_offline_adc= 4;
 
     uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
@@ -224,14 +225,22 @@ private:
 
     //Data Acquisition
     //Data containers for data in Parse_VMM3
-    std::vector<double> m_data[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
-    unsigned long m_data_bcid[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    unsigned long m_cnt_bcid[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    double m_percent_bcid[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
+    std::vector<double> m_data[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
 
-    std::vector<double> m_mean[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    //Container for time calibration
+    unsigned long m_cnt_bcid[4096];
+    std::vector<double> m_fit_start_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_fit_start_bcid[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_fit_y[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_mean_per_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_percent_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
+    //Container for ADC calibration
+    std::vector<double> m_mean[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_dac;
-    QVector<QVector<double>> m_allhitdata[32][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
+    //Container for test module
+    QVector<QVector<double>> m_allhitdata[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
 
     //Containers for calculated data
     //S-curve
