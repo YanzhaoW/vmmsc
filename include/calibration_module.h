@@ -124,7 +124,7 @@ private:
     int GetHDMI(int vmmId);
     int GetVMM(int vmmId);
 
-    QString CreateFileName(QString name,  int polarity=-1, int gain=-1, int peaktime=-1, int tac=-1,int bcclock=-1);
+    QString CreateFileName(QString name, int polarity=-1, double gain=-1, double peaktime=-1, double tac=-1, double bcclock=-1, int srat=-1);
     int Receive_VMM3(const char* buffer, long size, int fecId);
     int Parse_VMM3(uint32_t data1, uint16_t data2, int fecId);
 
@@ -221,7 +221,13 @@ private:
     uint64_t m_end;
 
     double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
+    double  m_bc_clock[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
     double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    double m_shaping_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    double m_gain[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    int m_polarity[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    int m_timing_at_thr[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+
 
     //Data Acquisition
     //Data containers for data in Parse_VMM3

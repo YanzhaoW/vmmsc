@@ -482,7 +482,7 @@ void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
         ui->pushButtonCSV->setEnabled(true);
     }
     else {
-        if(ui->comboBoxCalibrationType->currentIndex() == 0 || ui->comboBoxCalibrationType->currentIndex() == 1) {
+        if(ui->comboBoxCalibrationType->currentIndex() == 0) {
             ui->perSystem->setEnabled(true);
         }
         else {

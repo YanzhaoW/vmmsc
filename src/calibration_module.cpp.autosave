@@ -269,9 +269,6 @@ void CalibrationModule::FitOfflineCalibrationData()
                     cntPerSystem++;
                     meanSlope += slope;
                     meanOffset += offset;
-                    if(m_modeIndex == 2) {
-                        //offset =  offset - m_fit_start_time[fec][hdmi][0][chip][ch]*slope;
-                    }
                 }
             }
             m_slope[fec][hdmi][0][chip].push_back(slope);
