@@ -269,9 +269,6 @@ void CalibrationModule::FitOfflineCalibrationData()
                     cntPerSystem++;
                     meanSlope += slope;
                     meanOffset += offset;
-                    if(m_modeIndex == 2) {
-                        //offset =  offset - m_fit_start_time[fec][hdmi][0][chip][ch]*slope;
-                    }
                 }
             }
             m_slope[fec][hdmi][0][chip].push_back(slope);
@@ -966,7 +963,6 @@ void CalibrationModule::PlotData(){
                     std::vector<double> xc;
                     std::vector<double> y;
                     std::vector<double> yc;
-
                     for(unsigned int ch=0; ch<64; ch++)
                     {
                         if(m_mean[bit][fec][hdmi][0][chip][ch] != -9999) {
@@ -1795,6 +1791,7 @@ void CalibrationModule::AccumulateData(){
                                         m_mean[bit][fec][hdmi][0][chip][ch] +=  ((bcid-all_the_bcid)*m_bc_period[fec][hdmi][0] +  meanTime)*m_percent_bcid[bcid-min][bit][fec][hdmi][0][chip][ch];
                                         m_mean_per_bcid[bcid-min][bit][fec][hdmi][0][chip][ch] = meanTime;
                                     }
+
                                 }
                             }
 
@@ -1829,6 +1826,28 @@ void CalibrationModule::AccumulateData(){
                                     m_fit_y[m_number_bits-theTimeIndex_50+n-2][fec][hdmi][0][chip][ch] = m_mean_per_bcid[theBCIDIndex_50-1][n][fec][hdmi][0][chip][ch];;
                                 }
                             }
+                        }
+                    }
+                }
+                double meanOffsetAllVMMs = 0;
+                int cnt = 0;
+                for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
+                    int fec = GetFEC(vmm);
+                    int hdmi = GetHDMI(vmm);
+                    int chip = GetVMM(vmm);
+                    for(unsigned int ch = 0; ch<64; ch++){
+                        meanOffsetAllVMMs += m_mean[0][fec][hdmi][0][chip][ch];
+                        cnt++;
+                    }
+                }
+                meanOffsetAllVMMs = meanOffsetAllVMMs/cnt;
+                for(int bit = 0; bit<m_number_bits; bit++){
+                    for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
+                        int fec = GetFEC(vmm);
+                        int hdmi = GetHDMI(vmm);
+                        int chip = GetVMM(vmm);
+                        for(unsigned int ch = 0; ch<64; ch++){
+                            m_mean[bit][fec][hdmi][0][chip][ch] =  m_mean[bit][fec][hdmi][0][chip][ch] -  meanOffsetAllVMMs;
                         }
                     }
                 }
