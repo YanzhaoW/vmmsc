@@ -240,8 +240,10 @@ void CalibrationModule::FitOfflineCalibrationData()
                 {
                     theMean = m_fit_y[bit][fec][hdmi][0][chip][ch];
                     int m =  m_fit_start_time[fec][hdmi][0][chip][ch]/(3.125*TIME_FACTOR);
+
                     double firstTime = m*3.125*TIME_FACTOR - m_fit_start_time[fec][hdmi][0][chip][ch];
                     theXValue = firstTime + bit*3.125*TIME_FACTOR;
+
                 }
                 if(theMean != -9999) {
                     x.push_back(theXValue);
@@ -376,7 +378,7 @@ void CalibrationModule::FitOfflineCalibrationData()
                 else
                 {
                     if(m_modeIndex == 2) {
-                        offset =  m_offset[fec][hdmi][0][chip][ch] - m_fit_start_time[fec][hdmi][0][chip][ch]*m_slope[fec][hdmi][0][chip][ch];
+                        offset =  m_offset[fec][hdmi][0][chip][ch] - (m_fit_start_time[fec][hdmi][0][chip][ch])*m_slope[fec][hdmi][0][chip][ch];
                     }
                     else {
                         offset =  m_offset[fec][hdmi][0][chip][ch] - mean_offset*m_slope[fec][hdmi][0][chip][ch]*slope_corr;
@@ -1716,11 +1718,11 @@ void CalibrationModule::AccumulateData(){
                     }
                 }
                 //Accept in the subsequent search of the most common BCID per channels a range of +/- 2 BCIDs around the most common one
-                if(all_the_bcid-2 >=0 ) {
-                    all_bcid_min = all_the_bcid-2;
+                if(all_the_bcid-(int)(NUM_BCID/2) >=0 ) {
+                    all_bcid_min = all_the_bcid-(int)(NUM_BCID/2);
                 }
-                if(all_the_bcid+2 <= 4095 ) {
-                    all_bcid_max = all_the_bcid+2;
+                if(all_the_bcid+(int)(NUM_BCID/2) <= 4095 ) {
+                    all_bcid_max = all_the_bcid+(int)(NUM_BCID/2);
                 }
                 for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
                     int fec = GetFEC(vmm);
@@ -1748,14 +1750,14 @@ void CalibrationModule::AccumulateData(){
                             }
                         }
                         //Accept data in the range of +/- 2 BCID aroud the most common BCID per channel
-                        if(the_bcid - 2 >= 0) {
-                            min = the_bcid - 2;
+                        if(the_bcid - (int)(NUM_BCID/2) >= 0) {
+                            min = the_bcid - (int)(NUM_BCID/2);
                         }
                         else {
                             min = 0;
                         }
-                        if(the_bcid + 2 <= 4095) {
-                            max = the_bcid + 2;
+                        if(the_bcid + (int)(NUM_BCID/2) <= 4095) {
+                            max = the_bcid + (int)(NUM_BCID/2);
                         }
                         else {
                             max = 4095;
@@ -1770,7 +1772,7 @@ void CalibrationModule::AccumulateData(){
                         }
                         m_fit_start_time[fec][hdmi][0][chip].push_back(-9999);
                         m_fit_start_bcid[fec][hdmi][0][chip].push_back(min-all_the_bcid);
-                        if(max - min == 4) {
+                        if(max - min == NUM_BCID-1) {
                             //determine percentages for three BCIDs
                             for(int bit = 0; bit<m_number_bits; bit++){
                                 int total = m_data[bit][fec][hdmi][0][chip][ch].size();
@@ -1808,8 +1810,8 @@ void CalibrationModule::AccumulateData(){
                                             theBCIDIndex_50 = bcid-min+1;
                                             theTimeIndex_50 = bit;
 
-                                            double theTime = bit*3.125*TIME_FACTOR + (0.5 - m_percent_bcid[bcid-min][bit][fec][hdmi][0][chip][ch])*3.125*TIME_FACTOR /(m_percent_bcid[bcid-min][bit+1][fec][hdmi][0][chip][ch] - m_percent_bcid[bcid-min][bit][fec][hdmi][0][chip][ch]);
-                                            m_fit_start_time[fec][hdmi][0][chip][ch] = -((bcid+1-all_the_bcid)*(m_number_bits-1)*3.125*TIME_FACTOR) + theTime;
+                                            double theTime = bit*3.125*TIME_FACTOR + (0.5 - m_percent_bcid[bcid-min+1][bit][fec][hdmi][0][chip][ch])*3.125*TIME_FACTOR /(m_percent_bcid[bcid-min+1][bit+1][fec][hdmi][0][chip][ch] - m_percent_bcid[bcid-min+1][bit][fec][hdmi][0][chip][ch]);
+                                            m_fit_start_time[fec][hdmi][0][chip][ch] = -((bcid+1-all_the_bcid)*m_bc_period[fec][hdmi][0]) + theTime;
                                             foundEdge = true;
                                             break;
                                         }
