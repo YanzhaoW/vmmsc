@@ -410,8 +410,6 @@ void DAQWindow::on_selectDir_clicked()
 
 }
 
-
-
 void DAQWindow::on_pushButtonTakeData_pressed()
 {
     if(ui->connectionLabel->text()==QString("all alive")){
@@ -444,74 +442,10 @@ void DAQWindow::on_pushButtonStoreCorrections_pressed()
 }
 
 
-
-
-void DAQWindow::on_comboBoxRunMode_currentIndexChanged(int index)
-{
-    m_mainWindow->m_calib->m_dataAvailable = false;
-    ui->comboBoxCalibrationType->setCurrentIndex(-1);
-    ui->comboBoxCalibrationType->clear();
-    if(index == 0)
-    {
-        ui->comboBoxCalibrationType->addItem("Offline ADC");
-        ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
-        ui->comboBoxCalibrationType->addItem("ADC");
-        ui->comboBoxCalibrationType->addItem("TDC");
-        ui->comboBoxCalibrationType->addItem("S-curve");
-        ui->comboBoxCalibrationType->addItem("Threshold");
-        ui->comboBoxCalibrationType->addItem("Pedestal");
-        ui->comboBoxCalibrationType->addItem("Pulser DAC");
-        ui->comboBoxCalibrationType->addItem("Threshold DAC");
-
-    }
-    if(index == 1)
-    {
-        ui->comboBoxCalibrationType->addItem("Channels");
-        ui->comboBoxCalibrationType->addItem("ADC");
-        ui->comboBoxCalibrationType->addItem("TDC");
-        ui->comboBoxCalibrationType->addItem("BCID");
-    }
-}
-
-void DAQWindow::on_comboBoxCalibrationType_currentIndexChanged(int index)
-{
-    m_mainWindow->m_calib->m_dataAvailable = false;
-    if(ui->comboBoxRunMode->currentIndex() == 1) {
-        ui->perSystem->setEnabled(false);
-        ui->pushButtonStoreCorrections->setEnabled(false);
-        ui->pushButtonCSV->setEnabled(true);
-    }
-    else {
-        if(ui->comboBoxCalibrationType->currentIndex() == 0) {
-            ui->perSystem->setEnabled(true);
-        }
-        else {
-            ui->perSystem->setEnabled(false);
-        }
-        if(ui->comboBoxCalibrationType->currentIndex() == 4 ) {
-            ui->pushButtonCSV->setEnabled(false);
-        }
-        else {
-            ui->pushButtonCSV->setEnabled(true);
-        }
-        if(ui->comboBoxCalibrationType->currentIndex() == 0 || ui->comboBoxCalibrationType->currentIndex() == 1 ||
-                ui->comboBoxCalibrationType->currentIndex() == 2 || ui->comboBoxCalibrationType->currentIndex() == 3 ||
-                ui->comboBoxCalibrationType->currentIndex() == 5 ) {
-            ui->pushButtonStoreCorrections->setEnabled(true);
-        }
-        else {
-            ui->perSystem->setEnabled(false);
-            ui->pushButtonStoreCorrections->setEnabled(false);
-        }
-    }
-}
-
-
 void DAQWindow::on_pushButtonCSV_pressed()
 {
     m_mainWindow->m_calib->SavePlotsAsCSV();
 }
-
 
 
 void DAQWindow::on_pushButtonSavePDF_pressed()
@@ -656,4 +590,5 @@ void DAQWindow::on_first_trigger_starts_acq_stateChanged(int arg1)
     }
 
 }
+
 

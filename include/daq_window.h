@@ -62,9 +62,9 @@ private slots:
 
     void on_pushButtonStoreCorrections_pressed();
 
-    void on_comboBoxRunMode_currentIndexChanged(int index);
+    //void on_comboBoxRunMode_currentIndexChanged(int index);
 
-    void on_comboBoxCalibrationType_currentIndexChanged(int index);
+    //void on_comboBoxCalibrationType_currentIndexChanged(int index);
 
 
     void on_pushButtonSavePDF_pressed();

@@ -526,7 +526,7 @@ starts ACQ</string>
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>0</height>
+            <height>140</height>
            </size>
           </property>
           <property name="font">
@@ -728,8 +728,8 @@ starts ACQ</string>
              <widget class="QPushButton" name="pushButtonSavePDF">
               <property name="geometry">
                <rect>
-                <x>4</x>
-                <y>18</y>
+                <x>10</x>
+                <y>20</y>
                 <width>120</width>
                 <height>25</height>
                </rect>
@@ -753,9 +753,9 @@ starts ACQ</string>
              <widget class="QPushButton" name="pushButtonCSV">
               <property name="geometry">
                <rect>
-                <x>131</x>
-                <y>18</y>
-                <width>111</width>
+                <x>140</x>
+                <y>20</y>
+                <width>101</width>
                 <height>25</height>
                </rect>
               </property>
@@ -773,7 +773,7 @@ starts ACQ</string>
               <property name="geometry">
                <rect>
                 <x>250</x>
-                <y>18</y>
+                <y>20</y>
                 <width>150</width>
                 <height>25</height>
                </rect>
@@ -998,8 +998,8 @@ starts ACQ</string>
           </property>
           <property name="minimumSize">
            <size>
-            <width>0</width>
-            <height>0</height>
+            <width>500</width>
+            <height>140</height>
            </size>
           </property>
           <property name="font">
@@ -1012,6 +1012,116 @@ starts ACQ</string>
            <string>Calibration/Plot Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineEditBCID">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="sizeIncrement">
+              <size>
+               <width>1</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="2">
+            <widget class="QComboBox" name="choiceBit">
+             <property name="minimumSize">
+              <size>
+               <width>160</width>
+               <height>25</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QComboBox" name="comboBoxFec">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>150</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_type">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Data type</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_vmm">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Display VMMs</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="1">
             <widget class="QComboBox" name="comboBoxCalibrationType">
              <property name="sizePolicy">
@@ -1079,29 +1189,7 @@ starts ACQ</string>
              </item>
             </widget>
            </item>
-           <item row="2" column="1">
-            <widget class="QComboBox" name="comboBoxFec">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>150</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
+           <item row="2" column="0">
             <widget class="QLabel" name="label_2">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1126,90 +1214,53 @@ starts ACQ</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="lineEditBCID">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>150</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="sizeIncrement">
-              <size>
-               <width>1</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_vmm">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Display VMMs</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_type">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>25</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Arial</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="text">
-              <string>Data type</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="2">
-            <widget class="QCheckBox" name="perSystem">
-             <property name="text">
-              <string>per System</string>
+            <widget class="QComboBox" name="choicePlotTime">
+             <property name="minimumSize">
+              <size>
+               <width>160</width>
+               <height>25</height>
+              </size>
              </property>
+             <item>
+              <property name="text">
+               <string>calibrated data</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>corrections</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Fit</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>ADC/TDC distribution</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>BCID percent</string>
+              </property>
+             </item>
             </widget>
+           </item>
+           <item row="2" column="2">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

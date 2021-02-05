@@ -3,7 +3,7 @@
 
 #define TIME_FACTOR 1
 #define MAX_BITS 33
-#define NUM_BCID 5
+#define NUM_BCID 3
 #include <QObject>
 
 // qt
@@ -80,7 +80,7 @@ public:
 public slots:
     void readEvent();
     void updatePlot();
-    void setPlotChoice();
+    void calibAndPlotChoices();
     void Receive(const char* buffer, long size, int fecId);
 
 private:
@@ -91,6 +91,7 @@ private:
 
 
     int m_modeIndex;
+    int m_data_modeIndex;
     QString m_runMode;
     QString m_plotType;
     QVector< QCustomPlot * > plotVector;
@@ -118,7 +119,7 @@ private:
     double SortVectors( vector<double>& sortedMin, vector<double>& sortedMax);
     void InitializeDataStructures();
     void GetSettings();
-    void SetPlotChoice();
+    //void SetPlotChoice();
     void Reset();
     int GetFEC(int vmmId);
     int GetHDMI(int vmmId);
@@ -240,6 +241,7 @@ private:
     std::vector<double> m_fit_y[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_mean_per_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
     std::vector<double> m_percent_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    int m_most_common_BCID = 0;
 
     //Container for ADC calibration
     std::vector<double> m_mean[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
