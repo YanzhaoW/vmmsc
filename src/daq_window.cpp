@@ -444,7 +444,7 @@ void DAQWindow::on_pushButtonStoreCorrections_pressed()
 
 void DAQWindow::on_pushButtonCSV_pressed()
 {
-    m_mainWindow->m_calib->SavePlotsAsCSV();
+    m_mainWindow->m_calib->SaveDataAsCSV();
 }
 
 

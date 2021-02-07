@@ -63,7 +63,7 @@ public:
 
     void SaveCorrections();
     void GetActiveVMMs();
-    void SavePlotsAsCSV();
+    void SaveDataAsCSV();
     void SavePlotsAsPDF();
 
     double ThresholdDAC_to_mV(int dac);
@@ -276,6 +276,7 @@ private:
 
     //y values for S-curve, the vector contains one value per threshold
     std::vector<double> m_channel_y[64];
+    std::vector<double> m_time;
 
 
     bool m_ignore16;

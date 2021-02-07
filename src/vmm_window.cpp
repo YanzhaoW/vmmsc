@@ -25,6 +25,9 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     SetToolTips();
     LoadSettings();
     m_ui->vmmReset->setEnabled(false);
+    m_ui->ApplyAll->setEnabled(false);
+    m_ui->ChannelSettingsAll->setEnabled(false);
+    m_ui->vmmResetAll->setEnabled(false);
     m_ui->readADC->setEnabled(false);
     //connect the settings from the GUI
     // General Settings
@@ -629,11 +632,19 @@ void VMMWindow::onUpdateSettings()
     }
     else if(QObject::sender() == m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection){
         if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
+            m_ui->readADC->setEnabled(true);
             m_ui->vmmReset->setEnabled(true);
-            m_ui->readADC->setEnabled(true);}
+            m_ui->ApplyAll->setEnabled(true);
+            m_ui->ChannelSettingsAll->setEnabled(true);
+            m_ui->vmmResetAll->setEnabled(true);
+        }
         else {
+            m_ui->readADC->setEnabled(false);
             m_ui->vmmReset->setEnabled(false);
-            m_ui->readADC->setEnabled(false);}
+            m_ui->ApplyAll->setEnabled(false);
+            m_ui->ChannelSettingsAll->setEnabled(false);
+            m_ui->vmmResetAll->setEnabled(false);
+        }
     }
 
     else if(QObject::sender() == m_ui->ApplyAll){
