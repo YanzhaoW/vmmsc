@@ -51,7 +51,7 @@ public:
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
 
-    void SendAll();
+    void SendAll(bool useConfigCheck=false);
 
     bool CheckHybridPos(unsigned short axis,  unsigned short position, int fec_index, int hdmi_index, int hybrid_index);
     bool ValidNewFECIP(unsigned int ip);

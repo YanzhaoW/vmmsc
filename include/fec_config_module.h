@@ -35,7 +35,7 @@ public:
 
     FECConfigModule& LoadSocket(SocketHandler& GetSocketHandler);
 
-    bool SendConfig(int hdmi_index, int vmm_index);
+    bool SendConfig(int hdmi_index, int vmm_index, bool enableConfigCheck=false);
     void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int vmm_index);
     void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int vmm_index);
     void FillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int vmm_index);

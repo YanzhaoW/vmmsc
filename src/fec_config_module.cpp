@@ -70,13 +70,15 @@ FECConfigModule& FECConfigModule::LoadSocket(SocketHandler& socket)
 }
 
 // ------------------------------------------------------------------------ //
-bool FECConfigModule::SendConfig(int hdmi_index, int vmm_index)
+bool FECConfigModule::SendConfig(int hdmi_index, int vmm_index, bool enableConfigCheck)
 {
     bool result = true;
 
 #ifdef CONFIG_CHECK
     //reset I2C address 65 register 0
-    CommunicateWithHybridI2C(hdmi_index, 0, 0, 2);
+    if(enableConfigCheck) {
+        CommunicateWithHybridI2C(hdmi_index, 0, 0, 2);
+    }
 #endif
 
     stringstream sx;
@@ -206,7 +208,9 @@ bool FECConfigModule::SendConfig(int hdmi_index, int vmm_index)
 
 #ifdef CONFIG_CHECK
     //poll I2C address 65 register 0
-    result = CheckConfigurationOfVMMs(hdmi_index, vmm_index);
+    if(enableConfigCheck) {
+        result = CheckConfigurationOfVMMs(hdmi_index, vmm_index);
+    }
 #endif
     return result;
 }
@@ -1743,7 +1747,7 @@ void FECConfigModule::ACQoff(bool broadcast)
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::ACQoff [1]");
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead("fec", 5000);
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ACQoff");
         QByteArray buffer;

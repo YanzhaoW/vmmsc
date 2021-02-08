@@ -51,12 +51,6 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     connect( m_mainWindow->m_daqWindow->ui->choiceBit, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
 
-    /*
-    connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(()));
-    connect( m_mainWindow->m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(()));
-*/
     connect( m_mainWindow->m_daqWindow->ui->comboBoxRunMode, SIGNAL(currentIndexChanged(int)),
              this, SLOT(calibAndPlotChoices()));
     connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
@@ -225,6 +219,8 @@ void CalibrationModule::calibAndPlotChoices()
             else {
                 m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(false);
                 m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(false);
+                m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
+                m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
             }
 
         }
@@ -324,7 +320,7 @@ void CalibrationModule::calibAndPlotChoices()
 
 
 void CalibrationModule::SaveSettings() {
-    m_mainWindow->m_daqs[0].SendAll();
+    m_mainWindow->m_daqs[0].SendAll(false);
     m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
     emit m_mainWindow->m_daqWindow->on_Button_save_clicked();
     QThread::usleep(1000);
@@ -344,12 +340,12 @@ void CalibrationModule::StopDataTaking()
     m_end = 0;
     m_mainWindow->m_daqWindow->ui->onACQ->setEnabled(true);
     m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
-    //m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
+    m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
+    m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
     m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
 
     m_mainWindow->m_daqs[0].ACQHandler(false);
-
-    QThread::usleep(100000);
+    QThread::msleep(500);
     CloseDAQSocket();
 }
 void CalibrationModule::StartDataTaking()
@@ -1708,17 +1704,17 @@ void CalibrationModule::PlotData(){
                 for(int bit=0; bit<m_number_bits;bit++){
                     int cnt = m_channel_y[idx][bit];
                     double theTime = m_time[bit];
-                    double rate = 0;
+                    double rate = -1;
                     if(theTime > 0) {
                         rate = cnt/theTime;
-                        y.push_back(rate);
-                        if(rate > max) {
-                            max = rate;
-                            m_max_value_x[idx] = ThresholdDAC_to_mV(m_minThreshold+static_cast<int>(bit));
-                        }
-                        if(rate == 0.0 && m_min_value_x[idx]  == -1.0 && bit > 0) {
-                            m_min_value_x[idx]  = ThresholdDAC_to_mV(m_minThreshold+static_cast<int>(bit));
-                        }
+                    }
+                    y.push_back(rate);
+                    if(rate > max) {
+                        max = rate;
+                        m_max_value_x[idx] = ThresholdDAC_to_mV(m_minThreshold+static_cast<int>(bit));
+                    }
+                    if(rate == 0.0 && m_min_value_x[idx]  == -1.0 && bit > 0) {
+                        m_min_value_x[idx]  = ThresholdDAC_to_mV(m_minThreshold+static_cast<int>(bit));
                     }
                 }
                 plot->graph(0)->setData( QVector<double>::fromStdVector(m_dac_x), QVector<double>::fromStdVector(y));
@@ -1846,7 +1842,6 @@ void CalibrationModule::GetActiveVMMs(){
 
 // ------------------------------------------------------------------------ //
 void CalibrationModule::updatePlot(){
-    GetSettings();
     PlotData();
 }
 
@@ -1931,11 +1926,7 @@ void CalibrationModule::StartCalibration(){
             m_theDirection = list[4].toInt();
         }
 
-        m_theFEC = 1;
-        m_theVMM = 0;
-        pulser_user = 0;
-        spanWidth = 20;
-        m_theDirection = 0;
+
         if(m_theFEC > 8 || m_theFEC < 1 || m_theVMM > 15 || m_theVMM < 0
                 || m_theDirection < 0 || m_theDirection > 1
                 || pulser_user > 1 || pulser_user < 0
@@ -1974,16 +1965,16 @@ void CalibrationModule::StartCalibration(){
         }
         m_number_bits = m_maxThreshold-m_minThreshold+1;
         std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << m_number_bits << std::endl;
-        for(int bit=0; bit < m_number_bits; bit++)
-        {
-            m_dac_x.push_back(ThresholdDAC_to_mV(m_minThreshold+bit));
-            for(unsigned int ch = 0; ch<64; ch++){
+        for(unsigned int ch = 0; ch<64; ch++){
+            m_max_value_x.push_back(m_maxThreshold);
+            m_min_value_x.push_back(m_minThreshold);
+            for(int bit=0; bit < m_number_bits; bit++) {
                 m_channel_y[ch].push_back(0);
-                m_max_value_x.push_back(m_maxThreshold);
-                m_min_value_x.push_back(m_minThreshold);
+                if(ch==0) {
+                    m_dac_x.push_back(ThresholdDAC_to_mV(m_minThreshold+bit));
+                }
             }
         }
-
     }
     else if(m_modeIndex == 6) {
         QMessageBox::StandardButton reply;
@@ -2070,8 +2061,8 @@ void CalibrationModule::StartCalibration(){
                 }
             }
         }
-
-        m_mainWindow->m_daqs[0].SendAll();
+        //check config once
+        m_mainWindow->m_daqs[0].SendAll(true);
     }
     if(m_modeIndex == 7)
     {
@@ -2124,7 +2115,7 @@ void CalibrationModule::DoCalibrationStep(){
                 }
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdp_2",val);
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_mainWindow->m_daqs[0].SendAll();
+                m_mainWindow->m_daqs[0].SendAll(false);
                 QThread::usleep(10000);
                 int measured = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
                 m_dac_measured[fec][hdmi][0][chip].push_back(measured);
@@ -2190,7 +2181,7 @@ void CalibrationModule::DoCalibrationStep(){
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_threshold);
 
     }
-    m_mainWindow->m_daqs[0].SendAll();
+    m_mainWindow->m_daqs[0].SendAll(false);
     QThread::usleep(100000);
 }
 
@@ -2485,7 +2476,7 @@ void CalibrationModule::Reset()
 
         m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC();
         QThread::msleep(100);
-        m_mainWindow->m_daqs[0].SendAll();
+        m_mainWindow->m_daqs[0].SendAll(false);
     }
 }
 
@@ -2603,7 +2594,6 @@ void CalibrationModule::ConnectDAQSocket()
 }
 
 void CalibrationModule::SaveCorrections(){
-    GetSettings();
     if(m_modeIndex == 1 ||  m_modeIndex == 2)
     {
         if( ! m_calibrationArray[0] &&  !m_calibrationArray[1]) {
@@ -2874,8 +2864,6 @@ void CalibrationModule::InitializeDataStructures()
     for (unsigned int ch=0; ch < 64; ch++){
         m_channel_y[ch].clear();
         m_x.push_back(ch);
-        m_max_value_x.push_back(0);
-        m_min_value_x.push_back(0);
     }
     for(int i=0; i<4096;i++) {
         m_cnt_bcid[i] = 0;
@@ -3066,7 +3054,7 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt",(int)m_dac_x[n]);
             }
-            m_mainWindow->m_daqs[0].SendAll();
+            m_mainWindow->m_daqs[0].SendAll(false);
             QThread::usleep(10000);
             int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
 
@@ -3098,7 +3086,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
                 m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",0,ch);
-                m_mainWindow->m_daqs[0].SendAll();
+                m_mainWindow->m_daqs[0].SendAll(false);
                 QThread::usleep(10000);
                 int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
                 m_mean[0][fec][hdmi][0][chip].push_back(val);
@@ -3118,7 +3106,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",1,ch);
                     for(int bit=0; bit<m_number_bits;bit++){
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sd",bit,ch);
-                        m_mainWindow->m_daqs[0].SendAll();
+                        m_mainWindow->m_daqs[0].SendAll(false);
                         QThread::usleep(1000);
                         int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi,chip, 2);
                         m_mean[bit][fec][hdmi][0][chip].push_back(val);
@@ -3137,7 +3125,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
                     m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("st",0,ch);
                     m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("smx",1,ch);
-                    m_mainWindow->m_daqs[0].SendAll();
+                    m_mainWindow->m_daqs[0].SendAll(false);
                     QThread::usleep(10000);
                     int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hdmi, chip, 2);
                     m_mean[0][fec][hdmi][0][chip].push_back(val);

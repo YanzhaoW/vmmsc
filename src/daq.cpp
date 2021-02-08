@@ -30,11 +30,11 @@ DAQ::DAQ():
 
 }
 
-void DAQ::SendAll(){
+void DAQ::SendAll(bool useConfigCheck){
 
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j) ){
-            m_fecs[j].SendAll();
+            m_fecs[j].SendAll(useConfigCheck);
         }
     }
 }

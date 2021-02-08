@@ -49,7 +49,7 @@ public:
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
 
-    void SendAll();
+    void SendAll(bool useConfigCheck = false);
     quint16 GetChMap();
 
     void SetFirmwareVersion(QString version);

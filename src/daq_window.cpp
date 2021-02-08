@@ -343,7 +343,7 @@ void DAQWindow::on_onACQ_clicked()
     ui->offACQ->setChecked(false);
     ui->Send->setEnabled(false);
 
-    m_mainWindow->m_daqs[0].SendAll();
+    m_mainWindow->m_daqs[0].SendAll(true);
     m_mainWindow->m_daqs[0].ACQHandler(true);
 }
 

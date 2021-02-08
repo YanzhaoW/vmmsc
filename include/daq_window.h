@@ -31,7 +31,6 @@ public:
     MessageHandler& GetMessageHandler() { return *m_msg; }
     void SetConnectionMessage(QString warning, QString bkgcol );
     void SetWarningMessage(QString warning, QString bkgcol );
-
     void LoadConfig(QString text);
     bool FileExists(const char *fileName);
 

@@ -218,7 +218,7 @@ void FECWindow::onUpdateSettings(){
         m_ui->onACQ->setChecked(true);
         m_ui->offACQ->setChecked(false);
         m_daqWindow->ui->Send->setEnabled(false);
-        m_daqWindow->m_mainWindow->m_daqs[0].SendAll();
+        m_daqWindow->m_mainWindow->m_daqs[0].SendAll(true);
         m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ACQon();
     }
     else if(QObject::sender() == m_ui->offACQ){

@@ -64,7 +64,7 @@ void FEC::LoadMessageHandler(MessageHandler& m)
 }
 // ------------------------------------------------------------------------- //
 
-void FEC::SendAll(){
+void FEC::SendAll(bool useConfigCheck){
     // function to send all configurations to fec, hybrid and vmm
     for(int n=0; n< HDMIS_PER_FEC*VMMS_PER_HYBRID; n++) {
         config_error[n] = 0;
@@ -104,7 +104,7 @@ void FEC::SendAll(){
             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
                 if (m_hdmis[k].m_hybrids[0].GetVMM(m)){
                     //sleep(1);
-                    bool result = m_fecConfigModule->SendConfig(k, m);
+                    bool result = m_fecConfigModule->SendConfig(k, m, useConfigCheck);
                     if(!result) {
                         config_error[k*VMMS_PER_HYBRID+m] = 1;
                     }
