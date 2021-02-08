@@ -2243,11 +2243,6 @@ void CalibrationModule::AccumulateData(){
         }
         else
         {
-            m_mainWindow->m_daqWindow->ui->offACQ->setCheckable(true);
-            m_mainWindow->m_daqWindow->ui->offACQ->setChecked(true);
-            m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
-            m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
-            m_mainWindow->m_daqs[0].ACQHandler(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
             m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
             m_dataAvailable = true;
