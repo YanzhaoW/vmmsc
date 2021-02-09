@@ -2173,9 +2173,6 @@ void CalibrationModule::DoCalibrationStep(){
         int fec = m_theFEC-1;
         int hdmi = m_theVMM / 2;
         int chip = m_theVMM % 2;
-        for(int ch=0; ch<64; ch++) {
-            m_data[m_bitCount][fec][hdmi][0][chip][ch].push_back(0);
-        }
         m_srs_timestamp_start[fec][hdmi][0][chip]=0;
         m_srs_timestamp_end[fec][hdmi][0][chip]=0;
         m_mainWindow->m_daqs[0].m_fecs[fec].m_hdmis[hdmi].m_hybrids[0].m_vmms[chip].SetRegi("sdt", m_threshold);
@@ -3247,7 +3244,9 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                     hit.push_back(tdc);
                     hit.push_back(adc);
                     hit.push_back(double(overThreshold));
-                    m_allhitdata[m_bitCount][fec][hdmi][0][chip].push_back(hit);
+                    if(m_bitCount < MAX_BITS) {
+                        m_allhitdata[m_bitCount][fec][hdmi][0][chip].push_back(hit);
+                    }
                     m_numHits++;
                 }
             }

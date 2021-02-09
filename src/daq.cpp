@@ -181,6 +181,7 @@ void DAQ::ACQHandler(bool on){
             if(on) m_fecs[j].m_fecConfigModule->ACQon(true);
             else if(!on) m_fecs[j].m_fecConfigModule->ACQoff(true);
             break;
+
         }
     }
 }

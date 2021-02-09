@@ -1747,7 +1747,7 @@ void FECConfigModule::ACQoff(bool broadcast)
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::ACQoff [1]");
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec", 5000);
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ACQoff");
         QByteArray buffer;
