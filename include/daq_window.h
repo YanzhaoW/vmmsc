@@ -17,7 +17,6 @@ class DAQWindow : public QMainWindow
 {
     Q_OBJECT
     friend class FECWindow;
-    friend class HDMIWindow;
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;
@@ -87,9 +86,6 @@ private slots:
     void on_pushButtonDeleteLast_clicked();
 
     void on_pushButtonNewHybrid_clicked();
-
-
-    void on_first_trigger_starts_acq_stateChanged(int arg1);
 
     void on_pushButtonCSV_pressed();
 

@@ -462,14 +462,14 @@
          </font>
         </property>
         <property name="title">
-         <string>HDMI</string>
+         <string>Hybrids</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
-          <widget class="QCheckBox" name="Box_hdmi1">
+          <widget class="QCheckBox" name="Box_hybrid1">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -482,7 +482,7 @@
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QCheckBox" name="Box_hdmi3">
+          <widget class="QCheckBox" name="Box_hybrid3">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -495,7 +495,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QCheckBox" name="Box_hdmi2">
+          <widget class="QCheckBox" name="Box_hybrid2">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -508,7 +508,7 @@
           </widget>
          </item>
          <item row="0" column="3">
-          <widget class="QCheckBox" name="Box_hdmi4">
+          <widget class="QCheckBox" name="Box_hybrid4">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -521,7 +521,7 @@
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QCheckBox" name="Box_hdmi5">
+          <widget class="QCheckBox" name="Box_hybrid5">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -534,7 +534,7 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QCheckBox" name="Box_hdmi6">
+          <widget class="QCheckBox" name="Box_hybrid6">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -547,7 +547,7 @@
           </widget>
          </item>
          <item row="1" column="2">
-          <widget class="QCheckBox" name="Box_hdmi7">
+          <widget class="QCheckBox" name="Box_hybrid7">
            <property name="font">
             <font>
              <family>Arial</family>
@@ -560,7 +560,7 @@
           </widget>
          </item>
          <item row="1" column="3">
-          <widget class="QCheckBox" name="Box_hdmi8">
+          <widget class="QCheckBox" name="Box_hybrid8">
            <property name="font">
             <font>
              <family>Arial</family>

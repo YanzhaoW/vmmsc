@@ -3,7 +3,7 @@
 
 
 #include "globparameter.h"
-#include "hdmi.h"
+#include "hybrid.h"
 #include "fec_config_module.h"
 #include "socket_handler.h"
 //class FEC_config_module;
@@ -22,15 +22,15 @@ public:
     friend class DAQ;
     friend class CalibrationModule;
     friend class TestModule;
-    HDMI m_hdmis[HDMIS_PER_FEC];
+    Hybrid m_hybrids[HYBRIDS_PER_FEC];
 
     void LoadDefault();
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& GetMessageHandler() { return *m_msg; }
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }
 
-    bool SetHDMI(unsigned short m_hdmis, bool OnOff);
-    bool GetHDMI(unsigned short m_hdmis);
+    bool SetHybrid(unsigned short m_hybrids, bool OnOff);
+    bool GetHybrid(unsigned short m_hybrids);
 
     // global registers
     bool SetReg(const char *reg, bool val);
@@ -71,17 +71,17 @@ private:
     unsigned long FindVecEntry(unsigned short regval, const char *val);
     bool ConstCharStar_comp(const char *ccs1, const char *ccs2);
 
-    std::vector<bool> m_hdmiActs;//binary to store which hdmis are activated
+    std::vector<bool> m_hybridActs;//binary to store which hybrids are activated
     MessageHandler *m_msg;
     SocketHandler *m_socketHandler;
     const int numberOfRegisters = 42;
     std::vector<const char*> *m_regNames;
     std::vector<unsigned long> *m_reg;
     char *m_chr;
-    int config_error[HDMIS_PER_FEC*VMMS_PER_HYBRID];
-    unsigned short GetVMM(int hdmi_index, int vmm_index, std::string feature, int ch=-9999);
-    bool SetVMM(int hdmi_index, int vmm_index, std::string feature, int value ,int ch=-9999);
-    bool SetVMM(int hdmi_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
+    int config_error[HYBRIDS_PER_FEC*VMMS_PER_HYBRID];
+    unsigned short GetVMM(int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
+    bool SetVMM(int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
+    bool SetVMM(int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
 
     QString m_firmwareVersion;
 };

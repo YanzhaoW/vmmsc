@@ -35,16 +35,16 @@ public:
 
     FECConfigModule& LoadSocket(SocketHandler& GetSocketHandler);
 
-    bool SendConfig(int hdmi_index, int vmm_index, bool enableConfigCheck=false);
-    void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hdmi_index, int vmm_index);
-    void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hdmi_index, int vmm_index);
-    void FillChannelRegisters(std::vector<QString>& channelRegisters, int hdmi_index, int vmm_index);
+    bool SendConfig(int hybrid_index, int vmm_index, bool enableConfigCheck=false);
+    void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hybrid_index, int vmm_index);
+    void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hybrid_index, int vmm_index);
+    void FillChannelRegisters(std::vector<QString>& channelRegisters, int hybrid_index, int vmm_index);
 
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }
     int Connect();
 
-    void ConfigTP( int hdmi_index);
-    void SetS6clocks(int hdmi_index);
+    void ConfigTP( int hybrid_index);
+    void SetS6clocks(int hybrid_index);
     void SetTriggerAcqConstants();
     void CheckLinkStatus(bool& readOK, QString & message);
     void ResetLinks();
@@ -55,19 +55,19 @@ public:
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
     void SetMask();
-    int ReadADC(int hdmi_index, int vmm_index, int adc_chan);
-    QString ReadI2C(int hdmi_index, int choice);
-    QString ReadGeoPos(int hdmi_index);
-    QString ReadIDChip(int hdmi_index);
-    bool CheckConfigurationOfVMMs(int hdmi_index, int vmm_index);
-    QString CommunicateWithHybridI2C(int hdmi_index, int rw, int reg_value, int bytes);
+    int ReadADC(int hybrid_index, int vmm_index, int adc_chan);
+    QString ReadI2C(int hybrid_index, int choice);
+    QString ReadGeoPos(int hybrid_index);
+    QString ReadIDChip(int hybrid_index);
+    bool CheckConfigurationOfVMMs(int hybrid_index, int vmm_index);
+    QString CommunicateWithHybridI2C(int hybrid_index, int rw, int reg_value, int bytes);
     void VMMLoadEmit();
     void HybridLoadEmit();
     void VMMUpdateChannelEmit();
 private:
     FEC *m_fec;
     bool m_dbg;
-    std::vector<int> m_hdmi_i2c;
+    std::vector<int> m_hybrid_i2c;
 
     SocketHandler *m_socketHandler;
 //    ConfigHandler *m_configHandler;

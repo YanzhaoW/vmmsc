@@ -23,8 +23,6 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
 
-    ui->first_trigger_starts_acq->setToolTip("If checked, the first trigger signal that occurs at the NIM trigger input of the FEC will start the acquisition.\nUseful to synchronize the start of acquisition in case multiple FECs are used.");
-
     QString correctedFileName = m_mainWindow->GetApplicationPath() +  "/../configs/default.txt";
 
     if(FileExists(correctedFileName.toStdString().c_str())){
@@ -182,7 +180,6 @@ void DAQWindow::LoadConfig(QString text){
                 if (m_mainWindow->m_daq_act[i]){
                     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
                         if (m_mainWindow->m_daqs[i].GetFEC(j)){
-                            m_mainWindow->m_daqs[i].m_fecs[j].SetReg("first_trigger_starts_acq", ui->first_trigger_starts_acq->isChecked());
                             if (j==0 && !ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(true);on_Box_fec1_clicked();}
                             if (j==1 && !ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(true);on_Box_fec2_clicked();}
                             if (j==2 && !ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(true);on_Box_fec3_clicked();}
@@ -191,17 +188,15 @@ void DAQWindow::LoadConfig(QString text){
                             if (j==5 && !ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(true);on_Box_fec6_clicked();}
                             if (j==6 && !ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(true);on_Box_fec7_clicked();}
                             if (j==7 && !ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(true);on_Box_fec8_clicked();}
-                             for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-                                if(m_mainWindow->m_daqs[i].m_fecs[j].GetHDMI(k)){
-                                    for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                                        if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].GetHybrid(l)){
-                                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                                if (m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetVMM(m)){
-                                                    std::cout << "vmm " << m << " on hybrid " << l << "(pos " << m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("position")<< ", " <<m_mainWindow->m_daqs[i].m_fecs[j].m_hdmis[k].m_hybrids[l].GetReg("axis") << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
-                                                }
-                                            }
+                            for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+                                if(m_mainWindow->m_daqs[i].m_fecs[j].GetHybrid(k)){
+
+                                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                                        if (m_mainWindow->m_daqs[i].m_fecs[j].m_hybrids[k].GetVMM(m)){
+                                            std::cout << "vmm " << m << "(pos " << m_mainWindow->m_daqs[i].m_fecs[j].m_hybrids[k].GetReg("position")<< ", " <<m_mainWindow->m_daqs[i].m_fecs[j].m_hybrids[k].GetReg("axis") << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
                                         }
                                     }
+
                                 }
                             }
                         }
@@ -581,14 +576,5 @@ void DAQWindow::on_pushButtonNewHybrid_clicked()
     m_mainWindow->m_test->ResetHybrid();
 }
 
-void DAQWindow::on_first_trigger_starts_acq_stateChanged(int arg1)
-{
-    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-        if (m_mainWindow->m_daqs[0].GetFEC(j)){
-            m_mainWindow->m_daqs[0].m_fecs[j].SetReg("first_trigger_starts_acq", ui->first_trigger_starts_acq->isChecked());
-        }
-    }
-
-}
 
 

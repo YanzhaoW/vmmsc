@@ -15,7 +15,7 @@ class VMMWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit VMMWindow(HybridWindow *top, unsigned short fec = 0, unsigned short hdmi = 0, unsigned short hybrid = 0, unsigned short vmm = 0, QWidget *parent = 0);
+    explicit VMMWindow(HybridWindow *top, unsigned short fec = 0, unsigned short hybrid = 0, unsigned short vmm = 0, QWidget *parent = 0);
     ~VMMWindow();
 
 
@@ -82,7 +82,6 @@ public:
 private:
     HybridWindow *m_hybridWindow;
     unsigned short m_fecIndex;
-    unsigned short m_hdmiIndex;
     unsigned short m_hybridIndex;
     unsigned short m_vmmIndex;
     Ui::vmm_window *m_ui;

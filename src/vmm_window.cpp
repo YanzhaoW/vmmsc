@@ -1,11 +1,10 @@
 #include "vmm_window.h"
 //#include <unistd.h>
 
-VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi, unsigned short hybrid, unsigned short vmm, QWidget *parent) :
+VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hybrid, unsigned short vmm, QWidget *parent) :
     QWidget(parent),
     m_hybridWindow{top},
     m_fecIndex{fec},
-    m_hdmiIndex{hdmi},
     m_hybridIndex{hybrid},
     m_vmmIndex{vmm},
     m_ui(new Ui::vmm_window)
@@ -149,7 +148,7 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
             this, SLOT(onUpdateSettings()));
 
 
-    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection, SIGNAL(clicked()),
+    connect(m_hybridWindow->m_fecWindow->m_daqWindow->ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
     connect(m_ui->ApplyAll, SIGNAL(clicked()),
@@ -164,13 +163,10 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hdmi,
     connect(m_ui->ChannelSettingsAll, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
-    //    connect(root_hybrid->root_hdmi->root_fec->root_daq->root_main->daq[0], SIGNAL( ReloadVMM() ),
-    //                                    this, SLOT( ReloadSettings() ) );
-
-    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadVMM()),
+    connect(m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadVMM()),
             this, SLOT( onReloadSettings() ));
 
-    connect(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(VMMUpdateChannel()),
+    connect(m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(VMMUpdateChannel()),
             this, SLOT( onVMMUpdateChannel() ));
 
 }
@@ -243,19 +239,19 @@ void VMMWindow::SetToolTips()
 // ------------------------------------------------------------------------- //
 
 unsigned short VMMWindow::GetVMM(std::string feature, int ch){
-    unsigned short setting = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetRegister(feature, ch);
+    unsigned short setting = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetRegister(feature, ch);
     return setting;
 }
 // ------------------------------------------------------------------------- //
 
 bool VMMWindow::SetVMM(std::string feature, int value, int ch){
-    if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
+    if(m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
         return true;
     }
     else return false;
 }
 bool VMMWindow::SetVMM(std::string feature, std::string value, int ch){
-    if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hdmis[m_hdmiIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
+    if(m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].SetRegi(feature, value, ch)){
         return true;
     }
     else return false;
@@ -294,10 +290,10 @@ void VMMWindow::LoadSettings()
     m_ui->sdp_2->setValue(sdp_2);
     QString tmp;
 
-    double val = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
+    double val = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
     m_ui->dacmvLabel->setText(tmp.number(val, 'f', 0) + " mV");
-    double pulseHeight = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
-    double dav_mV = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
+    double pulseHeight = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
+    double dav_mV = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
     m_ui->dacmvLabel_TP->setText(tmp.number(dav_mV, 'f', 0) + " mV DAC\n"+ tmp.number(pulseHeight, 'f', 0) + " mV pulse height");
     if(pulseHeight > 1200) {
         m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : red; }");
@@ -433,12 +429,12 @@ void VMMWindow::onUpdateSettings()
     QString tmp;
     if(QObject::sender() == m_ui->sdt){
         SetVMM("sdt", m_ui->sdt->value());
-        double val = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
+        double val = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
         m_ui->dacmvLabel->setText(tmp.number(val, 'f', 0) + " mV");
     }
     else if(QObject::sender() == m_ui->sdp_2){
-        double pulseHeight = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
-        double dav_mV = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
+        double pulseHeight = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
+        double dav_mV = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
         m_ui->dacmvLabel_TP->setText(tmp.number(dav_mV, 'f', 0) + " mV DAC\n"+ tmp.number(pulseHeight, 'f', 0) + " mV pulse height");
         if(pulseHeight > 1200) {
             m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : red; }");
@@ -463,10 +459,10 @@ void VMMWindow::onUpdateSettings()
     }
     else if(QObject::sender() == m_ui->sg){
         SetVMM("gain", m_ui->sg->currentIndex());
-        double val = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
+        double val = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->ThresholdDAC_to_mV(m_ui->sdt->value());
         m_ui->dacmvLabel->setText(tmp.number(val, 'f', 0) + " mV");
-        double pulseHeight = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
-        double dav_mV = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
+        double pulseHeight = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_PulseHeight_mV(m_ui->sdp_2->value(), m_ui->sg->currentIndex());
+        double dav_mV = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_calib->PulserDAC_to_mV(m_ui->sdp_2->value());
         m_ui->dacmvLabel_TP->setText(tmp.number(dav_mV, 'f', 0) + " mV DAC\n"+ tmp.number(pulseHeight, 'f', 0) + " mV pulse height");
         if(pulseHeight > 1200) {
             m_ui->dacmvLabel_TP->setStyleSheet("QLabel { color : red; }");
@@ -630,8 +626,8 @@ void VMMWindow::onUpdateSettings()
     else if(QObject::sender() == m_ui->slvs6b){
         SetVMM("slvs6b", !m_ui->slvs6b->isChecked());
     }
-    else if(QObject::sender() == m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->openConnection){
-        if(m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
+    else if(QObject::sender() == m_hybridWindow->m_fecWindow->m_daqWindow->ui->openConnection){
+        if(m_hybridWindow->m_fecWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
             m_ui->readADC->setEnabled(true);
             m_ui->vmmReset->setEnabled(true);
             m_ui->ApplyAll->setEnabled(true);
@@ -648,22 +644,22 @@ void VMMWindow::onUpdateSettings()
     }
 
     else if(QObject::sender() == m_ui->ApplyAll){
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex, false);
+        m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hybridIndex, m_vmmIndex, false);
     }
     else if(QObject::sender() == m_ui->vmmResetAll){
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex, true);
+        m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyVMMs(m_fecIndex, m_hybridIndex, m_vmmIndex, true);
     }
     else if(QObject::sender() == m_ui->vmmReset){
         SetVMM("reset1", 1);
         SetVMM("reset2", 1);
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+        m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
         QThread::sleep(1);
         SetVMM("reset1", 0);
         SetVMM("reset2", 0);
-        m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hdmiIndex, m_vmmIndex);
+        m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
     }
     else if(QObject::sender() == m_ui->ChannelSettingsAll){
-       m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyChannelSettingsVMMs(m_fecIndex, m_hdmiIndex, m_hybridIndex, m_vmmIndex);
+       m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyChannelSettingsVMMs(m_fecIndex, m_hybridIndex, m_vmmIndex);
     }
 
 }
@@ -1255,7 +1251,7 @@ void VMMWindow::on_readADC_clicked()
 {
     int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | prepare to read other channels
 
-    int adc_result = m_hybridWindow->m_hdmiWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hdmiIndex, m_vmmIndex, adc_chan);
+    int adc_result = m_hybridWindow->m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hybridIndex, m_vmmIndex, adc_chan);
     double temperature = (725-adc_result)/1.85;
 
     if(m_ui->sm5_sm0->currentIndex()==3){

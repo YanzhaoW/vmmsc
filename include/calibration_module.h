@@ -114,6 +114,7 @@ private:
     void MeasurePedestalOrThreshold(bool isPedestal, bool isThresholdCalibration);
     void MeasurePulserOrThresholdDAC(bool measurePulser);
     void FitOfflineCalibrationData();
+    void FitSCurve();
     void AccumulateData();
     void CalculateCorrections();
     double SortVectors( vector<double>& sortedMin, vector<double>& sortedMax);
@@ -122,7 +123,7 @@ private:
     //void SetPlotChoice();
     void Reset();
     int GetFEC(int vmmId);
-    int GetHDMI(int vmmId);
+    int GetHybrid(int vmmId);
     int GetVMM(int vmmId);
 
     QString CreateFileName(QString name, int polarity=-1, double gain=-1, double peaktime=-1, double tac=-1, double bcclock=-1, int srat=-1);
@@ -186,11 +187,9 @@ private:
     int m_theVMM = 0;
     int m_theFEC = 0;
     int m_theDirection = 0;
-
-    int m_maxThreshold = 0;
-    int m_minThreshold = 0;
     int m_threshold = 0;
-    int m_pulser_dac = 0;
+
+
 
     bool m_isThresholdCalibration = false;
     double m_gainTable[8] = {0.5,1,3,4.5,6,9,12,16};
@@ -205,50 +204,45 @@ private:
     int m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
     int m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
 
-    std::vector<int> m_dac_setting;
-    std::vector<int> m_dac_measured[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    double m_dac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    double m_dac_offset[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-
     const static int m_number_bits_adc = 32;
     const static int m_number_bits_tdc = 16;
     const static int m_number_bits_threshold = 32;
-    int m_number_bits_offline_time = 10;
+    const static int m_number_bits_offline_time = 10;
     const static int m_number_bits_offline_adc= 4;
 
-    uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    uint64_t m_srs_timestamp_start[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    uint64_t m_srs_timestamp_start[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     uint64_t m_start;
     uint64_t m_end;
 
-    double  m_bc_period[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
-    double  m_bc_clock[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI];
-    double m_tac_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    double m_shaping_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    double m_gain[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    int m_polarity[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    int m_timing_at_thr[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    double  m_bc_period[FECS_PER_DAQ][HYBRIDS_PER_FEC];
+    double  m_bc_clock[FECS_PER_DAQ][HYBRIDS_PER_FEC];
+    double m_tac_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    double m_shaping_time[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    double m_gain[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    int m_polarity[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    int m_timing_at_thr[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
 
     //Data Acquisition
     //Data containers for data in Parse_VMM3
-    std::vector<double> m_data[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID][64];
+    std::vector<double> m_data[MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID][64];
 
     //Container for time calibration
     unsigned long m_cnt_bcid[4096];
-    std::vector<double> m_fit_start_time[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_fit_start_bcid[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_fit_y[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_mean_per_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_percent_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_fit_start_time[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<double> m_fit_start_bcid[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<double> m_fit_y[MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<double> m_mean_per_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<double> m_percent_bcid[NUM_BCID][MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     int m_most_common_BCID = 0;
 
     //Container for ADC calibration
-    std::vector<double> m_mean[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_mean[MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     std::vector<double> m_dac;
 
     //Container for test module
-    QVector<QVector<double>> m_allhitdata[MAX_BITS][FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    QVector<QVector<double>> m_allhitdata[MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
     //Containers for calculated data
     //S-curve
@@ -256,12 +250,12 @@ private:
     std::vector<double> m_min_value_x;
 
     //Online ADC and TDC
-    std::vector<double> m_calVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<int> m_bitVal[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_calVal[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<int> m_bitVal[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
     //Fit for offline ADC and time calibration
-    std::vector<double> m_offset[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
-    std::vector<double> m_slope[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_offset[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<double> m_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
 
     //Plot containers
@@ -269,14 +263,28 @@ private:
     std::vector<double> m_x;
 
     //Plots with DAC or mV values on x-axis
-    std::vector<double> m_dac_x;
+    //std::vector<double> m_dac_x;
+    std::vector<double> m_dac_setting;
+    std::vector<double> m_dac_measured[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    int m_pulser_dac = 0;
+    double m_pulser_mV = 0;
+    double m_dac_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    double m_dac_offset[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    int m_theIndex = 0;
+
 
     //y values for plots with channels or DAC values on x-axis
-    std::vector<double> m_y[FECS_PER_DAQ][HDMIS_PER_FEC][HYBRIDS_PER_HDMI][VMMS_PER_HYBRID];
+    std::vector<double> m_y[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
     //y values for S-curve, the vector contains one value per threshold
     std::vector<double> m_channel_y[64];
     std::vector<double> m_time;
+    std::vector<double> m_fit_error_scale;
+    std::vector<double> m_fit_error_mean;
+    std::vector<double> m_fit_error_sigma;
+    std::vector<double> m_fit_scale;
+    std::vector<double> m_fit_mean;
+    std::vector<double> m_fit_sigma;
 
 
     bool m_ignore16;

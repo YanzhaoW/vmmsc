@@ -14,25 +14,23 @@ class FECWindow;
 class FECWindow : public QWidget
 {
     Q_OBJECT
-    friend class HDMIWindow;
     friend class HybridWindow;
+    friend class VMMWindow;
 
 public:
     explicit FECWindow(DAQWindow *top, unsigned short fec = 0, QWidget *parent = 0);
     ~FECWindow();
-    friend class HDMIWindow;
-    friend class HybridWindow;
-    friend class VMMWindow;
+
 
 private slots:
-    void on_Box_hdmi1_clicked();
-    void on_Box_hdmi2_clicked();
-    void on_Box_hdmi3_clicked();
-    void on_Box_hdmi4_clicked();
-    void on_Box_hdmi5_clicked();
-    void on_Box_hdmi6_clicked();
-    void on_Box_hdmi7_clicked();
-    void on_Box_hdmi8_clicked();
+    void on_Box_hybrid1_clicked();
+    void on_Box_hybrid2_clicked();
+    void on_Box_hybrid3_clicked();
+    void on_Box_hybrid4_clicked();
+    void on_Box_hybrid5_clicked();
+    void on_Box_hybrid6_clicked();
+    void on_Box_hybrid7_clicked();
+    void on_Box_hybrid8_clicked();
     void on_clearDebugScreen_clicked();
 
     void onUpdateSettings();
@@ -51,7 +49,7 @@ private:
     unsigned short m_fecIndex;
     Ui::fec_window *m_ui;
 
-    void HDMIBoxLogic(bool checked, unsigned short hdmi);
+    void hybridBoxLogic(bool checked, unsigned short hybrid);
     void UpdateWindow();
     void LoadSettings();
     void SetToolTips();

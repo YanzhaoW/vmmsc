@@ -6,7 +6,7 @@
 #include "ui_hybrid_window.h"
 #include "vmm_window.h"
 
-class HDMIWindow;
+class FECWindow;
 
 namespace Ui {
 class hybrid_window;
@@ -15,11 +15,12 @@ class hybrid_window;
 class HybridWindow : public QWidget
 {
     Q_OBJECT
+    friend class VMMWindow;
+    friend class FECWindow;
 
 public:
-    explicit HybridWindow(HDMIWindow *top, unsigned short fec = 0, unsigned short hdmi = 0, unsigned short hybrid = 0, QWidget *parent = 0);
+    explicit HybridWindow(FECWindow *top, unsigned short fec = 0, unsigned short hybrid = 0, QWidget *parent = 0);
     ~HybridWindow();
-    friend class VMMWindow;
 
 public slots:
     void onReloadSettings();
@@ -29,9 +30,8 @@ private slots:
     void onUpdateSettings();
     void on_pbReadI2C_pressed();
 private:
-    HDMIWindow *m_hdmiWindow;
+    FECWindow *m_fecWindow;
     unsigned short m_fecIndex;
-    unsigned short m_hdmiIndex;
     unsigned short m_hybridIndex;
     Ui::hybrid_window *m_ui;
     void VMMBoxLogic(bool checked, unsigned short vmm);
@@ -43,6 +43,6 @@ private:
 
 #endif // HYBRID_WINDOW_H
 
-#ifndef _HDMI_WINDOW_HPP
-#include "hdmi_window.h"
+#ifndef _FEC_WINDOW_HPP
+#include "fec_window.h"
 #endif

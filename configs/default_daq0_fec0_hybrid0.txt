@@ -1,0 +1,13 @@
+daq 0
+fec 0
+hybrid 0
+
+CKBC 2
+CKBC_skew 0
+CKDT 3
+TP_pol 0
+TP_skew 0
+TP_width 0
+axis 0
+position 1
+

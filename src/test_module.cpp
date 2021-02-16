@@ -325,8 +325,8 @@ bool TestModule::MaskNoisyChannels(){
     handleTemperatures();
     stringstream sx;
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     int runmode = m_mainWindow->m_daqWindow->ui->comboBoxRunMode->findText("user settings");
     m_mainWindow->m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(runmode);
     int calibtype = m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->findText("Channels");
@@ -337,7 +337,7 @@ bool TestModule::MaskNoisyChannels(){
     while(!(m_calibmod->m_dataAvailable)){
         QCoreApplication::processEvents();
     }
-    QVector<double> hits[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][1])};
+    QVector<double> hits[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][1])};
     for(int j=0;j<2;j++){
         for(int i =0;i<64;i++){
             if(hits[j][i]>100){
@@ -838,7 +838,7 @@ void TestModule::StartTest(){
     QCoreApplication::processEvents(); //update UI
 
     if(IsDbg()){
-        PrintActiveHDMIonFEC();
+        PrintActiveHybridonFEC();
     }
 
     //If at least one connected and ready Hybrid is found, one can continue.
@@ -916,9 +916,9 @@ void TestModule::StartTest(){
     }
 
     QCoreApplication::processEvents(); //update UI
-    SetHDMItoTest(); //set private Member Variables of FEC and HDMI ID that need to be tested.
-    if(m_HDMI_test!=-1|| m_FEC_test!=-1){
-        sx << "Proceeding to test on HDMI with Index " << m_HDMI_test << " ("<< m_HDMI_test+1 << ") on FEC " << m_FEC_test << std::endl;
+    SetHybridtoTest(); //set private Member Variables of FEC and HDMI ID that need to be tested.
+    if(m_hybrid_test!=-1|| m_FEC_test!=-1){
+        sx << "Proceeding to test on HDMI with Index " << m_hybrid_test << " ("<< m_hybrid_test+1 << ") on FEC " << m_FEC_test << std::endl;
     }
 
     bool foundFW = CheckFirmware();
@@ -1133,10 +1133,10 @@ bool TestModule::CheckAndProcessLinkStatus(){
             stati.push_back(make_pair(fec,"00000000"));
         }
     }
-    m_activeHDMIonFEC.clear();
+    m_activeHybridonFEC.clear();
     int n_active_hdmi = 0;
     for(auto &it : stati){
-        std::vector<bool> activeHDMIonFEC;
+        std::vector<bool> activeHybridonFEC;
         QString status = it.second;
         std::string stdstatus = status.toStdString();
         if(stdstatus.length()<8){
@@ -1150,14 +1150,14 @@ bool TestModule::CheckAndProcessLinkStatus(){
             QChar ls = stat.at(i);
             int lsi = ls.digitValue();
             if(lsi != 4){
-                activeHDMIonFEC.push_back(0);
+                activeHybridonFEC.push_back(0);
             }
             else{
-                activeHDMIonFEC.push_back(1);
+                activeHybridonFEC.push_back(1);
                 n_active_hdmi++;
             }
         }
-        m_activeHDMIonFEC.push_back(make_pair(it.first,activeHDMIonFEC));
+        m_activeHybridonFEC.push_back(make_pair(it.first,activeHybridonFEC));
     }
     if(IsDbg()){
         GetMessageHandler()(sx,"TestModule::CheckAndProcessLinkStatus");
@@ -1175,9 +1175,9 @@ bool TestModule::CheckAndProcessLinkStatus(){
     }
 }
 
-void TestModule::SetHDMItoTest(){//Sets member variables of testModule which HDMI on which FEC is to be tested.
+void TestModule::SetHybridtoTest(){//Sets member variables of testModule which HDMI on which FEC is to be tested.
                                     //Also updates the GUI.
-    m_HDMI_test = -1;
+    m_hybrid_test = -1;
     m_FEC_test = -1;
     stringstream sx;
     QList<QCheckBox*> a = m_mainWindow->m_daqWindow->ui->Fec_group_box->findChildren<QCheckBox*>();
@@ -1190,16 +1190,16 @@ void TestModule::SetHDMItoTest(){//Sets member variables of testModule which HDM
         a[k]->setChecked(false);
         emit a[k]->clicked();
     }
-    for(auto it : m_activeHDMIonFEC){
+    for(auto it : m_activeHybridonFEC){
         int i=0;
         for(std::vector<bool>::reverse_iterator boolit = it.second.rbegin(); boolit != it.second.rend(); boolit++ ){
             bool HDMIact = *boolit;
             if(HDMIact==1){
-                m_HDMI_test = i;
+                m_hybrid_test = i;
                 m_FEC_test = it.first;
-                sx << "HDMI to test: " << m_HDMI_test << " On FEC: " << m_FEC_test << std::endl;
-                cout << "HDMI to test: " << m_HDMI_test << " On FEC: " << m_FEC_test << std::endl;
-                //GetMessageHandler()(sx, "TestModule::SetHDMItoTest");
+                sx << "HDMI to test: " << m_hybrid_test << " On FEC: " << m_FEC_test << std::endl;
+                cout << "HDMI to test: " << m_hybrid_test << " On FEC: " << m_FEC_test << std::endl;
+                //GetMessageHandler()(sx, "TestModule::SetHybridtoTest");
                 for(int k = 0; k< FECS_PER_DAQ; k++){
                     if(k==m_FEC_test){
                         m_mainWindow->m_daqs[0].SetFEC(k, true);
@@ -1209,15 +1209,14 @@ void TestModule::SetHDMItoTest(){//Sets member variables of testModule which HDM
                         m_mainWindow->m_daqs[0].SetFEC(k, false);
                         a[k]->setChecked(false); //GUI Update: uncheck FEC-Box
                     }
-                    for(int h = 0; h<HDMIS_PER_FEC; h++){
-                        if(k==m_FEC_test && h==m_HDMI_test){
-                            m_mainWindow->m_daqs[0].m_fecs[k].SetHDMI(h,true);
-                            m_mainWindow->m_daqs[0].m_fecs[k].m_hdmis[h].SetHybrid(0,true);
-                            m_mainWindow->m_daqs[0].m_fecs[k].m_hdmis[h].m_hybrids[0].SetVMM(0,true);
-                            m_mainWindow->m_daqs[0].m_fecs[k].m_hdmis[h].m_hybrids[0].SetVMM(1,true);
+                    for(int h = 0; h<HYBRIDS_PER_FEC; h++){
+                        if(k==m_FEC_test && h==m_hybrid_test){
+                            m_mainWindow->m_daqs[0].m_fecs[k].SetHybrid(h,true);
+                            m_mainWindow->m_daqs[0].m_fecs[k].m_hybrids[h].SetVMM(0,true);
+                            m_mainWindow->m_daqs[0].m_fecs[k].m_hybrids[h].SetVMM(1,true);
                         }
                         else{
-                            m_mainWindow->m_daqs[0].m_fecs[k].SetHDMI(h,false);
+                            m_mainWindow->m_daqs[0].m_fecs[k].SetHybrid(h,false);
                         }
                     }
                     emit a[k]->clicked();
@@ -1228,27 +1227,27 @@ void TestModule::SetHDMItoTest(){//Sets member variables of testModule which HDM
             i++;
         }
     }
-    sx << "HDMI to test: " << m_HDMI_test << " On FEC: " << m_FEC_test << std::endl;
+    sx << "HDMI to test: " << m_hybrid_test << " On FEC: " << m_FEC_test << std::endl;
     if(IsDbg()){
-        GetMessageHandler()(sx, "TestModule::SetHDMItoTest");
+        GetMessageHandler()(sx, "TestModule::SetHybridtoTest");
     }
     return;
 }
 
 double TestModule::ReadTemperature(int vmmnr)
 {
-    VMM* vmm = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[vmmnr];
+    VMM* vmm = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[vmmnr];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     vmm->SetRegi("monitoring","Temperature_sensor");
     m_mainWindow->m_daqs[0].SendAll();
     QThread::usleep(1000);
-    int adc_result = fcm->ReadADC(m_HDMI_test,vmmnr,2);
+    int adc_result = fcm->ReadADC(m_hybrid_test,vmmnr,2);
     double temperature = (725-adc_result)/1.85;
     return temperature;
 }
 
 QString TestModule::GetHybridID()
-{   QString id = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule->ReadI2C(m_HDMI_test,0);
+{   QString id = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule->ReadI2C(m_hybrid_test,0);
     if(id!="ffffffff" && id!="ffffffffffffffff" && id!="ffffffffffffffffffffffff" && id!="ffffffffffffffffffffffffffffffff" ){
         m_mainWindow->m_daqWindow->ui->hybridIDlabel->setStyleSheet("background-color: lightgreen");
     }
@@ -1269,10 +1268,10 @@ QString TestModule::GetHybridID()
     return id;
 }
 
-void TestModule::PrintActiveHDMIonFEC(){
+void TestModule::PrintActiveHybridonFEC(){
     stringstream sx = stringstream();
-    for(auto it : m_activeHDMIonFEC){
-        sx << "On FEC " << it.first << ": Following HDMI are active: HDMI ";
+    for(auto it : m_activeHybridonFEC){
+        sx << "On FEC " << it.first << ": Following Hybrids are active: Hybrid ";
         for(std::vector<bool>::reverse_iterator boolit = it.second.rbegin(); boolit != it.second.rend(); boolit++ ){
             bool HDMIact = *boolit;
             sx << HDMIact << " ";
@@ -1369,7 +1368,7 @@ bool TestModule::CheckFirmware()
 {
     //Function to check if Firmware exists on Hybrid. As at the moment it is not possible to actually check for Firmware
     //one assumes if communication is possible, there is firmware on it
-    if(m_HDMI_test != -1 && m_FEC_test != -1){
+    if(m_hybrid_test != -1 && m_FEC_test != -1){
         m_hResults.h_firmware = 1;
         return true;
     }
@@ -1406,7 +1405,7 @@ std::string TestModule::TestPedestal()
         QCoreApplication::processEvents();
     }
 
-    QVector<double> pedestals[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][1])};
+    QVector<double> pedestals[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][1])};
     QVector<double> xvals;
     for(int i=0;i<64;i++){
         xvals.push_back(i);
@@ -1502,8 +1501,8 @@ string TestModule::TestBaselineWidth(int nruns)
     QVector<double> baselines[2];
     VMM* vmm[2];
     bool mon[2] = {m_hResults.h_monitoringADC[0],m_hResults.h_monitoringADC[1]};
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     int runmode = m_mainWindow->m_daqWindow->ui->comboBoxRunMode->findText("automatic calibration");
     m_mainWindow->m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(runmode);
@@ -1527,8 +1526,8 @@ string TestModule::TestBaselineWidth(int nruns)
             for(int j=0; j< nruns; j++){
                 blines[0][i].resize(nruns);
                 blines[1][i].resize(nruns);
-                int bline1 = fcm->ReadADC(m_HDMI_test,0,2);
-                int bline2 = fcm->ReadADC(m_HDMI_test,1,2);
+                int bline1 = fcm->ReadADC(m_hybrid_test,0,2);
+                int bline2 = fcm->ReadADC(m_hybrid_test,1,2);
                 baselines[0].push_back(bline1);
                 baselines[1].push_back(bline2);
                 blines[0][i][j] = bline1;
@@ -1560,8 +1559,8 @@ string TestModule::TestBaselineWidth(int nruns)
             for(int j=0; j< nruns; j++){
                 blines[0][i].resize(nruns);
                 blines[1][i].resize(nruns);
-                int bline1 = fcm->ReadADC(m_HDMI_test,0,2);
-                int bline2 = fcm->ReadADC(m_HDMI_test,1,2);
+                int bline1 = fcm->ReadADC(m_hybrid_test,0,2);
+                int bline2 = fcm->ReadADC(m_hybrid_test,1,2);
                 baselines[0].push_back(bline1);
                 baselines[1].push_back(bline2);
                 blines[0][i][j] = bline1;
@@ -1586,8 +1585,8 @@ string TestModule::TestBaselineWidth(int nruns)
     for(int j=0; j< nruns; j++){
         blines[0][0].resize(nruns);
         blines[1][0].resize(nruns);
-        int bline1 = fcm->ReadADC(m_HDMI_test,0,2);
-        int bline2 = fcm->ReadADC(m_HDMI_test,1,2);
+        int bline1 = fcm->ReadADC(m_hybrid_test,0,2);
+        int bline2 = fcm->ReadADC(m_hybrid_test,1,2);
         baselines[0].push_back(bline1);
         baselines[1].push_back(bline2);
         blines[0][0][j] = bline1;
@@ -1811,8 +1810,8 @@ string TestModule::TestThreshold()
     QVector<double> channels;
     QVector<double> thresholds[2];
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     bool mon[2] = {m_hResults.h_monitoringADC[0],m_hResults.h_monitoringADC[1]};
 
@@ -1822,8 +1821,8 @@ string TestModule::TestThreshold()
         vmm[0]->SetRegi("monitoring",i);
         vmm[1]->SetRegi("monitoring",i);
         m_mainWindow->m_daqs[0].SendAll();
-        int thrval1 = fcm->ReadADC(m_HDMI_test,0,2);
-        int thrval2 = fcm->ReadADC(m_HDMI_test,1,2);
+        int thrval1 = fcm->ReadADC(m_hybrid_test,0,2);
+        int thrval2 = fcm->ReadADC(m_hybrid_test,1,2);
         thresholds[0].push_back(thrval1);
         thresholds[1].push_back(thrval2);
         channels.push_back(i);
@@ -1836,10 +1835,10 @@ string TestModule::TestThreshold()
     QString exports[2] = {"",""};
     double slopes[2] = {m_hResults.h_monitoringADCcal[0][0],m_hResults.h_monitoringADCcal[1][0]};
     double intercepts[2] = {m_hResults.h_monitoringADCcal[0][1],m_hResults.h_monitoringADCcal[1][1]};
-    double setthreshold[2] = {m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0].GetRegister("sdt")*slopes[0]+intercepts[0],m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1].GetRegister("sdt")*slopes[1]+intercepts[1]};
+    double setthreshold[2] = {m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0].GetRegister("sdt")*slopes[0]+intercepts[0],m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1].GetRegister("sdt")*slopes[1]+intercepts[1]};
     for(int i=0;i<2;i++){
         if(!mon[i]){
-            setthreshold[i] = 0.801*m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[i].GetRegister("sdt")+25.182;
+            setthreshold[i] = 0.801*m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[i].GetRegister("sdt")+25.182;
         }
     }
     double qGood = m_mainWindow->m_daqWindow->ui->threshold_g_l->text().toDouble();
@@ -1902,8 +1901,8 @@ std::string TestModule::TestMonitoringADC()
     QVector<double> thrDACvals;
     QVector<double> readADC[2];
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
 
     vmm[0]->SetRegi("monitoring","Threshold_DAC");
@@ -1917,8 +1916,8 @@ std::string TestModule::TestMonitoringADC()
         vmm[0]->SetRegi("sdt",i);
         vmm[1]->SetRegi("sdt",i);
         m_mainWindow->m_daqs[0].SendAll();
-        int ADCval1 = fcm->ReadADC(m_HDMI_test, 0, 2);
-        int ADCval2 = fcm->ReadADC(m_HDMI_test, 1, 2);
+        int ADCval1 = fcm->ReadADC(m_hybrid_test, 0, 2);
+        int ADCval2 = fcm->ReadADC(m_hybrid_test, 1, 2);
         thrDACvals.push_back(i);
         readADC[0].push_back(ADCval1);
         readADC[1].push_back(ADCval2);
@@ -1998,8 +1997,8 @@ std::string TestModule::TestNeighbouring()
     handleTemperatures();
     stringstream sx;
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     m_mainWindow->m_daqs[0].SendAll();
     QThread::usleep(1000);
@@ -2023,7 +2022,7 @@ std::string TestModule::TestNeighbouring()
             }
             vmm[j]->SetRegi("st",0,i);
             handleTemperatures();
-            QVector<double> hits[2] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][1])};
+            QVector<double> hits[2] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][1])};
             for(int h=0; h<hits[0].size();h++){
                 allhits[0].resize(hits[0].size());
                 allhits[1].resize(hits[0].size());
@@ -2198,8 +2197,8 @@ std::string TestModule::TestThrTrimmability()
     cout << "Thresholdranges" <<  thresholdrange[0] << thresholdrange[1]<<endl;
     QThread::usleep(1000000);
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     bool mon[2] = {m_hResults.h_monitoringADC[0],m_hResults.h_monitoringADC[1]};
 
@@ -2212,8 +2211,8 @@ std::string TestModule::TestThrTrimmability()
             vmm[0]->SetRegi("smx",1,i);
             vmm[1]->SetRegi("smx",1,i);
             m_mainWindow->m_daqs[0].SendAll();
-            int thr0 = fcm->ReadADC(m_HDMI_test,0,2);
-            int thr1 = fcm->ReadADC(m_HDMI_test,1,2);
+            int thr0 = fcm->ReadADC(m_hybrid_test,0,2);
+            int thr1 = fcm->ReadADC(m_hybrid_test,1,2);
             thrs[0][i].push_back(thr0);
             thrs[1][i].push_back(thr1);
             vmm[0]->SetRegi("smx",0,i);
@@ -2332,8 +2331,8 @@ std::string TestModule::TestChannelsExternal(int tries,int restarts){
         m_calibmod->StartCalibration();
     }
 
-    QVector<QVector<double>> allhits [2] = {m_calibmod->m_allhitdata[0][m_FEC_test][m_HDMI_test][0][0],m_calibmod->m_allhitdata[0][m_FEC_test][m_HDMI_test][0][1]};
-    QVector<double> hits[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][1])};
+    QVector<QVector<double>> allhits [2] = {m_calibmod->m_allhitdata[0][m_FEC_test][m_hybrid_test][0],m_calibmod->m_allhitdata[0][m_FEC_test][m_hybrid_test][1]};
+    QVector<double> hits[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][1])};
     QVector<double> channels;
     QVector<double> hitsfromall[2];
     QVector<double> adcs[2];
@@ -2529,8 +2528,8 @@ string TestModule::TestChannelsInternal()
     m_hResults.h_nwchannels[1][1]=64;
     //MaskNoisyChannels();
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     FECConfigModule* fcm = m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_fecConfigModule;
     int runmode = m_mainWindow->m_daqWindow->ui->comboBoxRunMode->findText("user settings");
     m_mainWindow->m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(runmode);
@@ -2566,7 +2565,7 @@ string TestModule::TestChannelsInternal()
     }
 
     //evaluate data
-    QVector<double> hits[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][1])};
+    QVector<double> hits[VMMS_PER_HYBRID] = {QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][0]),QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_hybrid_test][1])};
     QVector<double> channels;
     for(int i=0; i< 64;i++){
         channels.append(i);
@@ -2650,7 +2649,7 @@ string TestModule::TestChannelsInternal()
     m_hResults.h_DBExportStrings[1].insert("WorkingChannelsInt",exports[1]);
 
 
-    QVector<QVector<double>> allhits [2] = {m_calibmod->m_allhitdata[0][m_FEC_test][m_HDMI_test][0][0],m_calibmod->m_allhitdata[0][m_FEC_test][m_HDMI_test][0][1]};
+    QVector<QVector<double>> allhits [2] = {m_calibmod->m_allhitdata[0][m_FEC_test][m_hybrid_test][0],m_calibmod->m_allhitdata[0][m_FEC_test][m_hybrid_test][1]};
     QVector<double> hitsfromall[2];
     QVector<double> adcs[2];
     QVector<double> channeladcs[2][64];
@@ -3430,8 +3429,8 @@ bool TestModule::ResetHybrid()
 void TestModule::enableSbip(bool ena)
 {
     VMM* vmm[2];
-    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[0];
-    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hdmis[m_HDMI_test].m_hybrids[0].m_vmms[1];
+    vmm[0] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[0];
+    vmm[1] = &m_mainWindow->m_daqs[0].m_fecs[m_FEC_test].m_hybrids[m_hybrid_test].m_vmms[1];
     for(int i=0;i<2;i++){
         if(ena==true){
             vmm[i]->SetRegi("sbip",1);
@@ -3795,21 +3794,19 @@ void TestModule::PrintMData(){
     cout << "Going to Print m_data" << std::endl;
     for(int i=0; i<32;i++){
         for(int j = 0; j<FECS_PER_DAQ; j++){
-            for(int k = 0; k<HDMIS_PER_FEC;k++){
-                for(int l = 0; l<HYBRIDS_PER_HDMI;l++){
-                    for(int m = 0; m<VMMS_PER_HYBRID; m++){
-                        ym = m_calibmod->m_mean[i][j][k][l][m];
-                        yo = m_calibmod->m_offset[j][k][l][m];
-                        ys = m_calibmod->m_slope[j][k][l][m];
+            for(int k = 0; k<HYBRIDS_PER_FEC;k++){
+                   for(int m = 0; m<VMMS_PER_HYBRID; m++){
+                        ym = m_calibmod->m_mean[i][j][k][m];
+                        yo = m_calibmod->m_offset[j][k][m];
+                        ys = m_calibmod->m_slope[j][k][m];
                         if(ym.size()>0){
-                            cout<< "       " << i << j << k << l << m << ":      ";
+                            cout<< "       " << i << j << k << m << ":      ";
                         }
                         for(uint o=0; o< ym.size();o++){
                             cout << ym[o] << " ";
                         }
 
                     }
-                }
             }
         }
     }

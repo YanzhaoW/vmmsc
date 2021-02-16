@@ -19,17 +19,17 @@ public:
     friend class Commandline;
     bool LoadAllHybridConf(std::string filename);
     bool WriteAllHybridConf(std::string filename);
-    bool LoadSingleHybridConf(const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid);
-    bool WriteSingleHybridConf(const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid);
+    bool LoadSingleHybridConf(const char* filename, unsigned short daq, unsigned short fec, unsigned short hybrid);
+    bool WriteSingleHybridConf(const char* filename, unsigned short daq, unsigned short fec, unsigned short hybrid);
     bool LoadSingleHybridConf(const char* filename);
     bool WriteSingleHybridConf(const char* filename);
 
 private:
     MainWindow *m_mainWindow;
     bool GenericAllHybridConf(bool load, std::string filename);
-    bool GenericSingleHybridConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid);
+    bool GenericSingleHybridConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hybrid);
     bool LoadHybridConfig(std::string fname);
-    bool WriteHybridConfig(std::string filename, unsigned short daq, unsigned short fec, unsigned short hdmi, unsigned short hybrid);
+    bool WriteHybridConfig(std::string filename, unsigned short daq, unsigned short fec, unsigned short hybrid);
 
 signals:
 

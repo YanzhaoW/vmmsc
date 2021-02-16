@@ -1,5 +1,5 @@
 #include "fec_window.h"
-#include "hdmi_window.h" // has NOT to be included here. If included in header file: compiler error in mainwindow.h:61:9: error: ‘daq_window’ does not name a type
+#include "hybrid_window.h" // has NOT to be included here. If included in header file: compiler error in mainwindow.h:61:9: error: ‘daq_window’ does not name a type
 
 
 FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
@@ -291,47 +291,47 @@ unsigned long FECWindow::GetFec(const char *feature){
     return m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetRegVal(feature);
 }
 
-void FECWindow::on_Box_hdmi1_clicked()
+void FECWindow::on_Box_hybrid1_clicked()
 {
-    if (m_ui->Box_hdmi1->isChecked()){HDMIBoxLogic(true,0);}
-    else {HDMIBoxLogic(false,0);}
+    if (m_ui->Box_hybrid1->isChecked()){hybridBoxLogic(true,0);}
+    else {hybridBoxLogic(false,0);}
 }
-void FECWindow::on_Box_hdmi2_clicked()
+void FECWindow::on_Box_hybrid2_clicked()
 {
-    if (m_ui->Box_hdmi2->isChecked()){HDMIBoxLogic(true,1);}
-    else {HDMIBoxLogic(false,1);}
+    if (m_ui->Box_hybrid2->isChecked()){hybridBoxLogic(true,1);}
+    else {hybridBoxLogic(false,1);}
 }
-void FECWindow::on_Box_hdmi3_clicked()
+void FECWindow::on_Box_hybrid3_clicked()
 {
-    if (m_ui->Box_hdmi3->isChecked()){HDMIBoxLogic(true,2);}
-    else {HDMIBoxLogic(false,2);}
+    if (m_ui->Box_hybrid3->isChecked()){hybridBoxLogic(true,2);}
+    else {hybridBoxLogic(false,2);}
 }
-void FECWindow::on_Box_hdmi4_clicked()
+void FECWindow::on_Box_hybrid4_clicked()
 {
-    if (m_ui->Box_hdmi4->isChecked()){HDMIBoxLogic(true,3);}
-    else {HDMIBoxLogic(false,3);}
+    if (m_ui->Box_hybrid4->isChecked()){hybridBoxLogic(true,3);}
+    else {hybridBoxLogic(false,3);}
 }
-void FECWindow::on_Box_hdmi5_clicked()
+void FECWindow::on_Box_hybrid5_clicked()
 {
-    if (m_ui->Box_hdmi5->isChecked()){HDMIBoxLogic(true,4);}
-    else {HDMIBoxLogic(false,4);}
+    if (m_ui->Box_hybrid5->isChecked()){hybridBoxLogic(true,4);}
+    else {hybridBoxLogic(false,4);}
 }
-void FECWindow::on_Box_hdmi6_clicked()
+void FECWindow::on_Box_hybrid6_clicked()
 {
-    if (m_ui->Box_hdmi6->isChecked()){HDMIBoxLogic(true,5);}
-    else {HDMIBoxLogic(false,5);}
+    if (m_ui->Box_hybrid6->isChecked()){hybridBoxLogic(true,5);}
+    else {hybridBoxLogic(false,5);}
 }
-void FECWindow::on_Box_hdmi7_clicked()
+void FECWindow::on_Box_hybrid7_clicked()
 {
-    if (m_ui->Box_hdmi7->isChecked()){HDMIBoxLogic(true,6);}
-    else {HDMIBoxLogic(false,6);}
+    if (m_ui->Box_hybrid7->isChecked()){hybridBoxLogic(true,6);}
+    else {hybridBoxLogic(false,6);}
 }
-void FECWindow::on_Box_hdmi8_clicked()
+void FECWindow::on_Box_hybrid8_clicked()
 {
-    if (m_ui->Box_hdmi8->isChecked()){HDMIBoxLogic(true,7);}
-    else {HDMIBoxLogic(false,7);}
+    if (m_ui->Box_hybrid8->isChecked()){hybridBoxLogic(true,7);}
+    else {hybridBoxLogic(false,7);}
 }
-void FECWindow::HDMIBoxLogic(bool checked, unsigned short hdmi){
+void FECWindow::hybridBoxLogic(bool checked, unsigned short hybrid){
 
     QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
     std::sort(a.begin(), a.end(),
@@ -340,41 +340,41 @@ void FECWindow::HDMIBoxLogic(bool checked, unsigned short hdmi){
 
     unsigned short ActiveBefore = 0;
     for (unsigned short i = 0; i < a.size(); i++){
-        if(i<hdmi && a.at(i)->isChecked()) ActiveBefore++;
+        if(i<hybrid && a.at(i)->isChecked()) ActiveBefore++;
     }
     if (checked){
-        m_ui->tabWidget->insertTab(ActiveBefore, new HDMIWindow(this,m_fecIndex,hdmi), QString(" HDMI %0").arg(hdmi+1));
+        m_ui->tabWidget->insertTab(ActiveBefore, new HybridWindow(this,m_fecIndex,hybrid), QString("Hybrid %0").arg(hybrid+1));
         m_ui->tabWidget->setCurrentIndex(ActiveBefore);
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHDMI(hdmi, true);
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHybrid(hybrid, true);
     }
     else {
         m_ui->tabWidget->removeTab(ActiveBefore);
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHDMI(hdmi, false);
+        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHybrid(hybrid, false);
     }
 }
 
 
 void FECWindow::UpdateWindow(){
-    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-        if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHDMI(k)){
-            if (k == 0 && !m_ui->Box_hdmi1->isChecked()){m_ui->Box_hdmi1->setChecked(true); on_Box_hdmi1_clicked();}
-            if (k == 1 && !m_ui->Box_hdmi2->isChecked()){m_ui->Box_hdmi2->setChecked(true); on_Box_hdmi2_clicked();}
-            if (k == 2 && !m_ui->Box_hdmi3->isChecked()){m_ui->Box_hdmi3->setChecked(true); on_Box_hdmi3_clicked();}
-            if (k == 3 && !m_ui->Box_hdmi4->isChecked()){m_ui->Box_hdmi4->setChecked(true); on_Box_hdmi4_clicked();}
-            if (k == 4 && !m_ui->Box_hdmi5->isChecked()){m_ui->Box_hdmi5->setChecked(true); on_Box_hdmi5_clicked();}
-            if (k == 5 && !m_ui->Box_hdmi6->isChecked()){m_ui->Box_hdmi6->setChecked(true); on_Box_hdmi6_clicked();}
-            if (k == 6 && !m_ui->Box_hdmi7->isChecked()){m_ui->Box_hdmi7->setChecked(true); on_Box_hdmi7_clicked();}
-            if (k == 7 && !m_ui->Box_hdmi8->isChecked()){m_ui->Box_hdmi8->setChecked(true); on_Box_hdmi8_clicked();}
+    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+        if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHybrid(k)){
+            if (k == 0 && !m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(true); on_Box_hybrid1_clicked();}
+            if (k == 1 && !m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(true); on_Box_hybrid2_clicked();}
+            if (k == 2 && !m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(true); on_Box_hybrid3_clicked();}
+            if (k == 3 && !m_ui->Box_hybrid4->isChecked()){m_ui->Box_hybrid4->setChecked(true); on_Box_hybrid4_clicked();}
+            if (k == 4 && !m_ui->Box_hybrid5->isChecked()){m_ui->Box_hybrid5->setChecked(true); on_Box_hybrid5_clicked();}
+            if (k == 5 && !m_ui->Box_hybrid6->isChecked()){m_ui->Box_hybrid6->setChecked(true); on_Box_hybrid6_clicked();}
+            if (k == 6 && !m_ui->Box_hybrid7->isChecked()){m_ui->Box_hybrid7->setChecked(true); on_Box_hybrid7_clicked();}
+            if (k == 7 && !m_ui->Box_hybrid8->isChecked()){m_ui->Box_hybrid8->setChecked(true); on_Box_hybrid8_clicked();}
         }
         else{
-            if (k == 0 && m_ui->Box_hdmi1->isChecked()){m_ui->Box_hdmi1->setChecked(false); on_Box_hdmi1_clicked();}
-            if (k == 1 && m_ui->Box_hdmi2->isChecked()){m_ui->Box_hdmi2->setChecked(false); on_Box_hdmi2_clicked();}
-            if (k == 2 && m_ui->Box_hdmi3->isChecked()){m_ui->Box_hdmi3->setChecked(false); on_Box_hdmi3_clicked();}
-            if (k == 3 && m_ui->Box_hdmi4->isChecked()){m_ui->Box_hdmi4->setChecked(false); on_Box_hdmi4_clicked();}
-            if (k == 4 && m_ui->Box_hdmi5->isChecked()){m_ui->Box_hdmi5->setChecked(false); on_Box_hdmi5_clicked();}
-            if (k == 5 && m_ui->Box_hdmi6->isChecked()){m_ui->Box_hdmi6->setChecked(false); on_Box_hdmi6_clicked();}
-            if (k == 6 && m_ui->Box_hdmi7->isChecked()){m_ui->Box_hdmi7->setChecked(false); on_Box_hdmi7_clicked();}
-            if (k == 7 && m_ui->Box_hdmi8->isChecked()){m_ui->Box_hdmi8->setChecked(false); on_Box_hdmi8_clicked();}
+            if (k == 0 && m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(false); on_Box_hybrid1_clicked();}
+            if (k == 1 && m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(false); on_Box_hybrid2_clicked();}
+            if (k == 2 && m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(false); on_Box_hybrid3_clicked();}
+            if (k == 3 && m_ui->Box_hybrid4->isChecked()){m_ui->Box_hybrid4->setChecked(false); on_Box_hybrid4_clicked();}
+            if (k == 4 && m_ui->Box_hybrid5->isChecked()){m_ui->Box_hybrid5->setChecked(false); on_Box_hybrid5_clicked();}
+            if (k == 5 && m_ui->Box_hybrid6->isChecked()){m_ui->Box_hybrid6->setChecked(false); on_Box_hybrid6_clicked();}
+            if (k == 6 && m_ui->Box_hybrid7->isChecked()){m_ui->Box_hybrid7->setChecked(false); on_Box_hybrid7_clicked();}
+            if (k == 7 && m_ui->Box_hybrid8->isChecked()){m_ui->Box_hybrid8->setChecked(false); on_Box_hybrid8_clicked();}
         }
     }
 }

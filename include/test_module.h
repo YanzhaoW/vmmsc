@@ -76,11 +76,11 @@ private:
     bool m_exportblock = false;
     double warntemp;
     int m_FEC_test = -1;
-    int m_HDMI_test = -1;
+    int m_hybrid_test = -1;
     QVector<QPair<QDateTime,double>> m_currents;
     QVector<QPair<QDateTime,double>> m_temps[2];
     QStringList m_criticaltests = {"Internal","External","Pedestal","ADCCalibrationExternal","ADCCalibrationInternal"};
-    std::vector<std::pair<int, std::vector<bool>>> m_activeHDMIonFEC;   //Variable that stores which HDMI are activated (1) on which FEC
+    std::vector<std::pair<int, std::vector<bool>>> m_activeHybridonFEC;   //Variable that stores which Hybrids are activated (1) on which FEC
     QVector<QCustomPlot*> plotVector;
     CurrentMonitor *m_currentMonitor = nullptr;
     QStringList m_performedTest;
@@ -92,10 +92,10 @@ private:
     int GetTestMode();
     bool ConnectToSRS();
     bool CheckAndProcessLinkStatus();
-    void PrintActiveHDMIonFEC();
+    void PrintActiveHybridonFEC();
     bool loadHybridFirmware();
     bool CheckFirmware();
-    void SetHDMItoTest();
+    void SetHybridtoTest();
     double ReadTemperature(int vmmnr);
     QString GetHybridID();
     std::string TestPedestal();

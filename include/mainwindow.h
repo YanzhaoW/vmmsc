@@ -33,7 +33,6 @@ class MainWindow : public QMainWindow
     friend class FECConfigHandler;
     friend class DAQWindow;
     friend class FECWindow;
-    friend class HDMIWindow;
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;

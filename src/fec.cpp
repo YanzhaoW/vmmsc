@@ -3,7 +3,7 @@
 
 
 FEC::FEC():
-    m_hdmiActs (HDMIS_PER_FEC),
+    m_hybridActs (HYBRIDS_PER_FEC),
     m_msg(0),
     m_socketHandler(0),
     numberOfRegisters(42),
@@ -38,7 +38,7 @@ void FEC::SetIP_FEC(unsigned long ip) {
 }
 
 long FEC::GetIP_DAQ(){
-   return GetRegVal("ip_daq");
+    return GetRegVal("ip_daq");
 }
 
 void FEC::SetIP_DAQ(unsigned long  ip) {
@@ -66,21 +66,21 @@ void FEC::LoadMessageHandler(MessageHandler& m)
 
 void FEC::SendAll(bool useConfigCheck){
     // function to send all configurations to fec, hybrid and vmm
-    for(int n=0; n< HDMIS_PER_FEC*VMMS_PER_HYBRID; n++) {
+    for(int n=0; n< HYBRIDS_PER_FEC*VMMS_PER_HYBRID; n++) {
         config_error[n] = 0;
     }
 
     unsigned long first = 0;
     unsigned long firstIndex = 0;
     unsigned long ckbc = 0;
-    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-        if(GetHDMI(k)){
+    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+        if(GetHybrid(k)){
             if(firstIndex == 0) {
-                first = this->m_hdmis[k].m_hybrids[0].GetReg("CKBC");
+                first = this->m_hybrids[k].GetReg("CKBC");
                 firstIndex = k;
             }
             else {
-                ckbc = this->m_hdmis[k].m_hybrids[0].GetReg("CKBC");
+                ckbc = this->m_hybrids[k].GetReg("CKBC");
                 if(first != ckbc) {
                     int ret = QMessageBox::warning(nullptr, tr("Hybrid BC clock"),
                                                    tr("Invalid hybrid BC clock setting! All hybrids on the same FEC have to have the same BC clock!"),
@@ -97,12 +97,12 @@ void FEC::SendAll(bool useConfigCheck){
 
     m_fecConfigModule->SetMask();
     m_fecConfigModule->SetTriggerAcqConstants();
-    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-        if(GetHDMI(k)){
+    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+        if(GetHybrid(k)){
             m_fecConfigModule->ConfigTP(k);
             m_fecConfigModule->SetS6clocks(k);
             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                if (m_hdmis[k].m_hybrids[0].GetVMM(m)){
+                if (m_hybrids[k].GetVMM(m)){
                     //sleep(1);
                     bool result = m_fecConfigModule->SendConfig(k, m, useConfigCheck);
                     if(!result) {
@@ -116,7 +116,7 @@ void FEC::SendAll(bool useConfigCheck){
     }
     bool iserror = false;
     QString message = "Configuration not loaded on FEC " + QString::number(GetID()) + ":\n";
-    for (unsigned short k=0; k < VMMS_PER_HYBRID*HDMIS_PER_FEC; k++){
+    for (unsigned short k=0; k < VMMS_PER_HYBRID*HYBRIDS_PER_FEC; k++){
         if(config_error[k] == 1) {
             iserror = true;
             message = message + "\nVMM " + QString::number(k);
@@ -133,17 +133,14 @@ void FEC::SendAll(bool useConfigCheck){
 quint16 FEC::GetChMap(){
     QString chMapString = "0000000000000000";
     bool ok;
-    for (unsigned short k=0; k < HDMIS_PER_FEC; k++){
-        if(GetHDMI(k)){
-            for (unsigned short l=0; l < HYBRIDS_PER_HDMI; l++){
-                if (m_hdmis[k].GetHybrid(l)){
-                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                        if (m_hdmis[k].m_hybrids[l].GetVMM(m)){
-                            chMapString.replace(15-( k*2+m ) , 1 , QString("1") );
-                        }
-                    }
+    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+        if(GetHybrid(k)){
+            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                if (m_hybrids[k].GetVMM(m)){
+                    chMapString.replace(15-( k*2+m ) , 1 , QString("1") );
                 }
             }
+
         }
     }
     quint16 chMap = (quint16)chMapString.toInt(&ok,2);
@@ -189,14 +186,14 @@ void FEC::LoadDefault(){
     (*m_regNames)[29]="fec_sys_port";            (*m_reg)[29] = 6023;   //32 bit
 
     (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 53;   //8 bit
-    (*m_regNames)[31]="latency_data_max";             (*m_reg)[31] = 4091; //12 bit
-    (*m_regNames)[32]="latency_data_error";           (*m_reg)[32] = 4;    //8 bit
-    (*m_regNames)[33]="debug_data_format";            (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
-    (*m_regNames)[34]="first_trigger_starts_acq";     (*m_reg)[34] = 0;
-    (*m_regNames)[35]="trgin_invert";                    (*m_reg)[35] = 0;
-    (*m_regNames)[36]="trgout_invert";                   (*m_reg)[36] = 0;
-    (*m_regNames)[37]="trgout_time";                (*m_reg)[37] = 1;
-    (*m_regNames)[38]="not_used";               (*m_reg)[38] = 0;
+    (*m_regNames)[31]="latency_data_max";        (*m_reg)[31] = 4091; //12 bit
+    (*m_regNames)[32]="latency_data_error";      (*m_reg)[32] = 4;    //8 bit
+    (*m_regNames)[33]="debug_data_format";       (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
+    (*m_regNames)[34]="not_used";                (*m_reg)[34] = 0;
+    (*m_regNames)[35]="trgin_invert";            (*m_reg)[35] = 0;
+    (*m_regNames)[36]="trgout_invert";           (*m_reg)[36] = 0;
+    (*m_regNames)[37]="trgout_time";             (*m_reg)[37] = 1;
+    (*m_regNames)[38]="not_used";                (*m_reg)[38] = 0;
     (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
     (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
     (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
@@ -204,33 +201,33 @@ void FEC::LoadDefault(){
 }
 
 // ------------------------------------------------------------------------- //
-unsigned short FEC::GetVMM(int hdmi_index, int vmm_index, std::string feature, int ch){
-    unsigned short setting = m_hdmis[hdmi_index].m_hybrids[0].m_vmms[vmm_index].GetRegister(feature, ch);
+unsigned short FEC::GetVMM(int hybrid_index, int vmm_index, std::string feature, int ch){
+    unsigned short setting = m_hybrids[hybrid_index].m_vmms[vmm_index].GetRegister(feature, ch);
     return setting;
 }
 
-bool FEC::SetVMM(int hdmi_index, int vmm_index, std::string feature, int value ,int ch){
-    if(m_hdmis[hdmi_index].m_hybrids[0].m_vmms[vmm_index].SetRegi(feature, value, ch)){
+bool FEC::SetVMM(int hybrid_index, int vmm_index, std::string feature, int value ,int ch){
+    if(m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
         return true;
     }
     else return false;
 }
 
-bool FEC::SetVMM(int hdmi_index, int vmm_index, std::string feature, std::string value, int ch){
-    if(m_hdmis[hdmi_index].m_hybrids[0].m_vmms[vmm_index].SetRegi(feature, value, ch)){
+bool FEC::SetVMM(int hybrid_index, int vmm_index, std::string feature, std::string value, int ch){
+    if(m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
         return true;
     }
     else return false;
 }
 
 
-bool FEC::SetHDMI(unsigned short hdmi, bool OnOff){
-    if (hdmi < HDMIS_PER_FEC) {m_hdmiActs[hdmi] = OnOff; return true;}
+bool FEC::SetHybrid(unsigned short hybrid, bool OnOff){
+    if (hybrid < HYBRIDS_PER_FEC) {m_hybridActs[hybrid] = OnOff; return true;}
     else {return false;}
 }
 
-bool FEC::GetHDMI(unsigned short hdmi){
-    if (hdmi < HDMIS_PER_FEC) {return m_hdmiActs[hdmi];}
+bool FEC::GetHybrid(unsigned short hybrid){
+    if (hybrid < HYBRIDS_PER_FEC) {return m_hybridActs[hybrid];}
     else {return false;}
 }
 
