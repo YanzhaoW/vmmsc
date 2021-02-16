@@ -22,6 +22,7 @@ linebreak="---------------------------------------------------------------"
 
 sourcepath=""
 includepath=""
+alglibpath=""
 imagepath=""
 type=""
 
@@ -29,10 +30,12 @@ linux {
     sourcepath="../src"
     includepath="../include"
     imagepath="../images"
+    alglibpath="../alglib"
 } else {
     sourcepath="../src"
     includepath="../include"
     imagepath="../images"
+    alglibpath="../alglib"
 }
 
 message($$linebreak)
@@ -61,7 +64,7 @@ TEMPLATE = app
 
 
 INCLUDEPATH += $$includepath
-INCLUDEPATH += $$includepath/alglib
+INCLUDEPATH += $$alglibpath
 DEPENDPATH  += $$includepath
 
 OBJECTS_DIR += ./objects/
@@ -104,15 +107,15 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/fec_config_module.cpp \
             $$sourcepath/test_module.cpp \
             $$sourcepath/currentmonitor.cpp \
-            $$sourcepath/alglib/alglibinternal.cpp \
-            $$sourcepath/alglib/alglibmisc.cpp \
-            $$sourcepath/alglib/ap.cpp \
-            $$sourcepath/alglib/integration.cpp \
-            $$sourcepath/alglib/interpolation.cpp \
-            $$sourcepath/alglib/linalg.cpp \
-            $$sourcepath/alglib/optimization.cpp \
-            $$sourcepath/alglib/solvers.cpp \
-            $$sourcepath/alglib/specialfunctions.cpp
+            $$alglibpath/alglibinternal.cpp \
+            $$alglibpath/alglibmisc.cpp \
+            $$alglibpath/ap.cpp \
+            $$alglibpath/integration.cpp \
+            $$alglibpath/interpolation.cpp \
+            $$alglibpath/linalg.cpp \
+            $$alglibpath/optimization.cpp \
+            $$alglibpath/solvers.cpp \
+            $$alglibpath/specialfunctions.cpp
 
 HEADERS  += $$includepath/mainwindow.h\
             $$includepath/socket_handler.h\
@@ -137,16 +140,16 @@ HEADERS  += $$includepath/mainwindow.h\
             $$includepath/test_module.h \
             $$includepath/currentmonitor.h \
             $$includepath/PolynomialRegression.h \
-            $$includepath/alglib/alglibinternal.h \
-            $$includepath/alglib/alglibmisc.h \
-            $$includepath/alglib/ap.h \
-            $$includepath/alglib/integration.h \
-            $$includepath/alglib/interpolation.h \
-            $$includepath/alglib/linalg.h \
-            $$includepath/alglib/optimization.h \
-            $$includepath/alglib/solvers.h \
-            $$includepath/alglib/specialfunctions.h \
-            $$includepath/alglib/stdafx.h
+            $$alglibpath/alglibinternal.h \
+            $$alglibpath/alglibmisc.h \
+            $$alglibpath/ap.h \
+            $$alglibpath/integration.h \
+            $$alglibpath/interpolation.h \
+            $$alglibpath/linalg.h \
+            $$alglibpath/optimization.h \
+            $$alglibpath/solvers.h \
+            $$alglibpath/specialfunctions.h \
+            $$alglibpath/stdafx.h
 
 
 

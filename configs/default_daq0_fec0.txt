@@ -28,7 +28,6 @@ latency_reset 53
 latency_data_max 4091
 latency_data_error 4
 debug_data_format 0
-first_trigger_starts_acq 0
 trgin_invert 0
 trgout_invert 0
 trgout_time 1
