@@ -15,7 +15,7 @@
 #include <winsock.h>
 #endif
 
-
+#include <numeric>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -479,10 +479,10 @@ void CalibrationModule::FitSCurve() {
         real_1d_array w;
         w.setlength(m_number_bits);
         for(int n=0; n<m_number_bits;n++) {
-           y[n] = 0;
-           w[n] = 0;
-           x[n][0] = 0;
-         }
+            y[n] = 0;
+            w[n] = 0;
+            x[n][0] = 0;
+        }
         double sp_ratemax = 9999;
         double sp_ratemin = 0;
         bool startFound = false;
@@ -533,7 +533,7 @@ void CalibrationModule::FitSCurve() {
             alglib::lsfitfit(state, erfc_function, erfc_grad);
 
             lsfitresults(state, info, c, rep);
-/*
+            /*
             printf("%d\n", int(info));
             printf("scale %f\n", c[0]);
             printf("mean %f\n", c[1]);
@@ -837,7 +837,7 @@ void CalibrationModule::SaveDataAsCSV() {
         m_outFile << "fec,vmm,ch,fit scale, error scale, fit mean, error mean, fit sigma, error sigma\n";
         for(unsigned int ch = 0; ch<64; ch++){
             m_outFile << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_fit_scale[ch] << "," <<  m_fit_error_scale[ch] << "," <<  m_fit_mean[ch] << ","
-                          <<  m_fit_error_mean[ch] << "," <<  m_fit_sigma[ch] << "," << m_fit_error_sigma[ch] << "\n" ;
+                      <<  m_fit_error_mean[ch] << "," <<  m_fit_sigma[ch] << "," << m_fit_error_sigma[ch] << "\n" ;
         }
         m_outFile.close();
     }
@@ -927,7 +927,7 @@ void CalibrationModule::SaveDataAsCSV() {
                     for(int bit=0; bit<m_number_bits;bit++){
                         m_outFile << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << ","
                                   << m_mean[bit][fec][hybrid][chip][ch] << "," << m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch]
-                                   << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
+                                     << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
             }
@@ -1001,10 +1001,10 @@ void CalibrationModule::SaveDataAsCSV() {
             {
                 name = "Threshold";
                 if(m_isThresholdCalibration) {
-                    m_outFile << "fec,vmm,ch, threshold correction [mV], threshold [mV], calibrated value, best common value\n";
+                    m_outFile << "fec,vmm,ch, threshold correction [mV], threshold [mV], calibrated correction [mV], calibrated threshold [mV], best common value [mV]\n";
                     for(int ch = 0; ch<64; ch++){
                         for(int bit=0; bit<m_number_bits;bit++){
-                            m_outFile << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                            m_outFile << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_bitVal[fec][hybrid][chip][ch] << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
                         }
                     }
 
@@ -1853,8 +1853,8 @@ void CalibrationModule::PlotData(){
                     plot->graph(1)->setPen(QPen(Qt::red,2,Qt::SolidLine));
                     plot->graph(1)->setLineStyle(QCPGraph::lsLine);
                     plot->graph(1)->setName(QString("Fit\nScale ") + QString::number(m_fit_scale[idx],'f',2)  + " (+/- " + QString::number(m_fit_error_scale[idx],'f',5) + ")"
-                                           + QString("\nMean ") + QString::number(m_fit_mean[idx],'f',2)  + " (+/- " + QString::number(m_fit_error_mean[idx],'f',5)  + ")"
-                                           + QString("\nSigma ") + QString::number(m_fit_sigma[idx],'f',2)  + " (+/- " + QString::number(m_fit_error_sigma[idx],'f',5)  + ")");
+                                            + QString("\nMean ") + QString::number(m_fit_mean[idx],'f',2)  + " (+/- " + QString::number(m_fit_error_mean[idx],'f',5)  + ")"
+                                            + QString("\nSigma ") + QString::number(m_fit_sigma[idx],'f',2)  + " (+/- " + QString::number(m_fit_error_sigma[idx],'f',5)  + ")");
                 }
                 plot->yAxis->rescale();
             }
@@ -2043,27 +2043,68 @@ void CalibrationModule::StartCalibration(){
         bool ok;
 
         QStringList list = QInputDialog::getText(nullptr, tr("S-curve input parameters"),
-                                                 tr("Measurement with user settings (gain, polarity, test pulse height). The threshold is changed automatically.\nSet FEC(1-8), VMM(0-15), user sets test pulse height (0=auto, 1=user), scan width [threshold DAC], scan direction (0=up, 1=down):"),
-                                                 QLineEdit::Normal,"1,0,0,60,0",&ok).split(",");
-
-        int pulser_user = 0;
-        int spanWidth = 0;
-        if(list.count() != 5) {
+                                                 tr("S-curve measurement on one VMM with user settings (gain, polarity, channel masking). On Windows, you can only measure around 8 channels, you have to mask the other channels.\n"
+                                                    "Mandatory settings are: FEC=[1 to 8], VMM=[0 to 15]. The other settings are optionally, if they are not given the default 0 (automatically chosen) is used:\n"
+                                                    "\tPULSE-HEIGHT=0 [0=automatically chosen (around 500 mV after per-amp), positive number=pulser DAC, -1=no test pulses (use noise)]\n"
+                                                    "\tTHRESHOLD=0 [0=automatically chosen (around 500 mV), positive number=threshold DAC]\n"
+                                                    "\tSCAN-WIDTH=0 [0=automatically chosen (60 steps with THRESHOLD in center), positive number=steps in scan interval (20-200)]\n"
+                                                    "\tDIRECTION=0 [0=automatically chosen scan direction (up), 1=down]:"),
+                                                 QLineEdit::Normal,"FEC=1,VMM=0,PULSE-HEIGHT=0,THRESHOLD=0,SCAN-WIDTH=0,DIRECTION=0",&ok).split(",");
+        m_pulser_dac = 0;
+        int scanWidth = 60;
+        int threshold = 0;
+        m_theFEC = -1;
+        m_theVMM = -1;
+        if(list.count() < 2) {
+            int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
+                                           "The FEC and the VMM have to be specified!\n",
+                                           QMessageBox::Ok);
             return;
         }
         else {
-            m_theFEC = list[0].toInt();
-            m_theVMM = list[1].toInt();
-            pulser_user = list[2].toInt();
-            spanWidth = list[3].toInt();
-            m_theDirection = list[4].toInt();
+            for(int n=0; n<list.count();n++) {
+                QString str = list[n];
+                QVector<QStringRef> words = str.splitRef('=');
+                if(words.size() != 2) {
+                    int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
+                                                   "The correct format is PARAMETER=VALUE!\n",
+                                                   QMessageBox::Ok);
+                    return;
+                }
+                QString param = words[0].toString();
+                QString val = words[1].toString();
+                if(param == "FEC") {
+                    m_theFEC = val.toInt();
+                }
+                else if(param == "VMM") {
+                    m_theVMM = val.toInt();
+                }
+                else if(param == "PULSE-HEIGHT") {
+                    m_pulser_dac = val.toInt();
+                }
+                else if(param == "THRESHOLD") {
+                    threshold = val.toInt();
+                }
+                else if(param == "SCAN-WIDTH") {
+                    if(val.toInt() > 0) {
+                        scanWidth = val.toInt();
+                    }
+                }
+                else if(param == "DIRECTION") {
+                    m_theDirection = val.toInt();
+                }
+            }
         }
 
 
         if(m_theFEC > 8 || m_theFEC < 1 || m_theVMM > 15 || m_theVMM < 0
                 || m_theDirection < 0 || m_theDirection > 1
-                || pulser_user > 1 || pulser_user < 0
-                || spanWidth < 20 || spanWidth > 200) {
+                || m_pulser_dac < -1 || m_pulser_dac > 1023
+                || threshold < 0 || threshold > 1023
+                || scanWidth < 20 || scanWidth > 200) {
+            int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
+                                           "Incorrect range of paramters!\n",
+                                           QMessageBox::Ok);
             return;
         }
 
@@ -2078,22 +2119,31 @@ void CalibrationModule::StartCalibration(){
         int bcclock = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
         int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
 
-        if(pulser_user == 0) {
+        if(m_pulser_dac >= 0) {
             m_pulser_dac = static_cast<int>(std::round(0.5*(m_minPulseHeightTable[gain] +  m_maxPulseHeightTable[gain])));
-        }
-        else {
-            m_pulser_dac = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sdp_2");
+            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",m_pulser_dac);
+            m_mainWindow->m_daqs[0].SendAll(false);
         }
 
-        //Set pulser DAC and read back value
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",m_pulser_dac);
-        m_mainWindow->m_daqs[0].SendAll(false);
-        m_pulser_mV = PulserDAC_to_PulseHeight_mV(m_pulser_dac, gain);
+        //Set pulser height to pedestal
+        m_pulser_mV = 170;
+        if(m_pulser_dac >= 0) {
+            m_pulser_mV = PulserDAC_to_PulseHeight_mV(m_pulser_dac, gain);
+        }
+
+
         int threshold_DAC = Threshold_mV_to_DAC(m_pulser_mV);
+        if(threshold > 0) {
+            threshold_DAC  = threshold;
+        }
 
+        int w = 60;
+        if(scanWidth > 0) {
+            w = scanWidth;
+        }
         //Determine scan range of threshold
-        int minThreshold = int(threshold_DAC-0.5*spanWidth);
-        int maxThreshold = int(threshold_DAC+0.5*spanWidth);
+        int minThreshold = std::max(0,int(threshold_DAC-0.5*w));
+        int maxThreshold = std::min(1023,int(threshold_DAC+0.5*w));
 
         m_number_bits = maxThreshold-minThreshold+1;
         m_dac_setting.clear();
@@ -2101,10 +2151,10 @@ void CalibrationModule::StartCalibration(){
         for(unsigned int ch = 0; ch<64; ch++){
             for(int bit=0; bit < m_number_bits; bit++) {
                 m_channel_y[ch].push_back(0);
-                   if(ch == 0) {
-                       m_dac_setting.push_back(minThreshold+bit);
-                       m_dac_measured[fec][hybrid][chip].push_back(0);
-                   }
+                if(ch == 0) {
+                    m_dac_setting.push_back(minThreshold+bit);
+                    m_dac_measured[fec][hybrid][chip].push_back(0);
+                }
             }
         }
     }
@@ -2154,18 +2204,18 @@ void CalibrationModule::StartCalibration(){
                     int theChip = m_theVMM % 2;
                     if(fec == theFec && hybrid == thehybrid && theChip == chip)
                     {
-                        //if(ch<=7)
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
-                        //else
-                        // m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",1,ch);
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
+                        if(m_pulser_dac == -1) {
+                            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                        }
+                        else {
+                            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
+                        }
                     }
                     else
                     {
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",1,ch);
                         m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     }
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sd",0,ch);
                 }
             }
         }

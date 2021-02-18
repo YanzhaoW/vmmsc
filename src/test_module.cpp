@@ -2298,7 +2298,7 @@ std::string TestModule::TestChannelsExternal(int tries,int restarts){
     m_calibmod->StartCalibration();
     signalgenerator->setProgram(program);
     signalgenerator->setArguments(arguments2);
-    if(!signalgenerator->startDetached()){
+    if(!signalgenerator->startDetached(program, arguments2)){
         return TestChannelsExternal(tries,restarts+1);
     }
     std::chrono::high_resolution_clock::time_point teststart = std::chrono::high_resolution_clock::now();

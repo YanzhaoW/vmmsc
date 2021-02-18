@@ -187,7 +187,6 @@ private:
     int m_theVMM = 0;
     int m_theFEC = 0;
     int m_theDirection = 0;
-    int m_threshold = 0;
 
 
 
