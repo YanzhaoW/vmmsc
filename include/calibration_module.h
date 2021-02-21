@@ -33,11 +33,13 @@ class QUdpSocket;
 #include "globparameter.h"
 // vmm
 #include "message_handler.h"
-
-
+#include "interpolation.h"
 
 
 using namespace std;
+using namespace alglib;
+
+
 class MainWindow;
 class QCustomPlot;
 
@@ -105,7 +107,6 @@ private:
 
     //std::map<QString, QString> mapIPFirmware;
     //std::map<QString, int> mapIPFecId;
-
 
     bool CheckModes();
     int GetCalibrationModeIndex(QString mode);
@@ -187,7 +188,7 @@ private:
     int m_theVMM = 0;
     int m_theFEC = 0;
     int m_theDirection = 0;
-
+    int m_scan_type = 0;
 
 
     bool m_isThresholdCalibration = false;
@@ -267,6 +268,9 @@ private:
     std::vector<double> m_dac_measured[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     int m_pulser_dac = 0;
     double m_pulser_mV = 0;
+    int m_threshold_dac = 0;
+    double m_threshold_mV = 0;
+
     double m_dac_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     double m_dac_offset[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     int m_theIndex = 0;
