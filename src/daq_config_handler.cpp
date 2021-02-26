@@ -9,6 +9,7 @@ bool DAQConfigHandler::LoadDAQConf(const char* filename){
     //add config path before file name
     std::string fname = m_daqWindow->GetApplicationPath().toStdString();
     fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::cout << filename << " " << fname.c_str() << std::endl;
     return LoadDAQConfig(fname);
 }
 
