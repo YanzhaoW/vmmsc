@@ -86,7 +86,6 @@ else {
 
 
 SOURCES += $$sourcepath/main.cpp\
-           $$sourcepath/mainwindow.cpp\
            $$sourcepath/socket_handler.cpp\
            $$sourcepath/vmmsocket.cpp\
            $$sourcepath/message_handler.cpp\
@@ -117,8 +116,7 @@ SOURCES += $$sourcepath/main.cpp\
             $$alglibpath/solvers.cpp \
             $$alglibpath/specialfunctions.cpp
 
-HEADERS  += $$includepath/mainwindow.h\
-            $$includepath/socket_handler.h\
+HEADERS  += $$includepath/socket_handler.h\
             $$includepath/vmmsocket.h\
             $$includepath/message_handler.h\
             $$includepath/vmm_config_handler.h\

@@ -4,9 +4,22 @@
 #include <QMainWindow>
 #include "fec_window.h"
 #include "ui_daq_window.h"
-#include "message_handler.h"
 
-class MainWindow;
+#include "calibration_module.h"
+#include "test_module.h"
+#include "currentmonitor.h"
+
+
+// vmm
+#include "socket_handler.h"
+#include "message_handler.h"
+#include "vmm_config_handler.h"
+#include "hybrid_config_handler.h"
+#include "daq_config_handler.h"
+#include "fec_config_handler.h"
+#include "daq.h"
+
+class TestModule;
 
 namespace Ui {
 class daq_window;
@@ -16,22 +29,42 @@ class daq_window;
 class DAQWindow : public QMainWindow
 {
     Q_OBJECT
+
+    friend class VMMConfigHandler;
+    friend class HybridConfigHandler;
+    friend class DAQConfigHandler;
+    friend class FECConfigHandler;
     friend class FECWindow;
     friend class HybridWindow;
     friend class VMMWindow;
     friend class CalibrationModule;
+    friend class currentmonitor;
     friend class TestModule;
 
+    DAQ m_daq;
 public:
-    explicit DAQWindow(MainWindow *top, QWidget *parent = 0);
+    explicit DAQWindow(QWidget *parent = 0);
     ~DAQWindow();
 
+    SocketHandler& GetSocketHandler() { return *m_socketHandler; }
     void LoadMessageHandler(MessageHandler& m);
     MessageHandler& GetMessageHandler() { return *m_msg; }
     void SetConnectionMessage(QString warning, QString bkgcol );
     void SetWarningMessage(QString warning, QString bkgcol );
     void LoadConfig(QString text);
     bool FileExists(const char *fileName);
+
+    VMMConfigHandler *m_vmmConfigHandler;
+    HybridConfigHandler *m_hybridConfigHandler;
+    DAQConfigHandler *m_daqConfigHandler;
+    FECConfigHandler *m_fecConfigHandler;
+    DAQWindow *m_daqWindow;
+    QString GetApplicationPath();
+    bool IsDbgActive() { return m_dbg; }
+
+
+    CalibrationModule *m_calib;
+    TestModule *m_test;
 
 private slots:
     void on_Box_fec1_clicked();
@@ -97,11 +130,15 @@ public slots:
      void on_Button_load_clicked();
 
 private:
-    MainWindow *m_mainWindow;
     Ui::daq_window *ui;
     void fecBoxLogic(bool checked, unsigned short fec);
     MessageHandler *m_msg;
     std::string m_sendstate = "";
+    bool m_dbg;
+
+    SocketHandler *m_socketHandler;
+    MessageHandler *m_messageHandler;
+    QString m_execPath;
 
 signals:
     void ChangeState();
@@ -110,6 +147,3 @@ signals:
 
 #endif // DAQ_WINDOW_H
 
-#ifndef _MAINWINDOW_HPP
-#include "mainwindow.h"
-#endif

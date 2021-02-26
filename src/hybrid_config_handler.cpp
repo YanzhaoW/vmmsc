@@ -1,6 +1,6 @@
 #include "hybrid_config_handler.h"
 
-HybridConfigHandler::HybridConfigHandler(MainWindow *top,QObject *parent) : QObject(parent), m_mainWindow{top}
+HybridConfigHandler::HybridConfigHandler(DAQWindow *top,QObject *parent) : QObject(parent), m_daqWindow{top}
 {
     //getcwd(m_execPath,sizeof(m_execPath));
 }
@@ -14,87 +14,73 @@ bool HybridConfigHandler::WriteAllHybridConf(std::string filename){
     return GenericAllHybridConf(0,filename);
 }
 
-bool HybridConfigHandler::LoadSingleHybridConf(const char* filename, unsigned short daq, unsigned short fec, unsigned short hybrid){
-    return GenericSingleHybridConf(1, filename, daq, fec, hybrid);
+bool HybridConfigHandler::LoadSingleHybridConf(const char* filename, unsigned short fec, unsigned short hybrid){
+    return GenericSingleHybridConf(1, filename, fec, hybrid);
 }
 
 bool HybridConfigHandler::LoadSingleHybridConf(const char* filename){//exact file name must be given!
     //add config path before file name
-    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
     return LoadHybridConfig(fname);
 }
 
-bool HybridConfigHandler::WriteSingleHybridConf(const char* filename, unsigned short daq, unsigned short fec, unsigned short hybrid){
-    return GenericSingleHybridConf(0, filename, daq, fec, hybrid);
+bool HybridConfigHandler::WriteSingleHybridConf(const char* filename, unsigned short fec, unsigned short hybrid){
+    return GenericSingleHybridConf(0, filename, fec, hybrid);
 }
 
 bool HybridConfigHandler::WriteSingleHybridConf(const char* filename){//exact file name must be given!
     //need to extract daq,fec,... from file name
     std::stringstream str1; str1 << filename;
     std::string str(str1.str());
-    //daq
-    std::string daq_str = str.substr ((str.find("daq")+3),str.find("_",str.find("daq")+3)-(str.find("daq")+3));
-    unsigned short daq =atoi(daq_str.c_str()); if(!m_mainWindow->m_daq_act[daq]) {std::cout << "ERROR, daq " << daq << " does not exist "<< std::endl; return false;}
     //fec
     std::string fec_str = str.substr ((str.find("fec")+3),str.find("_",str.find("fec")+3)-(str.find("fec")+3));
-    unsigned short fec =atoi(fec_str.c_str());if(!m_mainWindow->m_daqs[daq].GetFEC(fec)) {std::cout << "ERROR, fec " << fec << " does not exist "<< std::endl; return false;}
+    unsigned short fec =atoi(fec_str.c_str());if(!m_daqWindow->m_daq.GetFEC(fec)) {std::cout << "ERROR, fec " << fec << " does not exist "<< std::endl; return false;}
     //hybrid
     std::string hybrid_str = str.substr ((str.find("hybrid")+6),str.find("_",str.find("hybrid")+6)-(str.find("hybrid")+6));
-    unsigned short hybrid =atoi(hybrid_str.c_str());if(!m_mainWindow->m_daqs[daq].m_fecs[fec].GetHybrid(hybrid)) {std::cout << "ERROR, hybrid " << hybrid << " does not exist "<< std::endl; return false;}
+    unsigned short hybrid =atoi(hybrid_str.c_str());if(!m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)) {std::cout << "ERROR, hybrid " << hybrid << " does not exist "<< std::endl; return false;}
     //add config path before file name
-    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
 
-    return WriteHybridConfig(fname,daq,fec,hybrid);
+    return WriteHybridConfig(fname,fec,hybrid);
 }
 bool HybridConfigHandler::GenericAllHybridConf(bool load, std::string filename){
-    //    bool hybrid_config_handler::GenericAllVMMConf(bool load, const char* filename){
-    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (m_mainWindow->m_daq_act[i]){
-            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                if (m_mainWindow->m_daqs[i].GetFEC(j)){
-                    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
-                        if(m_mainWindow->m_daqs[i].m_fecs[j].GetHybrid(k)){
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if (m_daqWindow->m_daq.GetFEC(j)){
+            for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+                if(m_daqWindow->m_daq.m_fecs[j].GetHybrid(k)){
 
-                            if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hybrid"<<k<<std::endl;
-                            else std::cout <<"Writing vmm configuraten \""<<filename<<"\" for daq"<<i<<" fec"<<j<<" hybrid"<<k<<std::endl;
-                            std::ostringstream oss;
-                            std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
-                            oss << i;
-                            fname+="_daq";
-                            fname+=oss.str();
-                            oss.str("");oss.clear();oss << j;
-                            fname+="_fec";
-                            fname+=oss.str();
-                            oss.str("");oss.clear();oss << k;
-                            fname+="_hybrid";
-                            fname+=oss.str();
-                            fname+=".txt"; //build file name with path and extension
-                            if (load){
-                                if( !LoadHybridConfig(fname) ) {std::cout<<"Error"<<std::endl;return false;}
-                            }
-                            else{
-                                if( !WriteHybridConfig(fname,i,j,k) ) {std::cout<<"Error"<<std::endl;return false;}
-                            }
-
-
-                        }
+                    if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for fec"<<j<<" hybrid"<<k<<std::endl;
+                    else std::cout <<"Writing vmm configuraten \""<<filename<<"\" for fec"<<j<<" hybrid"<<k<<std::endl;
+                    std::ostringstream oss;
+                    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+                    oss << j;
+                    fname+="_fec";
+                    fname+=oss.str();
+                    oss.str("");oss.clear();oss << k;
+                    fname+="_hybrid";
+                    fname+=oss.str();
+                    fname+=".txt"; //build file name with path and extension
+                    if (load){
+                        if( !LoadHybridConfig(fname) ) {std::cout<<"Error"<<std::endl;return false;}
                     }
+                    else{
+                        if( !WriteHybridConfig(fname,j,k) ) {std::cout<<"Error"<<std::endl;return false;}
+                    }
+
                 }
+
             }
         }
     }
     return true;
 }
 
-bool HybridConfigHandler::GenericSingleHybridConf(bool load, const char* filename, unsigned short daq, unsigned short fec, unsigned short hybrid){
-    if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hybrid"<<hybrid<<std::endl;
-    else std::cout <<"Loading vmm configuraten \""<<filename<<"\" for daq"<<daq<<" fec"<<fec<<" hybrid"<<hybrid<<std::endl;
+bool HybridConfigHandler::GenericSingleHybridConf(bool load, const char* filename, unsigned short fec, unsigned short hybrid){
+    if (load) std::cout <<"Loading vmm configuraten \""<<filename<<"\" for fec"<<fec<<" hybrid"<<hybrid<<std::endl;
+    else std::cout <<"Loading vmm configuraten \""<<filename<<"\" for fec"<<fec<<" hybrid"<<hybrid<<std::endl;
     std::ostringstream oss;
-    std::string fname = m_mainWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
-    oss << daq;
-    fname+="_daq";
-    fname+=oss.str();
-    oss.str("");oss.clear();oss << fec;
+    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+    oss << fec;
     fname+="_fec";
     fname+=oss.str();
     oss.str("");oss.clear();oss << hybrid;
@@ -102,7 +88,7 @@ bool HybridConfigHandler::GenericSingleHybridConf(bool load, const char* filenam
     fname+=oss.str();
     fname+=".txt"; //build file name with path and extension
     if (load) return LoadHybridConfig(fname);
-    else return WriteHybridConfig(fname,daq,fec,hybrid);
+    else return WriteHybridConfig(fname,fec,hybrid);
 }
 
 bool HybridConfigHandler::LoadHybridConfig(std::string fname){ //load the VMM configuration from file
@@ -115,12 +101,11 @@ bool HybridConfigHandler::LoadHybridConfig(std::string fname){ //load the VMM co
         const char *a, *b;
         f >> s >> val;
         if (s == empty && val == empty) break; // for empty line at end of file
-        else if (s == "daq") {daq = atoi(val.c_str());}
         else if (s == "fec") {fec = atoi(val.c_str());}
         else if (s == "hybrid") {hybrid = atoi(val.c_str());}
         else {
             a = s.c_str(); b = val.c_str();
-            if (!m_mainWindow->m_daqs[daq].m_fecs[fec].m_hybrids[hybrid].SetReg(a,b)) return false;
+            if (!m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg(a,b)) return false;
         }
         if( (f.fail()) ) {return false;}
     }
@@ -128,14 +113,13 @@ bool HybridConfigHandler::LoadHybridConfig(std::string fname){ //load the VMM co
     return true;
 }
 
-bool HybridConfigHandler::WriteHybridConfig(std::string fname, unsigned short daq, unsigned short fec, unsigned short hybrid){
+bool HybridConfigHandler::WriteHybridConfig(std::string fname, unsigned short fec, unsigned short hybrid){
     std::ofstream f; f.open(fname,std::ofstream::out);
     if(!f.is_open()) {return false;}
-    f << "daq " << daq << std::endl;
     f << "fec " << fec << std::endl;
     f << "hybrid " << hybrid << std::endl;
     f << "\n";
-    for(auto const entr: m_mainWindow->m_daqs[daq].m_fecs[fec].m_hybrids[hybrid].m_hybrid){
+    for(auto const entr: m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_hybrid){
         f<<entr.first<< " " <<entr.second<<std::endl;
         if(f.fail()) {return false;}
     }

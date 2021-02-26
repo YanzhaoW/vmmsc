@@ -1,5 +1,5 @@
 #include "fec_window.h"
-#include "hybrid_window.h" // has NOT to be included here. If included in header file: compiler error in mainwindow.h:61:9: error: ‘daq_window’ does not name a type
+#include "hybrid_window.h"
 
 
 FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
@@ -218,15 +218,15 @@ void FECWindow::onUpdateSettings(){
         m_ui->onACQ->setChecked(true);
         m_ui->offACQ->setChecked(false);
         m_daqWindow->ui->Send->setEnabled(false);
-        m_daqWindow->m_mainWindow->m_daqs[0].SendAll(true);
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ACQon();
+        m_daqWindow->m_daq.SendAll(true);
+        m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQon();
     }
     else if(QObject::sender() == m_ui->offACQ){
         m_ui->offACQ->setCheckable(true);
         m_ui->offACQ->setChecked(true);
         m_ui->onACQ->setChecked(false);
         m_daqWindow->ui->Send->setEnabled(true);
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
+        m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
     }
 
 
@@ -285,10 +285,10 @@ void FECWindow::LoadSettings(){
 }
 
 bool FECWindow::SetFec(const char *feature, unsigned long val){
-    return m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetReg(feature,  (unsigned long) val );
+    return m_daqWindow->m_daq.m_fecs[m_fecIndex].SetReg(feature,  (unsigned long) val );
 }
 unsigned long FECWindow::GetFec(const char *feature){
-    return m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetRegVal(feature);
+    return m_daqWindow->m_daq.m_fecs[m_fecIndex].GetRegVal(feature);
 }
 
 void FECWindow::on_Box_hybrid1_clicked()
@@ -345,18 +345,18 @@ void FECWindow::hybridBoxLogic(bool checked, unsigned short hybrid){
     if (checked){
         m_ui->tabWidget->insertTab(ActiveBefore, new HybridWindow(this,m_fecIndex,hybrid), QString("Hybrid %0").arg(hybrid+1));
         m_ui->tabWidget->setCurrentIndex(ActiveBefore);
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHybrid(hybrid, true);
+        m_daqWindow->m_daq.m_fecs[m_fecIndex].SetHybrid(hybrid, true);
     }
     else {
         m_ui->tabWidget->removeTab(ActiveBefore);
-        m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetHybrid(hybrid, false);
+        m_daqWindow->m_daq.m_fecs[m_fecIndex].SetHybrid(hybrid, false);
     }
 }
 
 
 void FECWindow::UpdateWindow(){
     for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
-        if(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].GetHybrid(k)){
+        if(m_daqWindow->m_daq.m_fecs[m_fecIndex].GetHybrid(k)){
             if (k == 0 && !m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(true); on_Box_hybrid1_clicked();}
             if (k == 1 && !m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(true); on_Box_hybrid2_clicked();}
             if (k == 2 && !m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(true); on_Box_hybrid3_clicked();}
@@ -383,7 +383,7 @@ void FECWindow::UpdateWindow(){
 void FECWindow::onCheckLinkStatus(){
     QString message;
     bool readOK= false;
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus(readOK, message);
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus(readOK, message);
     if(readOK)
     {
         m_ui->debugScreen->insertPlainText(message);
@@ -397,7 +397,7 @@ void FECWindow::onCheckLinkStatus(){
 void FECWindow::onResetFEC()
 {
     //bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC();
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC();
     m_ui->onACQ->setChecked(false);
     m_ui->offACQ->setChecked(false);
 }
@@ -414,8 +414,8 @@ void FECWindow::on_clearDebugScreen_clicked()
 void FECWindow::on_readSystemParams_pressed()
 {
     QMap<QString, QString> registers;
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers);
-    m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].SetFirmwareVersion(registers["FirmwareVers"]);
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers);
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].SetFirmwareVersion(registers["FirmwareVers"]);
 
     stringstream sx;
     sx.str("");
@@ -449,7 +449,7 @@ void FECWindow::on_pushButtonFECIP_pressed()
         }
         else {
             theIP = ipAddress.toIPv4Address();
-            int res = m_daqWindow->m_mainWindow->m_daqs[0].CheckIP_FEC(theIP, m_fecIndex);
+            int res = m_daqWindow->m_daq.CheckIP_FEC(theIP, m_fecIndex);
             if(res > -1) {
                 int ret = QMessageBox::warning(this, tr("FEC IPv4 address setting"),
                                                "The last octet of the IP address is the FEC ID, and has to be hence unique.\n"
@@ -457,7 +457,7 @@ void FECWindow::on_pushButtonFECIP_pressed()
                                                QMessageBox::Ok);
                 return;
             }
-            res = m_daqWindow->m_mainWindow->m_daqs[0].CheckIP_DAQ(theIP);
+            res = m_daqWindow->m_daq.CheckIP_DAQ(theIP);
             if(res > -1) {
                 int ret = QMessageBox::warning(this, tr("FEC IPv4 address setting"),
                                                "FEC IP address already in use as DAQ IP in FEC " + QString::number(res+1),
@@ -468,7 +468,7 @@ void FECWindow::on_pushButtonFECIP_pressed()
 
             reply = QMessageBox::question(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC stores its own IP address on the FEC EEPROM.\nATTENTION: Do you only want to change the FEC IP address in the slow control GUI (press NO), or re-program the FEC IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
             if(reply == QMessageBox::Yes) {
-               m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
+               m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
             }
             QThread::usleep(1000);
             SetFec("ip_fec", theIP);
@@ -498,7 +498,7 @@ void FECWindow::on_pushButtonDAQIP_pressed()
         }
         else {
             theIP = ipAddress.toIPv4Address();
-            int res = m_daqWindow->m_mainWindow->m_daqs[0].CheckIP_FEC(theIP, -1);
+            int res = m_daqWindow->m_daq.CheckIP_FEC(theIP, -1);
             if(res > -1) {
                 int ret = QMessageBox::warning(this, tr("DAQ IPv4 address"),
                                                "DAQ IP address already in use as FEC IP in FEC " + QString::number(res+1),
@@ -510,7 +510,7 @@ void FECWindow::on_pushButtonDAQIP_pressed()
 
             reply = QMessageBox::question(this, "DAQ IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The DAQ IP address is the address of this network card, and the FEC card has to know it to send data to the PC.\nATTENTION: Do you only want to change the DAQ IP address in the slow control GUI (press NO), or re-program the DAQ IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
             if(reply == QMessageBox::Yes) {
-                m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
+                m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
             }
             QThread::usleep(1000);
             SetFec("ip_daq", theIP);

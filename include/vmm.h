@@ -18,8 +18,6 @@ class VMM: public QObject
 public:
     VMM();
     ~VMM();
-    friend class Commandline;
-
 
     void LoadDefault();
     void LoadCalibSettings();

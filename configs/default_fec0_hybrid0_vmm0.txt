@@ -1,6 +1,5 @@
-daq 0
 fec 0
-hybrid 1
+hybrid 0
 vmm 0
 
 convtime_10 3

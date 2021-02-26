@@ -1,5 +1,5 @@
 #include <QApplication>
-#include "mainwindow.h"
+#include "daq_window.h"
 #include <QStyleFactory>
 #include <QtConcurrent/QtConcurrent>
 
@@ -15,6 +15,7 @@ int main(int argc, char *argv[])
     // make appearance same between linux and mac
     a.setStyle(QStyleFactory::create("Fusion"));
 
-    MainWindow w;
+    DAQWindow w;
+    w.show();
     return a.exec();
 }

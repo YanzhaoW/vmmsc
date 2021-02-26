@@ -1,4 +1,3 @@
-daq 0
 fec 0
 hybrid 0
 

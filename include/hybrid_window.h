@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <iostream>
 #include "ui_hybrid_window.h"
-#include "vmm_window.h"
 
 class FECWindow;
 

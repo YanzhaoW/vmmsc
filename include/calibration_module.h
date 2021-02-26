@@ -40,7 +40,7 @@ using namespace std;
 using namespace alglib;
 
 
-class MainWindow;
+class DAQWindow;
 class QCustomPlot;
 
 class CalibrationModule : public QObject
@@ -48,7 +48,7 @@ class CalibrationModule : public QObject
     Q_OBJECT
     friend class TestModule;
 public:
-    explicit CalibrationModule(MainWindow *top, QObject *parent = nullptr);
+    explicit CalibrationModule(DAQWindow *top, QObject *parent = nullptr);
     bool IsDbgActive() { return m_dbg; }
     void StopDataTaking();
     void StartDataTaking();
@@ -87,7 +87,7 @@ public slots:
 
 private:
 
-    MainWindow *m_mainWindow;
+    DAQWindow *m_daqWindow;
     bool m_dbg = true;
     QUdpSocket *m_udpSocket;
 

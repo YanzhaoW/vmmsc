@@ -4,7 +4,7 @@
 #include <QJsonArray>
 #include <QFileInfo>
 #include "calibration_module.h"
-#include "mainwindow.h"
+#include "daq_window.h"
 
 #ifdef __linux__
 #include <arpa/inet.h>
@@ -52,9 +52,9 @@ void erfc_grad_mirrored(const real_1d_array &c, const real_1d_array &x, double &
 }
 
 
-CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
+CalibrationModule::CalibrationModule(DAQWindow *top, QObject *parent) :
     QObject(parent),
-    m_mainWindow{top},
+    m_daqWindow{top},
     m_dbg(false),
     m_udpSocket(nullptr),
     m_msg(new MessageHandler),
@@ -66,280 +66,280 @@ CalibrationModule::CalibrationModule(MainWindow *top, QObject *parent) :
     m_modeIndex = -1;
     m_data_modeIndex = -1;
 
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot1);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot2);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot3);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot4);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot5);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot6);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot7);
-    plotVector.push_back(m_mainWindow->m_daqWindow->ui->customPlot8);
+    plotVector.push_back(m_daqWindow->ui->customPlot1);
+    plotVector.push_back(m_daqWindow->ui->customPlot2);
+    plotVector.push_back(m_daqWindow->ui->customPlot3);
+    plotVector.push_back(m_daqWindow->ui->customPlot4);
+    plotVector.push_back(m_daqWindow->ui->customPlot5);
+    plotVector.push_back(m_daqWindow->ui->customPlot6);
+    plotVector.push_back(m_daqWindow->ui->customPlot7);
+    plotVector.push_back(m_daqWindow->ui->customPlot8);
 
     for(int n=0; n<8;n++)
     {
         plotVector[n]->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     }
-    connect( m_mainWindow->m_daqWindow->ui->comboBoxFec, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->comboBoxFec, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
-    connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
-    connect( m_mainWindow->m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
-    connect( m_mainWindow->m_daqWindow->ui->choiceBit, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->choiceBit, SIGNAL(currentIndexChanged(int)),
              this, SLOT(updatePlot()));
 
-    connect( m_mainWindow->m_daqWindow->ui->comboBoxRunMode, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->comboBoxRunMode, SIGNAL(currentIndexChanged(int)),
              this, SLOT(calibAndPlotChoices()));
-    connect( m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
              this, SLOT(calibAndPlotChoices()));
-    connect( m_mainWindow->m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
+    connect( m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
              this, SLOT(calibAndPlotChoices()));
 
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(true);
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-    m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
-    m_mainWindow->m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->pushButtonCSV->setEnabled(true);
+    m_daqWindow->ui->choicePlotTime->setVisible(true);
+    m_daqWindow->ui->choicePlotTime->setEnabled(true);
+    m_daqWindow->ui->choiceBit->setVisible(false);
+    m_daqWindow->ui->choiceBit->setEnabled(false);
+    m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
+    m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
+    m_daqWindow->ui->pushButtonCSV->setEnabled(true);
 
-    m_mainWindow->m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(0);
-    m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
+    m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(0);
+    m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
     //Fill choices
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->clear();
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("corrections");
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("fit");
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(true);
-    m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display VMMs");
-    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
+    m_daqWindow->ui->choicePlotTime->clear();
+    m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
+    m_daqWindow->ui->choicePlotTime->addItem("corrections");
+    m_daqWindow->ui->choicePlotTime->addItem("fit");
+    m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
+    m_daqWindow->ui->choicePlotTime->setVisible(true);
+    m_daqWindow->ui->choicePlotTime->setEnabled(true);
+    m_daqWindow->ui->label_vmm->setText("Display VMMs");
+    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
 
 }
 
 
 void CalibrationModule::calibAndPlotChoices()
 {
-    if(QObject::sender() == m_mainWindow->m_daqWindow->ui->comboBoxRunMode){
-        m_mainWindow->m_calib->m_dataAvailable = false;
-        m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(-1);
-        m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->clear();
-        if(m_mainWindow->m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0)
+    if(QObject::sender() == m_daqWindow->ui->comboBoxRunMode){
+        m_daqWindow->m_calib->m_dataAvailable = false;
+        m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(-1);
+        m_daqWindow->ui->comboBoxCalibrationType->clear();
+        if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0)
         {
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Offline ADC");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("ADC");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("TDC");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("S-curve");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Threshold");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Pedestal");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Pulser DAC");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Threshold DAC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Offline ADC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("ADC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("TDC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("S-curve");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Threshold");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Pedestal");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Pulser DAC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Threshold DAC");
             //ADC calib active
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
-            m_mainWindow->m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
-            m_mainWindow->m_daqWindow->ui->pushButtonCSV->setEnabled(true);
-            m_mainWindow->m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
+            m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
+            m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
+            m_daqWindow->ui->pushButtonCSV->setEnabled(true);
+            m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
             //Fill choices
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->clear();
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("corrections");
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("fit");
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(true);
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(true);
+            m_daqWindow->ui->choicePlotTime->clear();
+            m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
+            m_daqWindow->ui->choicePlotTime->addItem("corrections");
+            m_daqWindow->ui->choicePlotTime->addItem("fit");
+            m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
+            m_daqWindow->ui->choicePlotTime->setVisible(true);
+            m_daqWindow->ui->choicePlotTime->setEnabled(true);
             // calibrated ADC active
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-            m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-            m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
+            m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
+            m_daqWindow->ui->choiceBit->setVisible(false);
+            m_daqWindow->ui->choiceBit->setEnabled(false);
         }
-        else if(m_mainWindow->m_daqWindow->ui->comboBoxRunMode->currentIndex() == 1)
+        else if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 1)
         {
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("Channels");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("ADC");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("TDC");
-            m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->addItem("BCID");
-            m_mainWindow->m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
-            m_mainWindow->m_daqWindow->ui->pushButtonCSV->setEnabled(true);
-            m_mainWindow->m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(false);
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(false);
-            m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-            m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("Channels");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("ADC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("TDC");
+            m_daqWindow->ui->comboBoxCalibrationType->addItem("BCID");
+            m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
+            m_daqWindow->ui->pushButtonCSV->setEnabled(true);
+            m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
+            m_daqWindow->ui->choicePlotTime->setVisible(false);
+            m_daqWindow->ui->choicePlotTime->setEnabled(false);
+            m_daqWindow->ui->choiceBit->setVisible(false);
+            m_daqWindow->ui->choiceBit->setEnabled(false);
         }
     }
-    else if(QObject::sender() == m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType){
-        m_mainWindow->m_calib->m_dataAvailable = false;
-        m_mainWindow->m_daqWindow->ui->comboBoxFec->clear();
-        if(m_mainWindow->m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0) {
+    else if(QObject::sender() == m_daqWindow->ui->comboBoxCalibrationType){
+        m_daqWindow->m_calib->m_dataAvailable = false;
+        m_daqWindow->ui->comboBoxFec->clear();
+        if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0) {
             //S-curve per channel for pre-selected VMM
-            if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4 ) {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 0-7"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 8-15"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 16-23"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 24-31"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 32-39"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 40-47"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 48-55"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("CH 56-63"));
-                m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display Channels");
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4 ) {
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 0-7"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 8-15"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 16-23"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 24-31"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 32-39"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 40-47"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 48-55"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 56-63"));
+                m_daqWindow->ui->label_vmm->setText("Display Channels");
             }
             //All others
             else {
-                m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display VMMs");
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
+                m_daqWindow->ui->label_vmm->setText("Display VMMs");
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
                 if(m_vmmActs.size() >= 8 )
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
                 }
                 if(m_vmmActs.size() >= 16 )
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
                 }
                 if(m_vmmActs.size() >= 24)
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
                 }
                 if(m_vmmActs.size() >= 32 )
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
                 }
                 if(m_vmmActs.size() >= 40 )
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
                 }
                 if(m_vmmActs.size() >= 48 )
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
                 }
                 if(m_vmmActs.size() >= 56 )
                 {
-                    m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
+                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
                 }
             }
 
-            if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ||
-                    m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
-                    m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 5 ) {
-                m_mainWindow->m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ||
+                    m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
+                    m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 5 ) {
+                m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
             }
             else {
-                m_mainWindow->m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
+                m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
             }
 
-            if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->clear();
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("corrections");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("fit");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(true);
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(true);
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-                m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-                m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
+                m_daqWindow->ui->choicePlotTime->clear();
+                m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
+                m_daqWindow->ui->choicePlotTime->addItem("corrections");
+                m_daqWindow->ui->choicePlotTime->addItem("fit");
+                m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
+                m_daqWindow->ui->choicePlotTime->setVisible(true);
+                m_daqWindow->ui->choicePlotTime->setEnabled(true);
+                m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
+                m_daqWindow->ui->choiceBit->setVisible(false);
+                m_daqWindow->ui->choiceBit->setEnabled(false);
             }
-            else if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ) {
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->clear();
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("calibrated time");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("corrections");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("fit");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("TDC distribution");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->addItem("BCID percentage");
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(true);
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(true);
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-                m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-                m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
+            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ) {
+                m_daqWindow->ui->choicePlotTime->clear();
+                m_daqWindow->ui->choicePlotTime->addItem("calibrated time");
+                m_daqWindow->ui->choicePlotTime->addItem("corrections");
+                m_daqWindow->ui->choicePlotTime->addItem("fit");
+                m_daqWindow->ui->choicePlotTime->addItem("TDC distribution");
+                m_daqWindow->ui->choicePlotTime->addItem("BCID percentage");
+                m_daqWindow->ui->choicePlotTime->setVisible(true);
+                m_daqWindow->ui->choicePlotTime->setEnabled(true);
+                m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
+                m_daqWindow->ui->choiceBit->setVisible(false);
+                m_daqWindow->ui->choiceBit->setEnabled(false);
             }
             else {
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setVisible(false);
-                m_mainWindow->m_daqWindow->ui->choicePlotTime->setEnabled(false);
-                m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-                m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
+                m_daqWindow->ui->choicePlotTime->setVisible(false);
+                m_daqWindow->ui->choicePlotTime->setEnabled(false);
+                m_daqWindow->ui->choiceBit->setVisible(false);
+                m_daqWindow->ui->choiceBit->setEnabled(false);
             }
 
         }
     }
-    else if(QObject::sender() == m_mainWindow->m_daqWindow->ui->choicePlotTime){
+    else if(QObject::sender() == m_daqWindow->ui->choicePlotTime){
         if(!m_dataAvailable)
         {
-            m_mainWindow->m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
+            m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
             return;
         }
-        if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-            m_mainWindow->m_daqWindow->ui->choiceBit->clear();
-            if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ) {
+        if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+            m_daqWindow->ui->choiceBit->clear();
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ) {
 
                 for(int i=0;i < 2; i++) {
                     for(int n=0;n< 8; n++) {
                         QString txt = QStringLiteral("%1 ns").arg((i*25)+n*25/8.0);
-                        m_mainWindow->m_daqWindow->ui->choiceBit->addItem(txt);
+                        m_daqWindow->ui->choiceBit->addItem(txt);
                     }
                 }
             }
-            else if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
+            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
                 for(int bit=0;bit< m_number_bits; bit++) {
                     QString txt = QStringLiteral("%1 DAC").arg(m_dac_setting[bit]);
-                    m_mainWindow->m_daqWindow->ui->choiceBit->addItem(txt);
+                    m_daqWindow->ui->choiceBit->addItem(txt);
                 }
 
             }
-            m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(true);
-            m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(true);
+            m_daqWindow->ui->choiceBit->setVisible(true);
+            m_daqWindow->ui->choiceBit->setEnabled(true);
         }
         else {
-            m_mainWindow->m_daqWindow->ui->choiceBit->setVisible(false);
-            m_mainWindow->m_daqWindow->ui->choiceBit->setEnabled(false);
+            m_daqWindow->ui->choiceBit->setVisible(false);
+            m_daqWindow->ui->choiceBit->setEnabled(false);
         }
 
         // ADC and time calib (depending on plot choice
-        if(m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentIndex() <= 1 && m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
-            m_mainWindow->m_daqWindow->ui->comboBoxFec->clear();
-            m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display Channels");
+        if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() <= 1 && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
+            m_daqWindow->ui->comboBoxFec->clear();
+            m_daqWindow->ui->label_vmm->setText("Display Channels");
             for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 0-7"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 8-15"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 16-23"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 24-31"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 32-39"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 40-47"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 48-55"));
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 56-63"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 0-7"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 8-15"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 16-23"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 24-31"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 32-39"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 40-47"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 48-55"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 56-63"));
             }
         }
         else {
-            m_mainWindow->m_daqWindow->ui->comboBoxFec->clear();
-            m_mainWindow->m_daqWindow->ui->label_vmm->setText("Display VMMs");
-            m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
+            m_daqWindow->ui->comboBoxFec->clear();
+            m_daqWindow->ui->label_vmm->setText("Display VMMs");
+            m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
             if(m_vmmActs.size() >= 8 )
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
             }
             if(m_vmmActs.size() >= 16 )
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
             }
             if(m_vmmActs.size() >= 24)
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
             }
             if(m_vmmActs.size() >= 32 )
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
             }
             if(m_vmmActs.size() >= 40 )
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
             }
             if(m_vmmActs.size() >= 48 )
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
             }
             if(m_vmmActs.size() >= 56 )
             {
-                m_mainWindow->m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
             }
         }
         //All
@@ -349,17 +349,17 @@ void CalibrationModule::calibAndPlotChoices()
 
 
 void CalibrationModule::SaveSettings() {
-    m_mainWindow->m_daqs[0].SendAll(false);
-    m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
-    emit m_mainWindow->m_daqWindow->on_Button_save_clicked();
+    m_daqWindow->m_daq.SendAll(false);
+    m_daqWindow->ui->line_configFile->setText("Calib_config");
+    emit m_daqWindow->on_Button_save_clicked();
     QThread::usleep(1000);
-    m_mainWindow->m_daqWindow->ui->line_configFile->setText("");
+    m_daqWindow->ui->line_configFile->setText("");
     QThread::usleep(1000);
-    m_mainWindow->m_daqWindow->LoadConfig("Calib_config");
+    m_daqWindow->LoadConfig("Calib_config");
 }
 
 void CalibrationModule::LoadSettings() {
-    m_mainWindow->m_daqWindow->LoadConfig("Calib_config");
+    m_daqWindow->LoadConfig("Calib_config");
 }
 
 void CalibrationModule::StopDataTaking()
@@ -367,22 +367,22 @@ void CalibrationModule::StopDataTaking()
     std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Stop Data Taking" << std::endl;
     m_start = 0;
     m_end = 0;
-    m_mainWindow->m_daqWindow->ui->onACQ->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->onACQ->setChecked(false);
-    m_mainWindow->m_daqWindow->ui->offACQ->setEnabled(true);
-    m_mainWindow->m_daqWindow->ui->Send->setEnabled(true);
+    m_daqWindow->ui->onACQ->setEnabled(true);
+    m_daqWindow->ui->offACQ->setEnabled(true);
+    m_daqWindow->ui->onACQ->setChecked(false);
+    m_daqWindow->ui->offACQ->setEnabled(true);
+    m_daqWindow->ui->Send->setEnabled(true);
 
-    m_mainWindow->m_daqs[0].ACQHandler(false);
+    m_daqWindow->m_daq.ACQHandler(false);
     QThread::msleep(500);
     CloseDAQSocket();
 }
 void CalibrationModule::StartDataTaking()
 {
-    emit m_mainWindow->m_daqWindow->ui->onACQ->clicked();
+    emit m_daqWindow->ui->onACQ->clicked();
     QThread::usleep(1000);
     ConnectDAQSocket();
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
+    m_daqWindow->ui->pushButtonTakeData->setChecked(true);
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::LoadMessageHandler(MessageHandler& m)
@@ -455,12 +455,12 @@ bool CalibrationModule::CheckModes()
     {
         return false;
     }
-    if(m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex() == -1) {
-        if(m_mainWindow->m_daqWindow->ui->comboBoxFec->count() == 0) {
+    if(m_daqWindow->ui->comboBoxFec->currentIndex() == -1) {
+        if(m_daqWindow->ui->comboBoxFec->count() == 0) {
             return false;
         }
         else {
-            m_mainWindow->m_daqWindow->ui->comboBoxFec->setCurrentIndex(0);
+            m_daqWindow->ui->comboBoxFec->setCurrentIndex(0);
         }
     }
     return true;
@@ -1114,7 +1114,7 @@ void CalibrationModule::SavePlotsAsPDF(){
     double tac = 0;
     double bcclock = 0;
     int timing_at_threshold = 0;
-    int theChoice =  m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex();
+    int theChoice =  m_daqWindow->ui->comboBoxFec->currentIndex();
     int start = theChoice * 8;
     int end = (theChoice +1)*8;
     unsigned long limit = 0;
@@ -1155,29 +1155,29 @@ void CalibrationModule::SavePlotsAsPDF(){
         if(m_modeIndex == 1)
         {
             name = "Offline_ADC";
-            if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
                 name+= "_corrections";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
                 name+= "_fit_CH" + QString::number(idx);
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                name+= "_hist_CH" + QString::number(idx) + "_DAC" + QString::number(m_dac_measured[fec][hybrid][chip][m_mainWindow->m_daqWindow->ui->choiceBit->currentIndex()]);
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+                name+= "_hist_CH" + QString::number(idx) + "_DAC" + QString::number(m_dac_measured[fec][hybrid][chip][m_daqWindow->ui->choiceBit->currentIndex()]);
             }
         }
         else if(m_modeIndex == 2)
         {
             name = "Offline_Time";
-            if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
                 name+= "_corrections";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
                 name+= "_fit_CH" + QString::number(idx);
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                name+= "_hist_CH" + QString::number(idx) + "_" + QString::number(3.125*TIME_FACTOR*m_mainWindow->m_daqWindow->ui->choiceBit->currentIndex()) +"ns";
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+                name+= "_hist_CH" + QString::number(idx) + "_" + QString::number(3.125*TIME_FACTOR*m_daqWindow->ui->choiceBit->currentIndex()) +"ns";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
                 name+= "_bcid_percent_CH" + QString::number(idx);
             }
         }
@@ -1258,7 +1258,7 @@ void CalibrationModule::PlotData(){
     {
         return;
     }
-    unsigned long theChoice =  static_cast<unsigned long>(m_mainWindow->m_daqWindow->ui->comboBoxFec->currentIndex());
+    unsigned long theChoice =  static_cast<unsigned long>(m_daqWindow->ui->comboBoxFec->currentIndex());
     unsigned long start = theChoice * 8;
     unsigned long end = (theChoice +1)*8;
     unsigned long limit = 0;
@@ -1266,7 +1266,7 @@ void CalibrationModule::PlotData(){
     if(m_modeIndex == 5) {
         limit = 64;
     }
-    else if((m_modeIndex == 1  || m_modeIndex == 2) && m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
+    else if((m_modeIndex == 1  || m_modeIndex == 2) && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
         limit = 64*m_vmmActs.size();
     }
     else {
@@ -1286,7 +1286,7 @@ void CalibrationModule::PlotData(){
         int hybrid = 0;
         int chip = 0;
         int ch = 0;
-        if((m_modeIndex == 1  || m_modeIndex == 2) && m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
+        if((m_modeIndex == 1  || m_modeIndex == 2) && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
             fec = GetFEC(static_cast<int>(idx/64));
             hybrid = GetHybrid(static_cast<int>(idx/64));
             chip = GetVMM(static_cast<int>(idx/64));
@@ -1312,18 +1312,18 @@ void CalibrationModule::PlotData(){
             colorFactor = 10;
             plot->yAxis->setRange(0.0, 1023.0);
 
-            if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
                 title+= ": Mean ADC";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
                 title+= ": ADC corrections (slop/offset)";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
                 title+= ": Fit (measured ADC vs DAC)";
                 plot->xAxis->setLabel("measured DAC");
                 plot->xAxis->setRange(m_dac_measured[fec][hybrid][chip][0], m_dac_measured[fec][hybrid][chip][m_number_bits-1]);
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
                 title+= ": counts per ADC";
                 plot->xAxis->setRange(0, 1024);
                 plot->xAxis->setLabel("ADC");
@@ -1332,23 +1332,23 @@ void CalibrationModule::PlotData(){
         else if(m_modeIndex == 2) {
             colorFactor = 10;
             plot->yAxis->setRange(-10.0, 60.0);
-            if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
                 title+= ": Mean time";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
                 title+= ": Time corrections (slop/offset)";
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
                 title+= ": Fit (measured time vs pulse shift)";
                 plot->xAxis->setRange(0, m_number_bits*3.125*TIME_FACTOR);
                 plot->xAxis->setLabel("pulse shift [ns]");
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
                 title+= ": counts per TDC";
                 plot->xAxis->setRange(0, 256);
                 plot->xAxis->setLabel("TDC");
             }
-            else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
+            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
                 title+= ": BCID percentages [%]";
                 plot->xAxis->setRange(0, m_number_bits*3.125*TIME_FACTOR);
                 plot->xAxis->setLabel("pulse shift [ns]");
@@ -1438,7 +1438,7 @@ void CalibrationModule::PlotData(){
             if(m_modeIndex == 1)
             {
                 // calibrated time
-                if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+                if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
                     for(int bit=0; bit<m_number_bits;bit++){
                         plot->addGraph();
                         plot->graph(bit*3)->setData(
@@ -1484,7 +1484,7 @@ void CalibrationModule::PlotData(){
                     plot->legend->setFont(QFont("Helvetica",8));
                 }
                 // corrections
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
                     plot->addGraph();
                     std::vector<double> x;
                     std::vector<double> y_slope;
@@ -1514,7 +1514,7 @@ void CalibrationModule::PlotData(){
                     plot->yAxis->rescale();
                 }
                 // fit
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
 
                     std::vector<double> x;
                     std::vector<double> y;
@@ -1557,8 +1557,8 @@ void CalibrationModule::PlotData(){
 
                 }
                 //ADC distribution
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                    int bit = m_mainWindow->m_daqWindow->ui->choiceBit->currentIndex();
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+                    int bit = m_daqWindow->ui->choiceBit->currentIndex();
                     if(bit == -1) {
                         bit = 0;
                     }
@@ -1600,7 +1600,7 @@ void CalibrationModule::PlotData(){
             else if(m_modeIndex == 2)
             {
                 // calibrated time
-                if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+                if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
 
                     for(int bit=0; bit<m_number_bits;bit++){
                         plot->addGraph();
@@ -1651,7 +1651,7 @@ void CalibrationModule::PlotData(){
                     plot->legend->setFont(QFont("Helvetica",8));
                 }
                 // corrections
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
                     plot->addGraph();
                     std::vector<double> x;
                     std::vector<double> y_slope;
@@ -1682,7 +1682,7 @@ void CalibrationModule::PlotData(){
                     plot->yAxis->rescale();
                 }
                 // fit
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
                     plot->addGraph();
                     std::vector<double> x;
                     std::vector<double> y;
@@ -1729,8 +1729,8 @@ void CalibrationModule::PlotData(){
                     plot->yAxis->rescale();
                 }
                 //TDC distribution
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                    int bit = m_mainWindow->m_daqWindow->ui->choiceBit->currentIndex();
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+                    int bit = m_daqWindow->ui->choiceBit->currentIndex();
                     if(bit == -1) {
                         bit = 0;
                     }
@@ -1783,7 +1783,7 @@ void CalibrationModule::PlotData(){
                     plot->yAxis->rescale();
                 }
                 // BCID percent
-                else if(m_mainWindow->m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
+                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
 
                     plot->legend->setVisible(true);
                     plot->legend->setFont(QFont("Helvetica",9));
@@ -1988,14 +1988,14 @@ void CalibrationModule::GetActiveVMMs(){
     m_fecIDPos.clear();
 
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
-        if (m_mainWindow->m_daqs[0].GetFEC(fec) ){
-            m_fecPosID[fec] = m_mainWindow->m_daqs[0].m_fecs[fec].GetID();
-            m_fecIDPos[m_mainWindow->m_daqs[0].m_fecs[fec].GetID()] = fec;
+        if (m_daqWindow->m_daq.GetFEC(fec) ){
+            m_fecPosID[fec] = m_daqWindow->m_daq.m_fecs[fec].GetID();
+            m_fecIDPos[m_daqWindow->m_daq.m_fecs[fec].GetID()] = fec;
             for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
-                if( m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) ){
+                if( m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
 
                     for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
-                        if (m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                        if (m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
                             m_vmmActs.push_back(fec*HYBRIDS_PER_FEC*VMMS_PER_HYBRID+
                                                 hybrid*VMMS_PER_HYBRID +vmm);
                         }
@@ -2047,13 +2047,13 @@ void CalibrationModule::StartCalibration(){
     m_end = 0;
 
     m_dataAvailable = false;
-    emit m_mainWindow->m_daqWindow->ui->openConnection->clicked();
+    emit m_daqWindow->ui->openConnection->clicked();
     QThread::usleep(1000);
-    if(! (m_mainWindow->m_daqWindow->ui->connectionLabel->text()==QString("all alive"))) {
+    if(! (m_daqWindow->ui->connectionLabel->text()==QString("all alive"))) {
         std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
-        m_mainWindow->m_daqWindow->ui->InfoScreen->setTextColor(Qt::red);
-        m_mainWindow->m_daqWindow->ui->InfoScreen->append(QString("Communication couldn't be established! \n exit calibration"));
-        m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+        m_daqWindow->ui->InfoScreen->setTextColor(Qt::red);
+        m_daqWindow->ui->InfoScreen->append(QString("Communication couldn't be established! \n exit calibration"));
+        m_daqWindow->ui->pushButtonTakeData->setChecked(false);
         return;
     }
 
@@ -2064,7 +2064,7 @@ void CalibrationModule::StartCalibration(){
     {
 
         if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
-            m_mainWindow->m_daqWindow->ui->line_configFile->setText("Calib_config");
+            m_daqWindow->ui->line_configFile->setText("Calib_config");
             SaveSettings();
         }
     }
@@ -2080,7 +2080,7 @@ void CalibrationModule::StartCalibration(){
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int hybrid = GetHybrid(vmm);
-            int bcclock = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
+            int bcclock = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
             if(bcclock != 2) {
                 int ret = QMessageBox::warning(nullptr, tr("Time calibration"),
                                                "For the time calibration, all hybrids have to use 40 MHz BC clock!\n",
@@ -2174,11 +2174,11 @@ void CalibrationModule::StartCalibration(){
         int chip = m_theVMM % 2;
 
 
-        int polarity = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sp");
-        int peaktime = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("peaktime");
-        int tac = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("stc");
-        int bcclock = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
-        int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+        int polarity = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sp");
+        int peaktime = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("peaktime");
+        int tac = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("stc");
+        int bcclock = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
+        int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
 
         m_threshold_dac = 0;
         m_threshold_mV = 0;
@@ -2205,11 +2205,11 @@ void CalibrationModule::StartCalibration(){
                 //Determine pulser mV to determine threshold
                 pulser_mV = PulserDAC_to_PulseHeight_mV(m_pulser_dac, gain);
 
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",m_pulser_dac);
-                m_mainWindow->m_daqs[0].SendAll(false);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",m_pulser_dac);
+                m_daqWindow->m_daq.SendAll(false);
                 QThread::usleep(10000);
-                m_pulser_mV = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                m_pulser_mV = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
             }
             //Automatically chosen threshold from pulser dac
             m_threshold_dac = Threshold_mV_to_DAC(pulser_mV);
@@ -2235,11 +2235,11 @@ void CalibrationModule::StartCalibration(){
             if(threshold > 0) {
                 m_threshold_dac  = threshold;
             }
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",m_threshold_dac);
-            m_mainWindow->m_daqs[0].SendAll(false);
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",m_threshold_dac);
+            m_daqWindow->m_daq.SendAll(false);
             QThread::usleep(10000);
-            m_threshold_mV = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+            m_threshold_mV = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
 
             //Determine scan range of pulser
             min = std::max(0,int(m_pulser_dac-0.5*w));
@@ -2286,15 +2286,15 @@ void CalibrationModule::StartCalibration(){
                 //Offline ADC and time, online ADC and TDC calibration
                 if(m_modeIndex <= 4)
                 {
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
                 }
 
                 //threshold measurement
                 if(m_modeIndex == 6)
                 {
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
 
                 }
                 //S-curve (one VMM)
@@ -2306,22 +2306,22 @@ void CalibrationModule::StartCalibration(){
                     if(fec == theFec && hybrid == thehybrid && theChip == chip)
                     {
                         if(m_pulser_dac == -1) {
-                            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                         }
                         else {
-                            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
+                            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
                         }
                     }
                     else
                     {
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",1,ch);
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",1,ch);
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     }
                 }
             }
         }
         //check config once
-        m_mainWindow->m_daqs[0].SendAll(true);
+        m_daqWindow->m_daq.SendAll(true);
     }
     if(m_modeIndex == 7)
     {
@@ -2362,9 +2362,9 @@ void CalibrationModule::DoCalibrationStep(){
             m_srs_timestamp_end[fec][hybrid][chip]=0;
             if(m_modeIndex == 1)
             {
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
-                int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int step = (max - min)/(m_number_bits-1);
@@ -2372,46 +2372,46 @@ void CalibrationModule::DoCalibrationStep(){
                 if(vmm == 0) {
                     m_dac_setting.push_back(static_cast<int>(min+m_bitCount*step));
                 }
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_mainWindow->m_daqs[0].SendAll(false);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                m_daqWindow->m_daq.SendAll(false);
                 QThread::usleep(10000);
-                int measured = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
                 m_dac_measured[fec][hybrid][chip].push_back(measured);
 
             }
             else if(m_modeIndex == 2)
             {
-                int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int center = (max + min)/2;
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",center);
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_bitCount*TIME_FACTOR);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",center);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_bitCount*TIME_FACTOR);
             }
             else if(m_modeIndex == 3)
             {
-                int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int center = (max + min)/(2);
                 std::string val = std::to_string(static_cast<int>(center));
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
                 for(int ch = 0; ch<64; ch++){
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_10", m_bitCount,ch );
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_10", m_bitCount,ch );
                 }
             }
             else if(m_modeIndex == 4)
             {
-                int gain = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int center = (max + min)/(2);
                 std::string val = std::to_string(static_cast<int>(center));
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
                 for(int ch = 0; ch<64; ch++){
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_8", m_bitCount,ch );
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_8", m_bitCount,ch );
                 }
             }
         }
@@ -2435,19 +2435,19 @@ void CalibrationModule::DoCalibrationStep(){
         m_srs_timestamp_start[fec][hybrid][chip]=0;
         m_srs_timestamp_end[fec][hybrid][chip]=0;
         if(m_scan_type == 0) {
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", (int)m_dac_setting[m_theIndex]);
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", (int)m_dac_setting[m_theIndex]);
         }
         else {
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-            m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2", (int)m_dac_setting[m_theIndex]);
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2", (int)m_dac_setting[m_theIndex]);
         }
-        m_mainWindow->m_daqs[0].SendAll(false);
+        m_daqWindow->m_daq.SendAll(false);
         QThread::usleep(10000);
-        int measured = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+        int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
         m_dac_measured[fec][hybrid][chip][m_theIndex] = measured;
     }
-    m_mainWindow->m_daqs[0].SendAll(false);
+    m_daqWindow->m_daq.SendAll(false);
     QThread::usleep(100000);
 }
 
@@ -2477,7 +2477,7 @@ void CalibrationModule::AccumulateData(){
 
     uint64_t delay_ns = m_end - m_start;
     //convert run value from ms to ns
-    if(delay_ns >= static_cast<uint64_t>(m_mainWindow->m_daqWindow->ui->Runs->value())*1000000)
+    if(delay_ns >= static_cast<uint64_t>(m_daqWindow->ui->Runs->value())*1000000)
     {
         double delay_s = delay_ns*0.000000001;
         m_time.push_back(delay_s);
@@ -2500,8 +2500,8 @@ void CalibrationModule::AccumulateData(){
         }
         else
         {
-            m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-            m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+            m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+            m_daqWindow->ui->pushButtonTakeData->setChecked(false);
             m_dataAvailable = true;
             m_data_modeIndex = m_modeIndex;
 
@@ -2727,8 +2727,8 @@ void CalibrationModule::AccumulateData(){
 
 void CalibrationModule::Reset()
 {
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+    m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
     QThread::usleep(1000);
     std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Hard Reset of VMMs!" << std::endl;
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
@@ -2736,18 +2736,18 @@ void CalibrationModule::Reset()
         int hybrid = GetHybrid(vmm);
         int chip = GetVMM(vmm);
         //LoadSettings();
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 1);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 1);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
+        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 1);
+        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 1);
+        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
         QThread::msleep(100);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 0);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 0);
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
+        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 0);
+        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 0);
+        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
         QThread::msleep(100);
 
-        m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ResetFEC();
+        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ResetFEC();
         QThread::msleep(100);
-        m_mainWindow->m_daqs[0].SendAll(false);
+        m_daqWindow->m_daq.SendAll(false);
     }
 }
 
@@ -3021,13 +3021,13 @@ void CalibrationModule::SaveCorrections(){
 
                     if(m_modeIndex == 3)
                     {
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_10", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_10", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
                     }
                     else if(m_modeIndex == 4) {
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_8", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_8", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
                     }
                     else if(m_modeIndex == 6) {
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sd", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sd", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
                     }
                 }
             }
@@ -3069,7 +3069,7 @@ void CalibrationModule::readEvent()
 void CalibrationModule::GetSettings()
 {
     m_BCID.clear();
-    QString qtext = m_mainWindow->m_daqWindow->ui->lineEditBCID->text();
+    QString qtext = m_daqWindow->ui->lineEditBCID->text();
     std::string text = qtext.toStdString();
     if(text.size() > 0) {
         if(qtext.contains('-')) {
@@ -3094,14 +3094,14 @@ void CalibrationModule::GetSettings()
             }
         }
     }
-    if(m_mainWindow->m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0)
+    if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0)
     {
         m_runMode = "Calibration";
     }
-    else if(m_mainWindow->m_daqWindow->ui->comboBoxRunMode->currentIndex() == 1){
+    else if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 1){
         m_runMode = "User";
     }
-    QString calibMode = m_mainWindow->m_daqWindow->ui->comboBoxCalibrationType->currentText();
+    QString calibMode = m_daqWindow->ui->comboBoxCalibrationType->currentText();
     m_modeIndex = GetCalibrationModeIndex(calibMode);
     if(m_modeIndex == 1){
         m_number_bits = m_number_bits_offline_adc;
@@ -3150,8 +3150,8 @@ void CalibrationModule::InitializeDataStructures()
     for(unsigned int bit = 0; bit < 32; bit++) {
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
-                if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid)){
-                    int ckbc = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
+                if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)){
+                    int ckbc = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
                     double period_ns = 0;
                     double clock = 0;
                     switch (ckbc)
@@ -3190,8 +3190,8 @@ void CalibrationModule::InitializeDataStructures()
                     {
                         m_dac_measured[fec][hybrid][vmm].clear();
 
-                        if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            int stc = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("stc");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                            int stc = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("stc");
                             double tac_ns = 0;
                             switch (stc)
                             {
@@ -3206,8 +3206,8 @@ void CalibrationModule::InitializeDataStructures()
                             }
                             m_tac_slope[fec][hybrid][vmm] = tac_ns;
                         }
-                        if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            int st = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("peaktime");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                            int st = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("peaktime");
                             double shaping_time_ns = 0;
                             switch (st)
                             {
@@ -3222,8 +3222,8 @@ void CalibrationModule::InitializeDataStructures()
                             }
                             m_shaping_time[fec][hybrid][vmm] = shaping_time_ns;
                         }
-                        if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            int sg = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("gain");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                            int sg = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("gain");
                             double gain = 0;
                             switch (sg)
                             {
@@ -3248,8 +3248,8 @@ void CalibrationModule::InitializeDataStructures()
                             m_gain[fec][hybrid][vmm] = gain;
                         }
 
-                        if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            bool polarity = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("sp");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                            bool polarity = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("sp");
                             if(polarity) {
                                 m_polarity[fec][hybrid][vmm] = 1;
                             }
@@ -3258,8 +3258,8 @@ void CalibrationModule::InitializeDataStructures()
                             }
 
                         }
-                        if (m_mainWindow->m_daqs[0].GetFEC(fec) &&  m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) && m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            bool timing = m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("srat");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                            bool timing = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("srat");
                             if(timing) {
                                 m_timing_at_thr[fec][hybrid][vmm] = 1;
                             }
@@ -3309,8 +3309,8 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
         m_dac_setting.push_back(i*100);
     }
 
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
+    m_daqWindow->ui->pushButtonTakeData->setChecked(true);
+    m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
 
     for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
         int fec = GetFEC(vmm);
@@ -3319,16 +3319,17 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
 
         for(int n=0; n<M; n++) {
             if(measurePulser) {
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",(int)m_dac_setting[n]);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",(int)m_dac_setting[n]);
             }
             else {
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",(int)m_dac_setting[n]);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",(int)m_dac_setting[n]);
             }
-            m_mainWindow->m_daqs[0].SendAll(false);
+            m_daqWindow->m_daq.SendAll(false);
             QThread::usleep(10000);
-            int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+            int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+            //int adc_result = m_hybridWindow->m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hybridIndex, m_vmmIndex, adc_chan);
 
             m_y[fec][hybrid][chip].push_back(val);
             std::cout << m_dac_setting[n] << ", " << val << std::endl;
@@ -3337,16 +3338,16 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
 
     m_dataAvailable = true;
     m_data_modeIndex = m_modeIndex;
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+    m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
     PlotData();
 }
 
 
 void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThresholdCalibration)
 {
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(true);
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
+    m_daqWindow->ui->pushButtonTakeData->setChecked(true);
+    m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
 
     stringstream sx;
     if(isPedestal) {
@@ -3355,12 +3356,12 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
             for(int ch = 0; ch<64; ch++){
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
-                m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
-                m_mainWindow->m_daqs[0].SendAll(false);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
+                m_daqWindow->m_daq.SendAll(false);
                 QThread::usleep(10000);
-                int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
                 m_mean[0][fec][hybrid][chip].push_back(val);
             }
         }
@@ -3373,14 +3374,14 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 int chip = GetVMM(vmm);
 
                 for(int ch = 0; ch<64; ch++){
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sd",bit,ch);
-                        m_mainWindow->m_daqs[0].SendAll(false);
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sd",bit,ch);
+                        m_daqWindow->m_daq.SendAll(false);
                         QThread::usleep(1000);
-                        int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid,chip, 2);
+                        int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid,chip, 2);
                         m_mean[bit][fec][hybrid][chip].push_back(val);
                     }
                 }
@@ -3394,12 +3395,12 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 int chip = GetVMM(vmm);
 
                 for(int ch = 0; ch<64; ch++){
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
-                    m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
-                    m_mainWindow->m_daqs[0].SendAll(false);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
+                    m_daqWindow->m_daq.SendAll(false);
                     QThread::usleep(10000);
-                    int val = m_mainWindow->m_daqs[0].m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                    int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
                     m_mean[0][fec][hybrid][chip].push_back(val);
                 }
             }
@@ -3412,8 +3413,8 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
             CalculateCorrections();
         }
     }
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+    m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
     PlotData();
 }
 
@@ -3480,7 +3481,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
             if(m_srs_timestamp_start[fec][hybrid][chip] > 0)
             {
                 uint64_t delay = m_srs_timestamp_end[fec][hybrid][chip] - m_srs_timestamp_start[fec][hybrid][chip];
-                if(delay <= static_cast<uint64_t>(m_mainWindow->m_daqWindow->ui->Runs->value())*1000000)
+                if(delay <= static_cast<uint64_t>(m_daqWindow->ui->Runs->value())*1000000)
                 {
                     //ADC calibrations or user settings average ADC
                     if(m_modeIndex == 1 || m_modeIndex == 3  || m_modeIndex == 11)
@@ -3536,7 +3537,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         int hybrid = vmmid/2;
         int chip = vmmid%2;
         uint64_t delay = m_srs_timestamp_end[fec][hybrid][chip] - m_srs_timestamp_start[fec][hybrid][chip];
-        if(delay <= static_cast<uint64_t>(m_mainWindow->m_daqWindow->ui->Runs->value())*1000000)
+        if(delay <= static_cast<uint64_t>(m_daqWindow->ui->Runs->value())*1000000)
         {
             //first timestamp/marker for this VMM
             if(m_srs_timestamp_start[fec][hybrid][chip] == 0)
@@ -3684,7 +3685,7 @@ uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
 
 QString CalibrationModule::CreateFileName(QString name, int polarity, double gain, double peaktime, double tac, double bcclock, int srat)
 {
-    QString theName = m_mainWindow->GetApplicationPath() + "/" + name;
+    QString theName = m_daqWindow->GetApplicationPath() + "/" + name;
     QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
     QString str;
     if(polarity == 0)

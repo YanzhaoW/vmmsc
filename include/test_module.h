@@ -16,14 +16,14 @@
 #include <QtSql/QSqlError>
 
 using namespace std;
-class MainWindow;
+class DAQWindow;
 class CalibrationModule;
 class CurrentMonitor;
 class TestModule: public QObject
 {
     Q_OBJECT
 public:
-    explicit TestModule(MainWindow *top, QObject *parent = nullptr);
+    explicit TestModule(DAQWindow *top, QObject *parent = nullptr);
     bool IsDbg() { return m_dbg; }
     void LoadCalibrationModule(CalibrationModule& calibmod);
     MessageHandler& GetMessageHandler(){ return *m_msg; }
@@ -60,7 +60,7 @@ public:
 
 private:
     CalibrationModule *m_calibmod;
-    MainWindow *m_mainWindow;
+    DAQWindow *m_daqWindow;
     bool m_dbg = true;
     MessageHandler *m_msg;
     bool m_connected = false;
@@ -142,8 +142,8 @@ public slots:
 
 #endif // TEST_MODULE_H
 
-#ifndef _MAINWINDOW_HPP
-#include "mainwindow.h"
+#ifndef _DAQWINDOW_HPP
+#include "daq_window.h"
 #endif
 #ifndef _CURRENTMONITOR_H
 #include "currentmonitor.h"

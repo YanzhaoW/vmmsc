@@ -8,25 +8,24 @@
 #include <iostream>
 
 
-class MainWindow;
+class DAQWindow;
 
 class DAQConfigHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit DAQConfigHandler(MainWindow *top, QObject *parent = 0);
+    explicit DAQConfigHandler(DAQWindow *top, QObject *parent = 0);
     ~DAQConfigHandler();
-    friend class Commandline;
     bool LoadDAQConf(const char* filename); // only one DAQ implemented
     bool WriteDAQConf(const char* filename);
 private:
-    MainWindow *m_mainWindow;
+    DAQWindow *m_daqWindow;
     bool LoadDAQConfig(std::string fname);
     bool WriteDAQConfig(std::string fname);
 };
 
 #endif // DAQ_CONFIG_HANDLER_H
 
-#ifndef _MAINWINDOW_HPP
-#include "mainwindow.h"
+#ifndef _DAQWINDOW_HPP
+#include "daq_window.h"
 #endif

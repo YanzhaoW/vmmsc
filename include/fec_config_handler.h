@@ -6,30 +6,30 @@
 #include <QObject>
 #include <fstream>
 
-class MainWindow;
+class DAQWindow;
 
 class FECConfigHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit FECConfigHandler(MainWindow *top, QObject *parent = 0);
+    explicit FECConfigHandler(DAQWindow *top, QObject *parent = 0);
     ~FECConfigHandler();
     bool LoadAllFECConf(std::string filename);
     bool WriteAllFECConf(std::string filename);
-    bool LoadSingleFECConf(const char* filename, unsigned short daq, unsigned short fec);
-    bool WriteSingleFECConf(const char* filename, unsigned short daq, unsigned short fec);
+    bool LoadSingleFECConf(const char* filename, unsigned short fec);
+    bool WriteSingleFECConf(const char* filename, unsigned short fec);
     bool LoadSingleFECConf(const char* filename);
     bool WriteSingleFECConf(const char* filename);
 private:
-    MainWindow *m_mainWindow;
+    DAQWindow *m_daqWindow;
     bool GenericAllFECConf(bool load, std::string filename);
-    bool GenericSingleFECConf(bool load, const char* filename, unsigned short daq, unsigned short fec);
+    bool GenericSingleFECConf(bool load, const char* filename, unsigned short fec);
     bool LoadFECConfig(std::string fname);
-    bool WriteFECConfig(std::string filename, unsigned short daq, unsigned short fec);
+    bool WriteFECConfig(std::string filename, unsigned short fec);
 };
 
 #endif // FEC_CONFIG_HANDLER_H
 
-#ifndef _MAINWINDOW_HPP
-#include "mainwindow.h"
+#ifndef _DAQWINDOW_HPP
+#include "daq_window.h"
 #endif

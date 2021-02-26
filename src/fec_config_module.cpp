@@ -359,12 +359,6 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hybr
                  QString::number( m_fec->GetVMM( hybrid_index,  vmm_index,"reset2" ) ) );
     sequence++;
 
-
-
-
-
-
-
     if(m_dbg)
     {
         sx.str("");
@@ -1236,8 +1230,6 @@ void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
     {
         QByteArray buff;
         buff.clear();
-        //buff.resize(m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().pendingDatagramSize() );
-        // m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
         buff.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize() );
         GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
         if(buff.size()==0) return;

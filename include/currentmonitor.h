@@ -10,13 +10,12 @@
 
 
 using namespace std;
-class MainWindow;
+class DAQWindow;
 class TestModule;
 class CurrentMonitor: public QObject
 {
     Q_OBJECT
     friend class DAQWindow;
-    friend class MainWindow;
 
     public:
         explicit CurrentMonitor(TestModule *tst, QObject *parent = nullptr);

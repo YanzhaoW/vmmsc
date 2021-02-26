@@ -1,4 +1,5 @@
 #include "hybrid_window.h"
+#include "vmm_window.h"
 
 HybridWindow::HybridWindow(FECWindow *top, unsigned short fec, unsigned short hybrid, QWidget *parent) :
     QWidget(parent),
@@ -38,7 +39,7 @@ HybridWindow::HybridWindow(FECWindow *top, unsigned short fec, unsigned short hy
     connect(m_ui->ApplyAll, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
 
-    connect(m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadHybrid()),
+    connect(m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadHybrid()),
             this, SLOT( onReloadSettings() ));
 
 }
@@ -69,17 +70,17 @@ void HybridWindow::VMMBoxLogic(bool checked, unsigned short vmm){
     if (checked){
         m_ui->tabWidget->insertTab(vmm-NotActiveBefore, new VMMWindow(this,m_fecIndex,m_hybridIndex,vmm), QString(" VMM %0").arg(vmm+1));
         m_ui->tabWidget->setCurrentIndex(vmm-NotActiveBefore);
-        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetVMM(vmm, true);
+        m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetVMM(vmm, true);
     }
     else {
         m_ui->tabWidget->removeTab(vmm-NotActiveBefore);
-        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetVMM(vmm, false);
+        m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetVMM(vmm, false);
     }
 }
 
 void HybridWindow::UpdateWindow(){
     for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-        if (m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].GetVMM(m)){
+        if (m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].GetVMM(m)){
             if (m == 0 && !m_ui->Box_vmm1->isChecked()){m_ui->Box_vmm1->setChecked(true); on_Box_vmm1_clicked();}
             if (m == 1 && !m_ui->Box_vmm2->isChecked()){m_ui->Box_vmm2->setChecked(true); on_Box_vmm2_clicked();}
         }
@@ -87,7 +88,7 @@ void HybridWindow::UpdateWindow(){
 }
 void HybridWindow::LoadSettings(){
 
-    while(!m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].CheckHybridPos(GetHybrid("axis"), GetHybrid("position"), m_fecIndex, m_hybridIndex )){
+    while(!m_fecWindow->m_daqWindow->m_daq.CheckHybridPos(GetHybrid("axis"), GetHybrid("position"), m_fecIndex, m_hybridIndex )){
         SetHybrid("position", GetHybrid("position")+1);
     }
 
@@ -114,19 +115,19 @@ void HybridWindow::onReloadSettings(){
 
 
 bool HybridWindow::SetHybrid(std::string feature, unsigned short value){
-    if(m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetReg(feature, value)){
+    if(m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetReg(feature, value)){
         return true;
     }
     else return false;
 }
 unsigned short HybridWindow::GetHybrid(std::string feature){
-    return m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].GetReg(feature);
+    return m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].GetReg(feature);
 }
 
 void HybridWindow::onUpdateSettings(){
 
     if(QObject::sender() == m_ui->axis){
-        if(m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].CheckHybridPos( m_ui->axis->currentIndex() , GetHybrid("position"), m_fecIndex, m_hybridIndex )){
+        if(m_fecWindow->m_daqWindow->m_daq.CheckHybridPos( m_ui->axis->currentIndex() , GetHybrid("position"), m_fecIndex, m_hybridIndex )){
             SetHybrid("axis", m_ui->axis->currentIndex());
         }
         else{
@@ -137,7 +138,7 @@ void HybridWindow::onUpdateSettings(){
 
     }
     else if(QObject::sender() == m_ui->position){
-        if(m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].CheckHybridPos(GetHybrid("axis"), m_ui->position->value() , m_fecIndex, m_hybridIndex )){
+        if(m_fecWindow->m_daqWindow->m_daq.CheckHybridPos(GetHybrid("axis"), m_ui->position->value() , m_fecIndex, m_hybridIndex )){
             SetHybrid("position", m_ui->position->value());
         }
         else{
@@ -166,28 +167,28 @@ void HybridWindow::onUpdateSettings(){
     }
     else if(QObject::sender() == m_ui->ApplyAll){
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
-            if (m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].GetFEC(fec) ){
+            if (m_fecWindow->m_daqWindow->m_daq.GetFEC(fec) ){
                 for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
-                    if( m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].GetHybrid(hybrid) ){
+                    if( m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
 
-                        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("CKBC", m_ui->ckbc_s6->currentIndex());
-                        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());
-                        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("CKDT", m_ui->ckdt_s6->currentIndex());
-                        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_ui->tpSkew->currentIndex());
-                        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("TP_width", m_ui->tpWidth->currentIndex());
-                        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[fec].m_hybrids[hybrid].SetReg("TP_pol", m_ui->tpPolarity->currentIndex());
+                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("CKBC", m_ui->ckbc_s6->currentIndex());
+                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());
+                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("CKDT", m_ui->ckdt_s6->currentIndex());
+                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_ui->tpSkew->currentIndex());
+                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_width", m_ui->tpWidth->currentIndex());
+                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_pol", m_ui->tpPolarity->currentIndex());
 
                     }
                 }
             }
         }
-        m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].ApplyHybrids(m_fecIndex);
+        m_fecWindow->m_daqWindow->m_daq.ApplyHybrids(m_fecIndex);
     }
 }
 
 void HybridWindow::on_pbReadI2C_pressed()
 {
-    QString result = m_fecWindow->m_daqWindow->m_mainWindow->m_daqs[0].m_fecs[m_fecIndex].m_fecConfigModule->ReadI2C(m_hybridIndex, m_ui->cbChoiceI2C->currentIndex());
+    QString result = m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadI2C(m_hybridIndex, m_ui->cbChoiceI2C->currentIndex());
     m_ui->lineEditResultI2C->setText(result.toUpper());
 }
 

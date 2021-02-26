@@ -1,5 +1,5 @@
 //Conneted hardware and vmm position map. No comment in the following lines, take care of syntax!
-daq 0: fecs: 1
+fecs: 1
 	fec 0: hybrids: 2
 			hybrid 0: x 1, vmms: 2
 				vmm 0

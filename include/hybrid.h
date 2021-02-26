@@ -10,7 +10,6 @@ class Hybrid: public QObject
 public:
     Hybrid();
     ~Hybrid();
-    friend class Commandline;
     friend class VMM;
     friend class HybridConfigHandler;
     friend class CalibrationModule;

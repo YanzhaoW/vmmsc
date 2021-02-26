@@ -21,7 +21,6 @@ class DAQ: public QObject
 public:
     DAQ();
     ~DAQ();
-    friend class Commandline;
     friend class VMMWindow;
     friend class CalibrationModule;
     friend class TestModule;

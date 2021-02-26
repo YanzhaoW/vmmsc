@@ -1,15 +1,53 @@
 #include "daq_window.h"
 
-DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
+// std/stl
+#include <iostream>
+#include <sstream>
+using namespace std;
+
+
+DAQWindow::DAQWindow(QWidget *parent) :
     QMainWindow(parent),
-    m_mainWindow{top},
     ui(new Ui::daq_window),
+    m_socketHandler(0),
+    m_messageHandler(0),
     m_msg(0)
 {
-
     ui->setupUi(this);
+    QString fileName = QCoreApplication::applicationDirPath();
+    m_execPath = fileName.replace("/vmmdcs.app/Contents/MacOS", "");
+    std::string execPath = m_execPath.toStdString();
+    if(execPath.find("/debug") !=std::string::npos || execPath.find("/release") !=std::string::npos) {
+        m_execPath += "/..";
+    }
+
+    m_vmmConfigHandler = new VMMConfigHandler(this);
+    m_hybridConfigHandler = new HybridConfigHandler(this);
+    m_daqConfigHandler = new DAQConfigHandler(this);
+    m_fecConfigHandler = new FECConfigHandler(this);
+    this->setWindowTitle("VMM3 - SRS DCS new");
+
+    m_messageHandler = new MessageHandler();
+    m_messageHandler->SetMessageSize(75);
+    m_messageHandler->SetGUI(true);
+
+    /////////////////////////////////////////////////////////////////////
+    //-----------------------------------------------------------------//
+    // VMM handles
+    //-----------------------------------------------------------------//
+    /////////////////////////////////////////////////////////////////////
+    m_socketHandler = new SocketHandler();
+
+    m_socketHandler->LoadMessageHandler(GetMessageHandler());
+
+
+    m_dbg = false;
+    m_socketHandler ->SetDebugMode(false);
+    m_calib = new CalibrationModule(this);
+    m_test = new TestModule(this);
+
     ui->Send->setEnabled(false);
-    LoadMessageHandler(m_mainWindow->m_daqs[0].GetMessageHandler());
+    LoadMessageHandler(this->m_daq.GetMessageHandler());
     connect(m_msg, SIGNAL(on_log_ready()), this, SLOT(on_readLog()));
     ui->openConnection->setToolTip("Open communication");
 
@@ -23,7 +61,7 @@ DAQWindow::DAQWindow(MainWindow *top, QWidget *parent) :
     ui->onACQ->setEnabled(false);
     ui->offACQ->setEnabled(false);
 
-    QString correctedFileName = m_mainWindow->GetApplicationPath() +  "/../configs/default.txt";
+    QString correctedFileName = this->GetApplicationPath() +  "/../configs/default.txt";
 
     if(FileExists(correctedFileName.toStdString().c_str())){
         LoadConfig("default");
@@ -134,11 +172,11 @@ void DAQWindow::fecBoxLogic(bool checked, unsigned short fec){
     if (checked){
         ui->tabWidget->insertTab(ActiveBefore, new FECWindow(this,fec), QString(" FEC %0").arg(fec+1));
         ui->tabWidget->setCurrentIndex(ActiveBefore);
-        m_mainWindow->m_daqs[0].SetFEC(fec,true);
+        this->m_daq.SetFEC(fec,true);
     }
     else {
         ui->tabWidget->removeTab(ActiveBefore);
-        m_mainWindow->m_daqs[0].SetFEC(fec,false);
+        this->m_daq.SetFEC(fec,false);
     }
 
 }
@@ -155,16 +193,16 @@ void DAQWindow::LoadConfig(QString text){
         if(!text.contains(".txt")) {
             fname+=".txt";
         }
-        bool found = m_mainWindow->m_daqConfigHandler->LoadDAQConf(fname.c_str());
+        bool found = this->m_daqConfigHandler->LoadDAQConf(fname.c_str());
         if (!found){
             std::cout << "File not found" << std::endl;
             ui->line_configFile->insert("ERROR: not found");
         }
 
         else {
-            m_mainWindow->m_vmmConfigHandler->LoadAllVMMConf(filename);
-            m_mainWindow->m_hybridConfigHandler->LoadAllHybridConf(filename);
-            m_mainWindow->m_fecConfigHandler->LoadAllFECConf(filename);
+            this->m_vmmConfigHandler->LoadAllVMMConf(filename);
+            this->m_hybridConfigHandler->LoadAllHybridConf(filename);
+            this->m_fecConfigHandler->LoadAllFECConf(filename);
             for (unsigned short j=0; j < FECS_PER_DAQ; j++){
                 if (j==0) {ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
                 if (j==1 ){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
@@ -175,43 +213,41 @@ void DAQWindow::LoadConfig(QString text){
                 if (j==6 ){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
                 if (j==7 ){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
             }
-            m_mainWindow->m_daqConfigHandler->LoadDAQConf(fname.c_str());
-            for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-                if (m_mainWindow->m_daq_act[i]){
-                    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                        if (m_mainWindow->m_daqs[i].GetFEC(j)){
-                            if (j==0 && !ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(true);on_Box_fec1_clicked();}
-                            if (j==1 && !ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(true);on_Box_fec2_clicked();}
-                            if (j==2 && !ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(true);on_Box_fec3_clicked();}
-                            if (j==3 && !ui->Box_fec4->isChecked()){ui->Box_fec4->setChecked(true);on_Box_fec4_clicked();}
-                            if (j==4 && !ui->Box_fec5->isChecked()){ui->Box_fec5->setChecked(true);on_Box_fec5_clicked();}
-                            if (j==5 && !ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(true);on_Box_fec6_clicked();}
-                            if (j==6 && !ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(true);on_Box_fec7_clicked();}
-                            if (j==7 && !ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(true);on_Box_fec8_clicked();}
-                            for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
-                                if(m_mainWindow->m_daqs[i].m_fecs[j].GetHybrid(k)){
+            this->m_daqConfigHandler->LoadDAQConf(fname.c_str());
 
-                                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                        if (m_mainWindow->m_daqs[i].m_fecs[j].m_hybrids[k].GetVMM(m)){
-                                            std::cout << "vmm " << m << "(pos " << m_mainWindow->m_daqs[i].m_fecs[j].m_hybrids[k].GetReg("position")<< ", " <<m_mainWindow->m_daqs[i].m_fecs[j].m_hybrids[k].GetReg("axis") << ") on hmdi "<< k << " on fec " << j << " on daq " << i << " is active" << std::endl;
-                                        }
-                                    }
+            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+                if (this->m_daq.GetFEC(j)){
+                    if (j==0 && !ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(true);on_Box_fec1_clicked();}
+                    if (j==1 && !ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(true);on_Box_fec2_clicked();}
+                    if (j==2 && !ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(true);on_Box_fec3_clicked();}
+                    if (j==3 && !ui->Box_fec4->isChecked()){ui->Box_fec4->setChecked(true);on_Box_fec4_clicked();}
+                    if (j==4 && !ui->Box_fec5->isChecked()){ui->Box_fec5->setChecked(true);on_Box_fec5_clicked();}
+                    if (j==5 && !ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(true);on_Box_fec6_clicked();}
+                    if (j==6 && !ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(true);on_Box_fec7_clicked();}
+                    if (j==7 && !ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(true);on_Box_fec8_clicked();}
+                    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+                        if(this->m_daq.m_fecs[j].GetHybrid(k)){
 
+                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                                if (this->m_daq.m_fecs[j].m_hybrids[k].GetVMM(m)){
+                                    std::cout << "vmm " << m << "(pos " << this->m_daq.m_fecs[j].m_hybrids[k].GetReg("position")<< ", " <<this->m_daq.m_fecs[j].m_hybrids[k].GetReg("axis") << ") on hybrid "<< k << " on fec " << j << " is active" << std::endl;
                                 }
                             }
-                        }
-                        else{
-                            if (j==0 && ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
-                            if (j==1 && ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
-                            if (j==2 && ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
-                            if (j==3 && ui->Box_fec4->isChecked()){ui->Box_fec4->setChecked(false);on_Box_fec4_clicked();}
-                            if (j==4 && ui->Box_fec5->isChecked()){ui->Box_fec5->setChecked(false);on_Box_fec5_clicked();}
-                            if (j==5 && ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(false);on_Box_fec6_clicked();}
-                            if (j==6 && ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
-                            if (j==7 && ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
+
                         }
                     }
                 }
+                else{
+                    if (j==0 && ui->Box_fec1->isChecked()){ui->Box_fec1->setChecked(false);on_Box_fec1_clicked();}
+                    if (j==1 && ui->Box_fec2->isChecked()){ui->Box_fec2->setChecked(false);on_Box_fec2_clicked();}
+                    if (j==2 && ui->Box_fec3->isChecked()){ui->Box_fec3->setChecked(false);on_Box_fec3_clicked();}
+                    if (j==3 && ui->Box_fec4->isChecked()){ui->Box_fec4->setChecked(false);on_Box_fec4_clicked();}
+                    if (j==4 && ui->Box_fec5->isChecked()){ui->Box_fec5->setChecked(false);on_Box_fec5_clicked();}
+                    if (j==5 && ui->Box_fec6->isChecked()){ui->Box_fec6->setChecked(false);on_Box_fec6_clicked();}
+                    if (j==6 && ui->Box_fec7->isChecked()){ui->Box_fec7->setChecked(false);on_Box_fec7_clicked();}
+                    if (j==7 && ui->Box_fec8->isChecked()){ui->Box_fec8->setChecked(false);on_Box_fec8_clicked();}
+                }
+
             }
         } //else file found
     } //end else not ""
@@ -233,11 +269,11 @@ void DAQWindow::on_Button_save_clicked()
         ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
-        m_mainWindow->m_vmmConfigHandler->WriteAllVMMConf(fname);
-        m_mainWindow->m_hybridConfigHandler->WriteAllHybridConf(fname);
-        m_mainWindow->m_fecConfigHandler->WriteAllFECConf(fname);
+        this->m_vmmConfigHandler->WriteAllVMMConf(fname);
+        this->m_hybridConfigHandler->WriteAllHybridConf(fname);
+        this->m_fecConfigHandler->WriteAllFECConf(fname);
         fname+=".txt";
-        m_mainWindow->m_daqConfigHandler->WriteDAQConf(fname.c_str());
+        this->m_daqConfigHandler->WriteDAQConf(fname.c_str());
         std::cout << "writing to file " << fname << std::endl;
     }
 }
@@ -250,65 +286,61 @@ void DAQWindow::on_openConnection_clicked()
         ui->Send->setEnabled(false);
         ui->onACQ->setEnabled(false);
         ui->offACQ->setEnabled(false);
-        for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-            if (m_mainWindow->m_daq_act[i]){
-                for (unsigned short j=FECS_PER_DAQ-1; j >0; j--){
-                    if (m_mainWindow->m_daqs[i].GetFEC(j)){
-                        QHostAddress ipAddress;
-                        ipAddress.setAddress(m_mainWindow->m_daqs[i].m_fecs[j].GetReg("ip_fec"));
-                        long theIP = ipAddress.toIPv4Address();
-                        int res = m_mainWindow->m_daqs[i].CheckIP_FEC(theIP, j);
-                        if(res > -1) {
-                            int ret = QMessageBox::warning(this, tr("FEC IPv4 address"),
-                                                           "The last octet of the IP address is the FEC ID, and has to be hence unique.\nLast octet of FEC "
-                                                           + QString::number(j+1) + " IP address already in use in FEC " + QString::number(res+1) + "\n\n"
-                                                           +"To change the IP address of a FEC in case you use multiple FECs, connect the FECs one by one and change the IP.\n"
-                                                           +"The default IP address for FECs is 10.0.0.2.\n",
-                                                           QMessageBox::Ok);
-                            return;
-                        }
-                        res = m_mainWindow->m_daqs[0].CheckIP_DAQ(theIP);
-                        if(res > -1) {
-                            int ret = QMessageBox::warning(this, tr("FEC IPv4 address"),
-                                                           "FEC " + QString::number(j+1) + " IP address already used as DAQ IP in FEC " + QString::number(res+1),
-                                                           QMessageBox::Ok);
-                            return;
-                        }
-                        ipAddress.setAddress(m_mainWindow->m_daqs[i].m_fecs[j].GetReg("ip_daq"));
-                        theIP = ipAddress.toIPv4Address();
-                        res = m_mainWindow->m_daqs[0].CheckIP_DAQ(theIP);
-                        if(res == -1) {
-                            int ret = QMessageBox::warning(this, tr("DAQ IPv4 address"),
-                                                           "All FECs have to use the same DAQ IP address (IP of the computer where the slow control runs)!",
-                                                           QMessageBox::Ok);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-        for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-            if (m_mainWindow->m_daq_act[i]){
-                for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                    if (m_mainWindow->m_daqs[i].GetFEC(j)){
 
-                        if(m_mainWindow->m_daqs[i].m_fecs[j].m_fecConfigModule->Connect()==1){
-                            SetConnectionMessage("all alive","green");
-                            ui->Send->setEnabled(true);
-                            ui->onACQ->setEnabled(true);
-                            ui->offACQ->setEnabled(true);
-                        }
-                        else{
-                            SetConnectionMessage("ping failed", "red");
-                            ui->Send->setEnabled(false);
-                            ui->onACQ->setEnabled(false);
-                            ui->offACQ->setEnabled(false);
-                            return;
-                        }
-                    }
+        for (unsigned short j=FECS_PER_DAQ-1; j >0; j--){
+            if (this->m_daq.GetFEC(j)){
+                QHostAddress ipAddress;
+                ipAddress.setAddress(this->m_daq.m_fecs[j].GetReg("ip_fec"));
+                long theIP = ipAddress.toIPv4Address();
+                int res = this->m_daq.CheckIP_FEC(theIP, j);
+                if(res > -1) {
+                    int ret = QMessageBox::warning(this, tr("FEC IPv4 address"),
+                                                   "The last octet of the IP address is the FEC ID, and has to be hence unique.\nLast octet of FEC "
+                                                   + QString::number(j+1) + " IP address already in use in FEC " + QString::number(res+1) + "\n\n"
+                                                   +"To change the IP address of a FEC in case you use multiple FECs, connect the FECs one by one and change the IP.\n"
+                                                   +"The default IP address for FECs is 10.0.0.2.\n",
+                                                   QMessageBox::Ok);
+                    return;
+                }
+                res = this->m_daq.CheckIP_DAQ(theIP);
+                if(res > -1) {
+                    int ret = QMessageBox::warning(this, tr("FEC IPv4 address"),
+                                                   "FEC " + QString::number(j+1) + " IP address already used as DAQ IP in FEC " + QString::number(res+1),
+                                                   QMessageBox::Ok);
+                    return;
+                }
+                ipAddress.setAddress(this->m_daq.m_fecs[j].GetReg("ip_daq"));
+                theIP = ipAddress.toIPv4Address();
+                res = this->m_daq.CheckIP_DAQ(theIP);
+                if(res == -1) {
+                    int ret = QMessageBox::warning(this, tr("DAQ IPv4 address"),
+                                                   "All FECs have to use the same DAQ IP address (IP of the computer where the slow control runs)!",
+                                                   QMessageBox::Ok);
+                    return;
+                }
+            }
+
+        }
+
+        for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+            if (this->m_daq.GetFEC(j)){
+
+                if(this->m_daq.m_fecs[j].m_fecConfigModule->Connect()==1){
+                    SetConnectionMessage("all alive","green");
+                    ui->Send->setEnabled(true);
+                    ui->onACQ->setEnabled(true);
+                    ui->offACQ->setEnabled(true);
+                }
+                else{
+                    SetConnectionMessage("ping failed", "red");
+                    ui->Send->setEnabled(false);
+                    ui->onACQ->setEnabled(false);
+                    ui->offACQ->setEnabled(false);
+                    return;
                 }
             }
         }
+
     }
 }
 
@@ -322,11 +354,7 @@ void DAQWindow::on_Send_clicked()
 {
     if(!ui->onACQ->isChecked())
     {
-        for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-            if (m_mainWindow->m_daq_act[i]){
-                m_mainWindow->m_daqs[i].SendAll();
-            }
-        }
+        this->m_daq.SendAll();
     }
 }
 
@@ -338,8 +366,8 @@ void DAQWindow::on_onACQ_clicked()
     ui->offACQ->setChecked(false);
     ui->Send->setEnabled(false);
 
-    m_mainWindow->m_daqs[0].SendAll(true);
-    m_mainWindow->m_daqs[0].ACQHandler(true);
+    this->m_daq.SendAll(true);
+    this->m_daq.ACQHandler(true);
 }
 
 void DAQWindow::on_offACQ_clicked()
@@ -348,7 +376,7 @@ void DAQWindow::on_offACQ_clicked()
     ui->offACQ->setChecked(true);
     ui->onACQ->setChecked(false);
     ui->Send->setEnabled(true);
-    m_mainWindow->m_daqs[0].ACQHandler(false);
+    this->m_daq.ACQHandler(false);
 }
 
 
@@ -358,18 +386,13 @@ void DAQWindow::on_Debug_pressed()
     bool dbg = false;
     if(!ui->Debug->isChecked()){
         dbg =true;
-        m_mainWindow->GetMessageHandler()("Debug enabled", "DEBUG");
+        this->GetMessageHandler()("Debug enabled", "DEBUG");
     }
-    else m_mainWindow->GetMessageHandler()("Debug disabled", "DEBUG");
-    m_mainWindow->GetSocketHandler().m_dbg=dbg;
-
-    for (unsigned short i=0; i < DAQS_PER_GUIWINDOW; i++){
-        if (m_mainWindow->m_daq_act[i]){
-            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                if (m_mainWindow->m_daqs[i].GetFEC(j)){
-                    m_mainWindow->m_daqs[0].m_fecs[j].m_fecConfigModule->SetDebugMode(dbg);
-                }
-            }
+    else this->GetMessageHandler()("Debug disabled", "DEBUG");
+    this->GetSocketHandler().m_dbg=dbg;
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if (this->m_daq.GetFEC(j)){
+            this->m_daq.m_fecs[j].m_fecConfigModule->SetDebugMode(dbg);
         }
     }
 }
@@ -385,7 +408,7 @@ void DAQWindow::on_selectDir_clicked()
     QFileDialog getdir;
     //    getdir.setProxyModel();
     QString dirStr = QFileDialog::getOpenFileName(this,
-                                                  tr("Select config file"), m_mainWindow->GetApplicationPath() + "/../configs",
+                                                  tr("Select config file"), this->GetApplicationPath() + "/../configs",
                                                   tr("Text (*.txt)") );
     if(dirStr=="") return;
     if(!dirStr.contains("/configs/")){
@@ -410,11 +433,11 @@ void DAQWindow::on_pushButtonTakeData_pressed()
     if(ui->connectionLabel->text()==QString("all alive")){
         if(!ui->pushButtonTakeData->isChecked()){
             ui->pushButtonTakeData->setCheckable(true);
-            m_mainWindow->m_calib->StartCalibration();
+            this->m_calib->StartCalibration();
         }
         /*
         else{
-            m_mainWindow->m_calib->CloseDAQSocket();
+            this->m_calib->CloseDAQSocket();
             emit ui->offACQ->clicked();
             ui->comboBoxFec->clear();
         }
@@ -432,44 +455,44 @@ void DAQWindow::on_pushButtonTakeData_pressed()
 
 void DAQWindow::on_pushButtonStoreCorrections_pressed()
 {
-    m_mainWindow->m_calib->SaveCorrections();
+    this->m_calib->SaveCorrections();
 
 }
 
 
 void DAQWindow::on_pushButtonCSV_pressed()
 {
-    m_mainWindow->m_calib->SaveDataAsCSV();
+    this->m_calib->SaveDataAsCSV();
 }
 
 
 void DAQWindow::on_pushButtonSavePDF_pressed()
 {
-    m_mainWindow->m_calib->SavePlotsAsPDF();
+    this->m_calib->SavePlotsAsPDF();
 }
 
 void DAQWindow::on_pushButtonAbort_pressed()
 {
-    m_mainWindow->m_calib->StopDataTaking();
+    this->m_calib->StopDataTaking();
     on_offACQ_clicked();
-    m_mainWindow->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    this->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
 }
 
 void DAQWindow::on_pushButtonStartTest_pressed()
 {
-    m_mainWindow->m_test->StartTest();
+    this->m_test->StartTest();
 }
 
 
 void DAQWindow::on_pushButtonClearTestLog_pressed()
 {
-    m_mainWindow->m_daqWindow->ui->TestLogScreen->clear();
+    this->m_daqWindow->ui->TestLogScreen->clear();
 }
 
 
 void DAQWindow::on_pushButtonSavePlotL_clicked()
 {
-    QCustomPlot* plot = m_mainWindow->m_daqWindow->ui->customPlotVMM1;
+    QCustomPlot* plot = this->m_daqWindow->ui->customPlotVMM1;
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save Plot as PDF"), "",tr("PDF File (*.pdf);;All Files (*)"));
     fileName.remove(".pdf");
     fileName.remove(".png");
@@ -484,14 +507,14 @@ void DAQWindow::on_pushButtonSavePlotL_clicked()
 
 void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
 {
-    QHash<QString, QString> labelmap = m_mainWindow->m_test->m_hResults.h_plotslabel.value(arg1);
+    QHash<QString, QString> labelmap = this->m_test->m_hResults.h_plotslabel.value(arg1);
     QString type = labelmap.value("type");
     if(type == "histo"){
-        QHash<QString, QVector<double>> datamap = m_mainWindow->m_test->m_hResults.h_histodata.value(arg1);
+        QHash<QString, QVector<double>> datamap = this->m_test->m_hResults.h_histodata.value(arg1);
         QVector<double> x = datamap.value("x");
         QVector<double> y1 = datamap.value("y1");
         QVector<double> y2 = datamap.value("y2");
-        QVector<double> lims = m_mainWindow->m_test->m_hResults.h_histodata.value(arg1).value("lims");
+        QVector<double> lims = this->m_test->m_hResults.h_histodata.value(arg1).value("lims");
         QString xlabel = labelmap.value("x");
         QString ylabel = labelmap.value("y");
         QString graphlabel = labelmap.value("graph");
@@ -503,10 +526,10 @@ void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
         double high = lims[1];
         int bins = int(lims[2]);
         cout << low <<","<< high<<","<<bins;
-        m_mainWindow->m_test->PlotHistogram(y,0,4096,4096,xlabel,ylabel,arg1,graphlabel);
+        this->m_test->PlotHistogram(y,0,4096,4096,xlabel,ylabel,arg1,graphlabel);
     }
     else if(type == "channels"){
-        QHash<QString, QVector<double>> datamap = m_mainWindow->m_test->m_hResults.h_plotsdata.value(arg1);
+        QHash<QString, QVector<double>> datamap = this->m_test->m_hResults.h_plotsdata.value(arg1);
         QVector<double> x = datamap.value("x");
         QVector<double> y[64];
         for(int i=0;i<64;i++){
@@ -520,14 +543,14 @@ void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
         if(datamap.empty()){
             return;
         }
-        m_mainWindow->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel,64);
+        this->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel,64);
     }
     else{
-        QHash<QString, QVector<double>> datamap = m_mainWindow->m_test->m_hResults.h_plotsdata.value(arg1);
+        QHash<QString, QVector<double>> datamap = this->m_test->m_hResults.h_plotsdata.value(arg1);
         QVector<double> x = datamap.value("x");
         QVector<double> y1 = datamap.value("y1");
         QVector<double> y2 = datamap.value("y2");
-        QVector<double> lims = m_mainWindow->m_test->m_hResults.h_plotsdata.value(arg1).value("lims");
+        QVector<double> lims = this->m_test->m_hResults.h_plotsdata.value(arg1).value("lims");
         QString xlabel = labelmap.value("x");
         QString ylabel = labelmap.value("y");
         QString graphlabel = labelmap.value("graph");
@@ -535,16 +558,16 @@ void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
         if(datamap.empty()){
             return;
         }
-        m_mainWindow->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel);
+        this->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel);
         if(QString::compare(arg1,"ADCCalibrationInternal",Qt::CaseInsensitive)==0){
             QVector<double>pars;
-            QVector<double> fits [2] = {m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[0],"internal",0,pars),m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[1],"internal",1,pars)};
-            m_mainWindow->m_test->AddFitToPlot(x,fits);
+            QVector<double> fits [2] = {this->m_test->evaluateADCCalibrationFit(x,y[0],"internal",0,pars),this->m_test->evaluateADCCalibrationFit(x,y[1],"internal",1,pars)};
+            this->m_test->AddFitToPlot(x,fits);
         }
         if(QString::compare(arg1,"ADCCalibrationExternal",Qt::CaseInsensitive)==0){
             QVector<double>pars;
-            QVector<double> fits [2] = {m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[0],"external",0,pars),m_mainWindow->m_test->evaluateADCCalibrationFit(x,y[1],"external",1,pars)};
-            m_mainWindow->m_test->AddFitToPlot(x,fits);
+            QVector<double> fits [2] = {this->m_test->evaluateADCCalibrationFit(x,y[0],"external",0,pars),this->m_test->evaluateADCCalibrationFit(x,y[1],"external",1,pars)};
+            this->m_test->AddFitToPlot(x,fits);
         }
 
     }
@@ -552,29 +575,33 @@ void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
 
 void DAQWindow::on_checkBox_readcurrent_stateChanged(int arg1)
 {
-    m_mainWindow->m_daqWindow->ui->lineEdit_1_9V->setReadOnly(arg1);
-    m_mainWindow->m_daqWindow->ui->lineEdit_2_9V->setReadOnly(arg1);
+    this->m_daqWindow->ui->lineEdit_1_9V->setReadOnly(arg1);
+    this->m_daqWindow->ui->lineEdit_2_9V->setReadOnly(arg1);
 }
 
 void DAQWindow::on_lineEdit_1_9V_textChanged(const QString &arg1)
 {
-    m_mainWindow->m_test->m_hResults.h_current_1_9V = arg1.toDouble();
+    this->m_test->m_hResults.h_current_1_9V = arg1.toDouble();
 }
 
 void DAQWindow::on_lineEdit_2_9V_textChanged(const QString &arg1)
 {
-    m_mainWindow->m_test->m_hResults.h_current_2_9V = arg1.toDouble();
+    this->m_test->m_hResults.h_current_2_9V = arg1.toDouble();
 }
 
 void DAQWindow::on_pushButtonDeleteLast_clicked()
 {
-    m_mainWindow->m_test->DeleteLastMeasurement();
+    this->m_test->DeleteLastMeasurement();
 }
 
 void DAQWindow::on_pushButtonNewHybrid_clicked()
 {
-    m_mainWindow->m_test->ResetHybrid();
+    this->m_test->ResetHybrid();
 }
 
 
 
+QString DAQWindow::GetApplicationPath()
+{
+    return m_execPath;
+}
