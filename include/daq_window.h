@@ -1,7 +1,7 @@
 #ifndef DAQ_WINDOW_H
 #define DAQ_WINDOW_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include "fec_window.h"
 #include "ui_daq_window.h"
 
@@ -43,7 +43,7 @@ class DAQWindow : public QMainWindow
 
     DAQ m_daq;
 public:
-    explicit DAQWindow(QWidget *parent = 0);
+    explicit DAQWindow(QMainWindow *parent = 0);
     ~DAQWindow();
 
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }

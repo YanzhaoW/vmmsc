@@ -2207,7 +2207,7 @@ void CalibrationModule::StartCalibration(){
 
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",m_pulser_dac);
-                m_daqWindow->m_daq.SendAll(false);
+                m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                 QThread::usleep(10000);
                 m_pulser_mV = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
             }
@@ -2237,7 +2237,7 @@ void CalibrationModule::StartCalibration(){
             }
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",m_threshold_dac);
-            m_daqWindow->m_daq.SendAll(false);
+            m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
             QThread::usleep(10000);
             m_threshold_mV = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
 
@@ -2374,7 +2374,7 @@ void CalibrationModule::DoCalibrationStep(){
                 }
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_daqWindow->m_daq.SendAll(false);
+                m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                 QThread::usleep(10000);
                 int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
                 m_dac_measured[fec][hybrid][chip].push_back(measured);
@@ -2442,7 +2442,7 @@ void CalibrationModule::DoCalibrationStep(){
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2", (int)m_dac_setting[m_theIndex]);
         }
-        m_daqWindow->m_daq.SendAll(false);
+        m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
         QThread::usleep(10000);
         int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
         m_dac_measured[fec][hybrid][chip][m_theIndex] = measured;
@@ -2747,7 +2747,7 @@ void CalibrationModule::Reset()
 
         m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ResetFEC();
         QThread::msleep(100);
-        m_daqWindow->m_daq.SendAll(false);
+        m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
     }
 }
 
@@ -3326,7 +3326,7 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",(int)m_dac_setting[n]);
             }
-            m_daqWindow->m_daq.SendAll(false);
+            m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
             QThread::usleep(10000);
             int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
             //int adc_result = m_hybridWindow->m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hybridIndex, m_vmmIndex, adc_chan);
@@ -3359,7 +3359,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
-                m_daqWindow->m_daq.SendAll(false);
+                m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                 QThread::usleep(10000);
                 int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
                 m_mean[0][fec][hybrid][chip].push_back(val);
@@ -3379,7 +3379,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
                     for(int bit=0; bit<m_number_bits;bit++){
                         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sd",bit,ch);
-                        m_daqWindow->m_daq.SendAll(false);
+                        m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                         QThread::usleep(1000);
                         int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid,chip, 2);
                         m_mean[bit][fec][hybrid][chip].push_back(val);
@@ -3398,7 +3398,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
-                    m_daqWindow->m_daq.SendAll(false);
+                    m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                     QThread::usleep(10000);
                     int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
                     m_mean[0][fec][hybrid][chip].push_back(val);

@@ -6,7 +6,7 @@
 using namespace std;
 
 
-DAQWindow::DAQWindow(QWidget *parent) :
+DAQWindow::DAQWindow(QMainWindow *parent) :
     QMainWindow(parent),
     ui(new Ui::daq_window),
     m_socketHandler(0),
@@ -66,8 +66,8 @@ DAQWindow::DAQWindow(QWidget *parent) :
     if(FileExists(correctedFileName.toStdString().c_str())){
         LoadConfig("default");
     }
-
 }
+
 bool DAQWindow::FileExists(const char *fileName)
 {
     std::ifstream infile(fileName);

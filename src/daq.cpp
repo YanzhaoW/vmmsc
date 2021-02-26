@@ -151,6 +151,27 @@ void DAQ::ApplyHybrids(int fec_index){
 
 
 void DAQ::ACQHandler(bool on){
+    QStringList subnetList;
+    QList<int> fecList;
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if ( GetFEC(j)){
+            QString ip = m_fecs[j].GetIP();
+            QStringList list = ip.split(".");
+            QString subnet = list[0] + "." + list[1] + "." + list[2];
+            if(!subnetList.contains(subnet)) {
+                subnetList.append(subnet);
+                fecList.append(j);
+            }
+
+        }
+    }
+    for(int n=0; n<subnetList.size();n++) {
+        //std::cout << "FEC ID " << fecList[n] << " subnet " << subnetList[n].toStdString() << std::endl;
+        if(on) m_fecs[fecList[n]].m_fecConfigModule->ACQon(true);
+        else if(!on) m_fecs[fecList[n]].m_fecConfigModule->ACQoff(true);
+
+    }
+/*
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if ( GetFEC(j)){
             if(on) m_fecs[j].m_fecConfigModule->ACQon(true);
@@ -159,6 +180,7 @@ void DAQ::ACQHandler(bool on){
 
         }
     }
+    */
 }
 
 
