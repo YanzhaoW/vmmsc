@@ -67,6 +67,7 @@ public:
     void GetActiveVMMs();
     void SaveDataAsCSV();
     void SavePlotsAsPDF();
+    void SaveToLog();
 
     double ThresholdDAC_to_mV(int dac);
     int Threshold_mV_to_DAC(double mV);
@@ -270,7 +271,9 @@ private:
     double m_pulser_mV = 0;
     int m_threshold_dac = 0;
     double m_threshold_mV = 0;
-
+    
+    std::vector<std::string> m_hybrid_labels;
+    std::string m_hybrid_id[FECS_PER_DAQ][HYBRIDS_PER_FEC];
     double m_dac_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     double m_dac_offset[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     int m_theIndex = 0;

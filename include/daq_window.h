@@ -122,6 +122,8 @@ private slots:
 
     void on_pushButtonCSV_pressed();
 
+    void on_pushButtonLog_pressed();
+
 public slots:
     // select the output directory
     //void on_output_directory_select();

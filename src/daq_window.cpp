@@ -417,8 +417,8 @@ void DAQWindow::on_selectDir_clicked()
         return;
     }
     QString fname = dirStr.split("/").last();
-    if(fname.contains("_daq0_")){
-        fname = fname.split("_daq0_").first();
+    if(fname.contains("_fec")){
+        fname = fname.split("_fec").first();
     }
 
 
@@ -463,6 +463,11 @@ void DAQWindow::on_pushButtonStoreCorrections_pressed()
 void DAQWindow::on_pushButtonCSV_pressed()
 {
     this->m_calib->SaveDataAsCSV();
+}
+
+void DAQWindow::on_pushButtonLog_pressed()
+{
+    this->m_calib->SaveToLog();
 }
 
 

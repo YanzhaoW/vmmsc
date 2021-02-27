@@ -189,7 +189,7 @@ bool FECConfigModule::SendConfig(int hybrid_index, int vmm_index, bool enableCon
     //debug
     if(IsDbgEnabled()) {
         sx.str("");
-        sx << "Send config to port: " << send_to_port;
+        sx << "Send config to port: " << send_to_port << " on IP " << ip.toStdString();
         GetMessageHandler()(sx);sx.str("");
     }
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
@@ -970,7 +970,7 @@ void FECConfigModule::ConfigTP( int hybrid_index)
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::configTP");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies from IP " + ip.toStdString() + "...","FEC_config_module::configTP");
         GetSocketHandler().ProcessReply("fec",ip);
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
@@ -1090,7 +1090,7 @@ void FECConfigModule::SetTriggerAcqConstants()
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setTriggerAcqConstants");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies from IP " + ip.toStdString() + "...","FEC_config_module::setTriggerAcqConstants");
         GetSocketHandler().ProcessReply("fec", ip);
     }
     else {
@@ -1160,7 +1160,7 @@ void FECConfigModule::SetS6clocks(int hybrid_index)
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::s6clocks");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies from IP " + ip.toStdString() + "...","FEC_config_module::s6clocks");
         GetSocketHandler().ProcessReply("fec",ip);
     } else {
         GetMessageHandler()("Timout while waiting for replies from VMM",
