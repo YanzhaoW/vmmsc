@@ -68,6 +68,7 @@ public:
     void SaveDataAsCSV();
     void SavePlotsAsPDF();
     void SaveToLog();
+    void ApplyCalib();
 
     double ThresholdDAC_to_mV(int dac);
     int Threshold_mV_to_DAC(double mV);
@@ -84,7 +85,7 @@ public slots:
     void readEvent();
     void updatePlot();
     void calibAndPlotChoices();
-    void Receive(const char* buffer, long size, int fecId);
+
 
 private:
 
@@ -129,6 +130,7 @@ private:
     int GetVMM(int vmmId);
 
     QString CreateFileName(QString name, int polarity=-1, double gain=-1, double peaktime=-1, double tac=-1, double bcclock=-1, int srat=-1);
+    void Receive(const char* buffer, long size, int fecId);
     int Receive_VMM3(const char* buffer, long size, int fecId);
     int Parse_VMM3(uint32_t data1, uint16_t data2, int fecId);
 
@@ -257,6 +259,9 @@ private:
     //Fit for offline ADC and time calibration
     std::vector<double> m_offset[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     std::vector<double> m_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+
+    std::vector<double> m_file_offset[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
+    std::vector<double> m_file_slope[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
 
     //Plot containers

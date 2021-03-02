@@ -470,6 +470,11 @@ void DAQWindow::on_pushButtonLog_pressed()
     this->m_calib->SaveToLog();
 }
 
+void DAQWindow::on_pushButtonApplyCalib_pressed()
+{
+    this->m_calib->ApplyCalib();
+}
+
 
 void DAQWindow::on_pushButtonSavePDF_pressed()
 {

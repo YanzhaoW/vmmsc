@@ -8,8 +8,10 @@
 
 #ifdef __linux__
 #include <arpa/inet.h>
+#include <sys/stat.h>
 #elif __APPLE__
 #include <arpa/inet.h>
+#include <sys/stat.h>
 #elif _WIN32
 #include <windows.h>
 #include <winsock.h>
@@ -53,12 +55,12 @@ void erfc_grad_mirrored(const real_1d_array &c, const real_1d_array &x, double &
 
 
 CalibrationModule::CalibrationModule(DAQWindow *top, QObject *parent) :
-    QObject(parent),
-    m_daqWindow{top},
-    m_dbg(false),
-    m_udpSocket(nullptr),
-    m_msg(new MessageHandler),
-    m_ignore16(false)
+                                                                        QObject(parent),
+                                                                        m_daqWindow{top},
+                                                                        m_dbg(false),
+                                                                        m_udpSocket(nullptr),
+                                                                        m_msg(new MessageHandler),
+                                                                        m_ignore16(false)
 {
 
     m_calibrationArray[0] = nullptr;
@@ -80,20 +82,20 @@ CalibrationModule::CalibrationModule(DAQWindow *top, QObject *parent) :
         plotVector[n]->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     }
     connect( m_daqWindow->ui->comboBoxFec, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(updatePlot()));
+            this, SLOT(updatePlot()));
     connect( m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(updatePlot()));
+            this, SLOT(updatePlot()));
     connect( m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(updatePlot()));
+            this, SLOT(updatePlot()));
     connect( m_daqWindow->ui->choiceBit, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(updatePlot()));
+            this, SLOT(updatePlot()));
 
     connect( m_daqWindow->ui->comboBoxRunMode, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(calibAndPlotChoices()));
+            this, SLOT(calibAndPlotChoices()));
     connect( m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(calibAndPlotChoices()));
+            this, SLOT(calibAndPlotChoices()));
     connect( m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
-             this, SLOT(calibAndPlotChoices()));
+            this, SLOT(calibAndPlotChoices()));
 
     m_daqWindow->ui->choicePlotTime->setVisible(true);
     m_daqWindow->ui->choicePlotTime->setEnabled(true);
@@ -213,8 +215,8 @@ void CalibrationModule::calibAndPlotChoices()
             }
 
             if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ||
-                    m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
-                    m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 5 ) {
+                m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
+                m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 5 ) {
                 m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
             }
             else {
@@ -298,16 +300,23 @@ void CalibrationModule::calibAndPlotChoices()
         }
 
         // S-curve (fit per channel)
-        if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4 && m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 0-7"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 8-15"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 16-23"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 24-31"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 32-39"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 40-47"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 48-55"));
-            m_daqWindow->ui->comboBoxFec->addItem(QString("CH 56-63"));
-            m_daqWindow->ui->label_vmm->setText("Display Channels");
+        if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4) {
+            m_daqWindow->ui->comboBoxFec->clear();
+            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 0-7"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 8-15"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 16-23"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 24-31"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 32-39"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 40-47"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 48-55"));
+                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 56-63"));
+                m_daqWindow->ui->label_vmm->setText("Display Channels");
+            }
+            else {
+                m_daqWindow->ui->comboBoxFec->addItem(QString("selected VMM"));
+                m_daqWindow->ui->label_vmm->setText("Display VMM");
+            }
         }
         // ADC and time calib (depending on plot choice)
         else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() <= 1 && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
@@ -394,7 +403,15 @@ void CalibrationModule::StopDataTaking()
 }
 void CalibrationModule::StartDataTaking()
 {
-    emit m_daqWindow->ui->onACQ->clicked();
+    m_daqWindow->ui->onACQ->setCheckable(true);
+    m_daqWindow->ui->onACQ->setChecked(true);
+    m_daqWindow->ui->offACQ->setChecked(false);
+    m_daqWindow->ui->Send->setEnabled(false);
+
+    m_daqWindow->m_daq.SendAll(false);
+    m_daqWindow->m_daq.ACQHandler(true);
+
+    //emit m_daqWindow->ui->onACQ->clicked();
     QThread::usleep(1000);
     ConnectDAQSocket();
     m_daqWindow->ui->pushButtonTakeData->setChecked(true);
@@ -583,9 +600,9 @@ void CalibrationModule::FitSCurve() {
             printf("error scale %f\n", rep.errpar[0]);
             printf("error mean %f\n", rep.errpar[1]);
             printf("error sigma %f\n", rep.errpar[2]);
-*/
+            */
 
-            m_fit_error_scale.push_back(rep.errpar[0]);
+                m_fit_error_scale.push_back(rep.errpar[0]);
             m_fit_error_mean.push_back(rep.errpar[1]);
             m_fit_error_sigma.push_back(rep.errpar[2]);
             m_fit_scale.push_back(c[0]);
@@ -701,6 +718,7 @@ void CalibrationModule::FitOfflineCalibrationData()
                     meanSlope += slope;
                     meanOffset += offset;
                 }
+
             }
             m_slope[fec][hybrid][chip].push_back(slope);
             m_offset[fec][hybrid][chip].push_back(offset);
@@ -730,8 +748,6 @@ void CalibrationModule::FitOfflineCalibrationData()
             QJsonArray slopeArray;
             double slope_corr = 1;
             double mean_offset = 0;
-            double slope = 0;
-            double offset = 0;
             if(m_modeIndex == 1) {
                 m_dac_slope[fec][hybrid][chip] = mean_slope_perChip[vmm];
                 m_dac_offset[fec][hybrid][chip] = mean_offset_perChip[vmm];
@@ -745,53 +761,10 @@ void CalibrationModule::FitOfflineCalibrationData()
                 mean_offset = 0;
             }
             for(unsigned int ch = 0; ch<64; ch++){
-                //Channel with missing data
-                if(m_slope[fec][hybrid][chip][ch] == 0.0)
-                {
-                    //in case the neighbouring channels have data, use it (gaps of 1 or 2 missing channels)
-                    if(ch == 0) {
-                        if( m_slope[fec][hybrid][chip][1] != 0.0) {
-                            offset =  m_offset[fec][hybrid][chip][1] - mean_offset*m_slope[fec][hybrid][chip][1]*slope_corr;
-                            slope = 1/(m_slope[fec][hybrid][chip][1] * slope_corr);
-                        }
-                        else if( m_slope[fec][hybrid][chip][2] != 0.0) {
-                            offset =  m_offset[fec][hybrid][chip][2] - mean_offset*m_slope[fec][hybrid][chip][2]*slope_corr;
-                            slope = 1/(m_slope[fec][hybrid][chip][2] * slope_corr);
-                        }
-                    }
-                    else if(ch == 63) {
-                        if( m_slope[fec][hybrid][chip][62] != 0.0) {
-                            offset =  m_offset[fec][hybrid][chip][62] - mean_offset*m_slope[fec][hybrid][chip][62]*slope_corr;
-                            slope = 1/(m_slope[fec][hybrid][chip][62] * slope_corr);
-
-                        }
-                        else if( m_slope[fec][hybrid][chip][61] != 0.0) {
-                            offset =  m_offset[fec][hybrid][chip][61] - mean_offset*m_slope[fec][hybrid][chip][61]*slope_corr;
-                            slope = 1/(m_slope[fec][hybrid][chip][61] * slope_corr);
-                        }
-                    }
-                    else {
-                        if( m_slope[fec][hybrid][chip][ch+1] != 0.0) {
-                            if(m_slope[fec][hybrid][chip][ch-1] != 0.0) {
-                                offset =  0.5*(m_offset[fec][hybrid][chip][ch+1]+m_offset[fec][hybrid][chip][ch-1]) - mean_offset*0.5*(m_slope[fec][hybrid][chip][ch+1]+m_slope[fec][hybrid][chip][ch-1])*slope_corr;
-                                slope = 1/(0.5*(m_slope[fec][hybrid][chip][ch+1]+m_slope[fec][hybrid][chip][ch-1]) * slope_corr);
-                            }
-                            else if(ch>=2 && m_slope[fec][hybrid][chip][ch-2] != 0.0) {
-                                offset =  0.5*(m_offset[fec][hybrid][chip][ch+1]+m_offset[fec][hybrid][chip][ch-2]) - mean_offset*0.5*(m_slope[fec][hybrid][chip][ch+1]+m_slope[fec][hybrid][chip][ch-2])*slope_corr;
-                                slope = 1/(0.5*(m_slope[fec][hybrid][chip][ch+1]+m_slope[fec][hybrid][chip][ch-2]) * slope_corr);
-                            }
-                        }
-                        else if( ch <= 61 && m_slope[fec][hybrid][chip][ch+2] != 0.0) {
-                            if( m_slope[fec][hybrid][chip][ch-1] != 0.0) {
-                                offset =  0.5*(m_offset[fec][hybrid][chip][ch+2]+m_offset[fec][hybrid][chip][ch-1]) - mean_offset*0.5*(m_slope[fec][hybrid][chip][ch+2]+m_slope[fec][hybrid][chip][ch-1])*slope_corr;
-                                slope = 1/(0.5*(m_slope[fec][hybrid][chip][ch+2]+m_slope[fec][hybrid][chip][ch-1]) * slope_corr);
-                            }
-                        }
-                    }
-
-                }
-                //Channel has data
-                else
+                double slope = 0;
+                double offset = 0;
+                //Channel with data
+                if(m_slope[fec][hybrid][chip][ch] != 0.0)
                 {
                     if(m_modeIndex == 2) {
                         offset =  m_offset[fec][hybrid][chip][ch] - (m_fit_start_time[fec][hybrid][chip][ch])*m_slope[fec][hybrid][chip][ch];
@@ -832,7 +805,7 @@ void CalibrationModule::FitOfflineCalibrationData()
 
 
 void CalibrationModule::SaveToLog() {
-    //if(!m_dataAvailable) return;
+    if(!m_dataAvailable || !IsCalibration()) return;
     if(! (m_modeIndex == 1 || m_modeIndex == 2 | m_modeIndex == 7)) {
         return;
     }
@@ -862,21 +835,31 @@ void CalibrationModule::SaveToLog() {
     {
         measurementName = "Pedestal";
     }
-    std::string stored_labels;
-    for(int n=0; n< m_hybrid_labels.size() - 1; n++) {
-        stored_labels += m_hybrid_labels[0] + ",";
+    std::string stored_labels="";
+    if(!m_hybrid_labels.empty()) {
+        for(int n=0; n< m_hybrid_labels.size() - 1; n++) {
+            stored_labels += m_hybrid_labels[n] + ",";
+        }
+        stored_labels += m_hybrid_labels[m_hybrid_labels.size()-1];
     }
 
     bool ok;
     QStringList list = QInputDialog::getText(nullptr, tr("Hybrid labels of connected hybrids"),
-                                             tr("Please add hybrid labels as comma separated list to write to the log!"),
+                                             tr("Please add hybrid labels (one per hybrid, not one per VMM) as comma separated list to write to the log!"),
                                              QLineEdit::Normal,stored_labels.c_str(),&ok).split(",");
 
-    if(list.count() > 0) {
+    if(!ok) {
+        return;
+    }
+    if( list.count() > 0) {
         m_hybrid_labels.clear();
         for(int n=0; n<list.count();n++) {
+            std::cout << n << " " << list.count() << " " << list[n].toStdString() << std::endl;
             m_hybrid_labels.push_back(list[n].toStdString());
         }
+    }
+    for(int n=list.count(); n<m_vmmActs.size()*0.5; n++) {
+        m_hybrid_labels.push_back("");
     }
 
     if(m_outFile.is_open())
@@ -884,12 +867,13 @@ void CalibrationModule::SaveToLog() {
         m_outFile.close();
     }
     struct stat buffer;
-    if(stat (fileName.toStdString().c_str(), &buffer) == 0) {
-        m_outFile.open(fileName.toStdString().c_str(), std::ofstream::out|std::ofstream::app);
+    QString theName = m_daqWindow->GetApplicationPath() + "/" + fileName;
+    if(stat (theName.toStdString().c_str(), &buffer) == 0) {
+        m_outFile.open(theName.toStdString().c_str(), std::ofstream::out|std::ofstream::app);
     }
     else {
-        m_outFile.open(fileName.toStdString().c_str(), std::ofstream::out);
-        m_outFile << "date, hybrid_label, hybrid_id, test, gain, peaktime, bcclock, tac, polarity, timing_at_threshold, vmm0 result, vmm0 summary, vmm1 result, vmm1 summary, total\n";
+        m_outFile.open(theName.toStdString().c_str(), std::ofstream::out);
+        m_outFile << "date, hybrid_label, hybrid_id, test, gain, peaktime, bcclock, tac, polarity, timing_at_threshold, vmm0 details, vmm0 summary, vmm1 details, vmm1 summary, hybrid\n";
     }
     QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
@@ -905,9 +889,13 @@ void CalibrationModule::SaveToLog() {
         double median=0;
         double smallest=0;
         double largest=0;
+        double smallestChannel=0;
+        double largestChannel=0;
         double smallest10percent=0;
         double largest10percent=0;
         double stddev=0;
+        bool isGoodVMM0 = true;
+        bool isGoodVMM1 = true;
         if(m_modeIndex == 7) {
             size = m_mean[0][fec][hybrid][chip].size();
             norm = static_cast<double>(size);
@@ -935,8 +923,12 @@ void CalibrationModule::SaveToLog() {
                 stddev = std::accumulate(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end(), 0.0, variance_func);
                 stddev = sqrt(stddev);
 
-                smallest = *std::min_element(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end());
-                largest = *std::max_element(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end());
+                std::vector<double>::iterator result = std::min_element(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end());
+                smallest = *result;
+                smallestChannel = std::distance(m_mean[0][fec][hybrid][chip].begin(), result);
+                result = std::max_element(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end());
+                largest = *result;
+                largestChannel = std::distance(m_mean[0][fec][hybrid][chip].begin(), result);
             }
         }
         if(chip == 0) {
@@ -946,47 +938,181 @@ void CalibrationModule::SaveToLog() {
             peaktime = m_shaping_time[fec][hybrid][chip];
             tac = m_tac_slope[fec][hybrid][chip];
             bcclock = m_bc_clock[fec][hybrid];
-            m_outFile << theDate.toStdString() << " " << m_hybrid_labels[vmm] << "," << m_hybrid_id[fec][hybrid] << "," << measurementName.toStdString() << "," << gain << "," << peaktime << "," << bcclock  << "," << tac << "," << polarity << "," << timing_at_threshold << ",";
+            m_outFile << theDate.toStdString() << "," << m_hybrid_labels[vmm*0.5] << "," << m_hybrid_id[fec][hybrid] << "," << measurementName.toStdString() << "," << gain << "," << peaktime << "," << bcclock  << "," << tac << "," << polarity << "," << timing_at_threshold << ",";
             if(m_modeIndex == 1 || m_modeIndex == 2) {
                 for(int ch = 0; ch<64; ch++){
                     if(m_slope[fec][hybrid][chip][ch] == 0) {
                         faultyChannels0.push_back(ch);
                     }
                 }
-                m_outFile << "broken channels: ";
-                for(auto err: faultyChannels0) {
-                    m_outFile << err << " ";
+                if(faultyChannels0.size() == 0) {
+                    m_outFile << ",vmm0 number bad channels: 0,";
                 }
-                m_outFile << "," << faultyChannels0.size() << ",";
+                else {
+                    m_outFile << "vmm0 bad channels: ";
+                    for(auto err: faultyChannels0) {
+                        m_outFile << err << " ";
+                    }
+                    m_outFile << ",vmm0 number bad channels: " << faultyChannels0.size() << ",";
+                }
             }
             else {
-                m_outFile << "mean:" << mean << " " << "median:" << median << " " << "stddev:" << stddev << " " << "smallest:" << smallest << " "  << "smallest10percent:" << smallest10percent << " " << "biggest:" << largest << " "  << "biggest:" << largest10percent << ",";
-                //Find criteria for bad pedestals
-                m_outFile << " " << ",";
-           }
+                m_outFile << "mean (" << mean << " mV)  " << "median (" << median << " mV)  " << "stddev (" << stddev << " mV)  " << "smallest (" << smallest << " mV at channel " << smallestChannel <<")  "
+                          << "smallest 10 percent (" << smallest10percent << " mV)  " << "biggest (" << largest << " mV at channel " << largestChannel <<")  "  << "biggest 10 percent (" << largest10percent << " mV),";
+                std::string summary = "ok";
+                if(largest - smallest > 10 || stddev > 5) {
+                    summary = "bad";
+                    isGoodVMM0 = false;
+                }
+                m_outFile << summary << ",";
+            }
         }
         else {
             if(m_modeIndex == 1 || m_modeIndex == 2) {
-            for(int ch = 0; ch<64; ch++){
-                if(m_slope[fec][hybrid][chip][ch] == 0) {
-                    faultyChannels1.push_back(ch);
+                for(int ch = 0; ch<64; ch++){
+                    if(m_slope[fec][hybrid][chip][ch] == 0) {
+                        faultyChannels1.push_back(ch);
+                    }
+                }
+                if(faultyChannels1.size() == 0) {
+                    m_outFile << ",vmm1 number bad channels: 0,";
+                }
+                else {
+                    m_outFile << "vmm1 bad channels: ";
+                    for(auto err: faultyChannels1) {
+                        m_outFile << err << " ";
+                    }
+                    m_outFile << ",vmm1 number bad channels: " << faultyChannels1.size() << ",";
+                }
+                if(faultyChannels0.size() + faultyChannels1.size() == 0) {
+                    m_outFile << "ok\n";
+                }
+                else {
+                    m_outFile << "hybrid number bad channels: " << faultyChannels0.size() + faultyChannels1.size() << "\n";
                 }
             }
-            m_outFile << "broken channels: ";
-            for(auto err: faultyChannels1) {
-                m_outFile << err << " ";
-            }
-            m_outFile << "," << faultyChannels1.size() << ",";
-            m_outFile << "," << faultyChannels0.size() + faultyChannels1.size() << "\n";
-            }
             else {
-                m_outFile << "mean:" << mean << " " << "median:" << median << " " << "stddev:" << stddev << " " << "smallest:" << smallest << " "  << "smallest10percent:" << smallest10percent << " " << "biggest:" << largest << " "  << "biggest:" << largest10percent << ",";
-                //Find criteria for bad pedestals
-                m_outFile << " " << "\n";
+                m_outFile << "mean (" << mean << " mV)  " << "median (" << median << " mV)  " << "stddev (" << stddev << " mV)  " << "smallest (" << smallest << " mV at channel " << smallestChannel <<")  "
+                          << "smallest 10 percent (" << smallest10percent << " mV)  " << "biggest (" << largest << " mV at channel " << largestChannel <<")  "  << "biggest 10 percent (" << largest10percent << " mV),";
+                std::string summary = "ok";
+                if(largest - smallest > 10 || stddev > 5) {
+                    summary = "bad";
+                    isGoodVMM1 = false;
+                }
+                m_outFile << summary << ",";
+                if(isGoodVMM0 == false || isGoodVMM1 == false) {
+                    m_outFile << "bad\n";
+                }
+                else {
+                    m_outFile << "ok\n";
+                }
+
             }
         }
     }
     m_outFile.close();
+}
+
+
+void CalibrationModule::ApplyCalib() {
+    if(!m_dataAvailable || m_modeIndex > 2 || !IsCalibration() ) return;
+    QString dirStr = QFileDialog::getOpenFileName(nullptr, tr("Select calibration file"), m_daqWindow->GetApplicationPath(), tr("Text (*.json)"));
+    if(dirStr == "") {
+        return;
+    }
+    QString fname = dirStr.split("/").last();
+    //std::cout << fname.toStdString() << " " <<  dirStr.toStdString() << std::endl;
+
+    QMessageBox msgBox;
+    QPushButton *hybridIDButton = msgBox.addButton(tr("Use hybrid ID"), QMessageBox::ActionRole);
+    QPushButton *fecPositionButton = msgBox.addButton(tr("Use mapping (FEC, hybrid)"), QMessageBox::ActionRole);
+    msgBox.setText("Apply stored calibration to data.");
+    msgBox.setInformativeText("Do you want to apply the calibration using the hybrid ID or the mapping (FEC, hybrid)?");
+    msgBox.exec();
+    bool useHybridID = false;
+    if (msgBox.clickedButton() == hybridIDButton) {
+        useHybridID = true;
+    }
+
+    QFile file;
+    file.setFileName(dirStr);
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString val = file.readAll();
+    file.close();
+    QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
+
+    QJsonObject jsonObject = doc.object();
+    QJsonArray jsonArray = jsonObject["vmm_calibration"].toArray();
+
+    foreach (const QJsonValue & value, jsonArray) {
+        int fec = 0;
+        int hybrid = 0;
+        int chip = 0;
+        QString hybridID = "";
+        std::vector<double> adc_slopes;
+        std::vector<double> adc_offsets;
+        std::vector<double> time_slopes;
+        std::vector<double> time_offsets;
+        const auto& obj = value.toObject();
+        const auto& keys = obj.keys();
+        int fecID = obj["fecID"].toInt();
+        fec = m_fecIDPos[fecID];
+        //std::cout << "FEC ID " << fecID << " " << fec << std::endl;
+
+        hybridID = obj["hybridID"].toString();
+        //std::cout << "hybridID " << hybridID.toStdString() << std::endl;
+
+        chip = obj["vmmID"].toInt()%2;
+        hybrid = obj["vmmID"].toInt()/2;
+        if(useHybridID) {
+            for(int f=0; f < FECS_PER_DAQ; f++) {
+                for(int h=0; h < HYBRIDS_PER_FEC; h++) {
+                    if(m_hybrid_id[f][h] == hybridID.toStdString()) {
+                        fec = f;
+                        hybrid = h;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        std::string m_hybrid_id[FECS_PER_DAQ][HYBRIDS_PER_FEC];
+        //std::cout << "hybrid " << hybrid << " " << chip << std::endl;
+        m_file_slope[fec][hybrid][chip].clear();
+        m_file_offset[fec][hybrid][chip].clear();
+
+        if(m_modeIndex == 1) {
+
+            auto const & slopes = obj["adc_slopes"].toArray();
+            auto const & offsets = obj["adc_offsets"].toArray();
+            for(const auto &val: slopes) {
+                m_file_slope[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "adc slopes " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: offsets) {
+                m_file_offset[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "adc offsets " << val.toDouble() << std::endl;
+            }
+
+
+        }
+        else if(m_modeIndex == 2) {
+            auto const & slopes = obj["time_slopes"].toArray();
+            auto const & offsets = obj["time_offsets"].toArray();
+            for(const auto &val: slopes) {
+                m_file_slope[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "time slopes " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: offsets) {
+                m_file_offset[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "time offsets " << val.toDouble() << std::endl;
+            }
+
+        }
+
+    }
+    PlotData();
 }
 
 
@@ -1139,7 +1265,7 @@ void CalibrationModule::SaveDataAsCSV() {
                     for(int bit=0; bit<m_number_bits;bit++){
                         m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << ","
                                   << m_mean[bit][fec][hybrid][chip][ch] << "," << m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch]
-                                     << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
+                                  << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
             }
@@ -1159,7 +1285,7 @@ void CalibrationModule::SaveDataAsCSV() {
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
                         m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit*3.125*TIME_FACTOR << ","  <<
-                                     m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch] << ",";
+                            m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch] << ",";
                         double theTotalTime = 0;
                         int bcid = m_fit_start_bcid[fec][hybrid][chip][ch];
                         int z = 0;
@@ -1633,12 +1759,17 @@ void CalibrationModule::PlotData(){
             {
                 // calibrated time
                 if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+                    int numPlots = 3;
+                    if(m_file_offset[fec][hybrid][chip].size() == 64 && m_file_offset[fec][hybrid][chip].size() == 64) {
+                        numPlots = 4;
+                    }
                     for(int bit=0; bit<m_number_bits;bit++){
+
                         plot->addGraph();
-                        plot->graph(bit*3)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
-                        plot->graph(bit*3)->setPen(QPen(Qt::black,1,Qt::SolidLine));
+                        plot->graph(bit*numPlots)->setData(
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
+                        plot->graph(bit*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
@@ -1651,58 +1782,98 @@ void CalibrationModule::PlotData(){
                             y2.push_back(m_dac_measured[fec][hybrid][chip][bit]);
                         }
                         plot->addGraph();
-                        plot->graph(bit*3+1)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(y));
-                        plot->graph(bit*3+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                        plot->graph(bit*numPlots+1)->setData(
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(y));
+                        plot->graph(bit*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
 
                         plot->addGraph();
-                        plot->graph(bit*3+2)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(y2));
+                        plot->graph(bit*numPlots+2)->setData(
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(y2));
 
-                        plot->graph(bit*3+2)->setPen(QPen(Qt::blue,1,Qt::DashLine));
+                        plot->graph(bit*numPlots+2)->setPen(QPen(Qt::blue,1,Qt::DashLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
 
-
+                        if(numPlots == 4) {
+                            std::vector<double> y3;
+                            for(unsigned int ch=0; ch<64; ch++)
+                            {
+                                double adc = (m_mean[bit][fec][hybrid][chip][ch] - m_file_offset[fec][hybrid][chip][ch])*  m_file_slope[fec][hybrid][chip][ch];
+                                y3.push_back(adc);
+                            }
+                            plot->addGraph();
+                            plot->graph(bit*numPlots+3)->setData(
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(y3));
+                            plot->graph(bit*numPlots+3)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
+                            if(bit > 0) {
+                                plot->legend->removeItem(plot->legend->itemCount()-1);
+                            }
+                        }
                     }
                     plot->graph(0)->setName("measured");
                     plot->graph(1)->setName("corrected");
                     plot->graph(2)->setName("DAC measured");
+                    if(numPlots == 4) {
+                        plot->graph(3)->setName("corrected from file");
+                    }
                     plot->legend->setVisible(true);
                     plot->legend->setFont(QFont("Helvetica",8));
                 }
                 // corrections
                 else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+                    int numPlots = 2;
+                    if(m_file_offset[fec][hybrid][chip].size() == 64 && m_file_offset[fec][hybrid][chip].size() == 64) {
+                        numPlots = 4;
+                    }
                     plot->addGraph();
                     std::vector<double> x;
                     std::vector<double> y_slope;
                     std::vector<double> y_offset;
                     for(unsigned int ch=0; ch<64; ch++)
                     {
-                        if(!(m_slope[fec][hybrid][chip][ch] == 0.0 && m_offset[fec][hybrid][chip][ch] == -1.0)) {
-                            x.push_back(ch);
-                            y_offset.push_back(m_offset[fec][hybrid][chip][ch]);
-                            y_slope.push_back(m_slope[fec][hybrid][chip][ch]);
-                        }
+                        //if(!(m_slope[fec][hybrid][chip][ch] == 0.0 && m_offset[fec][hybrid][chip][ch] == -1.0)) {
+                        x.push_back(ch);
+                        y_offset.push_back(m_offset[fec][hybrid][chip][ch]);
+                        y_slope.push_back(m_slope[fec][hybrid][chip][ch]);
+                        //}
                     }
                     plot->graph(0)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y_offset));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(m_offset[fec][hybrid][chip]));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                     plot->graph(0)->setName("offset");
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y_slope));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(m_slope[fec][hybrid][chip]));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                     plot->graph(1)->setName("slope");
+                    if(numPlots == 4) {
+                        plot->addGraph();
+                        plot->graph(2)->setData(
+                            QVector<double>::fromStdVector(x),
+                            QVector<double>::fromStdVector(m_file_offset[fec][hybrid][chip]));
+                        plot->graph(2)->setPen(QPen(Qt::cyan,2,Qt::DotLine));
+                        plot->graph(2)->setName("offset from file");
+
+                        plot->addGraph();
+                        plot->graph(3)->setData(
+                            QVector<double>::fromStdVector(x),
+                            QVector<double>::fromStdVector(m_file_slope[fec][hybrid][chip]));
+                        plot->graph(3)->setPen(QPen(Qt::green,2,Qt::DotLine));
+                        plot->graph(3)->setName("slope from file");
+                    }
+
+
+
                     plot->legend->setVisible(true);
                     plot->legend->setFont(QFont("Helvetica",8));
                     plot->yAxis->rescale();
@@ -1727,15 +1898,15 @@ void CalibrationModule::PlotData(){
                     }
                     plot->addGraph();
                     plot->graph(0)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(y));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue));
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(yf));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(yf));
                     plot->graph(1)->setPen(QPen(Qt::red));
 
 
@@ -1779,8 +1950,8 @@ void CalibrationModule::PlotData(){
                     plot->addGraph();
 
                     plot->graph(0)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(y));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::darkRed));
                     plot->graph(0)->setBrush(QBrush(Qt::red));
@@ -1804,36 +1975,36 @@ void CalibrationModule::PlotData(){
                         std::vector<double> yc;
                         for(unsigned int ch=0; ch<64; ch++)
                         {
-                            if(m_mean[bit][fec][hybrid][chip][ch] != -9999) {
-                                x.push_back(ch);
-                                y.push_back(m_mean[bit][fec][hybrid][chip][ch]);
+                            //if(m_mean[bit][fec][hybrid][chip][ch] != -9999) {
+                            x.push_back(ch);
+                            y.push_back(m_mean[bit][fec][hybrid][chip][ch]);
 
-                            }
+                            //}
                             double theTotalTime = 0;
                             int bcid = m_fit_start_bcid[fec][hybrid][chip][ch];
                             int z = 0;
                             for(int n=0; n<NUM_BCID; n++) {
-                                if(m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] != -9999) {
-                                    theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*m_bc_period[fec][hybrid] + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch]);
-                                    z++;
-                                }
+                                //if(m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] != -9999) {
+                                theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*m_bc_period[fec][hybrid] + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch]);
+                                z++;
+                                //}
                             }
-                            if(z>0) {
-                                xc.push_back(ch);
-                                yc.push_back(theTotalTime);
-                            }
+                            //if(z>0) {
+                            xc.push_back(ch);
+                            yc.push_back(theTotalTime);
+                            //}
                         }
                         plot->graph(bit*2)->setData(
-                                    QVector<double>::fromStdVector(x),
-                                    QVector<double>::fromStdVector(y));
+                            QVector<double>::fromStdVector(x),
+                            QVector<double>::fromStdVector(y));
                         plot->graph(bit*2)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
                         plot->addGraph();
                         plot->graph(bit*2+1)->setData(
-                                    QVector<double>::fromStdVector(xc),
-                                    QVector<double>::fromStdVector(yc));
+                            QVector<double>::fromStdVector(xc),
+                            QVector<double>::fromStdVector(yc));
                         plot->graph(bit*2+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -1859,15 +2030,15 @@ void CalibrationModule::PlotData(){
                         }
                     }
                     plot->graph(0)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y_offset));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(y_offset));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
 
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y_slope));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(y_slope));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                     plot->graph(0)->setName("offset");
                     plot->graph(1)->setName("slope");
@@ -1904,15 +2075,15 @@ void CalibrationModule::PlotData(){
                         }
                     }
                     plot->graph(0)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(y));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                     plot->graph(0)->setName("measured");
                     plot->addGraph();
                     plot->graph(1)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(yf));
+                        QVector<double>::fromStdVector(x),
+                        QVector<double>::fromStdVector(yf));
                     plot->graph(1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                     plot->graph(1)->setName(QString("fit: " + QString::number(slope) + "* t + " + QString::number(offset)));
 
@@ -1944,8 +2115,8 @@ void CalibrationModule::PlotData(){
                         }
 
                         plot->graph(n)->setData(
-                                    QVector<double>::fromStdVector(x),
-                                    QVector<double>::fromStdVector(y));
+                            QVector<double>::fromStdVector(x),
+                            QVector<double>::fromStdVector(y));
                         plot->graph(n)->setScatterStyle(QCPScatterStyle::ssDisc);
 
                         if(bcid-m_most_common_BCID == -2) {
@@ -1993,8 +2164,8 @@ void CalibrationModule::PlotData(){
                         }
 
                         plot->graph(n)->setData(
-                                    QVector<double>::fromStdVector(x),
-                                    QVector<double>::fromStdVector(y));
+                            QVector<double>::fromStdVector(x),
+                            QVector<double>::fromStdVector(y));
 
                         if(bcid-m_most_common_BCID == -2) {
                             plot->graph(n)->setPen(QPen(Qt::darkCyan,2,Qt::SolidLine));
@@ -2029,8 +2200,8 @@ void CalibrationModule::PlotData(){
                 for(int bit=0; bit<m_number_bits;bit++){
                     plot->addGraph();
                     plot->graph(bit)->setData(
-                                QVector<double>::fromStdVector(m_x),
-                                QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
+                        QVector<double>::fromStdVector(m_x),
+                        QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
                     plot->graph(bit)->setPen(QPen(QColor(static_cast<unsigned int>(bit)*colorFactor)));
                     plot->legend->removeItem(plot->legend->itemCount()-1);
                 }
@@ -2155,8 +2326,8 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Threshold"));
                 plot->graph(0)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                    QVector<double>::fromStdVector(m_x),
+                    QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                 plot->yAxis->rescale();
             }
@@ -2168,8 +2339,8 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Pedestal"));
                 plot->graph(0)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                    QVector<double>::fromStdVector(m_x),
+                    QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
 
             }
@@ -2187,8 +2358,8 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                            QVector<double>::fromStdVector(m_dac_setting),
-                            QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                    QVector<double>::fromStdVector(m_dac_setting),
+                    QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
             }
             //Threshold DAC
@@ -2205,8 +2376,8 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                            QVector<double>::fromStdVector(m_dac_setting),
-                            QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                    QVector<double>::fromStdVector(m_dac_setting),
+                    QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
             }
         }
@@ -2285,9 +2456,9 @@ void CalibrationModule::StartCalibration(){
     emit m_daqWindow->ui->openConnection->clicked();
     QThread::usleep(1000);
     if(! (m_daqWindow->ui->connectionLabel->text()==QString("all alive"))) {
-        std::cout<<"Communication couldn't be established! \n exit calibration"<<std::endl;
-        m_daqWindow->ui->InfoScreen->setTextColor(Qt::red);
-        m_daqWindow->ui->InfoScreen->append(QString("Communication couldn't be established! \n exit calibration"));
+        int ret = QMessageBox::critical(nullptr, tr("FEC communication"),
+                                        "Communication couldn't be established!\nexit calibration!",
+                                        QMessageBox::Ok);
         m_daqWindow->ui->pushButtonTakeData->setChecked(false);
         return;
     }
@@ -2306,7 +2477,7 @@ void CalibrationModule::StartCalibration(){
 
     GetActiveVMMs();
     InitializeDataStructures();
-    
+
     //Time calibration needs different scan length depending on bc_period, works only for 40 MHz
     if(m_modeIndex == 2) {
 
@@ -2390,12 +2561,12 @@ void CalibrationModule::StartCalibration(){
 
 
         if(m_theFEC > 8 || m_theFEC < 1 || m_theVMM > 15 || m_theVMM < 0
-                || m_theDirection < 0 || m_theDirection > 1
-                || m_scan_type < 0 || m_scan_type > 1
-                || m_pulser_dac < -1 || m_pulser_dac > 1023
-                || ((m_scan_type == 1) && (m_pulser_dac == -1))
-                || threshold < 0 || threshold > 1023
-                || scanWidth < 20 || scanWidth > 200) {
+            || m_theDirection < 0 || m_theDirection > 1
+            || m_scan_type < 0 || m_scan_type > 1
+            || m_pulser_dac < -1 || m_pulser_dac > 1023
+            || ((m_scan_type == 1) && (m_pulser_dac == -1))
+            || threshold < 0 || threshold > 1023
+            || scanWidth < 20 || scanWidth > 200) {
             int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
                                            "Incorrect range or combination of paramters!\n",
                                            QMessageBox::Ok);
@@ -2732,7 +2903,7 @@ void CalibrationModule::AccumulateData(){
 
 
         std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Finished calibration acquisition " <<
-                     m_bitCount << " after " << delay_ms  << " ms!"  << std::endl;
+            m_bitCount << " after " << delay_ms  << " ms!"  << std::endl;
         //Finish calibration
         if(m_bitCount == m_number_bits-1) {
             continueCalibration = false;
@@ -2899,7 +3070,7 @@ void CalibrationModule::AccumulateData(){
                                 if(!foundEdge) {
                                     for(int bit = 0; bit<m_number_bits-1; bit++){
                                         if(m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch] >= 0.5 && m_percent_bcid[bcid-min][bit+1][fec][hybrid][chip][ch] <= 0.5
-                                                && m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch] <= 0.5 && m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] >= 0.5) {
+                                            && m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch] <= 0.5 && m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] >= 0.5) {
                                             theBCIDIndex_50 = bcid-min+1;
                                             theTimeIndex_50 = bit;
                                             double theTime = bit*3.125*TIME_FACTOR + (0.5 - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch])*3.125*TIME_FACTOR /(m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch]);
@@ -3127,7 +3298,11 @@ void CalibrationModule::SaveCorrections(){
                 name += "_FEC" + QString::number(fecId);
             }
             lastFEC = fec+1;
+            if(chip == 0) {
+                name += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
+            }
             name += "_VMM" + QString::number(hybrid*2+chip);
+
         }
         QString theName = CreateFileName(name);
         QFile jsonFile(theName +  ".json");
@@ -3147,9 +3322,11 @@ void CalibrationModule::SaveCorrections(){
             QJsonArray timeOffsetArray;
             QJsonArray timeSlopeArray;
             calibrationObject.insert("fecID",fecId);
+            calibrationObject.insert("hybridID",QString::fromStdString(m_hybrid_id[fec][hybrid]));
             calibrationObject.insert("vmmID",hybrid*2+chip);
             int theVmmId = 0;
             int theFECId = 0;
+            QString theHybridId = "";
             if(m_calibrationArray[0]) {
                 foreach (const QJsonValue & value, *m_calibrationArray[0]) {
                     QJsonArray tempOffsetArray;
@@ -3162,6 +3339,9 @@ void CalibrationModule::SaveCorrections(){
                         }
                         if(key == "fecID") {
                             theFECId = obj[key].toInt();
+                        }
+                        if(key == "hybridID") {
+                            theHybridId = obj[key].toString();
                         }
                         if(key == "adc_offsets") {
 
@@ -3197,6 +3377,9 @@ void CalibrationModule::SaveCorrections(){
                         }
                         if(key == "fecID") {
                             theFECId = obj[key].toInt();
+                        }
+                        if(key == "hybridID") {
+                            theHybridId = obj[key].toString();
                         }
                         if(key == "time_offsets") {
                             auto const & arr = obj[key].toArray();
@@ -3521,6 +3704,8 @@ void CalibrationModule::InitializeDataStructures()
 
                         m_offset[fec][hybrid][vmm].clear();
                         m_slope[fec][hybrid][vmm].clear();
+                        m_file_offset[fec][hybrid][vmm].clear();
+                        m_file_slope[fec][hybrid][vmm].clear();
                         m_calVal[fec][hybrid][vmm].clear();
                         m_bitVal[fec][hybrid][vmm].clear();
                         m_y[fec][hybrid][vmm].clear();
@@ -3842,8 +4027,8 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
                 sx.str("");
                 sx << "Overflow: frame counter " << m_commonData.m_frameCounter
                    << ", last frame counter " << m_commonData.m_lastFrameCounter <<
-                      ", difference " << fcDiff <<
-                      ", correction " << m_commonData.m_frameCounter + 0xFFFFFFFF << "\n";
+                    ", difference " << fcDiff <<
+                    ", correction " << m_commonData.m_frameCounter + 0xFFFFFFFF << "\n";
                 GetMessageHandler()(sx,"calibration_module::Receive_VMM3"); sx.str("");
             }
             m_commonData.m_frameCounter = m_commonData.m_frameCounter + 0xFFFFFFFF;
