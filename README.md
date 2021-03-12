@@ -24,6 +24,8 @@ Here we list the (tested) software requirements.
 * [Qt 5.7](https://www.qt.io/qt5-11)
 * C++11 (gcc >=4.7)
 
+**For ESS branch, please use FEC firmware (fecv6_vmm3_top_21032100.bit) that is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read "21031200".**
+
 ## Installation
 There are a few steps that need to be taken in order for you to obtain, install, and get the software running. These are discussed here.
 
@@ -103,4 +105,5 @@ For present development, contact:
 **Lucian Scharenberg**:  <Lucian.Scharenberg@cern.ch>
 **Finn Jaekel**: <s6fijaek@uni-bonn.de>
 
-
+For ESS branch: 
+**Dorothea Pfeiffer**:  <dorothea.pfeiffer@cern.ch>
