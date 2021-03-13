@@ -2,6 +2,7 @@
 
 # Contents
 
+* [Prerequisites](#prerequisites)
 * [Recommended Release](#recommended-release)
 * [Requirements](#requirements)
 * [Installation](#installation)
@@ -9,6 +10,15 @@
   * [Compiling the software](#compile-the-software)
   * [Qt](#installing-qt)
 * [Contact Information](#contact)
+
+
+## Prerequisites
+The slow control software controls one or several SRS FEC v6 cards. The ESS branch of the slow control only works with version 21031200 of the firmware. The recommended bitfile (fecv6_vmm3_top_21032100.bit) is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read "21031200".
+
+A really essential tool that you should install even before installing the slow control is Wireshark. Please install Wireshark with Lua support. In the slow control folder, we provide a lua script, that disassembles the UDP packages from the FEC, and displays the hits from the VMMs. The script vmm3a_plugin.lua is also provided in the slow control repository. Usually we create an alias in .bashrc to start Wireshark with the script:
+```
+alias essws='wireshark -X lua_script:/path_to_slow_control/vmmsc/vmm3a_plugin.lua'
+```
 
 ## Recommended Release
 The recommended release is **v1.0** which is for *VMM3* slow control and calibration. To obtain this release do:
@@ -24,7 +34,7 @@ Here we list the (tested) software requirements.
 * [Qt 5.7](https://www.qt.io/qt5-11)
 * C++11 (gcc >=4.7)
 
-**For ESS branch, please use FEC firmware (fecv6_vmm3_top_21032100.bit) that is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read "21031200".**
+
 
 ## Installation
 There are a few steps that need to be taken in order for you to obtain, install, and get the software running. These are discussed here.
