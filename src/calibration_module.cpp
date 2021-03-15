@@ -142,6 +142,7 @@ void CalibrationModule::calibAndPlotChoices()
             m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
             m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
             m_daqWindow->ui->pushButtonCSV->setEnabled(true);
+            m_daqWindow->ui->pushButtonStoreCorrections->setText("Corrections (json)");
             m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
             //Fill choices
             m_daqWindow->ui->choicePlotTime->clear();
@@ -214,13 +215,32 @@ void CalibrationModule::calibAndPlotChoices()
                 }
             }
 
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ||
-                m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1) {
+                m_daqWindow->ui->pushButtonStoreCorrections->setText("Corrections (json)");
+                m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
+            }
+            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
                 m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 5 ) {
+                m_daqWindow->ui->pushButtonStoreCorrections->setText("Corrections (GUI)");
                 m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
             }
             else {
                 m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
+            }
+
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ||
+                m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 6) {
+                m_daqWindow->ui->pushButtonLog->setEnabled(true);
+            }
+            else {
+                m_daqWindow->ui->pushButtonLog->setEnabled(false);
+            }
+
+            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1) {
+                m_daqWindow->ui->pushButtonApplyCalib->setEnabled(true);
+            }
+            else {
+                m_daqWindow->ui->pushButtonApplyCalib->setEnabled(false);
             }
 
             if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
@@ -3437,6 +3457,158 @@ void CalibrationModule::SaveCorrections(){
         jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
         jsonFile.close();
 
+        //One JSON file per hybrid for to be stored in VMMDB
+        /*
+        if( ! m_calibrationArray[0] &&  !m_calibrationArray[1]) {
+            return;
+        }
+
+        for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
+            QString name = "";
+            int fec = GetFEC(vmm);
+            int fecId = m_fecPosID[fec];
+            int hybrid = GetHybrid(vmm);
+            int chip = GetVMM(vmm);
+            if(chip == 0) {
+                name = QString::fromStdString(m_hybrid_id[fec][hybrid]);
+            }
+
+
+
+        QString theName = CreateFileName(name);
+        QFile jsonFile(theName +  ".json");
+        jsonFile.open(QFile::WriteOnly);
+
+        QJsonObject globalObject;
+        QJsonArray calibrationArray;
+        for(int vmm = 0; vmm <static_cast<int>(m_vmmActs.size()); vmm++){
+            int fec = GetFEC(vmm);
+            int fecId = m_fecPosID[fec];
+            int hybrid = GetHybrid(vmm);
+            int chip = GetVMM(vmm);
+
+            QJsonObject calibrationObject;
+            QJsonArray adcOffsetArray;
+            QJsonArray adcSlopeArray;
+            QJsonArray timeOffsetArray;
+            QJsonArray timeSlopeArray;
+            calibrationObject.insert("fecID",fecId);
+            calibrationObject.insert("hybridID",QString::fromStdString(m_hybrid_id[fec][hybrid]));
+            calibrationObject.insert("vmmID",hybrid*2+chip);
+            int theVmmId = 0;
+            int theFECId = 0;
+            QString theHybridId = "";
+            if(m_calibrationArray[0]) {
+                foreach (const QJsonValue & value, *m_calibrationArray[0]) {
+                    QJsonArray tempOffsetArray;
+                    QJsonArray tempSlopeArray;
+                    const auto& obj = value.toObject();
+                    const auto& keys = obj.keys();
+                    for(const auto& key : keys){
+                        if(key == "vmmID") {
+                            theVmmId = obj[key].toInt();
+                        }
+                        if(key == "fecID") {
+                            theFECId = obj[key].toInt();
+                        }
+                        if(key == "hybridID") {
+                            theHybridId = obj[key].toString();
+                        }
+                        if(key == "adc_offsets") {
+
+                            auto const & arr = obj[key].toArray();
+                            for(const auto& v : arr){
+                                tempOffsetArray.push_back(v.toDouble());
+                            }
+                        }
+                        else if(key == "adc_slopes") {
+                            auto const & arr = obj[key].toArray();
+                            for(const auto& v : arr) {
+                                tempSlopeArray.push_back(v.toDouble());
+                            }
+                        }
+                    }
+                    if(theVmmId == hybrid*2+chip &&  m_fecPosID[fec] == theFECId) {
+                        adcOffsetArray = tempOffsetArray;
+                        adcSlopeArray = tempSlopeArray;
+                        break;
+                    }
+                }
+            }
+
+            if(m_calibrationArray[1]) {
+                foreach (const QJsonValue & value, *m_calibrationArray[1]) {
+                    QJsonArray tempOffsetArray;
+                    QJsonArray tempSlopeArray;
+                    const auto& obj = value.toObject();
+                    const auto& keys = obj.keys();
+                    for(const auto& key : keys){
+                        if(key == "vmmID") {
+                            theVmmId = obj[key].toInt();
+                        }
+                        if(key == "fecID") {
+                            theFECId = obj[key].toInt();
+                        }
+                        if(key == "hybridID") {
+                            theHybridId = obj[key].toString();
+                        }
+                        if(key == "time_offsets") {
+                            auto const & arr = obj[key].toArray();
+                            for(const auto& v : arr){
+                                tempOffsetArray.push_back(v.toDouble());
+                            }
+                        }
+                        else if(key == "time_slopes") {
+                            auto const & arr = obj[key].toArray();
+                            for(const auto& v : arr) {
+                                tempSlopeArray.push_back(v.toDouble());
+                            }
+                        }
+                    }
+                    if(theVmmId == hybrid*2+chip &&  m_fecPosID[fec] == theFECId) {
+                        timeOffsetArray = tempOffsetArray;
+                        timeSlopeArray = tempSlopeArray;
+                        break;
+                    }
+                }
+            }
+
+
+            if(adcOffsetArray.empty()) {
+                for(int i=0; i< 64; i++) {
+                    adcOffsetArray.push_back(0);
+                }
+            }
+            if(timeOffsetArray.empty()) {
+                for(int i=0; i< 64; i++) {
+                    timeOffsetArray.push_back(0);
+                }
+            }
+            if(adcSlopeArray.empty()) {
+                for(int i=0; i< 64; i++) {
+                    adcSlopeArray.push_back(1);
+                }
+            }
+            if(timeSlopeArray.empty()) {
+                for(int i=0; i< 64; i++) {
+                    timeSlopeArray.push_back(1);
+                }
+            }
+
+
+            calibrationObject.insert("time_offsets",timeOffsetArray);
+            calibrationObject.insert("time_slopes",timeSlopeArray);
+            calibrationObject.insert("adc_offsets",adcOffsetArray);
+            calibrationObject.insert("adc_slopes",adcSlopeArray);
+            calibrationArray.push_back(calibrationObject);
+        }
+
+        globalObject.insert("vmm_calibration",calibrationArray);
+        QJsonDocument document(globalObject);
+        jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
+        jsonFile.close();
+
+*/
     }
     else
     {

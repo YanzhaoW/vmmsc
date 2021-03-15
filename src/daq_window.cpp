@@ -483,9 +483,10 @@ void DAQWindow::on_pushButtonSavePDF_pressed()
 
 void DAQWindow::on_pushButtonAbort_pressed()
 {
-    this->m_calib->StopDataTaking();
-    on_offACQ_clicked();
-    this->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    if(ui->connectionLabel->text()==QString("all alive")){
+        this->m_calib->StopDataTaking();
+        this->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+    }
 }
 
 void DAQWindow::on_pushButtonStartTest_pressed()

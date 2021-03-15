@@ -2,7 +2,7 @@ fec 0
 
 tp_offset_first 100
 tp_offset 1000
-tp_latency 71
+tp_latency 64
 tp_number 1
 bcclock_factor 0
 fec_port 6007
@@ -23,7 +23,7 @@ ip_fec 10.0.0.2
 ip_daq 10.0.0.3
 i2c_port 6604
 fec_sys_port 6023
-latency_reset 53
+latency_reset 47
 latency_data_max 4091
 latency_data_error 4
 debug_data_format 0

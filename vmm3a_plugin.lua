@@ -9,7 +9,6 @@ local t0=0
 local fc0=0
 local fc=0
 local last_fc=0
-local error_fc=0
 	
 function i64_ax(h,l)
  local o = {}; o.l = l; o.h = h; return o;
@@ -68,12 +67,6 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 	local srshdr = tree:add(srsvmm_proto,buffer(),"SRS Header")
 	last_fc = fc
 	fc = buffer(0,4):uint()
-    --local last_timestamp1 = 0
-    --local timestamp1 = 0
-    --local last_timestamp2 = 0
-    --local timestamp2 = 0
-    --local last_timestamp = 0
-    local time_error = 0
    
 	if (fc0 == 0) then
 		fc0 = fc
@@ -83,11 +76,6 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 		local the_time = buffer(8,4):uint()
 		if (t0 == 0) then
 			t0 = the_time
-		end
-		if fc - last_fc > 1 or fc - last_fc ==  0 then
-			error_fc = 1
-	    else	
-			error_fc = 0
 		end
 		srshdr:add(buffer(0,4),"Frame Counter: " .. fc .. " (" .. (fc-fc0) .. ")")
 		if dataid == 0x564d33 then
@@ -177,7 +165,7 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 						local hit = 0			
 						if adc < 16 then
 							local latency = 0
-							if trg-bcid >= -6 then
+							if trg-bcid >= -4 then
 								latency = trg-bcid
 						    else
 								latency = 4096 + trg - bcid
@@ -208,7 +196,7 @@ function srsvmm_proto.dissector(buffer,pinfo,tree)
 					end
 				end
 		
-		  		pinfo.cols.info = string.format("FEC: %d, Hits: %3d, Markers: %3d, FC error: %3d", fecid, hit_id, marker_id, error_fc)
+		  		pinfo.cols.info = string.format("FEC: %d, Hits: %3d, Markers: %3d", fecid, hit_id, marker_id)
 		  		
 			end
 

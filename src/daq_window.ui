@@ -1273,23 +1273,29 @@
           <widget class="QPushButton" name="pushButtonLog">
            <property name="geometry">
             <rect>
-             <x>60</x>
-             <y>100</y>
-             <width>200</width>
+             <x>40</x>
+             <y>110</y>
+             <width>220</width>
              <height>25</height>
             </rect>
            </property>
            <property name="minimumSize">
             <size>
-             <width>200</width>
+             <width>220</width>
              <height>25</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>220</width>
              <height>25</height>
             </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>11</pointsize>
+            </font>
            </property>
            <property name="text">
             <string>Log Results</string>
@@ -1298,21 +1304,21 @@
           <widget class="QPushButton" name="pushButtonApplyCalib">
            <property name="geometry">
             <rect>
-             <x>60</x>
-             <y>60</y>
-             <width>200</width>
+             <x>40</x>
+             <y>80</y>
+             <width>220</width>
              <height>25</height>
             </rect>
            </property>
            <property name="minimumSize">
             <size>
-             <width>200</width>
+             <width>220</width>
              <height>25</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>200</width>
+             <width>220</width>
              <height>25</height>
             </size>
            </property>

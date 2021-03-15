@@ -152,7 +152,7 @@ quint16 FEC::GetChMap(){
 void FEC::LoadDefault(){
     (*m_regNames)[0] ="tp_offset_first";         (*m_reg)[0] = 100;  //12 bit
     (*m_regNames)[1] ="tp_offset";               (*m_reg)[1] = 1000;  //12 bit
-    (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 71;  //8 bit
+    (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 64;  //8 bit
     (*m_regNames)[3] ="tp_number";               (*m_reg)[3] = 1;    //8 bit
     (*m_regNames)[4] ="bcclock_factor";          (*m_reg)[4] = 0;
     (*m_regNames)[5] ="not_used";                (*m_reg)[5] = 0;
@@ -185,7 +185,7 @@ void FEC::LoadDefault(){
     (*m_regNames)[28]="i2c_port";                (*m_reg)[28] = 6604;   //32 bit
     (*m_regNames)[29]="fec_sys_port";            (*m_reg)[29] = 6023;   //32 bit
 
-    (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 53;   //8 bit
+    (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 47;   //8 bit
     (*m_regNames)[31]="latency_data_max";        (*m_reg)[31] = 4091; //12 bit
     (*m_regNames)[32]="latency_data_error";      (*m_reg)[32] = 4;    //8 bit
     (*m_regNames)[33]="debug_data_format";       (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
