@@ -1403,7 +1403,7 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
             std::cout << n << " " << read_datagram.mid(n,1).toHex().toStdString() << std::endl;
         }
         */
-        QString FirmwareVers = read_datagram.mid(22,2).toHex();
+        QString FirmwareVers = read_datagram.mid(20,4).toHex();
         QString MACvendor = read_datagram.mid(29,3).toHex();
         QString MACdevice = read_datagram.mid(37,3).toHex();
         QString FECip = read_datagram.mid(44,4).toHex();
