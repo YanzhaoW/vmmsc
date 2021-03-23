@@ -13,7 +13,7 @@
 
 
 ## Prerequisites
-The slow control software controls one or several SRS FEC v6 cards. The VMM3a hybrids have to be connected to a DVM v5 card. The ESS branch of the slow control only works with version 21031200 of the firmware. The recommended bitfile (fecv6_vmm3_top_21032100.bit) is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read "21031200".
+The slow control software controls one or several SRS FEC v6 cards. The VMM3a hybrids have to be connected to a DVM v5 card. The ESS branch of the slow control only works with version 21031200 of the firmware. The recommended bitfiles for the FEC (fecv6_vmm3_top_21032100.bit) and the RD51 VMM3a hybrid (vmm3h_1_020920_20201118.bit) is provided in the slow control repo. When reading the FEC firmware version number with the slow control (button "system parameters"), the version should read "21031200".
 
 A really essential tool that you should install even before installing the slow control is Wireshark. Please install Wireshark with Lua support. In the slow control folder, we provide a lua script, that disassembles the UDP packages from the FEC, and displays the hits from the VMMs. The script vmm3a_plugin.lua is also provided in the slow control repository. Usually we create an alias in .bashrc to start Wireshark with the script:
 ```
