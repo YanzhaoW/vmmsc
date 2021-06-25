@@ -3309,6 +3309,12 @@ void CalibrationModule::SaveCorrections(){
             return;
         }
         QString name = "vmm_calibration";
+        if(m_modeIndex == 1) {
+            name += "_ADC";
+        }
+        else if(m_modeIndex == 2) {
+            name += "_time";
+        }
         int lastFEC = -1;
         double gain = 0;
         int polarity = 0;
@@ -3339,13 +3345,6 @@ void CalibrationModule::SaveCorrections(){
         }
 
         QString theName = CreateFileName(name, polarity, gain,peaktime,tac);
-        if(m_modeIndex == 1) {
-            theName += "_ADC";
-        }
-        else if(m_modeIndex == 2) {
-            theName += "_time";
-        }
-
         QFile jsonFile(theName +  ".json");
         jsonFile.open(QFile::WriteOnly);
 
@@ -4355,11 +4354,9 @@ QString CalibrationModule::CreateFileName(QString name, int polarity, double gai
         str = QString("%1").arg("timing_threshold");
         theName = theName + "_" + str;
     }
+    theName = theName + "_" + theDate;
 
-    if(theName.length()<=220) {
-        theName = theName + "_" + theDate;
-    }
-    else {
+    if(theName.length()>=250) {
         theName = m_daqWindow->GetApplicationPath() + "/vmm_calibration_" + theDate;
     }
     return theName;
