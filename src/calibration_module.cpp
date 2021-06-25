@@ -3301,6 +3301,7 @@ void CalibrationModule::ConnectDAQSocket()
 
 }
 
+
 void CalibrationModule::SaveCorrections(){
     if(m_modeIndex == 1 ||  m_modeIndex == 2)
     {
@@ -3309,22 +3310,42 @@ void CalibrationModule::SaveCorrections(){
         }
         QString name = "vmm_calibration";
         int lastFEC = -1;
+        double gain = 0;
+        int polarity = 0;
+        double peaktime =0;
+        double tac = 0;
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int fecId = m_fecPosID[fec];
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
-            if(lastFEC != fec+1) {
+            if(lastFEC != fecId) {
                 name += "_FEC" + QString::number(fecId);
             }
-            lastFEC = fec+1;
-            if(chip == 0) {
+            lastFEC = fecId;
+            if(chip == 0 && m_vmmActs.size() <= 4) {
                 name += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
             }
-            name += "_VMM" + QString::number(hybrid*2+chip);
-
+            if(vmm == 0) {
+                name += "_VMM" + QString::number(hybrid*2+chip);
+            }
+            else {
+                name += "_" + QString::number(hybrid*2+chip);
+            }
+            gain = m_gain[fec][hybrid][chip];
+            polarity = m_polarity[fec][hybrid][chip];
+            peaktime = m_shaping_time[fec][hybrid][chip];
+            tac = m_tac_slope[fec][hybrid][chip];
         }
-        QString theName = CreateFileName(name);
+
+        QString theName = CreateFileName(name, polarity, gain,peaktime,tac);
+        if(m_modeIndex == 1) {
+            theName += "_ADC";
+        }
+        else if(m_modeIndex == 2) {
+            theName += "_time";
+        }
+
         QFile jsonFile(theName +  ".json");
         jsonFile.open(QFile::WriteOnly);
 
@@ -4335,6 +4356,11 @@ QString CalibrationModule::CreateFileName(QString name, int polarity, double gai
         theName = theName + "_" + str;
     }
 
-    theName = theName + "_" + theDate;
+    if(theName.length()<=220) {
+        theName = theName + "_" + theDate;
+    }
+    else {
+        theName = m_daqWindow->GetApplicationPath() + "/vmm_calibration_" + theDate;
+    }
     return theName;
 }
