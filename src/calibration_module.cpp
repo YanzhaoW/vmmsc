@@ -4356,7 +4356,7 @@ QString CalibrationModule::CreateFileName(QString name, int polarity, double gai
     }
     theName = theName + "_" + theDate;
 
-    if(theName.length()>=250) {
+    if(theName.length()>=245) {
         theName = m_daqWindow->GetApplicationPath() + "/vmm_calibration_" + theDate;
     }
     return theName;
