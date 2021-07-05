@@ -2150,127 +2150,16 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
 // ------------------------------------------------------------------------ //
 QString FECConfigModule::ReadGeoPos(int hybrid_index)
 {
-    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadGeoPos");
+    QString result="0";
+    //send 1 byte of 0xE6 to choose register 230
+    result = CommunicateWithHybridI2C(hybrid_index, 0, 0xe6, 1);
 
-    bool ok;
-    QByteArray datagram;
-
-    // send call to i2c port
-    int send_to_port = m_fec->GetRegVal("i2c_port");
-
-    //header
-    QString cmd, cmdType, cmdLength, msbCounter;
-    cmd = "AA";
-    cmdType = "AA";
-    cmdLength = "FFFF";
-    msbCounter = "0x80000000";
-    QString ip = m_fec->GetIP();
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); //rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    QString hybridMapString = "00000000";
-    hybridMapString.replace(7 -  m_hybrid_i2c[hybrid_index] , 1 , QString("1") );
-    quint8 hybridMap = (quint8)hybridMapString.toInt(&ok,2);
-    bool readOK = true;
-    int i2c_addr = 33;
-    int reg = 0x0;
-    //////////////////////////////////////////////////////////////////
-    // 1st i2c command: set address pointer to chip register (Geo chip) //
-    //////////////////////////////////////////////////////////////////
-
-    ////////////////////////////
-    // header
-    ////////////////////////////
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint16) 0 //[4,5]
-        << (quint8) hybridMap//146 //[6] Subaddress: enable MUX channels
-        << (quint8) ((i2c_addr << 1) | 0) //[7]  I2C address, last bit: read/not write (1 = read);
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-    ////////////////////////////
-    // word
-    ////////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 0 //[16,19] // goes to sc_address, for the ID chip determines at which position for bytes of the 16 byte ID are read
-        << (quint32) reg; //[20,23] //defines which register of Geocode chip or ID chip is going to be read
-
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadGeoPos");
-
-    readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadGeoPos");
-        GetSocketHandler().ProcessReply("fec",ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::ReadGeoPos", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadGeoPos");
-        //        exit(1);
-        return 0;
-    }
-    ///////////////////////////////////////////////////////////
-    // 2nd i2c command: read result form register //
-    ///////////////////////////////////////////////////////////
-    datagram.clear();
-    out.device()->seek(0); //rewind
-
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    ////////////////////////////
-    // header
-    ////////////////////////////
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint16) 0 //[4,5]
-        << (quint8) hybridMap//146 //[6] Subaddress: enable MUX channels
-        << (quint8) ((i2c_addr << 1) | 1) //[7] I2C address, last bit: read/not write (1 = read)
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-    ////////////////////////////
-    // word
-    ////////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
-        << (quint32) 0x00000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
-    // can be anything here but needs to be 3 byte long
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadGeoPos");
-
-    readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-
-    QByteArray read_datagram;
-    QString result;
-    while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
-
-        read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
-        GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-
-        result = read_datagram.mid(23,1).toHex();
-    } // while loop
-
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadGeoPos");
-        GetSocketHandler().ProcessReply("fec",ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::ReadGeoPos", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadGeoPos");
-        //        exit(1);
-        return 0;
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadGeoPos");
+    //read 1 byte from register 230 (0xe6)
+    result = CommunicateWithHybridI2C(hybrid_index, 1, 0, 1);
     return result;
 }
 // ------------------------------------------------------------------------ //
+
 
 
 
