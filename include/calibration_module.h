@@ -243,8 +243,6 @@ private:
     //Container for ADC calibration
     std::vector<double> m_mean[MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     std::vector<double> m_dac;
-
-    //Container for test module
     QVector<QVector<double>> m_allhitdata[MAX_BITS][FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
 
     //Containers for calculated data

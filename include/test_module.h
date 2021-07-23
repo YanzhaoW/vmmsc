@@ -4,8 +4,8 @@
 #include <QObject>
 //#include <QString>
 #include <qcustomplot.h>
-#include <QSerialPort>
-#include <QSerialPortInfo>
+//#include <QSerialPort>
+//#include <QSerialPortInfo>
 #include "globparameter.h"
 #include "message_handler.h"
 #include <set>
@@ -47,6 +47,8 @@ public:
         QHash<QString,int> h_ChannelResults[2][64];
         QHash<QString,int> h_VMMResults[2];
         int h_nwchannels[2][2] = {{64,64},{64,64}};
+        std::string log = "";
+        bool pedestalProblem[2] = {false,false};
     };
     HybridResults m_hResults;
     void PlotData(QVector<double> x, QVector<double> y[], QString xlabel, QString ylabel, QString name="", QString graphlabel="VMM",int datalen = 2);
@@ -56,7 +58,7 @@ public:
     bool DeleteLastMeasurement();
     bool ResetHybrid();
     void enableSbip(bool ena);
-    QVector<double> evaluateADCCalibrationFit(QVector<double> datax , QVector<double> datay, QString caller, int chip, QVector<double> &params);
+    QVector<double> evaluateADCCalibrationFit(QVector<double> datax , QVector<double> datay, QString caller, int chip, QVector<double> &params, stringstream *sx);
 
 private:
     CalibrationModule *m_calibmod;
@@ -99,12 +101,12 @@ private:
     double ReadTemperature(int vmmnr);
     QString GetHybridID();
     std::string TestPedestal();
-    std::string TestBaselineWidth(int nruns);
+    std::string TestBaselineWidth(int nruns, int gain, bool& bad, bool repeat=false);
     std::string TestThreshold();
     std::string TestMonitoringADC();
     std::string TestNeighbouring();
     std::string TestThrTrimmability();
-    bool TestShortCircuit();
+    //bool TestShortCircuit();
     void evaluateResults(std::string results);
     std::set<int> findOutliers(QVector<double> input, double thr);
     QString dataToSqlArray(QVector<double> vec,int len=0);
@@ -124,7 +126,7 @@ private:
     void FitLinear(QVector<double> x, QVector<double> y,double& slope,double& intercept);
     void readSettingFile();
     QString readSettingsDB();
-    void getCurveSettings(QString caller, double &ideal, double &range);
+    void getCurveSettings(QString caller, double &ideal, double &range, double &idealH, double &rangeH);
     bool updateGitRepo(QString workingpath, QString measid);
 signals:
 

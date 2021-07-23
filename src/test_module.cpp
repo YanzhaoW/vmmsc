@@ -7,8 +7,8 @@
 #include <QtSql/QSqlDriver>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
-#include <QSerialPort>
-#include <QSerialPortInfo>
+//#include <QSerialPort>
+//#include <QSerialPortInfo>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -133,7 +133,7 @@ double TestModule::evaluateADCCalibration(QVector<double> dataset, QString calle
     //PlotData(chans,averaged,"Channel","averaged average adc",name);
 }
 
-QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVector<double> datay, QString caller, int chip, QVector<double> &params)
+QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVector<double> datay, QString caller, int chip, QVector<double> &params, stringstream *sx)
 {
     //remove Datapoints with y=0 to not mess up to fit
     QString chanmarkstring = "ADCCalibration"+caller;
@@ -151,17 +151,19 @@ QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVe
     QString resultinsert2;
     QLabel* labels[6];
     bool failedMeasurement =false;
-    double good_dev = m_daqWindow->ui->adcrange_g_l->text().toDouble();
-    double ok_dev = m_daqWindow->ui->adcrange_o_l->text().toDouble();
+    double good_dev = 30;
+    double ok_dev = 40;
     if(QString::compare(caller,"Internal",Qt::CaseInsensitive)==0){
+        good_dev = m_daqWindow->ui->adcrange_g_l->text().toDouble();
+        ok_dev = m_daqWindow->ui->adcrange_o_l->text().toDouble();
         curveideal = -0.0604396074478;
         curvestd = 0.00896593791387;
         centerideal = 31.3400625589;
         centerstd = 1.55508392126;
-        maxheightideal = 313.702862948;
-        maxheightstd = 16.2023985974;
-        getCurveSettings("Internal",curveideal,curvestd);
-        cout << curveideal <<"," << curvestd <<","<< centerideal<<","<<centerstd<<endl;
+        //maxheightideal = 310.25;
+        //maxheightstd = 10.21;
+        getCurveSettings("Internal",curveideal,curvestd,maxheightideal,maxheightstd);
+        cout << curveideal <<"," << curvestd <<","<< maxheightideal<<","<<maxheightstd<<endl;
         resultinsert1 = "adcintcurvature";
         resultinsert2 = "adcintvertex";
         labels[0]=m_daqWindow->ui->adccurvestatus1label;
@@ -172,26 +174,30 @@ QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVe
         labels[5]=m_daqWindow->ui->adccal_bads2;
         posrangelow = m_daqWindow->ui->adcvertex_g_i->text().toDouble();;
         posrangeup = m_daqWindow->ui->adcvertex_o_i->text().toDouble();
+        *sx << "    Evaluating Internal Test Pulse ADC Curve" <<endl;
     }
     else if(QString::compare(caller,"External",Qt::CaseInsensitive)==0){
+        good_dev = m_daqWindow->ui->adcrange_g_l_ext->text().toDouble();
+        ok_dev = m_daqWindow->ui->adcrange_o_l_ext->text().toDouble();
         curveideal = -0.070142162122;
         curvestd = 0.00628598041229;
         centerideal = 31.6371319652;
         centerstd = 2.17699310923;
-        maxheightideal = 426.371640739;
-        maxheightstd = 18.5010979906;
-        getCurveSettings("External",curveideal,curvestd);
-        cout << curveideal <<"," << curvestd <<","<< centerideal<<","<<centerstd<<endl;
+        //maxheightideal = 461.3;
+        //maxheightstd = 17.97;
+        getCurveSettings("External",curveideal,curvestd,maxheightideal,maxheightstd);
+        cout << curveideal <<"," << curvestd <<","<< maxheightideal<<","<<maxheightstd<<endl;
         resultinsert1 = "adcextcurvature";
         resultinsert2 = "adcextvertex";
         labels[0]=m_daqWindow->ui->adccurvestatus3label;
         labels[1]=m_daqWindow->ui->adccurvestatus4label;
         labels[2]=m_daqWindow->ui->adcvertexstatus3label;
         labels[3]=m_daqWindow->ui->adcvertexstatus4label;
-        labels[4]=m_daqWindow->ui->adccal_bads1;
-        labels[5]=m_daqWindow->ui->adccal_bads2;
+        labels[4]=m_daqWindow->ui->adccal_bads3;
+        labels[5]=m_daqWindow->ui->adccal_bads4;
         posrangelow = m_daqWindow->ui->adcvertex_g_e->text().toDouble();
         posrangeup = m_daqWindow->ui->adcvertex_o_e->text().toDouble();
+        *sx << "    Evaluating External Test Pulse ADC Curve" <<endl;
     }
     for(int i=0;i<6;i++){
         m_labelstoclear.push_back(labels[i]);
@@ -232,14 +238,14 @@ QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVe
     bool markedcurve = false;
     bool markedpos = false;
     if(fabs(curvature)>=fabs(curveideal)){
-        if(fabs(curvature-curveideal)>=1.5*curvestd){
+        if(fabs(curvature-curveideal)>=5*curvestd){
             m_hResults.h_VMMResults[chip].insert(resultinsert1,2);
             labels[chip]->setStyleSheet("background-color: red");
             markedcurve =true;
         }
     }
     else{
-        if(fabs(curvature-curveideal)>=2.5*curvestd){
+        if(fabs(curvature-curveideal)>=5*curvestd){
             m_hResults.h_VMMResults[chip].insert(resultinsert1,2);
             labels[chip]->setStyleSheet("background-color: red");
             markedcurve =true;
@@ -250,7 +256,7 @@ QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVe
         labels[chip+2]->setStyleSheet("background-color: red");
         markedpos =true;
     }
-    if(fabs(peakheight-maxheightideal)>3*maxheightstd){
+    if(fabs(peakheight-maxheightideal)>5*maxheightstd){
         m_hResults.h_VMMResults[chip].insert(resultinsert2,2);
         labels[chip+2]->setStyleSheet("background-color: red");
         markedpos =true;
@@ -288,6 +294,7 @@ QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVe
     ploty[1]=yexpected;
     QString badchans = "";
     int n_bad =0;
+
     for(int i=0;i<64;i++){
         if(datay[i]==0){
             MarkChannel(chanmarkstring,chip,i,"bad");
@@ -305,6 +312,12 @@ QVector<double> TestModule::evaluateADCCalibrationFit(QVector<double> datax, QVe
             badchans += QString::number(i)+", ";
             n_bad++;
         }
+    }
+    if(n_bad>0){
+        *sx << "        On VMM "<< chip << " Ch(s) "<< badchans.toStdString() << " have a bad average ADC";
+    }
+    else{
+        *sx << "        On VMM "<< chip <<" ADC ok for all channels"<<endl;
     }
     badchans.chop(2);
     labels[chip+4]->setText(badchans);
@@ -458,6 +471,10 @@ void TestModule::readSettingFile()
                     m_daqWindow->ui->monitoringADC_g_u->setText(splitted[2]);
                     m_daqWindow->ui->monitoringADC_o_l->setText(splitted[3]);
                     m_daqWindow->ui->monitoringADC_o_u->setText(splitted[4]);
+                    m_daqWindow->ui->monitoringADC_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->monitoringADC_g_u->setCursorPosition(0);
+                    m_daqWindow->ui->monitoringADC_o_l->setCursorPosition(0);
+                    m_daqWindow->ui->monitoringADC_o_u->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="MonitoringADCIntercept"){
@@ -469,6 +486,10 @@ void TestModule::readSettingFile()
                     m_daqWindow->ui->monitoringADC_g_u_2->setText(splitted[2]);
                     m_daqWindow->ui->monitoringADC_o_l_2->setText(splitted[3]);
                     m_daqWindow->ui->monitoringADC_o_u_2->setText(splitted[4]);
+                    m_daqWindow->ui->monitoringADC_g_l_2->setCursorPosition(0);
+                    m_daqWindow->ui->monitoringADC_g_u_2->setCursorPosition(0);
+                    m_daqWindow->ui->monitoringADC_o_l_2->setCursorPosition(0);
+                    m_daqWindow->ui->monitoringADC_o_u_2->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="Pedestal"){
@@ -480,6 +501,10 @@ void TestModule::readSettingFile()
                     m_daqWindow->ui->pedestal_g_u->setText(splitted[2]);
                     m_daqWindow->ui->pedestal_o_l->setText(splitted[3]);
                     m_daqWindow->ui->pedestal_o_u->setText(splitted[4]);
+                    m_daqWindow->ui->pedestal_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->pedestal_g_u->setCursorPosition(0);
+                    m_daqWindow->ui->pedestal_o_l->setCursorPosition(0);
+                    m_daqWindow->ui->pedestal_o_u->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="AverageTDCRange"){
@@ -491,6 +516,10 @@ void TestModule::readSettingFile()
                     m_daqWindow->ui->tdc_g_u->setText(splitted[2]);
                     m_daqWindow->ui->tdc_o_l->setText(splitted[3]);
                     m_daqWindow->ui->tdc_o_u->setText(splitted[4]);
+                    m_daqWindow->ui->tdc_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->tdc_g_u->setCursorPosition(0);
+                    m_daqWindow->ui->tdc_o_l->setCursorPosition(0);
+                    m_daqWindow->ui->tdc_o_u->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="BaselineNoise"){
@@ -500,24 +529,56 @@ void TestModule::readSettingFile()
                 else{
                     m_daqWindow->ui->noise_g_l->setText(splitted[1]);
                     m_daqWindow->ui->noise_o_l->setText(splitted[2]);
+                    m_daqWindow->ui->noise_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->noise_o_l->setCursorPosition(0);
                 }
             }
-            if(splitted[0]=="Threshold"){
+            if(splitted[0]=="ThresholdVariation"){
                 if(splitted.count()<3){
                     cout << "incomplete configuration,"<<endl;
                 }
                 else{
                     m_daqWindow->ui->threshold_g_l->setText(splitted[1]);
                     m_daqWindow->ui->threshold_o_l->setText(splitted[2]);
+                    m_daqWindow->ui->threshold_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->threshold_o_l->setCursorPosition(0);
                 }
             }
-            if(splitted[0]=="ADCCalibrationChannelDeviation"){
+            if(splitted[0]=="ThresholdDeviation"){
+                if(splitted.count()<3){
+                    cout << "incomplete configuration,"<<endl;
+                }
+                else{
+                    m_daqWindow->ui->threshold_diff_g_l->setText(splitted[1]);
+                    m_daqWindow->ui->threshold_diff_o_l->setText(splitted[3]);
+                    m_daqWindow->ui->threshold_diff_g_u->setText(splitted[2]);
+                    m_daqWindow->ui->threshold_diff_o_u->setText(splitted[4]);
+                    m_daqWindow->ui->threshold_diff_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->threshold_diff_o_l->setCursorPosition(0);
+                    m_daqWindow->ui->threshold_diff_g_u->setCursorPosition(0);
+                    m_daqWindow->ui->threshold_diff_o_u->setCursorPosition(0);
+                }
+            }
+            if(splitted[0]=="ADCCalibrationChannelDeviationInternal"){
                 if(splitted.count()<3){
                     cout << "incomplete configuration,"<<endl;
                 }
                 else{
                     m_daqWindow->ui->adcrange_g_l->setText(splitted[1]);
                     m_daqWindow->ui->adcrange_o_l->setText(splitted[2]);
+                    m_daqWindow->ui->adcrange_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->adcrange_o_l->setCursorPosition(0);
+                }
+            }
+            if(splitted[0]=="ADCCalibrationChannelDeviationExternal"){
+                if(splitted.count()<3){
+                    cout << "incomplete configuration,"<<endl;
+                }
+                else{
+                    m_daqWindow->ui->adcrange_g_l_ext->setText(splitted[1]);
+                    m_daqWindow->ui->adcrange_o_l_ext->setText(splitted[2]);
+                    m_daqWindow->ui->adcrange_g_l_ext->setCursorPosition(0);
+                    m_daqWindow->ui->adcrange_o_l_ext->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="WorkingChannelsExternal"){
@@ -527,6 +588,8 @@ void TestModule::readSettingFile()
                 else{
                     m_daqWindow->ui->external_g_l->setText(splitted[1]);
                     m_daqWindow->ui->external_o_l->setText(splitted[2]);
+                    m_daqWindow->ui->external_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->external_o_l->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="WorkingChannelsInternal"){
@@ -536,6 +599,8 @@ void TestModule::readSettingFile()
                 else{
                     m_daqWindow->ui->internal_g_l->setText(splitted[1]);
                     m_daqWindow->ui->internal_o_l->setText(splitted[2]);
+                    m_daqWindow->ui->internal_g_l->setCursorPosition(0);
+                    m_daqWindow->ui->internal_o_l->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="ADCCalibrationVertexPosExtern"){
@@ -545,6 +610,8 @@ void TestModule::readSettingFile()
                 else{
                     m_daqWindow->ui->adcvertex_g_e->setText(splitted[1]);
                     m_daqWindow->ui->adcvertex_o_e->setText(splitted[2]);
+                    m_daqWindow->ui->adcvertex_g_e->setCursorPosition(0);
+                    m_daqWindow->ui->adcvertex_o_e->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="ADCCalibrationVertexPosIntern"){
@@ -554,6 +621,8 @@ void TestModule::readSettingFile()
                 else{
                     m_daqWindow->ui->adcvertex_g_i->setText(splitted[1]);
                     m_daqWindow->ui->adcvertex_o_i->setText(splitted[2]);
+                    m_daqWindow->ui->adcvertex_g_i->setCursorPosition(0);
+                    m_daqWindow->ui->adcvertex_o_i->setCursorPosition(0);
                 }
             }
             if(splitted[0]=="Location"){
@@ -710,17 +779,24 @@ QString TestModule::readSettingsDB()
     return DBFilesPath;
 }
 
-void TestModule::getCurveSettings(QString caller, double &ideal, double &range)
+void TestModule::getCurveSettings(QString caller, double &ideal, double &range, double &idealH, double &rangeH)
 {
     QString sIdeal = "ADCCalibrationCurvature";
     QString sRange = "ADCCalibrationCurvature";
+    QString sIdealH = "ADCCalibrationVertexHeight";
+    QString sRangeH = "ADCCalibrationVertexHeight";
+
     if(QString::compare(caller,"Internal",Qt::CaseInsensitive)==0){
         sIdeal += "InternIdeal";
         sRange += "InternStddev";
+        sIdealH += "InternIdeal";
+        sRangeH += "InternStddev";
     }
     if(QString::compare(caller,"External",Qt::CaseInsensitive)==0){
         sIdeal += "ExternIdeal";
         sRange += "ExternStddev";
+        sIdealH += "ExternIdeal";
+        sRangeH += "ExternStddev";
     }
 
     QString path = m_daqWindow->GetApplicationPath()+"/../testing/testsettings.txt";
@@ -743,6 +819,14 @@ void TestModule::getCurveSettings(QString caller, double &ideal, double &range)
                 }
                 if(splitted[0]==sRange){
                     range = QVariant(splitted[1]).toDouble();
+                    cout << range<<endl;
+                }
+                if(splitted[0]==sIdealH){
+                    idealH = QVariant(splitted[1]).toDouble();
+                    cout << ideal<<endl;
+                }
+                if(splitted[0]==sRangeH){
+                    rangeH = QVariant(splitted[1]).toDouble();
                     cout << range<<endl;
                 }
             }
@@ -802,10 +886,10 @@ void TestModule::StartTest(){
             //m_currentMonitor->startMonitoring();
             m_currentMonitor->startMonitoringProcess();
         }
-        //connect(m_currentMonitor,SIGNAL(ShortCircuit()),this,SLOT(SetTermination()));
+       //connect(m_currentMonitor,SIGNAL(ShortCircuit()),this,SLOT(SetTermination()));
     }
     QThread::sleep(2);
-    /*
+/*
     if(m_currmon){
         if(TestShortCircuit()){
             m_currentMonitor->finishMonitor();
@@ -820,7 +904,7 @@ void TestModule::StartTest(){
     m_connected = ConnectToSRS(); //Establish connection to SRS:
     QCoreApplication::processEvents(); //update GUI
     if(!m_connected){
-        //        m_currentMonitor->finishMonitor();
+//        m_currentMonitor->finishMonitor();
         m_currentMonitor->finishMonitoringProcess();
         return;
     }
@@ -847,13 +931,13 @@ void TestModule::StartTest(){
     }
     else{//If no Hybrid is found, try to WarnInitFec and reboot it. If still nothin is found, exit testing.
         sx << "No HDMI found. Try WarnInitFEC and reboot FEC." << std::endl;
-        for(int j = 0; j< FECS_PER_DAQ; j++){
-            if(m_daqWindow->m_daq.GetFEC(j)){
-                m_daqWindow->m_daq.m_fecs[j].m_fecConfigModule->ResetFEC();
-                m_daqWindow->m_daq.m_fecs[j].m_fecConfigModule->ResetFEC();
+            for(int j = 0; j< FECS_PER_DAQ; j++){
+                if(m_daqWindow->m_daq.GetFEC(j)){
+                    m_daqWindow->m_daq.m_fecs[j].m_fecConfigModule->ResetFEC();
+                    m_daqWindow->m_daq.m_fecs[j].m_fecConfigModule->ResetFEC();
+                }
             }
         }
-
         bool foundHybrid2 = CheckAndProcessLinkStatus();
         if(foundHybrid2){
             sx << "Found 1 or more connected Hybrids"<< std::endl;
@@ -904,7 +988,7 @@ void TestModule::StartTest(){
                 return;
             }
         }
-    }
+
     m_temptimer.start(2000);
     //cout << "Started temperature timer clock" << endl;
     if(IsDbg()){
@@ -965,7 +1049,12 @@ void TestModule::StartTest(){
         //TestResults += TestPedestal();
         //QCoreApplication::processEvents(); //update UI
         if(mon[0]==true || mon[1]==true){
-            TestResults += TestBaselineWidth(10);
+            bool badPedestal=false;
+            TestResults += TestBaselineWidth(10,7,badPedestal);
+            if(badPedestal){
+                TestResults += "Pedestal Problem on one of the VMM, repeating the test with 3mV/fC gain\n";
+                TestResults += TestBaselineWidth(10,2,badPedestal,true);
+            }
             QCoreApplication::processEvents();
             TestResults += TestThreshold();
             QCoreApplication::processEvents();
@@ -991,7 +1080,12 @@ void TestModule::StartTest(){
         QCoreApplication::processEvents(); //update UI
         //TestResults += TestPedestal();
         //QCoreApplication::processEvents(); //update UI
-        TestResults += TestBaselineWidth(10);
+        bool badPedestal = false;
+        TestResults += TestBaselineWidth(10,7,badPedestal);
+        if(badPedestal){
+            TestResults += "Pedestal Problem on one of the VMM repeating the test with 3mV/fC gain\n";
+            TestResults += TestBaselineWidth(10,2,badPedestal,true);
+        }
         QCoreApplication::processEvents();
         TestResults += TestThreshold();
         QCoreApplication::processEvents();
@@ -1035,7 +1129,13 @@ void TestModule::StartTest(){
         }
         //TestResults+=TestPedestal();
         //QCoreApplication::processEvents();
-        TestResults+=TestBaselineWidth(10);
+        bool badPedestal = false;
+        TestResults += TestBaselineWidth(10,7,badPedestal);
+        QCoreApplication::processEvents();
+        if(badPedestal){
+            TestResults += "Pedestal Problem on one of the VMM repeating the test with 3mV/fC gain\n";
+            TestResults += TestBaselineWidth(10,2,badPedestal,true);
+        }
         QCoreApplication::processEvents();
         GetMessageHandler()("TestMode Pedestal, starting Tests Pedestal and BaselineWidth","TestModule::StartTest");
     }
@@ -1486,13 +1586,15 @@ std::string TestModule::TestPedestal()
     return sx.str();
 }
 
-string TestModule::TestBaselineWidth(int nruns)
+string TestModule::TestBaselineWidth(int nruns, int gain, bool &bad, bool repeat)
 {
     if(m_terminator){
-        return "Test aborted";
+        return "Pedestal and Pedestal Noise Test aborted";
     }
     handleTemperatures();
     stringstream sx;
+    sx << "Testing Pedestal"<<endl;
+    sx << "      Gain on setting " << gain<<endl;
     QVector<double> channels;
     QVector<double> channels1;
     QVector<double> blines[2][64];
@@ -1508,9 +1610,9 @@ string TestModule::TestBaselineWidth(int nruns)
     m_daqWindow->ui->Runs->setValue(1000);
     m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(calibtype);
     int oldgains[2] = {vmm[0]->GetRegister("gain"),vmm[1]->GetRegister("gain")};
-    cout <<oldgains[0]<<"\t" << oldgains[1] <<endl;
-    vmm[0]->SetRegi("gain",7);
-    vmm[1]->SetRegi("gain",7);
+    //cout <<oldgains[0]<<"\t" << oldgains[1] <<endl;
+    vmm[0]->SetRegi("gain",gain);
+    vmm[1]->SetRegi("gain",gain);
     for(int i=0; i<64;i++){
         if(i%8!=1 || i%8!=6 || i%8!=0 || i%8!=7){
             /*vmm[0]->SetRegi("st",0,i);
@@ -1607,14 +1709,14 @@ string TestModule::TestBaselineWidth(int nruns)
         }
         cout<< "Ready with run " << i <<endl;
     }*/
-    cout << "acquired all data"<<endl;
+    //cout << "acquired all data"<<endl;
     QVector<double> pedestals[2];
     for(int j=0;j<2;j++){
         for(int i=0;i<64;i++){
             pedestals[j].push_back(getAverage(blines[j][i]));
         }
     }
-    cout << "Got pedestals"<<endl;
+    //cout << "Got pedestals"<<endl;
     QVector<double> xvals;
     for(int i=0;i<64;i++){
         xvals.push_back(i);
@@ -1626,34 +1728,46 @@ string TestModule::TestBaselineWidth(int nruns)
     std::set<int> outliers[VMMS_PER_HYBRID];
     outliers[0] = findOutliers(pedestals[0],100);
     outliers[1] = findOutliers(pedestals[1],100);
+    QVector<int> bads[2];
     QVector<double> nooutliers[2];
+    int nbads[2]={0,0};
     for(int i = 0; i<VMMS_PER_HYBRID;i++){
         //pedestals[i]=QVector<double>::fromStdVector(m_calibmod->m_mean[0][m_FEC_test][m_HDMI_test][0][i]);
         for(int j = 0;j<64; j++){
             double ped = pedestals[i][j];
-            cout << ped;
+            //cout << ped;
             if(ped>=qGood[0] && ped<=qGood[1]){
-                cout <<"good" <<endl;
+                //cout <<"good" <<endl;
                 MarkChannel("Pedestal",i,j,"good");
             }
             else if(ped>=qOk[0] && ped<=qOk[1]){
-                cout <<"ok" <<endl;
+                //cout <<"ok" <<endl;
                 MarkChannel("Pedestal",i,j,"ok");
             }
             else if(ped<qOk[0] || ped>qOk[1]){
-                cout <<"bad" <<endl;
+                //cout <<"bad" <<endl;
                 MarkChannel("Pedestal",i,j,"bad");
+                nbads[i]++;
+                bads[i].push_back(j);
             }
             else{
-                cout <<"unknown" <<endl;
+                //cout <<"unknown" <<endl;
                 MarkChannel("Pedestal",i,j,"unknown");
+                nbads[i]++;
             }
+        }
+        if(nbads[i]>=4){
+            bad=true;
+            if(repeat==false){
+                m_hResults.pedestalProblem[i]=true;
+            }
+            GetMessageHandler()("Pedestal Test bad, will repeat measurement with lower gain","TestModule:TestBaselineWidth");
         }
     }
     for(int i=0;i<2;i++){
         for(int j=0;j<64;j++){
             if(outliers[i].find(j)==outliers[i].end()){
-                nooutliers[i].push_back(pedestals[i][j]);
+                    nooutliers[i].push_back(pedestals[i][j]);
             }
         }
     }
@@ -1666,20 +1780,33 @@ string TestModule::TestBaselineWidth(int nruns)
     //Evaluate found Data
     for(int i = 0; i<VMMS_PER_HYBRID;i++){
         if(mon[i]){
+            if(bads[i].length()>0){
+                sx << "     On VMM "<<i<< " Ch(s) ";
+                for(int j=0;j<bads[i].length();j++){
+                    sx << j <<" ";
+                }
+                sx << "have bad pedestal(s),"<<endl;
+            }
+            else{
+                sx << "     On VMM "<< i;
+            }
             labelvec[i]->setWordWrap(true);
             QString labeltext = QString(QString::number(avg[i],'f',1)); //+ " ± " +QString(QString::number(stdds[i],'f',1))+" mV";
             labelvec[i]->setText(labeltext);
             if(avg[i]>qGood[0] && avg[i]<qGood[1]){
                 labelvec[i]->setStyleSheet("background-color: lightgreen");
                 m_hResults.h_VMMResults[i].insert("Pedestal",0);
-            }
+                sx << " average pedestal good "<< avg[i]<<endl;
+           }
             else if(avg[i]>qOk[0] && avg[i]<qOk[1] && (avg[i]<qGood[0] || avg[i]>qGood[1])){
                 labelvec[i]->setStyleSheet("background-color: yellow");
                 m_hResults.h_VMMResults[i].insert("Pedestal",1);
+                sx <<" average pedestal ok "<< avg[i]<<endl;
             }
             else{
                 labelvec[i]->setStyleSheet("background-color: red");
                 m_hResults.h_VMMResults[i].insert("Pedestal",2);
+                sx <<" average pedestal bad "<< avg[i]<<endl;
             }
             m_labelstoclear.push_back(labelvec[i]);
             exports[i] += labeltext;
@@ -1689,7 +1816,13 @@ string TestModule::TestBaselineWidth(int nruns)
     //m_hResults.h_DBExportStrings.insert("Baseline_VMM0",exports[0]);
     //m_hResults.h_DBExportStrings.insert("Baseline_VMM1",exports[1]);
 
-    PlotData(xvals,pedestals,"Channel Nr.", "Pedestal","Pedestal");
+    if(repeat==false){
+        PlotData(xvals,pedestals,"Channel Nr.", "Pedestal","Pedestal");
+    }
+    else{
+        PlotData(xvals,pedestals,"Channel Nr.", "Pedestal","Pedestal2");
+    }
+
 
 
     vmm[0]->SetRegi("gain",oldgains[0]);
@@ -1705,6 +1838,7 @@ string TestModule::TestBaselineWidth(int nruns)
     QVector<double> stdd[2];
     double qGoodD = m_daqWindow->ui->noise_g_l->text().toDouble();
     double qOkD = m_daqWindow->ui->noise_o_l->text().toDouble();
+    QVector<int> badNoises[2];
     for(int i=0; i<2;i++){
         for(int j=0; j<64;j++){
             stdd[i].push_back(getStdDev(blines[i][j]));
@@ -1716,6 +1850,7 @@ string TestModule::TestBaselineWidth(int nruns)
             }
             else{
                 MarkChannel("Baseline Noise",i,j,"bad");
+                badNoises[i].push_back(j);
             }
         }
     }
@@ -1723,32 +1858,44 @@ string TestModule::TestBaselineWidth(int nruns)
     PlotData(xvals,stdd,"Channel","RMS Noise [mV]","Baseline Noise");
     double avgnoise[2] = {getAverage(stdd[0]),getAverage(stdd[1])};
     double noisestd[2] = {getStdDev(stdd[0]),getStdDev(stdd[1])};
-    sx << "Average Noise on VMM0 :" << avgnoise[0] << "±" << noisestd[0] <<"mV" << endl;
     QLabel* labelvec2[2] = {m_daqWindow->ui->noisestatus1label,m_daqWindow->ui->noisestatus2label};
     QString exports2[2] = {"",""};
     for(int i = 0; i<VMMS_PER_HYBRID;i++){
         if(mon[i]){
+            if(bads[i].length()>0){
+                sx << "     On VMM "<<i<< " Ch(s) ";
+                for(int j=0;j<bads[i].length();j++){
+                    sx << j <<" ";
+                }
+                sx << "have high pedestal noise,"<<endl;
+            }
+            else{
+                sx << "     On VMM "<<i;
+            }
             labelvec2[i]->setWordWrap(true);
             QString labeltext = QString(QString::number(avgnoise[i],'f',3)); //+ " ± " +QString(QString::number(stdds[i],'f',1))+" mV";
             labelvec2[i]->setText(labeltext);
             if(avgnoise[i]<=qGoodD){
                 labelvec2[i]->setStyleSheet("background-color: lightgreen");
                 m_hResults.h_VMMResults[i].insert("Baseline Noise",0);
-            }
+                sx << " average pedestal noise good "<<avgnoise[i]<<endl;
+           }
             else if(avgnoise[i]>qGoodD&& avgnoise[i]<=qOkD){
                 labelvec2[i]->setStyleSheet("background-color: yellow");
                 m_hResults.h_VMMResults[i].insert("Baseline Noise",1);
+                sx << " average pedestal noise ok "<<avgnoise[i]<<endl;
             }
             else{
                 labelvec2[i]->setStyleSheet("background-color: red");
                 m_hResults.h_VMMResults[i].insert("Baseline Noise",2);
+                sx << " average pedestal noise bad "<<avgnoise[i]<<endl;
             }
             m_labelstoclear.push_back(labelvec2[i]);
             exports2[i] += labeltext;
             m_hResults.h_DBExportStrings[i].insert("Basenoise",exports2[i]);
         }
     }
-    sx << "Average Noise on VMM1 :" << avgnoise[1] << "±" << noisestd[1] <<"mV" << endl;
+    sx << "Pedestal and Pedestal Noise Test finished"<<endl;
     handleTemperatures();
     return sx.str();
 }
@@ -1801,10 +1948,11 @@ double TestModule::getMedian(QVector<double> data)
 string TestModule::TestThreshold()
 {
     if(m_terminator){
-        return "Test aborted";
+        return "Threshold Test aborted";
     }
     handleTemperatures();
     stringstream sx;
+    sx << "Testing Threshold"<<endl;
     QVector<double> channels;
     QVector<double> thresholds[2];
     VMM* vmm[2];
@@ -1829,7 +1977,7 @@ string TestModule::TestThreshold()
     }
     double avg[2] = {getAverage(thresholds[0]),getAverage(thresholds[1])};
     double stdds[2] = {getStdDev(thresholds[0]),getStdDev(thresholds[1])};
-    QLabel* labelvec[2] = {m_daqWindow->ui->thresholdstatuslabel1,m_daqWindow->ui->thresholdstatuslabel2};
+    QLabel* labelvec[4] = {m_daqWindow->ui->thresholdstatuslabel1,m_daqWindow->ui->thresholdstatuslabel2,m_daqWindow->ui->thr_diff_statuslabel1,m_daqWindow->ui->thr_diff_statuslabel2};
     QString exports[2] = {"",""};
     double slopes[2] = {m_hResults.h_monitoringADCcal[0][0],m_hResults.h_monitoringADCcal[1][0]};
     double intercepts[2] = {m_hResults.h_monitoringADCcal[0][1],m_hResults.h_monitoringADCcal[1][1]};
@@ -1841,18 +1989,58 @@ string TestModule::TestThreshold()
     }
     double qGood = m_daqWindow->ui->threshold_g_l->text().toDouble();
     double qOk = m_daqWindow->ui->threshold_o_l->text().toDouble();
+    double qGood2_u = m_daqWindow->ui->threshold_diff_g_u->text().toDouble();
+    double qGood2_l = m_daqWindow->ui->threshold_diff_g_l->text().toDouble();
+    double qOk2_u = m_daqWindow->ui->threshold_diff_o_u->text().toDouble();
+    double qOk2_l = m_daqWindow->ui->threshold_diff_o_l->text().toDouble();
+    QVector<int> badThrs[2];
     for(int i=0;i<2;i++){
+        QString bads = "";
+        int nbads = 0;
+        int noks = 0;
         for(int j=0;j<64;j++){
-            if(fabs(thresholds[i][j]-setthreshold[i])<qGood){
+            double chandev = thresholds[i][j]-setthreshold[i];
+            if(chandev < qGood2_u && chandev > qGood2_l){
                 MarkChannel("Threshold",i,j,"good");
             }
-            else if(fabs(thresholds[i][j]-setthreshold[i])<qOk){
+            else if(chandev < qOk2_u && chandev > qOk2_l){
                 MarkChannel("Threshold",i,j,"ok");
+                bads += QString::number(j)+", ";
+                badThrs[i].push_back(j);
+                noks++;
             }
             else{
                 MarkChannel("Threshold",i,j,"bad");
+                bads += QString::number(j)+", ";
+                badThrs[i].push_back(j);
+                nbads++;
             }
         }
+        bads.chop(2);
+        labelvec[i+2]->setText(bads);
+        labelvec[i+2]->setToolTip(bads);
+        if(nbads>0){
+            labelvec[i+2]->setStyleSheet("background-color: red");
+        }
+        else{
+            if(noks>0){
+                labelvec[i+2]->setStyleSheet("background-color: yellow");
+            }
+            else{
+                labelvec[i+2]->setStyleSheet("background-color: lightgreen");
+            }
+        }
+        if(badThrs[i].size()>0){
+            sx << "     On VMM "<<i<< " Ch(s) ";
+            for(int j=0;j<badThrs[i].size();j++){
+                sx << badThrs[i][j] << " ";
+            }
+            sx << " have a bad threshold"<< endl;
+        }
+        else{
+            sx << "     On VMM "<< i << "Threshold all good"<<endl;
+        }
+        m_labelstoclear.push_back(labelvec[i+2]);
     }
 
     for(int i = 0; i<VMMS_PER_HYBRID;i++){
@@ -1886,13 +2074,14 @@ string TestModule::TestThreshold()
 
     PlotData(channels,thresholds,"Channel", "Channel Threshold", "Threshold Scan");
     handleTemperatures();
-    return "Finished";
+    sx << "Threshold Test finished"<<endl;
+    return sx.str();
 }
 
 std::string TestModule::TestMonitoringADC()
 {
     if(m_terminator){
-        return "Test aborted";
+        return "Monitoring ADC Test aborted";
     }
     handleTemperatures();
     stringstream sx;
@@ -1928,9 +2117,9 @@ std::string TestModule::TestMonitoringADC()
 
     double slopeapprox[2];
     double intercept[2];
-    //    slopeapprox[0] = (readADC[0][0]-readADC[0][63])/(thrDACvals[0]-thrDACvals[63]);
-    //    slopeapprox[1] = (readADC[1][0]-readADC[1][63])/(thrDACvals[0]-thrDACvals[63]);
-    //    cout << slopeapprox[0] << "   " << slopeapprox[1] << std::endl;
+//    slopeapprox[0] = (readADC[0][0]-readADC[0][63])/(thrDACvals[0]-thrDACvals[63]);
+//    slopeapprox[1] = (readADC[1][0]-readADC[1][63])/(thrDACvals[0]-thrDACvals[63]);
+//    cout << slopeapprox[0] << "   " << slopeapprox[1] << std::endl;
     for(int i=0;i<2;i++){
         FitLinear(thrDACvals,readADC[i],slopeapprox[i],intercept[i]);
     }
@@ -1948,34 +2137,33 @@ std::string TestModule::TestMonitoringADC()
     double qOkSlopes[2] = {m_daqWindow->ui->monitoringADC_o_l->text().toDouble(),m_daqWindow->ui->monitoringADC_o_u->text().toDouble()};
     double qGoodIntercept[2] = {m_daqWindow->ui->monitoringADC_g_l_2->text().toDouble(),m_daqWindow->ui->monitoringADC_g_u_2->text().toDouble()};
     double qOkIntercept[2] = {m_daqWindow->ui->monitoringADC_o_l_2->text().toDouble(),m_daqWindow->ui->monitoringADC_o_u_2->text().toDouble()};
-    sx << "Testing Monitoring ADC:";
+    sx << "Testing Monitoring ADC"<<endl;
     for(int i=0;i<2;i++){
-        sx << "     VMM " << i << " : Status ";
+        sx << "     VMM " << i << ": Monitoring ADC Status ";
         if(slopeapprox[i]>=qGoodSlopes[0] && slopeapprox[i]<= qGoodSlopes[1] && intercept[i]>=qGoodIntercept[0] && intercept[i]<=qGoodIntercept[1]){
             labelvec[i]->setText("Monitoring ADC functional");
             labelvec[i]->setStyleSheet("background-color: lightgreen");
             m_hResults.h_monitoringADC[i]=true;
             m_hResults.h_VMMResults[i].insert("MonitoringADC",0);
-            sx << 0;
+            sx << "good, Slope " << slopeapprox[i] << ", y-Intercept: "<<intercept[i]<<endl;
         }
         else if(((slopeapprox[i]<qGoodSlopes[0] || slopeapprox[i]>qGoodSlopes[1] || intercept[i]<qGoodIntercept[0] || intercept[i]>qGoodIntercept[1])) &&
-                slopeapprox[i]>=qOkSlopes[0] && slopeapprox[i]<= qOkSlopes[1] && intercept[i]>=qOkIntercept[0] &&intercept[i]<=qOkIntercept[1]){
+                 slopeapprox[i]>=qOkSlopes[0] && slopeapprox[i]<= qOkSlopes[1] && intercept[i]>=qOkIntercept[0] &&intercept[i]<=qOkIntercept[1]){
             labelvec[i]->setText("Monitoring ADC OK");
             labelvec[i]->setStyleSheet("background-color: yellow");
             m_hResults.h_monitoringADC[i]=true;
             m_hResults.h_VMMResults[i].insert("MonitoringADC",1);
-            sx << 1;
+            sx << "ok. Slope " << slopeapprox[i] << ", y-Intercept: "<<intercept[i]<<endl;
         }
         else{
             labelvec[i]->setText("Monitoring ADC bad");
             labelvec[i]->setStyleSheet("background-color: red");
             m_hResults.h_monitoringADC[i]=false;
             m_hResults.h_VMMResults[i].insert("MonitoringADC",2);
-            sx << 2;
+            sx << "bad. Slope " << slopeapprox[i] << ", y-Intercept: "<<intercept[i]<<endl;
         }
         m_labelstoclear.push_back(labelvec[i]);
     }
-    sx<< std::endl;
     m_hResults.h_DBExportStrings[0].insert("monitoradcslope",QString::number(slopeapprox[0]));
     m_hResults.h_DBExportStrings[1].insert("monitoradcslope",QString::number(slopeapprox[1]));
     m_hResults.h_DBExportStrings[0].insert("monitoradcintercept",QString::number(intercept[0]));
@@ -1984,6 +2172,7 @@ std::string TestModule::TestMonitoringADC()
     //Plotting of Data on Screen:
     PlotData(thrDACvals,readADC,"Threshold DAC", "ADC Value", "Monitoring ADC");
     handleTemperatures();
+    sx << "Monitoring ADC Test finished"<<endl<<endl;
     return sx.str();
 }
 
@@ -2186,6 +2375,7 @@ std::string TestModule::TestThrTrimmability()
     }
     handleTemperatures();
     stringstream sx;
+    sx <<"Testing Threshold Trimmability"<<endl;
     QVector<double> trims;
     QVector<double> thrs[2][64];
     QVector<double> ranges[2];
@@ -2226,7 +2416,7 @@ std::string TestModule::TestThrTrimmability()
     for(int i=0;i<64;i++){
         chans.push_back(i);
     }
-
+    QVector<int> bads[2];
     for(int j=0;j<2;j++){
         for(int i=0;i<64;i++){
             bool bad = false;
@@ -2246,36 +2436,44 @@ std::string TestModule::TestThrTrimmability()
             }
             if(bad==true){
                 MarkChannel("Threshold Trimability",j,i,"bad");
-                cout<< "Marking Channel as bad (Thresholdtrinmmabiity"<<endl;
+                bads[j].push_back(i);
             }
             else{
                 MarkChannel("Threshold Trimability",j,i,"good");
-                cout<< "Marking Channel as good (Thresholdtrinmmabiity"<<endl;
-
             }
 
         }
+        if(bads[j].size()>0){
+            sx << "     On VMM " << j << " Ch(s) ";
+            for(int k=0;k<bads[j].size();k++){
+                sx << bads[j][k] << " ";
+            }
+            sx << " are not correctly threshold trimmable" <<endl;
+        }
     }
-    cout << "finished thrtrimability measurement" <<endl;
+
+//    cout << "finished thrtrimability measurement" <<endl;
     for(int i=0;i<ranges[0].size();i++){
-        cout << ranges[0][i]<<endl;
+//        cout << ranges[0][i]<<endl;
     }
 
     PlotData(chans,ranges,"Channel", "Trimmable Range","Threshold trimability range");
     PlotData(trims,thrs[0],"thresholdtrim","measured threshold","Threshold Trimability VMM0","Ch",64);
     PlotData(trims,thrs[1],"thresholdtrim","measured threshold","Threshold Trimability VMM1","Ch",64);
     handleTemperatures();
-    return "finished";
+    sx << "Threshold Trimmability test finished"<<endl;
+    return sx.str();
 }
-
+/*
 bool TestModule::TestShortCircuit()
 {
     return m_currentMonitor->TestForShortCircuit(0.3,2.0);
 }
+*/
 
 std::string TestModule::TestChannelsExternal(int tries,int restarts){
     if(m_terminator){
-        return "Test aborted";
+        return "External Test Pulse test aborted";
     }
     handleTemperatures();
     stringstream sx;
@@ -2296,11 +2494,10 @@ std::string TestModule::TestChannelsExternal(int tries,int restarts){
     m_calibmod->StartCalibration();
     signalgenerator->setProgram(program);
     signalgenerator->setArguments(arguments2);
-    if(!signalgenerator->startDetached(program, arguments2)){
+    if(!signalgenerator->startDetached(program,arguments2)){
         return TestChannelsExternal(tries,restarts+1);
     }
     std::chrono::high_resolution_clock::time_point teststart = std::chrono::high_resolution_clock::now();
-    int i= 0;
     while(!(m_calibmod->m_dataAvailable)){
         if(forcecontinue){
             break;
@@ -2355,29 +2552,6 @@ std::string TestModule::TestChannelsExternal(int tries,int restarts){
     //Evaluate Data: Mark Channels as broken (status 1), if they recieve no hits, as working (0)
     //for received hits between 9000 and 9200, as "suspicious" if the amount of hits are between 0 and 9000
     // and undefined (3) if more hits (should not happen)
-    sx <<"Channels (external test) on : " ;
-    QString test = "External";
-    for(int j=0; j<2; j++){
-        sx << "VMM"<<j <<": ";
-        for(int i=0; i<64;i++){
-            if(hits[j][i]<=200){
-                MarkChannel(test,j,i,"bad");
-                m_hResults.h_nwchannels[0][j]--;
-                sx << i << " broken, ";
-            }
-            else if(hits[j][i]>=9000 && hits[j][i]<9200){
-                MarkChannel(test,j,i,"good");
-            }
-            else if(hits[j][i]<9000 && hits[j][i]>200){
-                MarkChannel(test,j,i,"ok");
-                sx << i << " suspicious, ";
-            }
-            else{
-                MarkChannel(test,j,i,"ok");
-                sx << i << " suspicious, ";
-            }
-        }
-    }
 
     //test to filter
     for(int i=0; i<64; i++){
@@ -2415,68 +2589,78 @@ std::string TestModule::TestChannelsExternal(int tries,int restarts){
         }
     }
 
-    //    sx << evaluateADCCalibration(avgadc[0],"External") << evaluateADCCalibration(avgadc[1],"External");
-    QVector<double> popt;
-    QVector<double> fits[2];
-    fits[0] = evaluateADCCalibrationFit(channels,avgadc[0],"External",0,popt);
-    fits[1] = evaluateADCCalibrationFit(channels,avgadc[1],"External",1,popt);
-    /*
-    double adcdiff[2] = {evaluateADCCalibration(avgadc[0],"external"),evaluateADCCalibration(avgadc[1],"external")};
-    double qGood2 = m_daqWindow->ui->adcrange_g_l->text().toDouble();
-    double qOk2 = m_daqWindow->ui->adcrange_o_l->text().toDouble();
-    QLabel* labels[2] = {m_daqWindow->ui->adccurvestatus3label, m_daqWindow->ui->adccurvestatus4label};
-    for(int i=0;i<2;i++){
-        if(adcdiff[i]<0.000000000000001){
-            sx << "ADC Difference 0 or smaller" << adcdiff[i]<<endl;
-            adcdiff[i] = 4095;
-        }
-        QString labeltext = QString::number(adcdiff[i])+"mV";
-        if(adcdiff[i]<=qGood2){
-            labels[i]->setStyleSheet("background-color: lightgreen");
-            m_hResults.h_VMMResults[i].insert("ADCCurveExt",0);
-        }
-        else if(adcdiff[i]>qGood2 && adcdiff[i]<=qOk2){
-            labels[i]->setStyleSheet("background-color: yellow");
-            m_hResults.h_VMMResults[i].insert("ADCCurveExt",1);
-        }
-        else{
-            labels[i]->setStyleSheet("background-color: red");
-            m_hResults.h_VMMResults[i].insert("ADCCurveExt",2);
-        }
-        m_labelstoclear.push_back(labels[i]);
-        labels[i]->setText(labeltext);
-        for(int j=0;j<64;j++){
-            if(avgadc[i][j]==0){
-                MarkChannel("ADCCalibrationexternal",i,j,"bad");
+
+    PlotHistogram(adcs,0,1024,1024,QString("ADC"),QString("n"),QString("ADCExternalPulses"), QString("ADC Histogram"));
+    PlotHistogram(tdcs,0,256,256,QString("TDC"),QString("n"),QString("TDCExternalPulses"), QString("TDC Histogram"));
+    PlotHistogram(bcids,0,4096,4096,QString("BCID"),QString("n"),QString("BCIDExternalPulses"), QString("BCID Histogram"));
+    int n2000 = bcids[0].count(4000)+bcids[1].count(4000);
+    if(!forcecontinue){
+        if(n2000>100){
+            if(tries<=1){
+                GetMessageHandler()("Something went wrong with the Measurement, restarting","TestModule::TestChannelsExternal");
+                sx << "Restarting External Test Pulse test due to ignorance of the Acceptance window"<<endl;
+                sx << TestChannelsExternal(tries+1,restarts);
+                return sx.str();
             }
             else{
-                MarkChannel("ADCCalibrationexternal",i,j,"good");
+                GetMessageHandler()("External Test Pulse measurement could not be executed without errors, maybe need to check manually","TestModule::TestChannelsExternal");
             }
         }
-
+        if(allhits[0].size()==0 && allhits[1].size()==0){
+            if(restarts<2){
+                GetMessageHandler()("No Pulses received, restarting the Test.","TestModule::TestChannelsExternal");
+                sx << "Restarting External Test Pulse test due to no pulses being registered";
+                sx << TestChannelsExternal(tries,restarts+1);
+                return sx.str();
+            }
+        }
     }
-    m_hResults.h_DBExportStrings[0].insert("ADCCurveExt",QString::number(adcdiff[0]));
-    m_hResults.h_DBExportStrings[1].insert("ADCCurveExt",QString::number(adcdiff[1]));*/
+    sx <<"External Test Pulse Test"<<endl ;
+    QString test = "External";
+    QVector<int> badHits[2];
+    for(int j=0; j<2; j++){
+        for(int i=0; i<64;i++){
+            if(hits[j][i]<=200){
+                MarkChannel(test,j,i,"bad");
+                m_hResults.h_nwchannels[0][j]--;
+                badHits[j].push_back(i);
+            }
+            else if(hits[j][i]>=9080 && hits[j][i]<9170){
+                MarkChannel(test,j,i,"good");
+            }
+            else if(hits[j][i]<9000 && hits[j][i]>200){
+                MarkChannel(test,j,i,"ok");
+            }
+            else{
+                MarkChannel(test,j,i,"ok");
+            }
+        }
+        if(badHits[j].size()>0){
+            sx << "     On VMM "<<j <<" Ch(s) ";
+            for(int k=0;k<badHits[j].size();k++){
+                sx << badHits[j][k] << " ";
+            }
+            sx << " received no pulses"<<endl;
+        }
+        else{
+            sx << "     On VMM "<<j<< " all Channels receiving pulses"<<endl;
+        }
+    }
+
+
+//    sx << evaluateADCCalibration(avgadc[0],"External") << evaluateADCCalibration(avgadc[1],"External");
+    QVector<double> popt;
+    QVector<double> fits[2];
+    fits[0] = evaluateADCCalibrationFit(channels,avgadc[0],"External",0,popt,&sx);
+    fits[1] = evaluateADCCalibrationFit(channels,avgadc[1],"External",1,popt,&sx);
+
     PlotData(channels,avgadc,QString("Channel"),QString("Average ADC"),QString("ADCCalibrationExternal"));
     AddFitToPlot(channels,fits);
     //PlotData(channels,avgtdc,QString("Channel"),QString("Average TDC"),QString("TDCCalibrationExternal"));
     PlotHistogram(adcs,0,1024,1024,QString("ADC"),QString("n"),QString("ADCExternalPulses"), QString("ADC Histogram"));
     PlotHistogram(tdcs,0,256,256,QString("TDC"),QString("n"),QString("TDCExternalPulses"), QString("TDC Histogram"));
     PlotHistogram(bcids,0,4096,4096,QString("BCID"),QString("n"),QString("BCIDExternalPulses"), QString("BCID Histogram"));
-    int n2000 = bcids[0].count(2000)+bcids[1].count(2000);
-    if(!forcecontinue){
-        if(n2000>100){
-            if(tries<=3){
-                GetMessageHandler()("Something went wrong with the Measurement, restarting","TestModule::TestChannelsExternal");
-                return TestChannelsExternal(tries+1,0);
-            }
-            else{
-                GetMessageHandler()("External Test Pulse measurement could not be executed without errors, maybe need to check manually","TestModule::TestChannelsExternal");
-            }
-        }
-    }
 
-    sx << endl;
     QLabel* labelvec[2] = {m_daqWindow->ui->extchannels1label,m_daqWindow->ui->extchannels2label};
     QString exports[2] = {"",""};
     double qGood = m_daqWindow->ui->external_g_l->text().toDouble();
@@ -2510,15 +2694,15 @@ std::string TestModule::TestChannelsExternal(int tries,int restarts){
     m_hResults.h_DBExportStrings[0].insert("WorkingChannelsExt",exports[0]);
     m_hResults.h_DBExportStrings[1].insert("WorkingChannelsExt",exports[1]);
     handleTemperatures();
+    sx << "External Test Pulses tests finished"<<endl;
     return sx.str();
 }
 
 string TestModule::TestChannelsInternal()
 {
     if(m_terminator){
-        return "Test aborted";
+        return "Internal Test Pulse test aborted";
     }
-    cout << "trying internal test pulses"<<endl;
     //handleTemperatures();
     stringstream sx;
     bool forcecontinue = false;
@@ -2576,6 +2760,7 @@ string TestModule::TestChannelsInternal()
             }
         }
     }
+    // Calculate median number of hits and check if the median lies between 90000 and 98000 pulses per channel
     double avg[2] = {getMedian(hits[0]),getMedian(hits[1])};
     for(int i=0;i<2;i++){
         if(avg[i]<1000){
@@ -2588,27 +2773,42 @@ string TestModule::TestChannelsInternal()
             }
         }
     }
+
+    /*
+     * evaluate Number of hits per channel
+    */
     PlotData(channels,hits,QString("Channel#"),QString("Hits"),QString("Internalpulses"), QString("VMM"));
-    sx <<"Channels (internal test) on : " ;
+    sx <<"Internal Test Pulse Test" <<endl;
     QString test = "Internal";
+    QVector<int> badHits[2];
     for(int j=0; j<2; j++){
-        sx << "VMM"<<j <<": ";
         for(int i=0; i<64;i++){
-            if(hits[j][i]<=300){
-                MarkChannel(test,j,i,"bad");
-                m_hResults.h_nwchannels[1][j]--;
-                sx << i << " broken, ";
+            if(fabs(hits[j][i]-avg[j])<100){
+                MarkChannel(test,j,i,"good");
             }
             else if(fabs(hits[j][i]-avg[j])<1000){
-                MarkChannel(test,j,i,"good");
+                MarkChannel(test,j,i,"ok");
+            }
+            else if(hits[j][i]<=300){
+                MarkChannel(test,j,i,"bad");
+                m_hResults.h_nwchannels[1][j]--;
+                badHits[j].push_back(i);
             }
             else{
                 MarkChannel(test,j,i,"unknown");
-                sx << i << " suspicious, ";
             }
         }
+        if(badHits[j].size()>0){
+            sx << "     On VMM "<<j <<" Ch(s) ";
+            for(int k=0;k<badHits[j].size();k++){
+                sx << badHits[j][k] << " ";
+            }
+            sx << " received no pulses"<<endl;
+        }
+        else{
+            sx << "     On VMM "<<j<< " all Channels receiving pulses"<<endl;
+        }
     }
-    sx << endl;
 
     for(int i=0; i<64;i++){
         vmm[0]->SetRegi("st",0,i);
@@ -2692,11 +2892,11 @@ string TestModule::TestChannelsInternal()
         }
     }
 
-    sx << evaluateADCCalibration(avgadc[0],"Internal")<< evaluateADCCalibration(avgadc[1],"Internal");
+    //sx << evaluateADCCalibration(avgadc[0],"Internal")<< evaluateADCCalibration(avgadc[1],"Internal");
     QVector<double> popt;
     QVector<double> fits[2];
-    fits[0] = evaluateADCCalibrationFit(channels,avgadc[0],"Internal",0,popt);
-    fits[1] = evaluateADCCalibrationFit(channels,avgadc[1],"Internal",1,popt);
+    fits[0] = evaluateADCCalibrationFit(channels,avgadc[0],"Internal",0,popt,&sx);
+    fits[1] = evaluateADCCalibrationFit(channels,avgadc[1],"Internal",1,popt,&sx);
     //double adcdiff[2] = {evaluateADCCalibration(avgadc[0],"internal"),evaluateADCCalibration(avgadc[1],"internal")};
     //double qGood2 = m_daqWindow->ui->adcrange_g_l->text().toDouble()*5/7.;
     //double qOk2 = m_daqWindow->ui->adcrange_o_l->text().toDouble()*5/7.;
@@ -2738,6 +2938,7 @@ string TestModule::TestChannelsInternal()
     double qOk3[2] = {m_daqWindow->ui->tdc_o_l->text().toDouble(),m_daqWindow->ui->tdc_o_u->text().toDouble()};
     double avgavgtdc[2] = {getAverage(avgtdc[0]),getAverage(avgtdc[1])};
     QLabel* labels2[2] = {m_daqWindow->ui->tdcstatuslabel1, m_daqWindow->ui->tdcstatuslabel2};
+    QVector<int> badTDCs[2];
     for(int i=0;i<2;i++){
         QString labeltext = QString::number(avgavgtdc[i])+"mV";
         for(int j=0; j<64;j++){
@@ -2749,8 +2950,20 @@ string TestModule::TestChannelsInternal()
             }
             else{
                 MarkChannel("TDCCalibrationInternal",i,j,"bad");
+                badTDCs[i].push_back(j);
             }
         }
+        if(badTDCs[i].size()>0){
+            sx << "     On VMM " << i << " Ch(s) ";
+            for(int k=0;k<badHits[i].size();k++){
+                sx << badHits[i][k] << " ";
+            }
+            sx << "have bad average TDC"<<endl;
+        }
+        else{
+            sx << "     On VMM "<<i<< " TDC ok for all channels"<<endl;
+        }
+
 
         if(avgavgtdc[i]>=qGood3[0]&&avgavgtdc[i]<=qGood3[1]){
             labels2[i]->setStyleSheet("background-color: lightgreen");
@@ -2778,6 +2991,7 @@ string TestModule::TestChannelsInternal()
     PlotHistogram(tdcs,0,256,256,QString("TDC"),QString("n"),QString("TDCInternalPulses"), QString("TDC Histogram"));
     PlotHistogram(bcids,0,4096,4096,QString("BCID"),QString("n"),QString("BCIDInternalPulses"), QString("BCID Histogram"));
     //handleTemperatures();
+    sx << "Internal Test Pulses tests finished"<<endl;
     return sx.str();
 }
 
@@ -3067,6 +3281,7 @@ bool TestModule::exportResults()
             query.exec();
         }
     }
+    queryforfile +="INSERT INTO logs (Measurement_ID,llog) VALUES('"+measid+"','"+QString::fromStdString(m_hResults.log)+"');\n";
     DBentry.open(QIODevice::Append| QIODevice::Text);
     QTextStream out(&DBentry);
     out << queryforfile;
@@ -3190,8 +3405,8 @@ void TestModule::PlotData(QVector<double> x, QVector<double> y[], QString xlabel
                 QString key = "y"+QString::number(i+1);
                 data[key]=y[i];
             }
-            //            data["y1"] = y[0];
-            //            data["y2"] = y[1];
+//            data["y1"] = y[0];
+//            data["y2"] = y[1];
             labels["x"] = xlabel;
             labels["y"] = ylabel;
             labels["graph"] = graphlabel;
@@ -3392,6 +3607,9 @@ bool TestModule::ResetHybrid()
     m_hResults.h_plotsdata.clear();
     m_hResults.h_plotslabel.clear();
     m_hResults.h_histodata.clear();
+    m_hResults.log.clear();
+    m_hResults.pedestalProblem[0]=false;
+    m_hResults.pedestalProblem[1]=false;
     if(m_currmon){
         m_currentMonitor->clearCurrents();
     }
@@ -3522,7 +3740,7 @@ void TestModule::evaluateResults(std::string results){
                 }
                 else{
                     //Channel not connected to detector (fixable)
-                    fixable==true;
+                    fixable=true;
                     stringstream sx;
                     sx << "Channel " << i <<"on VMM " << j << "has internally working channels, but does not receie external pulses. Might be fixable!";
                     GetMessageHandler()(sx,"TestModule::evaluateResult");
@@ -3640,9 +3858,9 @@ void TestModule::evaluateResults(std::string results){
         double avgresult = total2/ntestsmade;
         if(keys2.contains("MonitoringADC")==true){
             if(m_hResults.h_VMMResults[j].value("MonitoringADC")==2){
-                vmmstati[j] = "E";
-                vmmlabels[j]->setStyleSheet("background-color: red");
-                vmmlabels[j]->setText("VMM"+QString::number(j)+": E");
+            vmmstati[j] = "E";
+            vmmlabels[j]->setStyleSheet("background-color: red");
+            vmmlabels[j]->setText("VMM"+QString::number(j)+": E");
             }
             else if(m_hResults.h_VMMResults[j].value("MonitoringADC")<2){
                 if (n_perfect+n_ok>=m_daqWindow->ui->external_g_l->text().toDouble()){
@@ -3699,7 +3917,6 @@ void TestModule::evaluateResults(std::string results){
                 vmmlabels[j]->setText("VMM"+QString::number(j)+": E");
             }
         }
-        m_hResults.h_DBExportStrings[j].insert("vmm_class",vmmstati[j]);
     }
     if(vmmstati[0]=="A"){
         if(vmmstati[1]=="A"){
@@ -3778,11 +3995,24 @@ void TestModule::evaluateResults(std::string results){
         m_daqWindow->ui->hybrid_classlabel->setStyleSheet("background-color: black");
         m_daqWindow->ui->hybrid_classlabel->setStyleSheet("color: white");
     }
+    bool PedestalHybrid = false;
+    for(int i=0;i<2;i++){
+        if(m_hResults.pedestalProblem[i]==true){
+            vmmstati[i] +="-";
+            vmmlabels[i]->setText(vmmlabels[i]->text()+"-");
+            PedestalHybrid = true;
+        }
+        m_hResults.h_DBExportStrings[i].insert("vmm_class",vmmstati[i]);
+    }
+    if(PedestalHybrid==true){
+        hybridclass += "-";
+        m_daqWindow->ui->hybrid_classlabel->setText(hybridclass);
+    }
     m_labelstoclear.push_back(m_daqWindow->ui->hybrid_classlabel);
     m_hResults.h_DBExportStrings[0].insert("hybrid_class",hybridclass);
     m_hResults.h_DBExportStrings[1].insert("hybrid_class",hybridclass);
-    results += "Evaluated Results";
-    GetMessageHandler()(results, "TestModule::evaluateResults");
+    m_hResults.log += results;
+    GetMessageHandler()(results, "TestLog");
 }
 
 void TestModule::PrintMData(){

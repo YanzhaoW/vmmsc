@@ -485,7 +485,7 @@ void DAQWindow::on_pushButtonAbort_pressed()
 {
     if(ui->connectionLabel->text()==QString("all alive")){
         this->m_calib->StopDataTaking();
-        this->m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+        this->ui->pushButtonTakeData->setChecked(false);
     }
 }
 
@@ -497,13 +497,13 @@ void DAQWindow::on_pushButtonStartTest_pressed()
 
 void DAQWindow::on_pushButtonClearTestLog_pressed()
 {
-    this->m_daqWindow->ui->TestLogScreen->clear();
+    this->ui->TestLogScreen->clear();
 }
 
 
 void DAQWindow::on_pushButtonSavePlotL_clicked()
 {
-    QCustomPlot* plot = this->m_daqWindow->ui->customPlotVMM1;
+    QCustomPlot* plot = this->ui->customPlotVMM1;
     QString fileName = QFileDialog::getSaveFileName(this,tr("Save Plot as PDF"), "",tr("PDF File (*.pdf);;All Files (*)"));
     fileName.remove(".pdf");
     fileName.remove(".png");
@@ -572,22 +572,25 @@ void DAQWindow::on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1)
         this->m_test->PlotData(x,y,xlabel,ylabel,arg1,graphlabel);
         if(QString::compare(arg1,"ADCCalibrationInternal",Qt::CaseInsensitive)==0){
             QVector<double>pars;
-            QVector<double> fits [2] = {this->m_test->evaluateADCCalibrationFit(x,y[0],"internal",0,pars),this->m_test->evaluateADCCalibrationFit(x,y[1],"internal",1,pars)};
+            stringstream dummy;
+            QVector<double> fits [2] = {this->m_test->evaluateADCCalibrationFit(x,y[0],"internal",0,pars,&dummy),this->m_test->evaluateADCCalibrationFit(x,y[1],"internal",1,pars,&dummy)};
             this->m_test->AddFitToPlot(x,fits);
         }
         if(QString::compare(arg1,"ADCCalibrationExternal",Qt::CaseInsensitive)==0){
             QVector<double>pars;
-            QVector<double> fits [2] = {this->m_test->evaluateADCCalibrationFit(x,y[0],"external",0,pars),this->m_test->evaluateADCCalibrationFit(x,y[1],"external",1,pars)};
+            stringstream dummy;
+            QVector<double> fits [2] = {this->m_test->evaluateADCCalibrationFit(x,y[0],"external",0,pars,&dummy),this->m_test->evaluateADCCalibrationFit(x,y[1],"external",1,pars,&dummy)};
             this->m_test->AddFitToPlot(x,fits);
         }
 
     }
 }
 
-void DAQWindow::on_checkBox_readcurrent_stateChanged(int arg1)
+void DAQWindow::on_checkBox_readcurrent_stateChanged()
 {
-    this->m_daqWindow->ui->lineEdit_1_9V->setReadOnly(arg1);
-    this->m_daqWindow->ui->lineEdit_2_9V->setReadOnly(arg1);
+    bool stateBool = this->ui->lineEdit_1_9V->isReadOnly();
+    this->ui->lineEdit_1_9V->setReadOnly(stateBool);
+    this->ui->lineEdit_2_9V->setReadOnly(stateBool);
 }
 
 void DAQWindow::on_lineEdit_1_9V_textChanged(const QString &arg1)

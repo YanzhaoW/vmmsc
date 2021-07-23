@@ -3301,7 +3301,6 @@ void CalibrationModule::ConnectDAQSocket()
 
 }
 
-
 void CalibrationModule::SaveCorrections(){
     if(m_modeIndex == 1 ||  m_modeIndex == 2)
     {
@@ -3309,42 +3308,23 @@ void CalibrationModule::SaveCorrections(){
             return;
         }
         QString name = "vmm_calibration";
-        if(m_modeIndex == 1) {
-            name += "_ADC";
-        }
-        else if(m_modeIndex == 2) {
-            name += "_time";
-        }
         int lastFEC = -1;
-        double gain = 0;
-        int polarity = 0;
-        double peaktime =0;
-        double tac = 0;
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int fecId = m_fecPosID[fec];
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
-            if(lastFEC != fecId) {
+            if(lastFEC != fec+1) {
                 name += "_FEC" + QString::number(fecId);
             }
-            lastFEC = fecId;
-            if(chip == 0 && m_vmmActs.size() <= 4) {
+            lastFEC = fec+1;
+            if(chip == 0) {
                 name += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
             }
-            if(vmm == 0) {
-                name += "_VMM" + QString::number(hybrid*2+chip);
-            }
-            else {
-                name += "_" + QString::number(hybrid*2+chip);
-            }
-            gain = m_gain[fec][hybrid][chip];
-            polarity = m_polarity[fec][hybrid][chip];
-            peaktime = m_shaping_time[fec][hybrid][chip];
-            tac = m_tac_slope[fec][hybrid][chip];
-        }
+            name += "_VMM" + QString::number(hybrid*2+chip);
 
-        QString theName = CreateFileName(name, polarity, gain,peaktime,tac);
+        }
+        QString theName = CreateFileName(name);
         QFile jsonFile(theName +  ".json");
         jsonFile.open(QFile::WriteOnly);
 
@@ -3663,8 +3643,10 @@ void CalibrationModule::CloseDAQSocket()
 {
     // close the socket
     if(IsDbgActive())GetMessageHandler()("Closing DAQ socket", "calibration_module::closeDAQSocket");
-    m_udpSocket->close();
-    m_udpSocket->disconnectFromHost();
+    if(m_udpSocket){
+        m_udpSocket->close();
+        m_udpSocket->disconnectFromHost();
+    }
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::readEvent()
@@ -4354,10 +4336,7 @@ QString CalibrationModule::CreateFileName(QString name, int polarity, double gai
         str = QString("%1").arg("timing_threshold");
         theName = theName + "_" + str;
     }
-    theName = theName + "_" + theDate;
 
-    if(theName.length()>=245) {
-        theName = m_daqWindow->GetApplicationPath() + "/vmm_calibration_" + theDate;
-    }
+    theName = theName + "_" + theDate;
     return theName;
 }

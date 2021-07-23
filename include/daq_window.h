@@ -105,7 +105,7 @@ private slots:
 
     void on_comboBox_selectPlotL_currentIndexChanged(const QString &arg1);
 
-    void on_checkBox_readcurrent_stateChanged(int arg1);
+    void on_checkBox_readcurrent_stateChanged();
 
     void on_lineEdit_1_9V_textChanged(const QString &arg1);
 

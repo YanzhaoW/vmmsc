@@ -1,7 +1,7 @@
 #include "currentmonitor.h"
 #include "message_handler.h"
-#include <QSerialPort>
-#include <QSerialPortInfo>
+//#include <QSerialPort>
+//#include <QSerialPortInfo>
 #include <QDataStream>
 #include <QBuffer>
 #include <QTimer>
@@ -15,7 +15,7 @@ CurrentMonitor::CurrentMonitor(TestModule *tst, QObject *parent): m_tst{tst}
 
 }
 
-void CurrentMonitor::setupCurrentMonitor()
+/*void CurrentMonitor::setupCurrentMonitor()
 {   //cout << "Setting up Monitor" << std::endl;
     const QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
     //GetMessageHandler()("Available Ports:","CurrentMonitor::setupCurrentMonitor()");
@@ -45,7 +45,7 @@ void CurrentMonitor::setupCurrentMonitor()
         }
     }
 }
-
+*/
 void CurrentMonitor::startMonitoringProcess()
 {
     QString dir = QCoreApplication::applicationDirPath()+"/../testing/";
@@ -73,7 +73,7 @@ void CurrentMonitor::LoadMessageHandler(MessageHandler& m)
 {
         m_msg = &m;
 }
-
+/*
 void CurrentMonitor::readCurrent()
 {
     //cout <<"reading current"<<std::endl;
@@ -131,6 +131,7 @@ void CurrentMonitor::finishMonitor()
     m_monitor->close();
     emit finished();
 }
+*/
 
 void CurrentMonitor::finishMonitoringProcess()
 {
@@ -148,6 +149,7 @@ void CurrentMonitor::processFinished(int code)
     }
 }
 
+/*
 void CurrentMonitor::sendQuery(){
     const QByteArray msg("IOUT1?\r\nIOUT2?\r\n");
     m_monitor->write(msg);
@@ -162,6 +164,7 @@ void CurrentMonitor::forceRead(){
     m_monitor->waitForReadyRead(5);
     this->readCurrent();
 }
+
 
 bool CurrentMonitor::TestForShortCircuit(double warnlow, double warnhigh)
 {
@@ -198,9 +201,8 @@ bool CurrentMonitor::TestForShortCircuit(double warnlow, double warnhigh)
     }
     timer.start(500);
     return ret;
-
 }
-
+*/
 void CurrentMonitor::clearCurrents()
 {
     m_currents_1_9V.clear();
@@ -242,7 +244,7 @@ void CurrentMonitor::loadWarningcurrs(double warn1,double warn2){
     m_warn1_9 = warn1;
     m_warn2_9 = warn2;
 }
-
+/*
 void CurrentMonitor::emergencyStop(){
     const QByteArray msg("OUT0\r\n");
     GetMessageHandler()("Emergency Shutoff, stopping tests and turning off power","CurrentMonitor::emergencyStop");
@@ -252,5 +254,5 @@ void CurrentMonitor::emergencyStop(){
     m_monitor->write(msg);
     m_monitor->waitForBytesWritten(5);
     emit emergencystopped();
-}
+}*/
 
