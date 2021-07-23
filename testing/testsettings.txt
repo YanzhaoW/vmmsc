@@ -1,16 +1,22 @@
-MonitoringADCSlope 0.75 0.85 0.7 0.9
-MonitoringADCIntercept 0   50 0   70
-Pedestal    150 190 140 200
+MonitoringADCSlope 0.7193 0.8552 0.6740 0.9005
+MonitoringADCIntercept 0   40 0   60
+Pedestal    153.517 182.669 143.800 192.387
 BaselineNoise   2   3
-Threshold   15  20
-ADCCalibrationCurvatureInternIdeal  -0.0604396074478
-ADCCalibrationCurvatureExternIdeal  -0.070142162122
-ADCCalibrationCurvatureInternStddev 0.00896593791387
-ADCCalibrationCurvatureExternStddev 0.01
-ADCCalibrationChannelDeviation  40  50
-ADCCalibrationVertexPosIntern   28.23   34.45
-ADCCalibrationVertexPosExtern   27.28   35.99
-AverageTDCRange 50  100 50  110
+ThresholdVariation  20  23
+ThresholdDeviation  -14.534  6.11 -21.416 12.992
+ADCCalibrationCurvatureInternIdeal  -0.05566
+ADCCalibrationCurvatureExternIdeal  -0.0758
+ADCCalibrationCurvatureInternStddev 0.00577
+ADCCalibrationCurvatureExternStddev 0.00559795
+ADCCalibrationChannelDeviationInternal  23.09  38.35
+ADCCalibrationChannelDeviationExternal  32.03  53.30
+ADCCalibrationVertexHeightInternIdeal   310.25
+ADCCalibrationVertexHeightInternStddev  10.21
+ADCCalibrationVertexHeightExternIdeal   461.3
+ADCCalibrationVertexHeightExternStddev  17.97
+ADCCalibrationVertexPosIntern   26.48   35.41
+ADCCalibrationVertexPosExtern   26.73   35.32
+AverageTDCRange 60  180 50  200
 WorkingChannelsExternal 64  61
 WorkingChannelsInternal 64  61
 Location BonnPI

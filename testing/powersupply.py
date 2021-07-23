@@ -35,7 +35,7 @@ signal.signal(signal.SIGTERM, termination)
 while(True):
     #Inbetween here readout current of channel 1. Commands may be more complex
     ser.write(b'IOUT1?\n')
-    #o here
+    #to here
     i1=ser.readline()
     i1=i1.strip(b'A\r\n')
     if(float(i1)>float(warn19)):
