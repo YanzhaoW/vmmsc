@@ -3072,7 +3072,7 @@ void CalibrationModule::AccumulateData(){
                                         //calculate the mean tdc for the bit value and bcid
                                         meanTDC = (double)meanTDC/(double)cnt;
                                         //convert BCID and TDC to time
-                                        meanTime = m_bc_period[fec][hybrid] - (meanTDC*m_tac_slope[fec][hybrid][chip])/255;
+                                        meanTime = 1.5*m_bc_period[fec][hybrid] - (meanTDC*m_tac_slope[fec][hybrid][chip])/255;
                                         m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch] =  (double)cnt/(double)total;
                                         m_mean[bit][fec][hybrid][chip][ch] +=  ((bcid-m_most_common_BCID)*m_bc_period[fec][hybrid] +  meanTime)*m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch];
                                         m_mean_per_bcid[bcid-min][bit][fec][hybrid][chip][ch] = meanTime;
