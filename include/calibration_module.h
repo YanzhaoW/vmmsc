@@ -202,7 +202,7 @@ private:
 
     QString m_polarityTable[2] = {"negative", "positive"};
 
-    int m_thresholdTable[8] = {220,220,250,250,250,300,300,300};
+    int m_thresholdTable[8] = {300,300,300,300,300,300,300,300};
 
     int m_minPulseHeightTable[8] = {530,258,123,93,74,66,53,42};
     int m_maxPulseHeightTable[8] = {1023,1023,859,576,436,294,221,167};
