@@ -115,7 +115,7 @@ void FEC::SendAll(bool useConfigCheck){
         }
     }
     bool iserror = false;
-    QString message = "Configuration not loaded on FEC " + QString::number(GetID()) + ":\n";
+    QString message = "Configuration not loaded on FEC " + GetIP() + ":\n";
     for (unsigned short k=0; k < VMMS_PER_HYBRID*HYBRIDS_PER_FEC; k++){
         if(config_error[k] == 1) {
             iserror = true;
