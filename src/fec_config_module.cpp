@@ -10,18 +10,6 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
   //    m_configHandler(0)
 {
     m_hybrid_i2c.clear();
-
-//On adapter card for assister, the I2C lines are not swapped
-#ifdef ASSISTER
-    m_hybrid_i2c.push_back(0);
-    m_hybrid_i2c.push_back(1);
-    m_hybrid_i2c.push_back(2);
-    m_hybrid_i2c.push_back(3);
-    m_hybrid_i2c.push_back(4);
-    m_hybrid_i2c.push_back(5);
-    m_hybrid_i2c.push_back(6);
-    m_hybrid_i2c.push_back(7);
-#else
     m_hybrid_i2c.push_back(3);
     m_hybrid_i2c.push_back(2);
     m_hybrid_i2c.push_back(1);
@@ -30,8 +18,6 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_hybrid_i2c.push_back(6);
     m_hybrid_i2c.push_back(5);
     m_hybrid_i2c.push_back(4);
-#endif
-
 }
 
 // ------------------------------------------------------------------------ //
@@ -1555,37 +1541,73 @@ void FECConfigModule::writeFECip(int FECip)
 
 void FECConfigModule::PowerCycleHybrids()
 {
-    //    if(dbg())
-    GetMessageHandler()("Power cycle hybrids via DVM card...","FEC_config_module::PowerCycleHybrids");
+    if(IsDbgEnabled())GetMessageHandler()("Setting DVM settings...","FEC_config_module::PowerCycleHybrids");
 
     bool ok;
     QByteArray datagram;
 
-    // send reset call to FEC port
+    // send trigger mode to VMMAPP port
     int send_to_port = m_fec->GetRegVal("dvm_i2c_port");
 
-    // headers
-    QString cmd, cmdType, cmdLength, msbCounter;
-    cmd = "AA"; //write
-    cmdType = "AA"; // pairs
-    cmdLength = "FFFF";
-    msbCounter = "0x80000000";
-
     QString ip = m_fec->GetIP();
-
-
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
 
     GetSocketHandler().UpdateCommandCounter();
 
+    // headers
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+
+
+    /*PCA9534
+    P0: De-emphasis Fast-Or (ART Trigger input ) from RJ45 (Powerbox only), default = off
+    P1: Pre-emphasis 40MHz clock and Configuration download to all HDMI ports, default =off
+    P2: De-emphasis of incoming VMM data links D0 and D1
+    P3: 1 = RESET CRATE !!! If cable to ATX adapter is set and Crate in Remote mode. Set to 0 to allow crate reboot (ecperimental)
+    P4: 1 = (Disable P1 and P2 power for VMMs on top 4 HDMI ports, experimental)
+    P5: 1 = (Disable P1 and P2 power for VMMs on bottom 4 HDMI ports , experimental)
+    P6: 1 = P1 Power enabled when P2a is disabled ( tests with Spartan and I2C only)
+    P7: Power to VMM via HDMI default power = 0, 1= Off, 0/1/0 = Reset VMMs ( 0.5 sec waitloop between 1-> 0 )
+
+    Device address : 0100
+    Hardware address (a2, a1, a0) : 001
+    Total address : 0100001 0x21
+
+
+    Write config register
+    0x42 (adress+write)
+    0x03 command byte (write to config register)
+    0x7F (0111 1111), set P7 to output (1=input, 0 =output, default is 1)
+
+    Write output port
+    0x42 (adress+write)
+    0x01 command byte (write to output port)
+    0x80 (1000 0000), set P7 to high
+
+    Write output port
+    0x42 (adress+write)
+    0x01 command byte (write to output port)
+    0x00 (0000 0000), set P7 to low
+
+    */
+
+    quint8 deviceAdress = 0x21;
+    quint8 i2cAddress = 0x42; //0x21 << 1 | 0
+    ///////////////////////////
+    // First command: set activated pins as output
+    ///////////////////////////
     ///////////////////////////
     // header info
     ///////////////////////////
     out << (quint32) 0x80000000 //[0,3]
-        << (quint16) 0xffff //[4,5]
-        << (quint16) 0xffff //[6,7]
+        << (quint16) 0x0000 //[4,5]
+        << (quint8) 0x00 //[6]
+        << (quint8) i2cAddress //[7]
         << (quint8) cmd.toUInt(&ok,16) //[8]
         << (quint8) cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
@@ -1594,26 +1616,52 @@ void FECConfigModule::PowerCycleHybrids()
     ///////////////////////////
     // word
     ///////////////////////////
-    out << (quint32) 0x0 //[12,15]
-        << (quint32) 0x00000048 // 0100100 plus 0 for write
-        << (quint32) 0x00000080; // Power cycle (power on)
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0x03 // command byte (write to config register)
+        << (quint32) 0x7F; //set P7 to output (1=input, 0 =output, default is 1)
+
+
+    ///////////////////////////
+    // Second command: write for activated pins high to output port
+    ///////////////////////////
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0x0000 //[4,5]
+        << (quint8) 0x00 //[6]
+        << (quint8) i2cAddress //[7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0x01 //command byte (write to output port)
+        << (quint32) 0x80; //set P7 to high
+
+
+
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::PowerCycleHybrids");
     bool readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
         GetSocketHandler().ProcessReply("fec", ip);
     } else {
-        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                "FEC_config_module::PowerCycleHybrids",true);
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::PowerCycleHybrids",true);
         GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
-        //            exit(1);
         return;
     }
 
-    QThread::sleep(5);
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
+
 
     datagram.clear();
     out.device()->seek(0); //rewind
@@ -1621,11 +1669,15 @@ void FECConfigModule::PowerCycleHybrids()
     GetSocketHandler().UpdateCommandCounter();
 
     ///////////////////////////
+    // Last command: write for activated pins high to output port
+    ///////////////////////////
+    ///////////////////////////
     // header info
     ///////////////////////////
     out << (quint32) 0x80000000 //[0,3]
-        << (quint16) 0xffff //[4,5]
-        << (quint16) 0xffff //[6,7]
+        << (quint16) 0x0000 //[4,5]
+        << (quint8) 0x00 //[6]
+        << (quint8) i2cAddress //[7]
         << (quint8) cmd.toUInt(&ok,16) //[8]
         << (quint8) cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
@@ -1634,22 +1686,21 @@ void FECConfigModule::PowerCycleHybrids()
     ///////////////////////////
     // word
     ///////////////////////////
-    out << (quint32) 0x0 //[12,15]
-        << (quint32) 0x00000048 // 0100100 plus 0 for write
-        << (quint32) 0x00000000; // Power cycle (power off)
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0x01 //command byte (write to output port)
+        << (quint32) 0x00; //set P7 to low
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::PowerCycleHybrids");
     readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
-        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
         GetSocketHandler().ProcessReply("fec", ip);
     } else {
-        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                "FEC_config_module::PowerCycleHybrids",true);
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::PowerCycleHybrids",true);
         GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
-        //            exit(1);
         return;
     }
 

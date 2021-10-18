@@ -18,7 +18,7 @@ VMMWindow::VMMWindow(HybridWindow *top, unsigned short fec, unsigned short hybri
 
     dummy = new QWidget(this);
 
-    channelGridLayout = new QGridLayout(this);
+    channelGridLayout = new QGridLayout();
 
     CreateChannelsFields();
     SetToolTips();
@@ -681,6 +681,8 @@ bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
 
 void VMMWindow::CreateChannelsFields()
 {
+    QElapsedTimer timer;
+    timer.start();
     //    VMM_Set("sd", 1, 2);
     Font.setPointSize(10);
     Font.setFamily("Arial");
@@ -925,7 +927,7 @@ void VMMWindow::CreateChannelsFields()
 
     } // i
 
-    channelGridLayout->setGeometry(QRect(700,12,50,50));
+    //channelGridLayout->setGeometry(QRect(700,12,50,50));
     channelGridLayout->setSpacing(1);
     channelGridLayout->setGeometry(QRect(700,12,400,2000));
     dummy->setLayout(channelGridLayout);
@@ -997,6 +999,7 @@ void VMMWindow::CreateChannelsFields()
         connect(VMMSL[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
         connect(VMMSMX[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
     }
+    qDebug() << "VMMWindow CreateChannelFields() " << timer.elapsed() << "milliseconds";
 
 }
 // ------------------------------------------------------------------------- //
