@@ -43,6 +43,7 @@ private slots:
     void on_pushButtonFECIP_pressed();
 
     void on_pushButtonDAQIP_pressed();
+    void onPowerCycleHybrids();
 
 private:
     DAQWindow *m_daqWindow;

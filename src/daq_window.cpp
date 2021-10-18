@@ -330,6 +330,7 @@ void DAQWindow::on_openConnection_clicked()
                     ui->Send->setEnabled(true);
                     ui->onACQ->setEnabled(true);
                     ui->offACQ->setEnabled(true);
+
                 }
                 else{
                     SetConnectionMessage("ping failed", "red");

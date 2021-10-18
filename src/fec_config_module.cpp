@@ -1,4 +1,5 @@
 #include "fec_config_module.h"
+#include <QThread>
 
 FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     QObject(parent),
@@ -1549,6 +1550,112 @@ void FECConfigModule::writeFECip(int FECip)
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeFECip");
 }
 // ------------------------------------------------------------------------ //
+
+
+
+void FECConfigModule::PowerCycleHybrids()
+{
+    //    if(dbg())
+    GetMessageHandler()("Power cycle hybrids via DVM card...","FEC_config_module::PowerCycleHybrids");
+
+    bool ok;
+    QByteArray datagram;
+
+    // send reset call to FEC port
+    int send_to_port = m_fec->GetRegVal("dvm_i2c_port");
+
+    // headers
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA"; //write
+    cmdType = "AA"; // pairs
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
+
+    QString ip = m_fec->GetIP();
+
+
+    datagram.clear();
+    QDataStream out (&datagram, QIODevice::WriteOnly);
+    out.device()->seek(0); //rewind
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0xffff //[4,5]
+        << (quint16) 0xffff //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0x0 //[12,15]
+        << (quint32) 0x00000048 // 0100100 plus 0 for write
+        << (quint32) 0x00000080; // Power cycle (power on)
+
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
+                                    "FEC_config_module::PowerCycleHybrids");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(readOK) {
+        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        GetSocketHandler().ProcessReply("fec", ip);
+    } else {
+        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                "FEC_config_module::PowerCycleHybrids",true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
+        //            exit(1);
+        return;
+    }
+
+    QThread::sleep(5);
+
+    datagram.clear();
+    out.device()->seek(0); //rewind
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0xffff //[4,5]
+        << (quint16) 0xffff //[6,7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0x0 //[12,15]
+        << (quint32) 0x00000048 // 0100100 plus 0 for write
+        << (quint32) 0x00000000; // Power cycle (power off)
+
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
+                                    "FEC_config_module::PowerCycleHybrids");
+    readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(readOK) {
+        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        GetSocketHandler().ProcessReply("fec", ip);
+    } else {
+        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                "FEC_config_module::PowerCycleHybrids",true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
+        //            exit(1);
+        return;
+    }
+
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
+}
+
 
 
 // ------------------------------------------------------------------------ //

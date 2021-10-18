@@ -24,7 +24,7 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     m_ui->fec_WarmInit->setEnabled(false);
     m_ui->onACQ->setEnabled(false);
     m_ui->offACQ->setEnabled(false);
-
+    m_ui->pushButtonPowerCycle->setEnabled(false);
     m_ui->debugScreen->setReadOnly(true);
 
     SetToolTips();
@@ -59,6 +59,8 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
             this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
             this, SLOT( onResetFEC() ));
+    connect(m_ui->pushButtonPowerCycle, SIGNAL(clicked()),
+            this, SLOT( onPowerCycleHybrids() ));
     connect(m_ui->onACQ, SIGNAL(clicked()),
             this, SLOT( onUpdateSettings() ));
     connect(m_ui->offACQ, SIGNAL(clicked()),
@@ -203,6 +205,7 @@ void FECWindow::onUpdateSettings(){
             m_ui->fec_WarmInit->setEnabled(true);
             m_ui->onACQ->setEnabled(true);
             m_ui->offACQ->setEnabled(true);
+            m_ui->pushButtonPowerCycle->setEnabled(true);
         }
         else{
             //m_ui->linkPB->setEnabled(false);
@@ -210,6 +213,7 @@ void FECWindow::onUpdateSettings(){
             m_ui->readSystemParams->setEnabled(false);
             m_ui->onACQ->setEnabled(false);
             m_ui->offACQ->setEnabled(false);
+            m_ui->pushButtonPowerCycle->setEnabled(false);
         }
     }
 
@@ -403,6 +407,12 @@ void FECWindow::onResetFEC()
 }
 // ------------------------------------------------------------------------- //
 
+// ------------------------------------------------------------------------- //
+void FECWindow::onPowerCycleHybrids()
+{
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->PowerCycleHybrids();
+}
+// ------------------------------------------------------------------------- //
 
 void FECWindow::on_clearDebugScreen_clicked()
 {

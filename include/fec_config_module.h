@@ -52,6 +52,7 @@ public:
     void ReadSystemRegisters(QMap<QString, QString>& registers);
     void writeFECip(int FECip);
     void writeDAQip(int DAQip);
+    void PowerCycleHybrids();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
     void SetMask();

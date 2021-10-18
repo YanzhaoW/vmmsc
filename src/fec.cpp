@@ -193,7 +193,7 @@ void FEC::LoadDefault(){
     (*m_regNames)[35]="trgin_invert";            (*m_reg)[35] = 0;
     (*m_regNames)[36]="trgout_invert";           (*m_reg)[36] = 0;
     (*m_regNames)[37]="trgout_time";             (*m_reg)[37] = 1;
-    (*m_regNames)[38]="not_used";                (*m_reg)[38] = 0;
+    (*m_regNames)[38]="dvm_i2c_port";            (*m_reg)[38] = 6601;//0x19C9
     (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
     (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
     (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
