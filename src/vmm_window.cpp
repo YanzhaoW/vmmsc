@@ -681,8 +681,6 @@ bool VMMWindow::eventFilter(QObject *obj, QEvent *event)
 
 void VMMWindow::CreateChannelsFields()
 {
-    QElapsedTimer timer;
-    timer.start();
     //    VMM_Set("sd", 1, 2);
     Font.setPointSize(10);
     Font.setFamily("Arial");
@@ -999,7 +997,6 @@ void VMMWindow::CreateChannelsFields()
         connect(VMMSL[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
         connect(VMMSMX[i],SIGNAL(pressed()),this,SLOT(onUpdateChannelState()));
     }
-    qDebug() << "VMMWindow CreateChannelFields() " << timer.elapsed() << "milliseconds";
 
 }
 // ------------------------------------------------------------------------- //

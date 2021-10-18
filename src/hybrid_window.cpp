@@ -62,8 +62,6 @@ void HybridWindow::on_Box_vmm2_clicked()
 }
 
 void HybridWindow::VMMBoxLogic(bool checked, unsigned short vmm){
-    QElapsedTimer timer;
-    timer.start();
     unsigned short NotActiveBefore = 0;
     QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
     for (unsigned short i = 0; i < a.size(); i++){
@@ -78,7 +76,6 @@ void HybridWindow::VMMBoxLogic(bool checked, unsigned short vmm){
         m_ui->tabWidget->removeTab(vmm-NotActiveBefore);
         m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetVMM(vmm, false);
     }
-    qDebug() << "HybridWindow VMMBoxLogic() " << timer.elapsed() << "milliseconds";
 }
 
 void HybridWindow::UpdateWindow(){
