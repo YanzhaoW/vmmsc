@@ -1621,6 +1621,28 @@ void FECConfigModule::PowerCycleHybrids()
         << (quint32) 0x7F; //set P7 to output (1=input, 0 =output, default is 1)
 
 
+    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
+                                    "FEC_config_module::PowerCycleHybrids");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        GetSocketHandler().ProcessReply("fec", ip);
+    } else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::PowerCycleHybrids",true);
+        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
+        return;
+    }
+
+    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
+
+
+    datagram.clear();
+    out.device()->seek(0); //rewind
+
+    GetSocketHandler().UpdateCommandCounter();
+
     ///////////////////////////
     // Second command: write for activated pins high to output port
     ///////////////////////////
@@ -1648,7 +1670,7 @@ void FECConfigModule::PowerCycleHybrids()
 
     GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
                                     "FEC_config_module::PowerCycleHybrids");
-    bool readOK = true;
+    readOK = true;
     readOK = GetSocketHandler().WaitForReadyRead("fec");
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
@@ -1662,6 +1684,7 @@ void FECConfigModule::PowerCycleHybrids()
 
     GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
 
+    QThread::sleep(2);
 
     datagram.clear();
     out.device()->seek(0); //rewind
