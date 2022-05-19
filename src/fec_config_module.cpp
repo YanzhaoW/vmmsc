@@ -1,5 +1,6 @@
-#include "fec_config_module.h"
 #include <QThread>
+#include <QMessageBox>
+#include "fec_config_module.h"
 
 FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     QObject(parent),
@@ -9,35 +10,35 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_messageHandler(0)
   //    m_configHandler(0)
 {
-    m_hybrid_i2c.clear();
-    m_hybrid_i2c.push_back(3);
-    m_hybrid_i2c.push_back(2);
-    m_hybrid_i2c.push_back(1);
-    m_hybrid_i2c.push_back(0);
-    m_hybrid_i2c.push_back(7);
-    m_hybrid_i2c.push_back(6);
-    m_hybrid_i2c.push_back(5);
-    m_hybrid_i2c.push_back(4);
+    g_hybrid_i2c.clear();
+    if(g_clock_source <= 1) {
+        g_hybrid_i2c.push_back(0);
+        g_hybrid_i2c.push_back(1);
+        g_hybrid_i2c.push_back(2);
+        g_hybrid_i2c.push_back(3);
+        g_hybrid_i2c.push_back(4);
+        g_hybrid_i2c.push_back(5);
+        g_hybrid_i2c.push_back(6);
+        g_hybrid_i2c.push_back(7);
+    }
+    else {
+        g_hybrid_i2c.push_back(3);
+        g_hybrid_i2c.push_back(2);
+        g_hybrid_i2c.push_back(1);
+        g_hybrid_i2c.push_back(0);
+        g_hybrid_i2c.push_back(7);
+        g_hybrid_i2c.push_back(6);
+        g_hybrid_i2c.push_back(5);
+        g_hybrid_i2c.push_back(4);
+
+    }
+
 }
 
 // ------------------------------------------------------------------------ //
 void FECConfigModule::LoadMessageHandler(MessageHandler& m)
 {
     m_messageHandler = &m;
-}
-// ------------------------------------------------------------------------- //
-void FECConfigModule::VMMLoadEmit(){
-    emit ReloadVMM();
-}
-
-// ------------------------------------------------------------------------- //
-void FECConfigModule::HybridLoadEmit(){
-    emit ReloadHybrid();
-}
-
-// ------------------------------------------------------------------------- //
-void FECConfigModule::VMMUpdateChannelEmit(){
-    emit VMMUpdateChannel();
 }
 
 // ------------------------------------------------------------------------ //
@@ -61,15 +62,14 @@ bool FECConfigModule::SendConfig(int hybrid_index, int vmm_index, bool enableCon
 {
     bool result = true;
 
-#ifdef CONFIG_CHECK
-    //reset I2C address 65 register 0
-    if(enableConfigCheck) {
-        CommunicateWithHybridI2C(hybrid_index, 0, 0, 2);
+    if(g_use_config_check) {
+        //reset I2C address 65 register 0
+        if(enableConfigCheck) {
+            CommunicateWithHybridI2C(65, hybrid_index, 0, 0, 2);
+        }
     }
-#endif
 
     stringstream sx;
-    // NEED TO ADD SOCKET STATE CHECK
 
     bool ok;
 
@@ -127,8 +127,9 @@ bool FECConfigModule::SendConfig(int hybrid_index, int vmm_index, bool enableCon
 
 
     QString ip = m_fec->GetIP();
-    // update global command counter
+    //std::cout << "Configure IP " << ip.toStdString() << std::endl;
 
+    // update global command counter
     GetSocketHandler().UpdateCommandCounter();
     //debug
     if(IsDbgEnabled()) {
@@ -179,26 +180,27 @@ bool FECConfigModule::SendConfig(int hybrid_index, int vmm_index, bool enableCon
         sx << "Send config to port: " << send_to_port << " on IP " << ip.toStdString();
         GetMessageHandler()(sx);sx.str("");
     }
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::SendConfig");
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::SendConfig")) {
+        return -1;
+    }
     //sleep(2);
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...", "FEC_config_module::SendConfig");
-        GetSocketHandler().ProcessReply("fec", ip);
+        GetSocketHandler().ProcessReply();
     }
     else {
         GetMessageHandler()("Timeout while waiting for replies from VMM", "FEC_config_module::SendConfig");
-        GetSocketHandler().CloseAndDisconnect("fec","Configuration::SendConfig");
+        GetSocketHandler().CloseAndDisconnect("Configuration::SendConfig");
         return -1;
     }
-
-#ifdef CONFIG_CHECK
-    //poll I2C address 65 register 0
-    if(enableConfigCheck) {
-        result = CheckConfigurationOfVMMs(hybrid_index, vmm_index);
+    GetSocketHandler().CloseAndDisconnect("Configuration::SendConfig");
+    if(g_use_config_check) {
+        //poll I2C address 65 register 0
+        if(enableConfigCheck) {
+            result = CheckConfigurationOfVMMs(hybrid_index, vmm_index);
+        }
     }
-#endif
     return result;
 }
 
@@ -382,26 +384,26 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hybr
 
     //pulse DAC
     // [6,15]
-    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"sdp_2" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"sdp10" ) ,
                              10,2,QChar('0'));
     spi1.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
 
     //10bit ADC
     // [16,17]
-    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "convtime_10" ) ,2,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "sc10b" ) ,2,2,QChar('0'));
     spi1.replace(sequence, tmp.size(), tmp);
     sequence += tmp.size();
 
     //8bit ADC
     // [18,19]
-    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "convtime_8" ) ,2,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "sc8b" ) ,2,2,QChar('0'));
     spi1.replace(sequence, tmp.size(), tmp);
     sequence += tmp.size();
 
     //6bit
     // [20,22]
-    tmp = QString("%1").arg(  m_fec->GetVMM( hybrid_index,  vmm_index, "convtime_6" )  ,3,2,QChar('0'));
+    tmp = QString("%1").arg(  m_fec->GetVMM( hybrid_index,  vmm_index, "sc6b" )  ,3,2,QChar('0'));
     spi1.replace(sequence, tmp.size(), tmp);
     sequence += tmp.size();
 
@@ -516,7 +518,7 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hybr
 
     //channel to monitor
     //[7,12]
-    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"monitoring" ) ,
+    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"sm5_sm0" ) ,
                              6,2,QChar('0'));
     spi2.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
@@ -541,7 +543,7 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hybr
 
     //peak_time
     // [16,17]
-    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"peaktime" ) ,2,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"st" ) ,2,2,QChar('0'));
     spi2.replace(sequence, tmp.size(),tmp);
     sequence += tmp.size();
 
@@ -553,7 +555,7 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hybr
 
     //gain
     // [19,21]
-    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"gain" ) ,3,2,QChar('0'));
+    tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index,"sg" ) ,3,2,QChar('0'));
     spi2.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
 
@@ -677,7 +679,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
 
 
         //10 bit adc lsb [19,23]
-        tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "ADC0_10", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "sz10b", i ) ,
                                  5,2,QChar('0'));
         //According to ATLAS software, has to be reversed
         std::reverse(tmp.begin(),tmp.end());
@@ -686,7 +688,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
         if(do_check) std::cout << " 10bit : " << reg.toStdString() << std::endl;
 
         //8 bit adc lsb [24,27]
-        tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "ADC0_8", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "sz08b", i ) ,
                                  4,2,QChar('0'));
         //According to ATLAS software, has to be reversed
         std::reverse(tmp.begin(),tmp.end());
@@ -695,7 +697,7 @@ void FECConfigModule::FillChannelRegisters(std::vector<QString>& registers, int 
         if(do_check) std::cout << " 8bit : " << reg.toStdString() << std::endl;
 
         //6 bit adc lsb [28,30]
-        tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "ADC0_6", i ) ,
+        tmp = QString("%1").arg( m_fec->GetVMM( hybrid_index,  vmm_index, "sz06b", i ) ,
                                  3,2,QChar('0'));
         //According to ATLAS software, has to be reversed
         std::reverse(tmp.begin(),tmp.end());
@@ -864,50 +866,52 @@ void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hyb
 }
 
 
-int FECConfigModule::Connect()
+bool FECConfigModule::Connect()
 {
 
-
     QString ip =  m_fec->GetIP();
-
-#ifdef __linux__
-    int status_code = QProcess::execute("ping", QStringList()<<"-c1"<<ip);
-#elif __APPLE__
-    int status_code = QProcess::execute("ping", QStringList()<<"-t1"<<ip);
-#elif _WIN32
-    QString command = "ping -n 1 " + ip;
-    int status_code = QProcess::execute(command);
-#endif
-    //////////////////////////////////
-    bool pingOK = false;
-    if(status_code == 0){
-        pingOK = true;
-        GetSocketHandler().IsPinged(true);
-        std::cout<<"Ping successful"<<std::endl;
-
-        ///////////////////////////////////////////////////////
-        // now that we know we are connected OK, add and bind
-        // the sockets
-        ///////////////////////////////////////////////////////
-        GetSocketHandler().AddSocket("FEC", m_fec->GetRegVal("fec_port"), QUdpSocket::ShareAddress);
-        //        connect(vmmRunModule, SIGNAL(checkLinks()), this, SLOT(writeFECStatus()));
-        return 1;
+    if(GetSocketHandler().IsFECSocketOK() && GetSocketHandler().IsPinged()) {
+        return true;
     }
     else {
-        pingOK = false;
-        GetSocketHandler().IsPinged(false);
-        std::cout<<"ERROR Unable to successfully ping the IP: "<<ip.toStdString()<<std::endl;
-        return 0;
+#ifdef __linux__
+        int status_code = QProcess::execute("ping", QStringList()<<"-c1"<<ip);
+#elif __APPLE__
+        int status_code = QProcess::execute("ping", QStringList()<<"-t1"<<ip);
+#elif _WIN32
+        QString command = "ping -n 1 " + ip;
+        int status_code = QProcess::execute(command);
+#endif
+        //////////////////////////////////
+        bool pingOK = false;
+        if(status_code == 0){
+            pingOK = true;
+            GetSocketHandler().SetPinged(true);
+            std::cout<<"Ping successful"<<std::endl;
 
+            ///////////////////////////////////////////////////////
+            // now that we know we are connected OK, add and bind
+            // the sockets
+            ///////////////////////////////////////////////////////
+            GetSocketHandler().AddSocket(m_fec->GetRegVal("fec_port"), QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+            //        connect(vmmRunModule, SIGNAL(checkLinks()), this, SLOT(writeFECStatus()));
+            return true;
+        }
+        else {
+            pingOK = false;
+            GetSocketHandler().SetPinged(false);
+            std::cout<<"ERROR Unable to successfully ping the IP: "<<ip.toStdString()<<std::endl;
+            return false;
+        }
     }
 }
 
 
 
 
-void FECConfigModule::ConfigTP( int hybrid_index)
+void FECConfigModule::ConfigHybrid( int hybrid_index)
 {
-    if(IsDbgEnabled())GetMessageHandler()("Configuring the pulser...","FEC_config_module::configTP");
+    if(IsDbgEnabled())GetMessageHandler()("Configuring the pulser...","FEC_config_module::ConfigHybrid");
 
     bool ok;
     QByteArray datagram;
@@ -941,32 +945,55 @@ void FECConfigModule::ConfigTP( int hybrid_index)
         << (quint32) hybridMap //[4,7]
         << (quint32) cmd.toUInt(&ok,16); //[8,11]
 
+    //RD51 VMM3a hybrid firmware (40 MHz)
+    if(g_clock_source == 3) {
+        //0=22.5 MHz, 1=45 MHz, 2=90 MHz, 3=180 MHz
+        int ckdt = 3;
+        //0=80 MHz, 1= 80 MHz inv, 2 = 40 MHz, 3 = 20 MHz, 4 = 10 MHz, 5 = 5 MHz, 6 = 2.5 MHz
+        int ckbc = 2;
+        //0=0 ns, 1 = -12.5 ns, 2=-25 ns, 3= -37.5 ns
+        int ckbc_skew = 0;
+        ////////////////////////////
+        // command
+        ////////////////////////////
+        out << (quint32) 0 //[12,15]
+            << (quint32) 2 //[16,19]
+            << (quint32) (tpskew + (tpwidth*16) + (tppolarity*128))
+            << (quint32) 7 //[24,27]
+            << (quint32)  ckbc + (ckbc_skew*16) //[32,35]
+            << (quint32) 5 //[36,39], CKDT control register
+            << (quint32) 0 + (ckdt*2); //[40,43] lowest bit: dynamic reconfiguration of clock, bits [1,2,3] CKDT selection (readout clock)
+    }
+    else {
+        ////////////////////////////
+        // command
+        ////////////////////////////
+        out << (quint32) 0 //[12,15]
+            << (quint32) 2 //[16,19]
+            << (quint32) tpskew //[20,23]
+            << (quint32) 3
+            << (quint32) tpwidth
+            << (quint32) 4
+            << (quint32) tppolarity;
 
-    ////////////////////////////
-    // command
-    ////////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 2 //[16,19]
-        << (quint32) (tpskew + (tpwidth*16) + (tppolarity*128)); //[20,23]
+    }
 
-
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::configTP");
-
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ConfigHybrid")) {
+        return;
+    }
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies from IP " + ip.toStdString() + "...","FEC_config_module::configTP");
-        GetSocketHandler().ProcessReply("fec",ip);
+        GetSocketHandler().ProcessReply();
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::configTP", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::configTP");
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::configTP");
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::configTP");
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::configTP");
 
 }
 
@@ -1008,44 +1035,12 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint16) cmdLength.toUInt(&ok, 16); //[10,11]
 
 
-   uint32_t trgout_time =  m_fec->GetRegVal("trgout_time");
-   uint32_t trgout_sel = 0;
-   // index = 0: input, index 1-4096: generate trigger
-   if(trgout_time > 0) {
-     trgout_sel = 1;
-     trgout_time =  trgout_time - 1;
-   }
-
-
-
-   uint32_t trgin_on = 0;
-   uint32_t trgin_invert = m_fec->GetRegVal("trgin_invert");
-   if(trgin_invert > 0) {
-       // trigger input on, register timestamp
-       trgin_on = 1;
-       // polarity setting, 0 positive, 1 negative
-       trgin_invert = trgin_invert - 1;
-   }
-
-   uint32_t trgout_on = 0;
-   uint32_t trgout_invert = m_fec->GetRegVal("trgout_invert");
-   if(trgout_invert > 0) {
-       // polarity setting, 0 positive, 1 negative
-       trgout_invert = trgout_invert - 1;
-       //create a trigger output
-       trgout_on = 1;
-   }
-   uint32_t trg_on_off =  trgin_on + 2*trgout_on;
-   uint32_t trg_invert =  trgin_invert +2*trgout_invert +4*trgout_sel;
 
 
     ///////////////////////////
     // trigger constants
     ///////////////////////////
     out << (quint32) 0 //[12,15]
-           //trigger period
-        << (quint32) 0 //[16,19]
-        << (quint32) 7 //[20,23]
         << (quint32) 1 //[16,19]
         << (quint32) m_fec->GetRegVal("debug_data_format") //[20,23]
         << (quint32) 2 //[16,19]
@@ -1054,10 +1049,6 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) m_fec->GetRegVal("latency_data_max") //[20,23]
         << (quint32) 4 //[16,19]
         << (quint32) m_fec->GetRegVal("latency_data_error") //[20,23]
-        << (quint32) 5 //[16,19]
-        << (quint32) trg_on_off //[20,23]
-        << (quint32) 7 //[16,19]
-        << (quint32) m_fec->GetRegVal("bcclock_factor") //[20,23]
         << (quint32) 9 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_offset_first") //[20,23]
         << (quint32) 10 //[16,19]
@@ -1065,52 +1056,37 @@ void FECConfigModule::SetTriggerAcqConstants()
         << (quint32) 11 //[16,19]
         << (quint32) m_fec->GetRegVal("tp_latency") //[20,23]
         << (quint32) 12 //[16,19]
-        << (quint32) m_fec->GetRegVal("tp_number") //[20,23] //[20,23]
-        << (quint32) 13 //[16,19]
-        << (quint32) trg_invert //[20,23] //[20,23]
-        << (quint32) 14 //[16,19]
-        << (quint32) trgout_time; //[20,23] //[20,23]
+        << (quint32) m_fec->GetRegVal("tp_number"); //[20,23] //[20,23]
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::setTriggerAcqConstants");
 
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::setTriggerAcqConstants")) {
+        return;
+    }
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies from IP " + ip.toStdString() + "...","FEC_config_module::setTriggerAcqConstants");
-        GetSocketHandler().ProcessReply("fec", ip);
+        GetSocketHandler().ProcessReply();
     }
     else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::setTriggerAcqConstants", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setTriggerAcqConstants");
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::setTriggerAcqConstants");
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::setTriggerAcqConstants");
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::setTriggerAcqConstants");
 }
 
-
-
-// ------------------------------------------------------------------------ //
-void FECConfigModule::SetS6clocks(int hybrid_index)
+void FECConfigModule::PowerCycleHybrids()
 {
-    if(IsDbgEnabled())GetMessageHandler()("Setting S6 clocks...","FEC_config_module::s6clocks");
+    if(IsDbgEnabled())GetMessageHandler()("Setting DVM settings...","FEC_config_module::PowerCycleHybrids");
 
     bool ok;
     QByteArray datagram;
 
-    //get settings
-    int ckbc = m_fec->m_hybrids[hybrid_index].GetReg("CKBC");
-    int ckbc_skew = m_fec->m_hybrids[hybrid_index].GetReg("CKBC_skew");
-    int ckdt = m_fec->m_hybrids[hybrid_index].GetReg("CKDT");
-
-    // send call to s6 port
-    int send_to_port = m_fec->GetRegVal("s6_port");
-
-    QString cmd, msbCounter;
-    cmd = "AAAAFFFF";
-    msbCounter = "0x80000000";
+    // send trigger mode to VMMAPP port
+    int send_to_port = m_fec->GetRegVal("dvm_i2c_port");
 
     QString ip = m_fec->GetIP();
     datagram.clear();
@@ -1119,52 +1095,188 @@ void FECConfigModule::SetS6clocks(int hybrid_index)
 
     GetSocketHandler().UpdateCommandCounter();
 
-    ////////////////////////////
-    // header
-    ////////////////////////////
-    QString hybridMapString = "00000000";
-    hybridMapString.replace(7 -  hybrid_index , 1 , QString("1") );
-    quint8 hybridMap = (quint8)hybridMapString.toInt(&ok,2);
-
-    out << (quint32)(GetSocketHandler().GetCommandCounter() + msbCounter.toUInt(&ok,16)) //[0,3]
-        << (quint32) hybridMap //[4,7]
-        << (quint32) cmd.toUInt(&ok,16); //[8,11]
+    // headers
+    QString cmd, cmdType, cmdLength, msbCounter;
+    cmd = "AA";
+    cmdType = "AA";
+    cmdLength = "FFFF";
+    msbCounter = "0x80000000";
 
 
+    /*PCA9534
+    P0: De-emphasis Fast-Or (ART Trigger input ) from RJ45 (Powerbox only), default = off
+    P1: Pre-emphasis 40MHz clock and Configuration download to all HDMI ports, default =off
+    P2: De-emphasis of incoming VMM data links D0 and D1
+    P3: 1 = RESET CRATE !!! If cable to ATX adapter is set and Crate in Remote mode. Set to 0 to allow crate reboot (ecperimental)
+    P4: 1 = (Disable P1 and P2 power for VMMs on top 4 HDMI ports, experimental)
+    P5: 1 = (Disable P1 and P2 power for VMMs on bottom 4 HDMI ports , experimental)
+    P6: 1 = P1 Power enabled when P2a is disabled ( tests with Spartan and I2C only)
+    P7: Power to VMM via HDMI default power = 0, 1= Off, 0/1/0 = Reset VMMs ( 0.5 sec waitloop between 1-> 0 )
 
-    ////////////////////////////
-    // command
-    ////////////////////////////
+    Device address : 0100
+        Hardware address (a2, a1, a0) : 001
+        Total address : 0100001 0x21
+
+
+        Write config register
+        0x42 (adress+write)
+            0x03 command byte (write to config register)
+                0x7F (0111 1111), set P7 to output (1=input, 0 =output, default is 1)
+
+        Write output port
+        0x42 (adress+write)
+            0x01 command byte (write to output port)
+                0x80 (0000 0000), set P7 to high
+
+            Write output port
+        0x42 (adress+write)
+            0x01 command byte (write to output port)
+                0x00 (0000 0000), set P7 to low
+
+            */
+
+    quint8 deviceAdress = 0x21;
+    quint8 i2cAddress = 0x42; //0x21 << 1 | 0
+    ///////////////////////////
+    // First command: set activated pins as output
+    ///////////////////////////
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0x0000 //[4,5]
+        << (quint8) 0x00 //[6]
+        << (quint8) i2cAddress //[7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
     out << (quint32) 0 //[12,15]
-        << (quint32) 7 //[24,27]
-        << (quint32)  ckbc + (ckbc_skew*16) //[32,35]
-        << (quint32) 5 //[36,39], CKDT control register
-        << (quint32) 0 + (ckdt*2); //[40,43] lowest bit: dynamic reconfiguration of clock, bits [1,2,3] CKDT selection (readout clock)
+        << (quint32) 0x00 //slow control address, not used
+        << (quint32) 0x037F; //write to config register (0x03), second byte set P7 to output (1=input, 0 =output, default is 1)
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::s6clocks");
 
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::PowerCycleHybrids")) {
+        return;
+    }
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies from IP " + ip.toStdString() + "...","FEC_config_module::s6clocks");
-        GetSocketHandler().ProcessReply("fec",ip);
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        GetSocketHandler().ProcessReply();
     } else {
-        GetMessageHandler()("Timout while waiting for replies from VMM",
-                            "FEC_config_module::s6clocks", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::s6clocks");
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::PowerCycleHybrids",true);
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::PowerCycleHybrids");
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::s6clocks");
+    //GetSocketHandler().CloseAndDisconnect("FEC_config_module::PowerCycleHybrids");
+    //QThread::sleep(2);
 
+    datagram.clear();
+    out.device()->seek(0); //rewind
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    ///////////////////////////
+    // Second command: write for activated pins high to output port
+    ///////////////////////////
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0x0000 //[4,5]
+        << (quint8) 0x00 //[6]
+        << (quint8) i2cAddress //[7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0x00 //slow control address, not used
+        << (quint32) 0x0180; //first byte command byte (write to output port), second byte set P7 to high
+
+
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::PowerCycleHybrids")) {
+        return;
+    }
+    readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead();
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        GetSocketHandler().ProcessReply();
+    } else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::PowerCycleHybrids",true);
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::PowerCycleHybrids");
+        return;
+    }
+
+    //GetSocketHandler().CloseAndDisconnect("FEC_config_module::PowerCycleHybrids");
+
+    QThread::sleep(4);
+
+    datagram.clear();
+    out.device()->seek(0); //rewind
+
+    GetSocketHandler().UpdateCommandCounter();
+
+    ///////////////////////////
+    // Last command: write for activated pins high to output port
+    ///////////////////////////
+    ///////////////////////////
+    // header info
+    ///////////////////////////
+    out << (quint32) 0x80000000 //[0,3]
+        << (quint16) 0x0000 //[4,5]
+        << (quint8) 0x00 //[6]
+        << (quint8) i2cAddress //[7]
+        << (quint8) cmd.toUInt(&ok,16) //[8]
+        << (quint8) cmdType.toUInt(&ok,16) //[9]
+        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
+
+
+    ///////////////////////////
+    // word
+    ///////////////////////////
+    out << (quint32) 0 //[12,15]
+        << (quint32) 0x00 //slow control address, not used
+        << (quint32) 0x0100; //first byte write to output port, second byte set P7 to low
+
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::PowerCycleHybrids")) {
+        return;
+    }
+    readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead();
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
+        GetSocketHandler().ProcessReply();
+    } else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::PowerCycleHybrids",true);
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::PowerCycleHybrids");
+        return;
+    }
+
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::PowerCycleHybrids");
 }
 
-
-
 // ------------------------------------------------------------------------ //
-void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
+bool FECConfigModule::CheckLinkStatus(QString & message, QVector<QString> & linkstatus)
 {
+    linkstatus.clear();
+    for(int n=0; n<HYBRIDS_PER_FEC;n++) {
+        linkstatus.push_back("0");
+    }
     if(IsDbgEnabled())GetMessageHandler()("Checking link status...","FEC_config_module::checkLinkStatus");
 
     bool ok;
@@ -1198,64 +1310,54 @@ void FECConfigModule::CheckLinkStatus(bool& readOK, QString & message)
     out << (quint32) 0 //[12,15]
         << (quint32) 16; //[16,19]
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::checkLinkStatus");
-
-    readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-
-    if(!readOK) {
-        //emit CheckLinks();
-        //if(dbg())GetMessageHandler()("Processing replies...","FEC_config_module::checkLinkStatus");
-        //socket().processReply("fec", ip);
-        //} else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::checkLinkStatus", true);
-        GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::checkLinkStatus");
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::checkLinkStatus")) {
+        return false;
     }
-    else
-    {
-        QByteArray buff;
-        buff.clear();
-        buff.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize() );
-        GetSocketHandler().GetFECSocket().readDatagram(buff.data(), buff.size());
-        if(buff.size()==0) return;
-        bool ok;
-        QString sizeOfPackageReceived, datagramCheck;
-        datagramCheck = buff.mid(0,4).toHex();
-        quint32 check = datagramCheck.toUInt(&ok,16);
+    bool readOK = GetSocketHandler().WaitForReadyRead();
 
-        sizeOfPackageReceived = sizeOfPackageReceived.number(buff.size(),10);
-
-        if(check<1000000) {
+    QByteArray read_datagram;
+    read_datagram.clear();
+    QHostAddress address;
+    quint16 port;
+    bool status_checked =false;
+    while(GetSocketHandler().GetSocket().hasPendingDatagrams()) {
+        read_datagram.resize(GetSocketHandler().GetSocket().pendingDatagramSize() );
+        GetSocketHandler().GetSocket().readDatagram(read_datagram.data(), read_datagram.size(), &address, &port);
+        if(CheckIpPortSize(address, ip,port,send_to_port,read_datagram.size())) {
             stringstream ss;
-            ss << " ****** NEW PACKET RECEIVED ****** " << endl;
-            ss << " Data received size: " << sizeOfPackageReceived.toStdString()
-               << " bytes" << endl;
             QString bin, hex;
-            for(int i = 0; i < buff.size()/4; i++) {
-                hex = buff.mid(i*4, 4).toHex();
-                quint32 tmp32 = hex.toUInt(&ok,16);
-                if(i==0) ss << " Rec'd ID: " << bin.number(tmp32,10).toStdString() << endl;
-                else {
-                    ss << " Data, " << i << ": " << bin.number(tmp32,16).toStdString() << endl;
-                }
-            } // i
-            message = QString::fromStdString(ss.str());
-            // m_linkState = QString::fromStdString(ss.str());
-            // DisplayDebugScreen(QString::fromStdString(ss.str()));
+            hex = read_datagram.mid(0, 4).toHex();
+            quint32 tmp32 = hex.toUInt(&ok,16);
+            ss << " *** STATUS-ID " <<  bin.number(tmp32,10).toStdString() << " ***" << endl;
 
-            //        ui->debugScreen->append(QString::fromStdString(ss.str()));
-            //        ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+            hex = read_datagram.mid(20, 4).toHex();
+            tmp32 = hex.toUInt(&ok,16);
+            QString str = bin.number(tmp32,16);
+            for(int n=0; n<str.size(); n++) {
+                linkstatus[n] = str.mid(str.size()-1-n,1);
+                ss << "hybr. " + QString::number(n).toStdString() + ": " + linkstatus[n].toStdString() << std::endl;
+            }
+            message = QString::fromStdString(ss.str());
+
+            status_checked = true;
+            break;
         }
     }
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::checkLinkStatus");
+        GetSocketHandler().ProcessReply();
+    } else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::checkLinkStatus", true);
+    }
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::checkLinkStatus");
 
+    return status_checked;
 }
 
 // ------------------------------------------------------------------------ //
 void FECConfigModule::ResetFEC()
 {
-    //    if(dbg())
     GetMessageHandler()("Resetting FEC...","FEC_config_module::resetFEC");
 
     bool ok;
@@ -1300,28 +1402,28 @@ void FECConfigModule::ResetFEC()
         << (quint32) address.toUInt(&ok,16) //[16,19]
         << (quint32) value.toUInt(&ok,16); //[20,23]
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::resetFEC");
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::resetFEC");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        if(IsDbgEnabled())GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                              "FEC_config_module::resetFEC",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::resetFEC");
-        //            exit(1);
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::resetFEC")) {
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::resetFEC");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead();
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::resetFEC");
+        GetSocketHandler().ProcessReply();
+    } else {
+        if(IsDbgEnabled())GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                              "FEC_config_module::resetFEC",true);
+    }
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::resetFEC");
+    return;
 }
+
+
 // ------------------------------------------------------------------------ //
-void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
-{
-    //    if(dbg())
-    GetMessageHandler()("Reading FEC system registers...","FEC_config_module::readSysReg");
+bool FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers) {
+    if(IsDbgEnabled())
+        GetMessageHandler()("Reading FEC system registers...","FEC_config_module::readSysReg");
 
     bool ok;
     QByteArray datagram;
@@ -1336,6 +1438,7 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
     msbCounter = "0x80000000";
 
     QString ip = m_fec->GetIP();
+    std::cout << "IP " << ip.toStdString() << std::endl;
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
@@ -1360,125 +1463,81 @@ void FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers)
         << (quint32) 1 // FEC MAC part 1: Vendor identifier
         << (quint32) 2 // FEC MAC part 2: Device identifier
         << (quint32) 3 // FEC ip
-        << (quint32) 4
-        << (quint32) 5
-        << (quint32) 6
-        << (quint32) 7
-        << (quint32) 8
-        << (quint32) 9
-        << (quint32) 10 //DAQ IP
-        << (quint32) 11
-        << (quint32) 12
-        << (quint32) 13
-        << (quint32) 14
-        << (quint32) 15;
+        << (quint32) 10;// DAQ IP
 
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::ReadSystemRegisters");
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ReadSystemRegisters")) {
+        return false;
+    }
+
+    bool readOK = GetSocketHandler().WaitForReadyRead();
 
     QByteArray read_datagram;
-    while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
+    read_datagram.clear();
+    QHostAddress address;
+    quint16 port;
+    bool read_registers = false;
+    while(GetSocketHandler().GetSocket().hasPendingDatagrams()) {
+        read_datagram.resize(GetSocketHandler().GetSocket().pendingDatagramSize() );
+        GetSocketHandler().GetSocket().readDatagram(read_datagram.data(), read_datagram.size(), &address, &port);
+        if(CheckIpPortSize(address, ip,port,send_to_port,read_datagram.size())) {
 
-        read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
-        GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-        /*
-        for(int n =0; n< read_datagram.size();n++)
-        {
-            std::cout << n << " " << read_datagram.mid(n,1).toHex().toStdString() << std::endl;
+            QString FirmwareVers = read_datagram.mid(20,4).toHex();
+            QString MACvendor = read_datagram.mid(29,3).toHex();
+            QString MACdevice = read_datagram.mid(37,3).toHex();
+            QString FECip = read_datagram.mid(44,4).toHex();
+            QHostAddress theFECIP;
+            bool ok;
+            long long lFECIP = FECip.toLongLong(&ok,16);
+            theFECIP.setAddress(lFECIP);
+
+            QString strFECip = theFECIP.toString();
+
+            QString DAQip = read_datagram.mid(52,4).toHex();
+            QHostAddress theDACIP;
+
+            long long  lDACIP = DAQip.toLongLong(&ok,16);
+            theDACIP.setAddress(lDACIP);
+            QString strDACip = theDACIP.toString();
+
+            registers["FirmwareVers"] = FirmwareVers;
+            registers["MACvendor"] = MACvendor;
+            registers["MACdevice"] = MACdevice;
+            registers["FECip"] = strFECip;
+            registers["DAQip"] = strDACip;
+
+
+            stringstream sx;
+            sx.str("");
+            sx << "*****************************************************\n"
+               << "  > Firmware version: " << FirmwareVers.toStdString() << "\n"
+               << "  > MAC Vendor part: " << MACvendor.toStdString() << "\n"
+               << "  > MAC device part: " << MACdevice.toStdString() << "\n"
+               << "  > FEC IP : " << FECip.toStdString() << " (" << strFECip.toStdString() << ")" <<  "\n"
+               << "  > DAQ PC IP : " << DAQip.toStdString() << " (" << strDACip.toStdString() << ")" <<  "\n"
+               << "*****************************************************";
+            cout << sx.str() << endl;
+            read_registers = true;
+            break;
         }
-        */
-        QString FirmwareVers = read_datagram.mid(20,4).toHex();
-        QString MACvendor = read_datagram.mid(29,3).toHex();
-        QString MACdevice = read_datagram.mid(37,3).toHex();
-        QString FECip = read_datagram.mid(44,4).toHex();
-        QHostAddress theFECIP;
-        bool ok;
-        long lFECIP = FECip.toLong(&ok,16);
-        theFECIP.setAddress(lFECIP);
-        QString strFECip = theFECIP.toString();
-        QString UDPdata = read_datagram.mid(54,2).toHex();
-        QString UDPsc = read_datagram.mid(62,2).toHex();
-        QString UDPdelay = read_datagram.mid(70,2).toHex();
-        QString DATEflow = read_datagram.mid(78,2).toHex();
-        QString Eth = read_datagram.mid(86,2).toHex();
-        QString SCmode = read_datagram.mid(94,2).toHex();
-        QString DAQip = read_datagram.mid(100,4).toHex();
-        QHostAddress theDACIP;
-
-        long lDACIP = DAQip.toLong(&ok,16);
-        theDACIP.setAddress(lDACIP);
-        QString strDACip = theDACIP.toString();
-
-        QString DTClink = read_datagram.mid(108,4).toHex();
-        QString MainClock = read_datagram.mid(116,4).toHex();
-        QString MainClockStatus = read_datagram.mid(124,4).toHex();
-        QString reserved = read_datagram.mid(132,4).toHex();
-        QString FirmwareReg = read_datagram.mid(140,4).toHex();
-
-        registers["FirmwareVers"] = FirmwareVers;
-        registers["MACvendor"] = MACvendor;
-        registers["MACdevice"] = MACdevice;
-        registers["FECip"] = strFECip;
-        registers["UDPdata"] = UDPdata;
-        registers["UDPsc"] = UDPsc;
-        registers["UDPdelay"] = UDPdelay;
-        registers["DATEflow"] = DATEflow;
-        registers["Eth"] = Eth;
-        registers["SCmode"] = SCmode;
-        registers["DAQip"] = strDACip;
-        registers["DTClink"] = DTClink;
-        registers["MainClock"] = MainClock;
-        registers["MainClockStatus"] = MainClockStatus;
-        registers["reserved"] = reserved;
-        registers["FirmwareVers"] = FirmwareVers;
-
-
-        stringstream sx;
-        sx.str("");
-        sx << "*****************************************************\n"
-              //<< " Data from chip # : " << chipNumberStr.toInt(&ok,16) << "\n" //toStdString() << "\n"
-           << "  > Firmware version         : " << FirmwareVers.toStdString() << "\n"
-           << "  > MAC Vendor part          : " << MACvendor.toStdString() << "\n"
-           << "  > MAC device part          : " << MACdevice.toStdString() << "\n"
-           << "  > FEC ip                   : " << FECip.toStdString() << " (" << strFECip.toStdString() << ")" <<  "\n"
-           << "  > UDP port data transfer   : " << UDPdata.toStdString() << "\n"
-           << "  > UDP port slow-control    : " << UDPsc.toStdString() << "\n"
-           << "  > Delay between UDP frames : " << UDPdelay.toStdString() << "\n"
-           << "  > DATE flow control par.   : " << DATEflow.toStdString() << "\n"
-           << "  > Enthernet control reg.   : " << Eth.toStdString() << "\n"
-           << "  > Slow control control reg.: " << SCmode.toStdString() << "\n"
-           << "  > DAQ destination ip       : " << DAQip.toStdString() << " (" << strDACip.toStdString() << ")" <<  "\n"
-           << "  > DTC link control reg.    : " << DTClink.toStdString() << "\n"
-           << "  > Main clock selection reg.: " << MainClock.toStdString() << "\n"
-           << "  > Main clock status        : " << MainClockStatus.toStdString() << "\n"
-           << "  > #reserved                : " << reserved.toStdString() << "\n"
-           << "  > Firmware version reg.    : " << FirmwareReg.toStdString() << "\n"
-           << "*****************************************************";
-        cout << sx.str() << endl;
-
     } // while loop
+
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadSystemRegisters");
-        GetSocketHandler().ProcessReply("fec", ip);
+        GetSocketHandler().ProcessReply();
     } else {
         if(IsDbgEnabled())GetMessageHandler()("Timeout while waiting for replies from VMM",
                                               "FEC_config_module::ReadSystemRegisters",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadSystemRegisters");
-        //            exit(1);
-        return;
     }
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::ReadSystemRegisters");
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::readSysReg");
-    //writeFECip();
+    return read_registers;
+
 }
 
 // ------------------------------------------------------------------------ //
 void FECConfigModule::writeFECip(int FECip)
 {
-    //    if(dbg())
     GetMessageHandler()("Write new FEC ip...","FEC_config_module::writeFECip");
 
     bool ok;
@@ -1515,227 +1574,31 @@ void FECConfigModule::writeFECip(int FECip)
     // word
     ///////////////////////////
     out << (quint32) 0 //[12,15]
-        << (quint32) 0xa0f30000 // FEC ip register on FEC EEPROM (via I2C)
+        << (quint32) 0xa8f30000 // FEC ip register on FEC EEPROM (via I2C)
         << (quint32) FECip; // value 167772162=10.0.0.2
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::writeFECip");
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::writeFECip")) {
+        return;
+    }
+
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
         if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeFECip");
-        GetSocketHandler().ProcessReply("fec", ip);
+        GetSocketHandler().ProcessReply();
     } else {
         if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
                                                "FEC_config_module::writeFECip",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::writeFECip");
-        //            exit(1);
-        return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeFECip");
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::writeFECip");
 }
 // ------------------------------------------------------------------------ //
-
-
-
-void FECConfigModule::PowerCycleHybrids()
-{
-    if(IsDbgEnabled())GetMessageHandler()("Setting DVM settings...","FEC_config_module::PowerCycleHybrids");
-
-    bool ok;
-    QByteArray datagram;
-
-    // send trigger mode to VMMAPP port
-    int send_to_port = m_fec->GetRegVal("dvm_i2c_port");
-
-    QString ip = m_fec->GetIP();
-    datagram.clear();
-    QDataStream out (&datagram, QIODevice::WriteOnly);
-    out.device()->seek(0); //rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    // headers
-    QString cmd, cmdType, cmdLength, msbCounter;
-    cmd = "AA";
-    cmdType = "AA";
-    cmdLength = "FFFF";
-    msbCounter = "0x80000000";
-
-
-    /*PCA9534
-    P0: De-emphasis Fast-Or (ART Trigger input ) from RJ45 (Powerbox only), default = off
-    P1: Pre-emphasis 40MHz clock and Configuration download to all HDMI ports, default =off
-    P2: De-emphasis of incoming VMM data links D0 and D1
-    P3: 1 = RESET CRATE !!! If cable to ATX adapter is set and Crate in Remote mode. Set to 0 to allow crate reboot (ecperimental)
-    P4: 1 = (Disable P1 and P2 power for VMMs on top 4 HDMI ports, experimental)
-    P5: 1 = (Disable P1 and P2 power for VMMs on bottom 4 HDMI ports , experimental)
-    P6: 1 = P1 Power enabled when P2a is disabled ( tests with Spartan and I2C only)
-    P7: Power to VMM via HDMI default power = 0, 1= Off, 0/1/0 = Reset VMMs ( 0.5 sec waitloop between 1-> 0 )
-
-    Device address : 0100
-    Hardware address (a2, a1, a0) : 001
-    Total address : 0100001 0x21
-
-
-    Write config register
-    0x42 (adress+write)
-    0x03 command byte (write to config register)
-    0x7F (0111 1111), set P7 to output (1=input, 0 =output, default is 1)
-
-    Write output port
-    0x42 (adress+write)
-    0x01 command byte (write to output port)
-    0x80 (1000 0000), set P7 to high
-
-    Write output port
-    0x42 (adress+write)
-    0x01 command byte (write to output port)
-    0x00 (0000 0000), set P7 to low
-
-    */
-
-    quint8 deviceAdress = 0x21;
-    quint8 i2cAddress = 0x42; //0x21 << 1 | 0
-    ///////////////////////////
-    // First command: set activated pins as output
-    ///////////////////////////
-    ///////////////////////////
-    // header info
-    ///////////////////////////
-    out << (quint32) 0x80000000 //[0,3]
-        << (quint16) 0x0000 //[4,5]
-        << (quint8) 0x00 //[6]
-        << (quint8) i2cAddress //[7]
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-
-    ///////////////////////////
-    // word
-    ///////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 0x03 // command byte (write to config register)
-        << (quint32) 0x7F; //set P7 to output (1=input, 0 =output, default is 1)
-
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::PowerCycleHybrids");
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::PowerCycleHybrids",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
-        return;
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
-
-
-    datagram.clear();
-    out.device()->seek(0); //rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    ///////////////////////////
-    // Second command: write for activated pins high to output port
-    ///////////////////////////
-    ///////////////////////////
-    // header info
-    ///////////////////////////
-    out << (quint32) 0x80000000 //[0,3]
-        << (quint16) 0x0000 //[4,5]
-        << (quint8) 0x00 //[6]
-        << (quint8) i2cAddress //[7]
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-
-    ///////////////////////////
-    // word
-    ///////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 0x01 //command byte (write to output port)
-        << (quint32) 0x80; //set P7 to high
-
-
-
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::PowerCycleHybrids");
-    readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::PowerCycleHybrids",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
-        return;
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
-
-    QThread::sleep(2);
-
-    datagram.clear();
-    out.device()->seek(0); //rewind
-
-    GetSocketHandler().UpdateCommandCounter();
-
-    ///////////////////////////
-    // Last command: write for activated pins high to output port
-    ///////////////////////////
-    ///////////////////////////
-    // header info
-    ///////////////////////////
-    out << (quint32) 0x80000000 //[0,3]
-        << (quint16) 0x0000 //[4,5]
-        << (quint8) 0x00 //[6]
-        << (quint8) i2cAddress //[7]
-        << (quint8) cmd.toUInt(&ok,16) //[8]
-        << (quint8) cmdType.toUInt(&ok,16) //[9]
-        << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
-
-
-    ///////////////////////////
-    // word
-    ///////////////////////////
-    out << (quint32) 0 //[12,15]
-        << (quint32) 0x01 //command byte (write to output port)
-        << (quint32) 0x00; //set P7 to low
-
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::PowerCycleHybrids");
-    readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::PowerCycleHybrids");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::PowerCycleHybrids",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::PowerCycleHybrids");
-        return;
-    }
-
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::PowerCycleHybrids");
-}
-
 
 
 // ------------------------------------------------------------------------ //
 void FECConfigModule::writeDAQip(int DAQip)
 {
-    //    if(dbg())
     GetMessageHandler()("Write new DAQ ip...","FEC_config_module::writeDAQip");
 
     bool ok;
@@ -1775,25 +1638,24 @@ void FECConfigModule::writeDAQip(int DAQip)
     // word
     ///////////////////////////
     out << (quint32) 0x0 //[12,15]
-        << (quint32) 0xa0f30012 // DAQ ip register on FEC EEPROM (via I2C)
+        << (quint32) 0xa8f30012// DAQ ip register on FEC EEPROM (via I2C)
         << (quint32) DAQip; // value 167772162=10.0.0.2
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::writeDAQip");
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeDAQip");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                               "FEC_config_module::writeDAQip",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::writeDAQip");
-        //            exit(1);
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::writeDAQip")) {
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::writeDAQip");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead();
+    if(readOK) {
+        if(IsDbgEnabled()) GetMessageHandler()("Processing replies...","FEC_config_module::writeDAQip");
+        GetSocketHandler().ProcessReply();
+    } else {
+        if(IsDbgEnabled()) GetMessageHandler()("Timeout while waiting for replies from VMM",
+                                               "FEC_config_module::writeDAQip",true);
+    }
+
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::writeDAQip");
 }
 
 // ------------------------------------------------------------------------ //
@@ -1808,9 +1670,12 @@ void FECConfigModule::ACQon(bool broadcast)
     int send_to_port = m_fec->GetRegVal("vmmapp_port");
 
     QString ip = m_fec->GetIP();
+    QStringList list = ip.split(".");
     if(broadcast){
-        ip = "10.0.0.255";
+        ip = list[0] + "." + list[1] + "." + list[2] + ".255";
     }
+
+
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
@@ -1839,22 +1704,23 @@ void FECConfigModule::ACQon(bool broadcast)
     out << (quint32) 0 //[12,15]
         << (quint32) 15 //[16,19]
         << (quint32) 1; //[20,23]
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::ACQon");
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...", "FEC_config_module::ACQon");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } // readOK
-    else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM","FEC_config_module::ACQon",true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ACQon");
-        //        exit(1);
+
+
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ACQon")) {
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ACQon");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead();
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...", "FEC_config_module::ACQon");
+        GetSocketHandler().ProcessReply();
+    } // readOK
+    else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM","FEC_config_module::ACQon",true);
+    }
+
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::ACQon");
 }
 // ------------------------------------------------------------------------ //
 void FECConfigModule::ACQoff(bool broadcast)
@@ -1868,9 +1734,11 @@ void FECConfigModule::ACQoff(bool broadcast)
     int send_to_port = m_fec->GetRegVal("vmmapp_port");
 
     QString ip = m_fec->GetIP();
+    QStringList list = ip.split(".");
     if(broadcast){
-        ip = "10.0.0.255";
+        ip = list[0] + "." + list[1] + "." + list[2] + ".255";
     }
+
     datagram.clear();
     QDataStream out (&datagram, QIODevice::WriteOnly);
     out.device()->seek(0); //rewind
@@ -1904,24 +1772,21 @@ void FECConfigModule::ACQoff(bool broadcast)
         << (quint32) 15 //[16,19]
         << (quint32) 0; //[20,23]
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::ACQoff [1]");
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ACQoff [1]")) {
+        return;
+    }
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ACQoff");
-        QByteArray buffer;
-        buffer = GetSocketHandler().GetFECSocket().ProcessReply(ip, 0, GetSocketHandler().GetCommandCounter()); //.processReply("fec", ip);
+        GetSocketHandler().ProcessReply();
     }
     else {
         GetMessageHandler()("Timeout [1] while waiting for replies from VMM",
                             "FEC_config_module::ACQoff", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ACQoff");
-        //        exit(1);
-        return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ACQoff");
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::ACQoff");
 }
 // ------------------------------------------------------------------------ //
 void FECConfigModule::SetMask()
@@ -1964,29 +1829,27 @@ void FECConfigModule::SetMask()
         << (quint32) 8 //[16,19]
         << (quint32) m_fec->GetChMap();
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec",
-                                    "FEC_config_module::setMask");
-
-    bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
-    if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setMask");
-        GetSocketHandler().ProcessReply("fec", ip);
-    } else {
-        GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::setMask",true);
-        GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::setMask");
-        //        exit(1);
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::setMask")) {
         return;
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::setMask");
+    bool readOK = true;
+    readOK = GetSocketHandler().WaitForReadyRead();
+    if(readOK) {
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::setMask");
+        GetSocketHandler().ProcessReply();
+    } else {
+        GetMessageHandler()("Timeout while waiting for replies from VMM",
+                            "FEC_config_module::setMask",true);
+    }
+
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::setMask");
 
 }
 // ------------------------------------------------------------------------ //
 int FECConfigModule::ReadADC(int hybrid_index, int vmm_index, int adc_chan)
 {
-    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadADC");
+    if(IsDbgEnabled())GetMessageHandler()("Reading ADC on hybrid...","FEC_config_module::ReadADC");
 
     bool ok;
     QByteArray datagram;
@@ -2015,7 +1878,7 @@ int FECConfigModule::ReadADC(int hybrid_index, int vmm_index, int adc_chan)
     GetSocketHandler().UpdateCommandCounter();
 
     QString hybridMapString = "00000000";
-    hybridMapString.replace(7 -  m_hybrid_i2c[hybrid_index] , 1 , QString("1") ); // remaping of HDMI ports on DVM card: not performed for I2C MUX -> this hack needed
+    hybridMapString.replace(7 -  g_hybrid_i2c[hybrid_index] , 1 , QString("1") ); // remaping of HDMI ports on DVM card: not performed for I2C MUX -> this hack needed
     quint8 hybridMap = (quint8)hybridMapString.toInt(&ok,2);
 
     ///////////////////////////
@@ -2044,19 +1907,21 @@ int FECConfigModule::ReadADC(int hybrid_index, int vmm_index, int adc_chan)
         << (quint32) (1*65536) +                      (1*32768 + (adc_chan+4)*4096 + 2*512 + 1*256) +                 131;
     //=116099; //[20,23] //goes to sc_data to ADC, must be 3 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
     // is 00000001 (point to conversion register) 11000101 (start conversion, channel 1, range +-2V, single shot) 10000011 (LSB of conversion register to be written)
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
+
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ReadADC")) {
+        return 0;
+    }
 
     bool readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
 
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadADC");
-        GetSocketHandler().ProcessReply("fec", ip);
+        GetSocketHandler().ProcessReply();
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::ReadADC",true);
-        GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadADC");
-        //        exit(1);
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::ReadADC");
         return 0;
     }
 
@@ -2088,18 +1953,19 @@ int FECConfigModule::ReadADC(int hybrid_index, int vmm_index, int adc_chan)
         << (quint32) 0; //[20,23] //goes to sc_data to ADC, must be 2 bytes to write to configuration register, 0 for setting address pointer to conversion register and anything but 0 to read
 
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ReadADC")) {
+        return 0;
+    }
 
     readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadADC");
-        GetSocketHandler().ProcessReply("fec",ip);
+        GetSocketHandler().ProcessReply();
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::ReadADC", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadADC");
-        //        exit(1);
+        GetSocketHandler().CloseAndDisconnect("FEC_config_module::ReadADC");
         return 0;
     }
     ///////////////////////////////////////////////////////////
@@ -2129,53 +1995,130 @@ int FECConfigModule::ReadADC(int hybrid_index, int vmm_index, int adc_chan)
         << (quint32) 0 //[16,19] // goes to sc_address, do not use. can be used e.g. to redefine I2C addresses of in firmware
         << (quint32) 11141120;//65535;//11141120; //7121558; //[20,23] //goes to sc_data to ADC, must be 3 bytes
     // can be anytinh here but needs to be 3 byte long
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadADC");
 
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ReadADC")) {
+        return 0;
+    }
     readOK = true;
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
+
 
     QByteArray read_datagram;
+    read_datagram.clear();
+    QHostAddress address;
+    quint16 port;
     int ADCresult_int_bare = 0;
-    while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
+    while(GetSocketHandler().GetSocket().hasPendingDatagrams()) {
+        read_datagram.resize(GetSocketHandler().GetSocket().pendingDatagramSize() );
+        GetSocketHandler().GetSocket().readDatagram(read_datagram.data(), read_datagram.size(), &address, &port);
+        if(CheckIpPortSize(address, ip,port,send_to_port,read_datagram.size())) {
+            QString ADCresult = read_datagram.mid(22,2).toHex();
+            ADCresult_int_bare = ADCresult.toInt(&ok,16) >> 4; //bit shift
+            break;
+        }
+    }
 
-        read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
-        GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-        QString ADCresult = read_datagram.mid(22,2).toHex();
-        ADCresult_int_bare = ADCresult.toInt(&ok,16) >> 4; //bit shift
-    } // while loop
-
+    int ADCresult_int = 0;
     if(readOK) {
         if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadADC");
-        GetSocketHandler().ProcessReply("fec",ip);
+        GetSocketHandler().ProcessReply();
+        //calculate level in mV from bare ADC result: 0-2047: pos (0 mV - 2047 mV), 2048-4094:neg(not possible)
+        ADCresult_int = ADCresult_int_bare; //easy in this case
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
                             "FEC_config_module::ReadADC", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadADC");
-        //        exit(1);
-        return 0;
     }
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadADC");
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::ReadADC");
 
-    //calculate level in mV from bare ADC result: 0-2047: pos (0 mV - 2047 mV), 2048-4094:neg(not possible)
-    int ADCresult_int = ADCresult_int_bare; //easy in this case
+    if(m_fec->m_hybrids[hybrid_index].m_vmms[vmm_index].GetRegister("sp") != 0 && m_fec->m_hybrids[hybrid_index].m_vmms[vmm_index].GetRegister("sm5_sm0") == 1) {
+        ADCresult_int = 1200 - ADCresult_int;
+    }
+
     return ADCresult_int;
 }
 // ------------------------------------------------------------------------ //
 
 QString FECConfigModule::ReadI2C(int hybrid_index, int choice) {
     QString result;
-    if(choice == 1) {
+    if(choice == 2) {
         result = ReadGeoPos(hybrid_index);
+    }
+    else if(choice == 1){
+        result = ReadFirmwareVersion(hybrid_index);
     }
     else {
         result = ReadIDChip(hybrid_index);
     }
+
     return result;
 }
 
+QString FECConfigModule::ReadFirmwareVersion(int hybrid_index) {
+    if(IsDbgEnabled()) GetMessageHandler()("Reading hybrid firmware version...","FEC_config_module::ReadFirmwareVersion");
+    QString sReturn1, sReturn2,sReturn3,sReturn4;
+    sReturn1 = CommunicateWithHybridI2C(65,hybrid_index, 0, 6, 1);
+    sReturn1 = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 1);
+    sReturn2 = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 1);
+    sReturn3 = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 1);
+    sReturn4 = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 1);
+    return sReturn1+sReturn2+sReturn3+sReturn4;
+}
+
+
+
+QString FECConfigModule::ReadADC_I2C(int hybrid_index) {
+    QString sResult="error";
+    int byte=0;
+    int chFromRegister = 0;
+    int higherAdc = 0;
+    int lowerAdc = 0;
+    int adc = 0;
+    bool ok;
+    QString sReturn;
+
+    sReturn = CommunicateWithHybridI2C(66,hybrid_index, 0, 1, 1);
+    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
+    std::cout << "Acq on write " << sReturn.toStdString() << std::endl;
+
+    QThread::msleep(2000);
+
+
+    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 0,0, 1);
+    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
+    std::cout << "Acq off write " << sReturn.toStdString() << std::endl;
+
+    int number = 128;
+    qsrand(qrand());
+    int ch = qrand() % number;
+
+    sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0,ch*2+1, 1);
+    sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+    byte = sReturn.toUInt(&ok,16);
+    chFromRegister = byte>>2;
+    higherAdc = byte & 0x03;
+
+
+    sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0,ch*2, 1);
+    sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+    lowerAdc = sReturn.toUInt(&ok,16);
+    adc = 256 * higherAdc + lowerAdc;
+
+
+    if(ch<64) {
+        sResult = "vmm0 " + QString::number(ch) + " " + QString::number(chFromRegister) + " adc " + QString::number(adc);
+    }
+    else {
+        sResult = "vmm1 " + QString::number(ch-64) + " " + QString::number(chFromRegister) + " adc " + QString::number(adc);
+    }
+
+    return sResult;
+
+}
+
+
 
 // ------------------------------------------------------------------------ //
-QString FECConfigModule::CommunicateWithHybridI2C(int hybrid_index, int rw, int reg_value, int bytes)
+QString FECConfigModule::CommunicateWithHybridI2C(int i2c_addr, int hybrid_index, int rw, int reg_value, int bytes)
 {
     if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::CommunicateWithHybridI2C");
 
@@ -2194,10 +2137,9 @@ QString FECConfigModule::CommunicateWithHybridI2C(int hybrid_index, int rw, int 
     QString ip = m_fec->GetIP();
 
     QString hybridMapString = "00000000";
-    hybridMapString.replace(7 -  m_hybrid_i2c[hybrid_index] , 1 , QString("1") );
+    hybridMapString.replace(7 -  g_hybrid_i2c[hybrid_index] , 1 , QString("1") );
     quint8 hybridMap = (quint8)hybridMapString.toInt(&ok,2);
     bool readOK = true;
-    int i2c_addr = 65;
     QString result ="-1";
 
     QDataStream out (&datagram, QIODevice::WriteOnly);
@@ -2218,6 +2160,9 @@ QString FECConfigModule::CommunicateWithHybridI2C(int hybrid_index, int rw, int 
         << (quint8) cmdType.toUInt(&ok,16) //[9]
         << (quint16) cmdLength.toUInt(&ok,16); //[10,11]
 
+
+
+
     ////////////////////////////
     // word
     ////////////////////////////
@@ -2225,37 +2170,43 @@ QString FECConfigModule::CommunicateWithHybridI2C(int hybrid_index, int rw, int 
         << (quint32) bytes //[16,19] //sc_address: write two bytes
         << (quint32) reg_value; //[20,23] //sc_value: first byte 0x0 register, second byte 0x0 value
 
-    GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::");
 
 
+    if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::")) {
+        return result;
+    }
 
-    readOK = GetSocketHandler().WaitForReadyRead("fec");
+    readOK = GetSocketHandler().WaitForReadyRead();
 
     if(rw == 1) {
         QByteArray read_datagram;
-
-        while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
-
-            read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
-            GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-            result = read_datagram.mid(23,1).toHex();
-        } // while loop
+        read_datagram.clear();
+        QHostAddress address;
+        quint16 port;
+        while(GetSocketHandler().GetSocket().hasPendingDatagrams()) {
+            read_datagram.resize(GetSocketHandler().GetSocket().pendingDatagramSize() );
+            GetSocketHandler().GetSocket().readDatagram(read_datagram.data(), read_datagram.size(), &address, &port);
+            if(CheckIpPortSize(address, ip,port,send_to_port,read_datagram.size())) {
+                result = read_datagram.mid(23,1).toHex();
+                break;
+            }
+        }
     }
     if(readOK) {
-        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::");
-        GetSocketHandler().ProcessReply("fec",ip);
+        if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::CommunicateWithHybridI2C");
+        GetSocketHandler().ProcessReply();
     } else {
         GetMessageHandler()("Timeout while waiting for replies from VMM",
-                            "FEC_config_module::", true);
-        GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::");
+                            "FEC_config_module::CommunicateWithHybridI2C", true);
     }
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::CommunicateWithHybridI2C");
     if(readOK) {
         if(rw == 0) {
             result = "1";
         }
     }
     return result;
- }
+}
 
 
 
@@ -2282,15 +2233,15 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
     }
     while(counter < 10) {
         counter++;
-        //CommunicateWithHybridI2C(int hybrid_index, int rw, int reg, int value, int bytes)
+        //CommunicateWithHybridI2C(int hybrid_index, int rw, int reg, int bytes)
         //send 1 byte of 0x00 to choose register 0
-        result = CommunicateWithHybridI2C(hybrid_index, 0, 0, 1);
+        result = CommunicateWithHybridI2C(65, hybrid_index, 0, 0, 1);
         //If problem with I2C, avoid pop-up message
         if(result == "-1") {
             return true;
         }
         //read 1 byte from register 0x00
-        result = CommunicateWithHybridI2C(hybrid_index, 1, 0, 1);
+        result = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 1);
 
         //If problem with I2C, avoid pop-up message
         if(result == "-1") {
@@ -2308,12 +2259,12 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
     if(counter == 0) {
         //Phase 2
         //send 1 byte of 0x00 to choose register 0
-        result = CommunicateWithHybridI2C(hybrid_index, 0, 0, 1);
+        result = CommunicateWithHybridI2C(65, hybrid_index, 0, 0, 1);
         if(result == "-1") {
             return true;
         }
         //read 1 byte from register 0x00
-        result = CommunicateWithHybridI2C(hybrid_index, 1, 0, 1);
+        result = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 1);
 
         if(result == "-1") {
             return true;
@@ -2322,7 +2273,7 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
         int res = result.toUInt(&ok, 16);
         if((res & bitToCheck) ==  0x00) {
 
-           return true;
+            return true;
         }
     }
     return false;
@@ -2331,22 +2282,22 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
 // ------------------------------------------------------------------------ //
 QString FECConfigModule::ReadGeoPos(int hybrid_index)
 {
+    if(IsDbgEnabled())GetMessageHandler()("Reading Geo-Pos on hybrid...","FEC_config_module::ReadGeoPos");
     QString result="0";
-    //send 1 byte of 0xE6 to choose register 230
-    result = CommunicateWithHybridI2C(hybrid_index, 0, 0xe6, 1);
+    //send 1 byte of 230 to choose register 230
+    result = CommunicateWithHybridI2C(66, hybrid_index, 0, 2, 1);
 
-    //read 1 byte from register 230 (0xe6)
-    result = CommunicateWithHybridI2C(hybrid_index, 1, 0, 1);
+    //read 1 byte from register 230
+    result = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
     return result;
 }
 // ------------------------------------------------------------------------ //
 
 
 
-
 QString FECConfigModule::ReadIDChip(int hybrid_index)
 {
-    if(IsDbgEnabled())GetMessageHandler()("Setting/reading i2c on hybrid...","FEC_config_module::ReadIDChip");
+    if(IsDbgEnabled())GetMessageHandler()("Reading ID chip on hybrid via i2c...","FEC_config_module::ReadIDChip");
     QString result;
     bool ok;
     QByteArray datagram;
@@ -2362,12 +2313,12 @@ QString FECConfigModule::ReadIDChip(int hybrid_index)
     msbCounter = "0x80000000";
     QString ip = m_fec->GetIP();
     QString hybridMapString = "00000000";
-    hybridMapString.replace(7 -  m_hybrid_i2c[hybrid_index] , 1 , QString("1") );
+    hybridMapString.replace(7 -  g_hybrid_i2c[hybrid_index] , 1 , QString("1") );
     quint8 hybridMap = (quint8)hybridMapString.toInt(&ok,2);
     bool readOK = true;
     int i2c_addr = 88;
     int reg = 0x80;
-    for(uint32_t n=3; n<=4; n++) {
+    for(uint32_t n=1; n<=4; n++) {
 
         datagram.clear();
         QDataStream out (&datagram, QIODevice::WriteOnly);
@@ -2399,18 +2350,19 @@ QString FECConfigModule::ReadIDChip(int hybrid_index)
             << (quint32) reg; //[20,23] //defines which register of Geocode chip or ID chip is going to be read
 
 
-        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadIDChip");
+        if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ReadIDChip")) {
+            return 0;
+        }
 
         readOK = true;
-        readOK = GetSocketHandler().WaitForReadyRead("fec");
+        readOK = GetSocketHandler().WaitForReadyRead();
         if(readOK) {
             if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadIDChip");
-            GetSocketHandler().ProcessReply("fec",ip);
+            GetSocketHandler().ProcessReply();
         } else {
             GetMessageHandler()("Timeout while waiting for replies from VMM",
                                 "FEC_config_module::ReadIDChip", true);
-            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadIDChip");
-            //        exit(1);
+            GetSocketHandler().CloseAndDisconnect("FEC_config_module::ReadIDChip");
             return 0;
         }
 
@@ -2441,35 +2393,61 @@ QString FECConfigModule::ReadIDChip(int hybrid_index)
             << (quint32) byte_position_id //[16,19] // defines which part of the chip id is read
             << (quint32) 0x00000000; //[20,23] //goes to sc_data to ADC, must be 3 bytes
         // can be anything here but needs to be 3 byte long
-        GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "fec", "FEC_config_module::ReadIDChip");
 
+        if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::ReadIDChip")) {
+            return 0;
+        }
         readOK = true;
-        readOK = GetSocketHandler().WaitForReadyRead("fec");
+        readOK = GetSocketHandler().WaitForReadyRead();
+
 
         QByteArray read_datagram;
-        while(GetSocketHandler().GetFECSocket().hasPendingDatagrams()) {
-
-            read_datagram.resize(GetSocketHandler().GetFECSocket().pendingDatagramSize());
-            GetSocketHandler().GetFECSocket().readDatagram(read_datagram.data(), read_datagram.size());
-            QString id_part = read_datagram.mid(20,4).toHex();
-
-            result.append(id_part);
-        } // while loop
+        read_datagram.clear();
+        QHostAddress address;
+        quint16 port;
+        while(GetSocketHandler().GetSocket().hasPendingDatagrams()) {
+            read_datagram.resize(GetSocketHandler().GetSocket().pendingDatagramSize() );
+            GetSocketHandler().GetSocket().readDatagram(read_datagram.data(), read_datagram.size(), &address, &port);
+            if(CheckIpPortSize(address, ip,port,send_to_port,read_datagram.size())) {
+                QString id_part = read_datagram.mid(20,4).toHex();
+                result.append(id_part);
+                break;
+            }
+        }
 
         if(readOK) {
             if(IsDbgEnabled())GetMessageHandler()("Processing replies...","FEC_config_module::ReadIDChip");
-            GetSocketHandler().ProcessReply("fec",ip);
+            GetSocketHandler().ProcessReply();
         } else {
             GetMessageHandler()("Timeout while waiting for replies from VMM",
                                 "FEC_config_module::ReadIDChip", true);
-            GetSocketHandler().CloseAndDisconnect("fec","FEC_config_module::ReadIDChip");
-            //        exit(1);
-            return 0;
+           result = "0";
         }
 
     }
 
-    GetSocketHandler().CloseAndDisconnect("fec", "FEC_config_module::ReadIDChip");
+    GetSocketHandler().CloseAndDisconnect("FEC_config_module::ReadIDChip");
     return result;
 }
 // ------------------------------------------------------------------------ //
+
+
+bool FECConfigModule::CheckIpPortSize(QHostAddress ipRead, QString ip,int portRead, int port, int size) {
+    bool conversionOK = false;
+    QHostAddress ip4Address(ipRead.toIPv4Address(&conversionOK));
+    QString ip4String;
+    if (conversionOK)
+    {
+        ip4String = ip4Address.toString();
+    }
+    if(ip4String != ip) {
+        return false;
+    }
+    if(portRead != port) {
+        return false;
+    }
+    if(size <= 18) {
+        return false;
+    }
+    return true;
+}

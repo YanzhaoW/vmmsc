@@ -19,22 +19,19 @@ bool DAQConfigHandler::WriteDAQConf(const char* filename){
 }
 
 bool DAQConfigHandler::LoadDAQConfig(std::string fname){ //load the DAQ configuration from file
+    std::string empty = "";
+    std::ifstream f; f.open(fname,std::ifstream::in);
+    if(!f.is_open()) {std::cout<< "file "<<fname<<" not found"<<std::endl;return false;}
+
     ////***************RESET before loading config file*******************////
     //        rootWindow->daq_act={false};
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         m_daqWindow->m_daq.SetFEC(j, false);
         for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
             m_daqWindow->m_daq.m_fecs[j].SetHybrid(k, false);
-            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].SetVMM(m, false);
-            }
-
         }
     }
 
-    std::string empty = "";
-    std::ifstream f; f.open(fname,std::ifstream::in);
-    if(!f.is_open()) {std::cout<< "file "<<fname<<" not found"<<std::endl;return false;}
     while (!f.eof() ){
         std::string line, val, word;
         std::getline (f,line);
@@ -59,27 +56,14 @@ bool DAQConfigHandler::LoadDAQConfig(std::string fname){ //load the DAQ configur
                     iss >> word; if(word!= "hybrid") {std::cout  << "Syntax error in file, looking for \"hybrid\" (" << j+1 << "th hybrid, you have set "<<hybrids<<" hybrids) in line "<< line << std::endl;return false;}
                     iss >> val; std::string hybridnrst = val.substr(0, val.size()-1);
                     unsigned short hybridnr = atoi(hybridnrst.c_str()); m_daqWindow->m_daq.m_fecs[fecnr].SetHybrid(hybridnr,true); std::cout << "Setting hybrid " << hybridnr << " on fec " << fecnr << " active" << std::endl;
-
-
-                    iss >> val;
-                    if(val[0]!= 'x' && val[0] != 'y') {std::cout  << "Syntax error in file, looking for \"x\" or \"y\" in line "<< line << ", got " << val << std::endl;return false;}
-                    else if (val == "x"){
-                        m_daqWindow->m_daq.m_fecs[fecnr].m_hybrids[hybridnr].SetReg("axis",0);
-                    }
-                    else if (val == "y"){ m_daqWindow->m_daq.m_fecs[fecnr].m_hybrids[hybridnr].SetReg("axis",1);}
-                    else if (val == "z"){ m_daqWindow->m_daq.m_fecs[fecnr].m_hybrids[hybridnr].SetReg("axis",2);}
-                    iss >> val; std::string posnrst = val.substr(0, val.size()-1);
-                    m_daqWindow->m_daq.m_fecs[i].m_hybrids[hybridnr].SetReg("position",atoi(posnrst.c_str()));
-                    iss >> word; if(word!= "vmms:") {std::cout  << "Syntax error in file, looking for \"vmms:\" in line "<< line << std::endl;return false;}
+                    iss >> word; if(word!= "vmms:") {std::cout  << "Syntax error in file, looking for \"vmms:\" in line "<< line << " " << word << std::endl;return false;}
                     iss >> val; unsigned short vmms = atoi(val.c_str());
                     for (unsigned short l = 0; l < vmms; l++){
                         std::getline (f,line);
                         std::istringstream iss(line);
                         iss >> word; if(word!= "vmm") {std::cout  << "Syntax error in file, looking for \"vmm\" in line "<< line << std::endl;return false;}
                         iss >> val; std::string vmminrst = val.substr(0, val.size());
-                        unsigned short vmminr = atoi(vmminrst.c_str()); m_daqWindow->m_daq.m_fecs[fecnr].m_hybrids[hybridnr].SetVMM(vmminr,true); std::cout << "Setting vmm " << vmminr << " active" << std::endl;
-
-
+                        std::cout << "Setting vmm " << vmminrst << " active" << std::endl;
                     }
 
                 }
@@ -126,30 +110,18 @@ bool DAQConfigHandler::WriteDAQConfig(std::string fname){
 
                     unsigned short countVMMS = 0;
                     for (unsigned short m = 0; m < VMMS_PER_HYBRID; m++){
-                        if (m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetVMM(m)){
-                            countVMMS++;
-                        }
+                        countVMMS++;
                     }
-                    if (m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("axis") == 0){
-                        f << "\t\t\thybrid "<< k << ": x " << m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("position") << ", vmms: "<< countVMMS << std::endl;
-                        std::cout << "FEC " << j << ", hybrid " << k << " at position " << m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("position") << " on x axis has " << countVMMS << " active VMMs" << std::endl;
-                    }
-                    else if (m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("axis") == 1){
-                        f << "\t\t\thybrid "<< k << ": y " << m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("position") << ", vmms: "<< countVMMS << std::endl;
-                        std::cout << "FEC " << j << ", hybrid " << k  << " at position " << m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("position") << " on y axis has " << countVMMS << " active VMMs" << std::endl;
-                    }
-                    else {
-                        f << "\t\t\thybrid "<< k << ": z " << m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("position") << ", vmms: "<< countVMMS << std::endl;
-                        std::cout << "FEC " << j << ", hybrid " << k << " at position " << m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetReg("position") << " on y axis has " << countVMMS << " active VMMs" << std::endl;
-                    }
+                    f << "\t\t\thybrid "<< k << ", vmms: "<< countVMMS << std::endl;
                     for (unsigned short m = 0; m < VMMS_PER_HYBRID; m++){
-                        if (m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetVMM(m)) f << "\t\t\t\tvmm "<< m<< std::endl;
+                        f << "\t\t\t\tvmm "<< m<< std::endl;
                     }
 
                 }
             }
         } //end if FEC
     }
+    // daq general settings
     f << "\n";
     f.close();
 

@@ -13,33 +13,6 @@ bool FECConfigHandler::WriteAllFECConf(std::string filename){
     return GenericAllFECConf(0,filename);
 }
 
-bool FECConfigHandler::LoadSingleFECConf(const char* filename, unsigned short fec){
-    return GenericSingleFECConf(1, filename, fec);
-}
-
-bool FECConfigHandler::LoadSingleFECConf(const char* filename){//exact file name must be given!
-    //add config path before file name
-    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
-    return LoadFECConfig(fname);
-}
-
-bool FECConfigHandler::WriteSingleFECConf(const char* filename, unsigned short fec){
-    return GenericSingleFECConf(0, filename, fec);
-}
-
-bool FECConfigHandler::WriteSingleFECConf(const char* filename){//exact file name must be given!
-    //need to extract daq,fec from file name
-    std::stringstream str1; str1 << filename;
-    std::string str(str1.str());
-    //fec
-    std::string fec_str = str.substr ((str.find("fec")+3),str.find("_",str.find("fec")+3)-(str.find("fec")+3));
-    unsigned short fec =atoi(fec_str.c_str());if(!m_daqWindow->m_daq.GetFEC(fec)) {std::cout << "ERROR, fec " << fec << " does not exist "<< std::endl; return false;}
-    //add config path before file name
-    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
-
-    return WriteFECConfig(fname,fec);
-}
-
 bool FECConfigHandler::GenericAllFECConf(bool load, std::string filename){
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){
         if (m_daqWindow->m_daq.GetFEC(j)){
@@ -79,14 +52,27 @@ bool FECConfigHandler::GenericSingleFECConf(bool load, const char* filename, uns
 bool FECConfigHandler::LoadFECConfig(std::string fname){ //load the FEC configuration from file
     std::string empty = "";
     unsigned short daq = 0, fec = 0;
-    std::ifstream f; f.open(fname,std::ifstream::in);
+    std::ifstream f;
+    f.open(fname,std::ifstream::in);
     if(!f.is_open()) {std::cout<< "file "<<fname<<" not found"<<std::endl;return false;}
     while (!f.eof() ){
         std::string s, val, s2;
         const char *a, *b;
-        f >> s >> val;
+
+        std::string line;
+        std::getline(f, line);
+        std::size_t pos = line.find(' ');
+        if (pos!=std::string::npos) {
+          s = line.substr(0,pos);
+          val = line.substr(pos+1);
+        }
         if (s == empty && val == empty) break; // for empty line at end of file
-        else if (s == "fec") {fec = atoi(val.c_str());}
+        if (s == "fec") {fec = atoi(val.c_str());}
+        else if (s == "description") {
+            auto noSpaceEnd = std::remove( val.begin(), val.end(), '"');
+            val.erase(noSpaceEnd, val.end());
+            m_daqWindow->m_daq.m_fecs[fec].SetInfo("description",val.c_str());
+        }
         else {
             a = s.c_str();
             b = val.c_str();
@@ -95,21 +81,32 @@ bool FECConfigHandler::LoadFECConfig(std::string fname){ //load the FEC configur
                 ip.setAddress(b);
                 s2 = std::to_string(ip.toIPv4Address());
                 b = s2.c_str();  //use char const* as target type
+                if(a == tr("ip_fec")) {
+                    m_daqWindow->m_daq.m_fecs[fec].SetIP_FEC(ip.toIPv4Address());
+                }
             }
             if (!m_daqWindow->m_daq.m_fecs[fec].SetReg(a,b)) return false;
 
         }
         if( (f.fail()) ) {return false;}
     }
-    f.close(); //TODO:UpdateGUI:rootWindow->updateConfigState();
+    f.close();
     return true;
 }
 
 bool FECConfigHandler::WriteFECConfig(std::string fname, unsigned short fec){
+    std::string description = m_daqWindow->m_daq.m_fecs[fec].GetInfo("description");
+    if(description == "") {
+        description = "\"\"";
+    }
+    else {
+        description =  "\"" + description + "\"";
+    }
     std::ofstream f; f.open(fname,std::ofstream::out);
     if(!f.is_open()) {return false;}
     f << "fec " << fec << std::endl;
-    f << "\n";
+    f << "description " << description << std::endl;
+
     for(unsigned short j=0;j<m_daqWindow->m_daq.m_fecs[fec].GetRegSize() ;j++){
         if(m_daqWindow->m_daq.m_fecs[fec].GetRegName(j) != tr("not_used")) {
             if(m_daqWindow->m_daq.m_fecs[fec].GetRegName(j) ==  tr("ip_fec") || m_daqWindow->m_daq.m_fecs[fec].GetRegName(j) ==  tr("ip_daq")) {

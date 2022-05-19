@@ -26,7 +26,6 @@ class SocketHandler : public QObject
     Q_OBJECT;
 
     public :
-        friend class DAQWindow;
         explicit SocketHandler(QObject *parent = 0);
         virtual ~SocketHandler(){};
         SocketHandler& SetDebugMode(bool dbg) { m_dbg = dbg; return *this; }
@@ -35,11 +34,9 @@ class SocketHandler : public QObject
         void LoadMessageHandler(MessageHandler& GetMessageHandler);
         MessageHandler& GetMessageHandler() { return *m_msg; }
 
-        void SetDryRun();
-        bool IsDryRunEnabled() { return m_dryrun; }
 
         bool IsPinged() { return m_pinged; }
-        bool IsPinged(bool val) { m_pinged= val; return m_pinged; }
+        void SetPinged(bool val) { m_pinged= val;}
 
         // update global command counter
         void UpdateCommandCounter();
@@ -48,53 +45,40 @@ class SocketHandler : public QObject
         void ResetCommandCounter();
 
         // add sockets
-        void AddSocket(std::string name = "",
-            quint16 bindingPort = 0,
+        void AddSocket(quint16 bindingPort = 0,
             QAbstractSocket::BindMode mode = QAbstractSocket::DefaultForPlatform);
 
         // send data
-        void SendDatagram(const QByteArray& datagram, const QString& ip,
+        bool SendDatagram(const QByteArray& datagram, const QString& ip,
                             const quint16& destinationPort,
-                            const QString& whichSocket = "",
-                            const QString& callingFn = "");
+                             const QString& callingFn = "");
 
-        virtual bool WaitForReadyRead(std::string socketName="", int msec=1000);
-        QByteArray ProcessReply(std::string name="", const QString& ip_sent_to="",
-                        quint32 cmd_delay=0);
-        void CloseAndDisconnect(std::string name="", std::string callingFn="");
+        virtual bool WaitForReadyRead(int msec=1000);
+        void ProcessReply();
+        void CloseAndDisconnect(std::string callingFn="");
 
         // retrieve sockets
         bool IsFECSocketOK();
-        VMMSocket& GetFECSocket()    { return *m_fecSocket; }
-        bool IsVMMSocketOK();
-        VMMSocket& GetVMMSocket() { return *m_vmmappSocket; }
-        bool IsDAQSocketOK();
-        VMMSocket& GetDAQSocket()    { return *m_daqSocket; }
-        QByteArray SetBuffer(std::string name="");
+        QByteArray SetBuffer();
 
         // Print
         void Print();
-
+        // retrieve socket
+        VMMSocket& GetSocket();
 
     private :
-        bool m_dbg;
+        bool m_dbg = false;
         MessageHandler *m_msg;
-        bool m_pinged;
-        bool m_dryrun;
+        bool m_pinged=false;
         bool m_skipProcessing;
         quint32 n_globalCommandCounter;
-        VMMSocket *m_fecSocket;
-        bool m_fecSetup;
-        VMMSocket *m_vmmappSocket;
-        bool m_vmmappSetup;
-        VMMSocket *m_daqSocket;
-        bool m_daqSetup;
+        VMMSocket *m_socket;
+        bool m_socketSetup;
 
         QStringList m_idlist;
         QStringList m_iplist;
 
-        // retrieve socket by name
-        VMMSocket& GetSocket(std::string whichSocket="");
+
 
     signals :
         void on_command_counter_updated();

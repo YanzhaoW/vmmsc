@@ -39,7 +39,7 @@ bool VMMConfigHandler::WriteSingleVMMConf(const char* filename){//exact file nam
     unsigned short hybrid =atoi(hybrid_str.c_str());if(!m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)) {std::cout << "ERROR, hybrid " << hybrid << " does not exist "<< std::endl; return false;}
     //vmm
     std::string vmm_str = str.substr ((str.find("vmm")+3),str.find("_",str.find("vmm")+3)-(str.find("vmm")+3));
-    unsigned short vmm =atoi(vmm_str.c_str());if(!m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm)) {std::cout << "ERROR, vmm " << vmm << " does not exist "<< std::endl; return false;}
+    unsigned short vmm =atoi(vmm_str.c_str());
     //add config path before file name
     std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
 
@@ -47,38 +47,38 @@ bool VMMConfigHandler::WriteSingleVMMConf(const char* filename){//exact file nam
 }
 bool VMMConfigHandler::GenericAllVMMConf(bool load, std::string filename){
     //    bool VMM_config_handler::GenericAllVMMConf(bool load, const char* filename){
-            for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-                if (m_daqWindow->m_daq.GetFEC(j)){
-                    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
-                        if(m_daqWindow->m_daq.m_fecs[j].GetHybrid(k)){
-                            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                                if (m_daqWindow->m_daq.m_fecs[j].m_hybrids[k].GetVMM(m)){
-                                    if (load) std::cout <<"Loading vmm configuration \""<<filename<<"\" for fec"<<j<<" hybrid"<<k<<" vmm"<<m<<std::endl;
-                                    else std::cout <<"Writing vmm configuration \""<<filename<<"\" for fec"<<j<<" hybrid"<<k<<" vmm"<<m<<std::endl;
-                                    std::ostringstream oss;
-                                    std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
-                                    oss << j;
-                                    fname+="_fec";
-                                    fname+=oss.str();
-                                    oss.str("");oss.clear();oss << k;
-                                    fname+="_hybrid";
-                                    fname+=oss.str();
-                                    oss.str("");oss.clear();oss << m;
-                                    fname+="_vmm";
-                                    fname+=oss.str();
-                                    fname+=".txt"; //build file name with path and extension
-                                    if (load){
-                                        if( !LoadVMMConfig(fname) ) {std::cout<<"Error"<<std::endl;return false;}
-                                    }
-                                    else{
-                                        if( !WriteVMMConfig(fname,j,k,m) ) {std::cout<<"Error"<<std::endl;return false;}
-                                    }
+    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+        if (m_daqWindow->m_daq.GetFEC(j)){
+            for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
+                if(m_daqWindow->m_daq.m_fecs[j].GetHybrid(k)){
+                    for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
 
-                                }
-                            }
-
+                        if (load) std::cout <<"Loading vmm configuration \""<<filename<<"\" for fec"<<j<<" hybrid"<<k<<" vmm"<<m<<std::endl;
+                        else std::cout <<"Writing vmm configuration \""<<filename<<"\" for fec"<<j<<" hybrid"<<k<<" vmm"<<m<<std::endl;
+                        std::ostringstream oss;
+                        std::string fname = m_daqWindow->GetApplicationPath().toStdString(); fname+="/../"; fname+=CONFIG_DIR; fname+="/"; fname+=filename;
+                        oss << j;
+                        fname+="_fec";
+                        fname+=oss.str();
+                        oss.str("");oss.clear();oss << k;
+                        fname+="_hybrid";
+                        fname+=oss.str();
+                        oss.str("");oss.clear();oss << m;
+                        fname+="_vmm";
+                        fname+=oss.str();
+                        fname+=".txt"; //build file name with path and extension
+                        if (load){
+                            if( !LoadVMMConfig(fname) ) {std::cout<<"Error"<<std::endl;return false;}
                         }
+                        else{
+                            if( !WriteVMMConfig(fname,j,k,m) ) {std::cout<<"Error"<<std::endl;return false;}
+                        }
+
                     }
+
+
+                }
+            }
         }
     }
     return true;
@@ -110,22 +110,48 @@ bool VMMConfigHandler::LoadVMMConfig(std::string fname){ //load the VMM configur
     std::ifstream f; f.open(fname,std::ifstream::in);
     if(!f.is_open()) {std::cout<< "file "<<fname<<" not found"<<std::endl;return false;}
     while (!f.eof() ){
-        std::string s, val, chanreg, chanval;
-        const char *a, *b;
-        f >> s >> val;
+        std::string s, val, chanreg, chanval,a,b;
+        //const char *a, *b;
+        unsigned short chan;
+
+        std::string line;
+        std::getline(f, line);
+        std::size_t pos = line.find(" ");
+        if (pos!=std::string::npos) {
+            s = line.substr(0,pos);
+            val = line.substr(pos+1);
+            if(s == "channel") {
+                pos = val.find(' ');
+                if (pos!=std::string::npos) {
+                    chan = atoi(val.substr(0,pos).c_str());
+                    val = val.substr(pos+1);
+                    pos = val.find(' ');
+                    if (pos!=std::string::npos) {
+                        a = val.substr(0,pos);
+                        b = val.substr(pos+1);
+                    }
+                }
+            }
+        }
+        else {
+            continue;
+        }
+
         if (s == empty && val == empty) break; // for empty line at end of file
         else if (s == "fec") {fec = atoi(val.c_str());}
         else if (s == "hybrid") {hybrid = atoi(val.c_str());}
         else if (s == "vmm") {vmms = atoi(val.c_str());}
+        else if (s == "description") {
+            auto noSpaceEnd = std::remove( val.begin(), val.end(), '"');
+            val.erase(noSpaceEnd, val.end());
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmms].SetInfo("description",val.c_str());
+        }
         else if (s == channel) {
-            unsigned short chan = atoi(val.c_str());
-            f >> chanreg >> chanval;
-            a = chanreg.c_str(); b= chanval.c_str();
-            if (!m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmms].SetRegi(a,b,chan)) return false;
+            if (!m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmms].SetRegi(a.c_str(), atoi(b.c_str()),chan)) return false;
         }
         else {
             a = s.c_str(); b = val.c_str();
-            if (!m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmms].SetRegi(a,b)) return false;
+            if (!m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmms].SetRegi(a.c_str(), atoi(b.c_str()))) return false;
         }
         if( (f.fail()) ) {return false;}
     }
@@ -134,14 +160,35 @@ bool VMMConfigHandler::LoadVMMConfig(std::string fname){ //load the VMM configur
 }
 
 bool VMMConfigHandler::WriteVMMConfig(std::string fname, unsigned short fec, unsigned short hybrid, unsigned short vmm){
+    std::string description = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetInfo("description");
+    if(description == "") {
+        description = "\"\"";
+    }
+    else {
+        description =  "\"" + description + "\"";
+    }
     std::ofstream f; f.open(fname,std::ofstream::out);
     if(!f.is_open()) {return false;}
     f << "fec " << fec << std::endl;
     f << "hybrid " << hybrid << std::endl;
     f << "vmm " << vmm << std::endl;
-    f << "\n";
-    for(const auto &entr: (*m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_globalReg1)){
-        f<<entr.first<< " " <<entr.second<<std::endl;
+    f << "description " << description << std::endl;
+
+    for(const auto &entr: (*m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_globalRegs)){
+        if(entr.first != "scmx") {
+            if(entr.first == "sm5_sm0") {
+                if(m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].m_vmmSettings->m_globalRegs->at("scmx") == 0) {
+                    f<<entr.first<< " " <<entr.second+63<<std::endl;
+                }
+                else {
+                    f<<entr.first<< " " <<entr.second<<std::endl;
+                }
+
+            }
+            else {
+                f<<entr.first<< " " <<entr.second<<std::endl;
+            }
+        }
         if(f.fail()) {return false;}
     }
     f << "\n";

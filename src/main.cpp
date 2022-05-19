@@ -5,17 +5,16 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
 
     QFont Font;
     Font.setFamily("Arial");
-    Font.setPixelSize(12);
+    Font.setPointSize(11);
+    app.setFont(Font);
+    app.setStyle(QStyleFactory::create("Fusion"));
     QApplication::setFont(Font);
-
-    QApplication a(argc, argv);
-    // make appearance same between linux and mac
-    a.setStyle(QStyleFactory::create("Fusion"));
 
     DAQWindow w;
     w.show();
-    return a.exec();
+    return app.exec();
 }

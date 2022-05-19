@@ -1,4 +1,4 @@
-# VMM3 Slow Control and Calibration Software
+# Unified VMM3 Slow Control and Calibration Software
 
 # Contents
 
@@ -13,7 +13,7 @@
 
 
 ## Prerequisites
-The slow control software controls one or several SRS FEC v6 cards. The VMM3a hybrids have to be connected to a DVM v5 card. The ESS branch of the slow control only works with version 21031200 of the firmware. The recommended bitfiles for the FEC (fecv6_vmm3_top_21032100.bit) and the RD51 VMM3a hybrid (vmm3h_1_020920_20201118.bit) is provided in the slow control repo. When reading the FEC firmware version number with the slow control (button "system parameters"), the version should read "21031200".
+The slow control software controls one or several SRS FEC v6 cards or ESS assister cards. If SRS FEC cards are used, the VMM3a hybrids have to be connected to a DVM v5 card. For SRS FECs, the recommended bitfile (fecv6_vmm3_top_21032100.bit) is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read "21031200".
 
 A really essential tool that you should install even before installing the slow control is Wireshark. Please install Wireshark with Lua support. In the slow control folder, we provide a lua script, that disassembles the UDP packages from the FEC, and displays the hits from the VMMs. The script vmm3a_plugin.lua is also provided in the slow control repository. Usually we create an alias in .bashrc to start Wireshark with the script:
 ```
@@ -23,7 +23,7 @@ alias essws='wireshark -X lua_script:/path_to_slow_control/vmmsc/vmm3a_plugin.lu
 ## Recommended Release
 The recommended release is **v1.0** which is for *VMM3* slow control and calibration. To obtain this release do:
 ```
-git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc.git
+git clone https://bitbucket.org/europeanspallationsource/slow_control_vmm3a.git
 ```
 and follow the installation instructions below.
 
@@ -39,24 +39,25 @@ Here we list the (tested) software requirements.
 ## Installation
 There are a few steps that need to be taken in order for you to obtain, install, and get the software running. These are discussed here.
 
-### Obtain the software
-
-The nominal use case is to check out the current version of the software.
-To do this, run the following command from a terminal in a directory where you would like the software to reside:
-
-```
-git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc.git --recursive
-```
-To use the extensive testing feature, the command above also checks out two other git repositories as submodules.
-The firmware files for FEC and hybrid, and the database for the test results can subsequently be found linked inside the testing folder. 
 
 ### Compile the software
 
-First navigate to the new directory. As mentioned above the software can be checked out the CERN gitlab repository.
+First navigate to the new directory. As mentioned above the software can be checked out the bitbucket gitlab repository.
 Navigate to the following repository:
 ```
-cd VMM-software-RD51/build
+cd slow_control_vmm3a/build
 ```
+Edit the vmmdcs.pro file and choose the correct clock source:
+#####################################################
+# Define default value for clock source
+# 0 = ESS readout, clock via ring (44.02625 MHz)
+# 1 = ESS readout, clock from KCU705 (44.444 MHz)
+# 2 = SRS, ESS firmware with 44.4444 MHz
+# 3 = SRS, RD51 firmware with 40 MHz
+
+For SRS with RD51 firmware, choose option 3
+DEFINES += CLOCK_SOURCE=3
+
 make sure you use the correct qmake in case you have several QT versions installed and run qmake:
 ```
 qmake vmmdcs.pro
@@ -94,26 +95,11 @@ Detailed instructions on how to download, setup the installation, and install Qt
 [Qt installation slides](https://twiki.cern.ch/twiki/pub/Atlas/NSWVmmDaqSoftware/qt_installation_PDF.pdf). Please
 use these instructions to setup Qt for use with **VMM Software**.
 
-## Test module
-
-The test module has been written by Finn Jaekel (<s6fijaek@uni-bonn.de>). 
-The module writes the test results to a database, and the results can be viewed with the additional tool
-[VMM-Database-Browser](https://github.com/FinnJaekel/VMM-Database-Browser).
-Please follow the instructions there to install the tool.
-
-
 ## Contact
 
 Questions, comments, suggestions, or help?
 
-Originally developed by:
-**Manuel Guth**: <manuel.guth@cern.ch> and **Michael Lupberger**:  <michael.lupberger@cern.ch>
-
 For present development, contact:
-**Michael Lupberger**:  <michael.lupberger@cern.ch>
 **Dorothea Pfeiffer**:  <dorothea.pfeiffer@cern.ch>
 **Lucian Scharenberg**:  <Lucian.Scharenberg@cern.ch>
-**Finn Jaekel**: <s6fijaek@uni-bonn.de>
 
-For ESS branch: 
-**Dorothea Pfeiffer**:  <dorothea.pfeiffer@cern.ch>

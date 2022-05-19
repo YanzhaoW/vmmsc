@@ -1,11 +1,10 @@
 #####################################################
-# COMMENT OUT, if you do not want config check
-#####################################################
-#####################################################
-DEFINES += CONFIG_CHECK=1
-#####################################################
-
-
+# Define default value for clock source
+# 0 = ESS readout, clock via ring (44.02625 MHz)
+# 1 = ESS readout, clock from KC705 (44.444 MHz)
+# 2 = SRS, ESS firmware with 44.4444 MHz
+# 3 = SRS, RD51 firmware with 40 MHz
+DEFINES += CLOCK_SOURCE=2
 #####################################################
 # directory and machine specific items here
 #####################################################
@@ -42,15 +41,13 @@ QT      += core gui
 QT      += network
 QT      += widgets
 QT      += xml
-QT      += concurrent
-QT      += serialport
-QT      += sql
+
 
 greaterThan(QT_MAJOR_VERSION, 4): QT +=widgets printsupport
 CONFIG  += console
 CONFIG  +=declarative_debug
 CONFIG  +=c++11
-CONFIG  += sanitizer sanitize_address
+#CONFIG  += sanitizer sanitize_address
 
 TARGET   = vmmdcs
 TEMPLATE = app
@@ -90,15 +87,10 @@ SOURCES += $$sourcepath/main.cpp\
             $$sourcepath/hybrid.cpp \
             $$sourcepath/fec.cpp \
             $$sourcepath/daq_window.cpp \
-            $$sourcepath/fec_window.cpp \
-            $$sourcepath/hybrid_window.cpp \
-            $$sourcepath/vmm_window.cpp \
             $$sourcepath/hybrid_config_handler.cpp \
             $$sourcepath/calibration_module.cpp \
             $$sourcepath/qcustomplot.cpp \
             $$sourcepath/fec_config_module.cpp \
-            $$sourcepath/test_module.cpp \
-            $$sourcepath/currentmonitor.cpp \
             $$alglibpath/alglibinternal.cpp \
             $$alglibpath/alglibmisc.cpp \
             $$alglibpath/ap.cpp \
@@ -122,15 +114,9 @@ HEADERS  += $$includepath/socket_handler.h\
             $$includepath/hybrid.h \
             $$includepath/fec.h \
             $$includepath/daq_window.h \
-            $$includepath/fec_window.h \
-            $$includepath/hybrid_window.h \
-            $$includepath/vmm_window.h \
             $$includepath/hybrid_config_handler.h \
             $$includepath/fec_config_handler.h \
             $$includepath/fec_config_module.h \
-            $$includepath/test_module.h \
-            $$includepath/currentmonitor.h \
-            $$includepath/PolynomialRegression.h \
             $$alglibpath/alglibinternal.h \
             $$alglibpath/alglibmisc.h \
             $$alglibpath/ap.h \
@@ -145,10 +131,7 @@ HEADERS  += $$includepath/socket_handler.h\
 
 
 
-FORMS    += $$sourcepath/daq_window.ui \
-            $$sourcepath/vmm_window.ui \
-            $$sourcepath/fec_window.ui \
-            $$sourcepath/hybrid_window.ui
+FORMS    += $$sourcepath/daq_window.ui
 
 RESOURCES += \
     $$imagepath/icons.qrc

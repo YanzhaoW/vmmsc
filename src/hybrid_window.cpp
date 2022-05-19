@@ -9,26 +9,32 @@ HybridWindow::HybridWindow(FECWindow *top, unsigned short fec, unsigned short hy
     m_ui(new Ui::hybrid_window)
 {
     m_ui->setupUi(this);
-    UpdateWindow();
     m_ui->tpSkew->clear();
     for(int i=0;i < 2; i++) {
         for(int n=0;n< 8; n++) {
-            QString txt = QStringLiteral("%1 ns").arg((i*25)+n*25/8.0);
+            QString txt = QStringLiteral("%1 ns").arg((i*g_clock_period)+n*g_clock_period/8.0);
             m_ui->tpSkew->addItem(txt);
         }
     }
-    LoadSettings();
 
-    connect(m_ui->axis, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->position, SIGNAL(valueChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->ckbc_s6, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->ckbc_skew_s6, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->ckdt_s6, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
+    if(g_clock_source == 0) {
+        m_ui->ckbc_info->setText("44.03 MHz");
+        m_ui->ckdt_info->setText("176.11 MHz");
+    }
+    if(g_clock_source == 3) {
+        m_ui->ckbc_info->setText("40 MHz");
+        m_ui->ckdt_info->setText("180 MHz");
+    }
+    else {
+        m_ui->ckbc_info->setText("44.44 MHz");
+        m_ui->ckdt_info->setText("177.78 MHz");
+    }
+
+    UpdateWindow();
+
+    LoadSettings();
+    EnableCommunicationButtons(false);
+
     connect(m_ui->tpSkew, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->tpWidth, SIGNAL(currentIndexChanged(int)),
@@ -42,11 +48,18 @@ HybridWindow::HybridWindow(FECWindow *top, unsigned short fec, unsigned short hy
     connect(m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule, SIGNAL(ReloadHybrid()),
             this, SLOT( onReloadSettings() ));
 
+    connect(m_fecWindow->m_daqWindow->m_ui->openConnection, SIGNAL(clicked()),
+            this, SLOT(onUpdateSettings()));
 }
 
 HybridWindow::~HybridWindow()
 {
     delete m_ui;
+}
+
+void HybridWindow::EnableCommunicationButtons(bool enable) {
+    m_ui->ApplyAll->setEnabled(enable);
+    m_ui->pbReadI2C->setEnabled(enable);
 }
 
 
@@ -63,12 +76,12 @@ void HybridWindow::on_Box_vmm2_clicked()
 
 void HybridWindow::VMMBoxLogic(bool checked, unsigned short vmm){
     unsigned short NotActiveBefore = 0;
-    QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
+    QList<QCheckBox*> a = m_ui->groupBoxVMMs->findChildren<QCheckBox*>();
     for (unsigned short i = 0; i < a.size(); i++){
         if(i<vmm && !a.at(i)->isChecked()) NotActiveBefore++;
     }
     if (checked){
-        m_ui->tabWidget->insertTab(vmm-NotActiveBefore, new VMMWindow(this,m_fecIndex,m_hybridIndex,vmm), QString(" VMM %0").arg(vmm+1));
+        m_ui->tabWidget->insertTab(vmm-NotActiveBefore, new VMMWindow(this,m_fecIndex,m_hybridIndex,vmm), QString(" VMM %0").arg(vmm));
         m_ui->tabWidget->setCurrentIndex(vmm-NotActiveBefore);
         m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].SetVMM(vmm, true);
     }
@@ -86,17 +99,8 @@ void HybridWindow::UpdateWindow(){
         }
     }
 }
+
 void HybridWindow::LoadSettings(){
-
-    while(!m_fecWindow->m_daqWindow->m_daq.CheckHybridPos(GetHybrid("axis"), GetHybrid("position"), m_fecIndex, m_hybridIndex )){
-        SetHybrid("position", GetHybrid("position")+1);
-    }
-
-    m_ui->axis->setCurrentIndex(GetHybrid("axis"));
-    m_ui->position->setValue(GetHybrid("position"));
-    m_ui->ckbc_s6->setCurrentIndex(GetHybrid("CKBC"));
-    m_ui->ckbc_skew_s6->setCurrentIndex(GetHybrid("CKBC_skew"));
-    m_ui->ckdt_s6->setCurrentIndex(GetHybrid("CKDT"));
     m_ui->tpSkew->setCurrentIndex(GetHybrid("TP_skew"));
     m_ui->tpWidth->setCurrentIndex(GetHybrid("TP_width"));
     m_ui->tpPolarity->setCurrentIndex(GetHybrid("TP_pol"));
@@ -104,9 +108,6 @@ void HybridWindow::LoadSettings(){
 
 // ------------------------------------------------------------------------- //
 void HybridWindow::onReloadSettings(){
-    m_ui->ckbc_s6->setCurrentIndex(GetHybrid("CKBC"));
-    m_ui->ckbc_skew_s6->setCurrentIndex(GetHybrid("CKBC_skew"));
-    m_ui->ckdt_s6->setCurrentIndex(GetHybrid("CKDT"));
     m_ui->tpSkew->setCurrentIndex(GetHybrid("TP_skew"));
     m_ui->tpWidth->setCurrentIndex(GetHybrid("TP_width"));
     m_ui->tpPolarity->setCurrentIndex(GetHybrid("TP_pol"));
@@ -125,39 +126,10 @@ unsigned short HybridWindow::GetHybrid(std::string feature){
 }
 
 void HybridWindow::onUpdateSettings(){
-
-    if(QObject::sender() == m_ui->axis){
-        if(m_fecWindow->m_daqWindow->m_daq.CheckHybridPos( m_ui->axis->currentIndex() , GetHybrid("position"), m_fecIndex, m_hybridIndex )){
-            SetHybrid("axis", m_ui->axis->currentIndex());
+    if(QObject::sender() == m_ui->tpSkew){
+        if( m_ui->tpSkew->currentIndex() != -1) {
+            SetHybrid("TP_skew", m_ui->tpSkew->currentIndex());
         }
-        else{
-            m_ui->axis->setCurrentIndex( GetHybrid("axis") );
-            m_fecWindow->m_daqWindow->SetWarningMessage("Hybrid position occupied- resetted!", "orange");
-        }
-
-
-    }
-    else if(QObject::sender() == m_ui->position){
-        if(m_fecWindow->m_daqWindow->m_daq.CheckHybridPos(GetHybrid("axis"), m_ui->position->value() , m_fecIndex, m_hybridIndex )){
-            SetHybrid("position", m_ui->position->value());
-        }
-        else{
-            m_ui->position->setValue( GetHybrid("position") );
-            m_fecWindow->m_daqWindow->SetWarningMessage("Hybrid position occupied- resetted!", "orange");
-        }
-
-    }
-    else if(QObject::sender() == m_ui->ckbc_s6){
-        SetHybrid("CKBC", m_ui->ckbc_s6->currentIndex());
-    }
-    else if(QObject::sender() == m_ui->ckbc_skew_s6){
-        SetHybrid("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());
-    }
-    else if(QObject::sender() == m_ui->ckdt_s6){
-        SetHybrid("CKDT", m_ui->ckdt_s6->currentIndex());
-    }
-    else if(QObject::sender() == m_ui->tpSkew){
-        SetHybrid("TP_skew", m_ui->tpSkew->currentIndex());
     }
     else if(QObject::sender() == m_ui->tpWidth){
         SetHybrid("TP_width", m_ui->tpWidth->currentIndex());
@@ -170,10 +142,6 @@ void HybridWindow::onUpdateSettings(){
             if (m_fecWindow->m_daqWindow->m_daq.GetFEC(fec) ){
                 for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
                     if( m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
-
-                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("CKBC", m_ui->ckbc_s6->currentIndex());
-                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("CKBC_skew", m_ui->ckbc_skew_s6->currentIndex());
-                        m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("CKDT", m_ui->ckdt_s6->currentIndex());
                         m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_ui->tpSkew->currentIndex());
                         m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_width", m_ui->tpWidth->currentIndex());
                         m_fecWindow->m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_pol", m_ui->tpPolarity->currentIndex());
@@ -182,13 +150,50 @@ void HybridWindow::onUpdateSettings(){
                 }
             }
         }
-        m_fecWindow->m_daqWindow->m_daq.ApplyHybrids(m_fecIndex);
+        m_fecWindow->m_daqWindow->m_daq.ApplyHybrids();
+    }
+    else if(QObject::sender() == m_fecWindow->m_daqWindow->m_ui->openConnection){
+        if(g_connection_ok){
+            EnableCommunicationButtons(true);
+        }
+        else {
+            EnableCommunicationButtons(false);
+        }
     }
 }
 
 void HybridWindow::on_pbReadI2C_pressed()
 {
     QString result = m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadI2C(m_hybridIndex, m_ui->cbChoiceI2C->currentIndex());
-    m_ui->lineEditResultI2C->setText(result.toUpper());
+    QString text = "";
+    for(int n=0; n < result.size(); n=n+16) {
+        text += result.mid(n,16);
+        text += "\n";
+    }
+    text = text.mid(0, text.size()-1);
+    if(m_ui->cbChoiceI2C->currentIndex() == 0) {
+        m_ui->hybridID->setText(text);
+    }
+    else if(m_ui->cbChoiceI2C->currentIndex() == 1) {
+        m_ui->firmwareVersion->setText(text);
+    }
+    else if(m_ui->cbChoiceI2C->currentIndex() == 2) {
+        m_ui->geoID->setText(text);
+    }
 }
 
+
+
+void HybridWindow::on_tpSkew_highlighted(int index)
+{
+    if(g_clock_source_changed) {
+        m_ui->tpSkew->clear();
+        for(int i=0;i < 2; i++) {
+            for(int n=0;n< 8; n++) {
+                QString txt = QStringLiteral("%1 ns").arg((i*g_clock_period)+n*g_time_factor);
+                m_ui->tpSkew->addItem(txt);
+            }
+        }
+        g_clock_source_changed = false;
+    }
+}

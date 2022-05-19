@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <iostream>
-#include "ui_fec_window.h"
 
 class DAQWindow;
 
@@ -23,16 +22,6 @@ public:
 
 
 private slots:
-    void on_Box_hybrid1_clicked();
-    void on_Box_hybrid2_clicked();
-    void on_Box_hybrid3_clicked();
-    void on_Box_hybrid4_clicked();
-    void on_Box_hybrid5_clicked();
-    void on_Box_hybrid6_clicked();
-    void on_Box_hybrid7_clicked();
-    void on_Box_hybrid8_clicked();
-    void on_clearDebugScreen_clicked();
-
     void onUpdateSettings();
     void onCheckLinkStatus();
     void onResetFEC();
@@ -43,7 +32,9 @@ private slots:
     void on_pushButtonFECIP_pressed();
 
     void on_pushButtonDAQIP_pressed();
-    void onPowerCycleHybrids();
+
+
+    void on_pushButtonPowerCycle_pressed();
 
 private:
     DAQWindow *m_daqWindow;
@@ -56,8 +47,8 @@ private:
     void SetToolTips();
     bool SetFec(const char *feature, unsigned long val);
     unsigned long GetFec(const char *feature);
+    void EnableCommunicationButtons(bool enable);
 
-    unsigned int internalClockPeriod;
     std::string m_sendstate = "";
 
 signals:

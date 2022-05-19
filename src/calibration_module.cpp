@@ -29,362 +29,382 @@ using namespace alglib;
 
 void erfc_function(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
-    func = c[0]*0.5*errorfunctionc((x[0]-c[1])/(sqrt(2)* c[2]));
+    func = c[0]*0.5*errorfunctionc((x[0]-c[1])/(sqrt(2)* c[2])) + c[3];
 }
 
 void erfc_function_mirrored(const real_1d_array &c, const real_1d_array &x, double &func, void *ptr)
 {
-    func = c[0]*0.5*errorfunctionc((-x[0]+c[1])/(sqrt(2)* c[2]));
+    func = c[0]*0.5*errorfunctionc((-x[0]+c[1])/(sqrt(2)* c[2])) + c[3];
 }
 
 void erfc_grad(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *ptr)
 {
-    func = c[0]*0.5*errorfunctionc((x[0]-c[1])/(sqrt(2)* c[2]));
+    func = c[0]*0.5*errorfunctionc((x[0]-c[1])/(sqrt(2)* c[2])) + c[3];
     grad[0] = 0.5*errorfunctionc((x[0]-c[1])/(sqrt(2)* c[2]));
     grad[1] = (c[0]*0.5*sqrt(2/pi())/c[2])*exp(-(x[0]-c[1])*(x[0]-c[1])/(2*c[2]*c[2]));
     grad[2] = (c[0]*0.5*sqrt(2/pi())*(x[0]-c[1])/(c[2]*c[2]))*exp(-(x[0]-c[1])*(x[0]-c[1])/(2*c[2]*c[2]));
+    grad[3] = 1;
 }
 
 void erfc_grad_mirrored(const real_1d_array &c, const real_1d_array &x, double &func, real_1d_array &grad, void *ptr)
 {
-    func = c[0]*0.5*errorfunctionc((-x[0]+c[1])/(sqrt(2)* c[2]));
+    func = c[0]*0.5*errorfunctionc((-x[0]+c[1])/(sqrt(2)* c[2])) + c[3];
     grad[0] = 0.5*errorfunctionc((-x[0]+c[1])/(sqrt(2)* c[2]));
     grad[1] = (c[0]*0.5*sqrt(2/pi())/c[2])*exp(-(-x[0]+c[1])*(-x[0]+c[1])/(2*c[2]*c[2]));
     grad[2] = (c[0]*0.5*sqrt(2/pi())*(-x[0]+c[1])/(c[2]*c[2]))*exp(-(-x[0]+c[1])*(-x[0]+c[1])/(2*c[2]*c[2]));
+    grad[3] = 1;
 }
 
 
 CalibrationModule::CalibrationModule(DAQWindow *top, QObject *parent) :
-                                                                        QObject(parent),
-                                                                        m_daqWindow{top},
-                                                                        m_dbg(false),
-                                                                        m_udpSocket(nullptr),
-                                                                        m_msg(new MessageHandler),
-                                                                        m_ignore16(false)
+    QObject(parent),
+    m_daqWindow{top},
+    m_dbg(false),
+    m_udpSocket(nullptr),
+    m_msg(new MessageHandler),
+    m_ignore16(false)
 {
 
     m_calibrationArray[0] = nullptr;
     m_calibrationArray[1] = nullptr;
+    m_calibrationArray[2] = nullptr;
     m_modeIndex = -1;
     m_data_modeIndex = -1;
 
-    plotVector.push_back(m_daqWindow->ui->customPlot1);
-    plotVector.push_back(m_daqWindow->ui->customPlot2);
-    plotVector.push_back(m_daqWindow->ui->customPlot3);
-    plotVector.push_back(m_daqWindow->ui->customPlot4);
-    plotVector.push_back(m_daqWindow->ui->customPlot5);
-    plotVector.push_back(m_daqWindow->ui->customPlot6);
-    plotVector.push_back(m_daqWindow->ui->customPlot7);
-    plotVector.push_back(m_daqWindow->ui->customPlot8);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot1);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot2);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot3);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot4);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot5);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot6);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot7);
+    plotVector.push_back(m_daqWindow->m_ui->customPlot8);
+
+
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot1->xAxis, m_daqWindow->m_ui->customPlot1->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot2->xAxis, m_daqWindow->m_ui->customPlot2->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot3->xAxis, m_daqWindow->m_ui->customPlot3->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot4->xAxis, m_daqWindow->m_ui->customPlot4->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot5->xAxis, m_daqWindow->m_ui->customPlot5->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot6->xAxis, m_daqWindow->m_ui->customPlot6->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot7->xAxis, m_daqWindow->m_ui->customPlot7->yAxis));
+    colorMapVector.push_back( new QCPColorMap(m_daqWindow->m_ui->customPlot8->xAxis, m_daqWindow->m_ui->customPlot8->yAxis));
+
+
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot1));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot2));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot3));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot4));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot5));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot6));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot7));
+    colorScaleVector.push_back( new QCPColorScale(m_daqWindow->m_ui->customPlot8));
+    /*
+    m_daqWindow->m_ui->customPlot1->plotLayout()->addElement(0, 1, colorScaleVector[0]);
+    m_daqWindow->m_ui->customPlot2->plotLayout()->addElement(0, 1, colorScaleVector[1]);
+    m_daqWindow->m_ui->customPlot3->plotLayout()->addElement(0, 1, colorScaleVector[2]);
+    m_daqWindow->m_ui->customPlot4->plotLayout()->addElement(0, 1, colorScaleVector[3]);
+    m_daqWindow->m_ui->customPlot5->plotLayout()->addElement(0, 1, colorScaleVector[4]);
+    m_daqWindow->m_ui->customPlot6->plotLayout()->addElement(0, 1, colorScaleVector[5]);
+    m_daqWindow->m_ui->customPlot7->plotLayout()->addElement(0, 1, colorScaleVector[6]);
+    m_daqWindow->m_ui->customPlot8->plotLayout()->addElement(0, 1, colorScaleVector[7]);
+*/
 
     for(int n=0; n<8;n++)
     {
+        colorScaleVector[n]->setMinimumSize(0, 0);
+        colorScaleVector[n]->setMaximumSize(0, 0);
+        colorScaleVector[n]->setVisible(false);
+        colorMapVector[n]->setVisible(false);
+
         plotVector[n]->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes);
     }
-    connect( m_daqWindow->ui->comboBoxFec, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updatePlot()));
-    connect( m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updatePlot()));
-    connect( m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updatePlot()));
-    connect( m_daqWindow->ui->choiceBit, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updatePlot()));
+    m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+    m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
+    m_daqWindow->m_ui->choiceBit->setVisible(false);
+    m_daqWindow->m_ui->choiceBit->setEnabled(false);
+    m_daqWindow->m_ui->pushButtonStoreCorrections->setEnabled(true);
+    m_daqWindow->m_ui->pushButtonSavePDF->setEnabled(true);
+    m_daqWindow->m_ui->pushButtonCSV->setEnabled(true);
 
-    connect( m_daqWindow->ui->comboBoxRunMode, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(calibAndPlotChoices()));
-    connect( m_daqWindow->ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(calibAndPlotChoices()));
-    connect( m_daqWindow->ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(calibAndPlotChoices()));
-
-    m_daqWindow->ui->choicePlotTime->setVisible(true);
-    m_daqWindow->ui->choicePlotTime->setEnabled(true);
-    m_daqWindow->ui->choiceBit->setVisible(false);
-    m_daqWindow->ui->choiceBit->setEnabled(false);
-    m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
-    m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
-    m_daqWindow->ui->pushButtonCSV->setEnabled(true);
-
-    m_daqWindow->ui->comboBoxRunMode->setCurrentIndex(0);
-    m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
+    m_daqWindow->m_ui->comboBoxRunMode->setCurrentIndex(0);
+    m_daqWindow->m_ui->comboBoxCalibrationType->setCurrentIndex(0);
     //Fill choices
-    m_daqWindow->ui->choicePlotTime->clear();
-    m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
-    m_daqWindow->ui->choicePlotTime->addItem("corrections");
-    m_daqWindow->ui->choicePlotTime->addItem("fit");
-    m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
-    m_daqWindow->ui->choicePlotTime->setVisible(true);
-    m_daqWindow->ui->choicePlotTime->setEnabled(true);
-    m_daqWindow->ui->label_vmm->setText("Display VMMs");
-    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
+    m_daqWindow->m_ui->choicePlotTime->clear();
+    m_daqWindow->m_ui->choicePlotTime->addItem("calibrated ADC");
+    m_daqWindow->m_ui->choicePlotTime->addItem("corrections");
+    m_daqWindow->m_ui->choicePlotTime->addItem("fit");
+    m_daqWindow->m_ui->choicePlotTime->addItem("ADC distribution");
+    m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+    m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
+    m_daqWindow->m_ui->label_vmm->setText("Display VMMs");
+    m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 1-8"));
+
+    connect( m_daqWindow->m_ui->comboBoxFec, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(updatePlot()));
+    connect( m_daqWindow->m_ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(updatePlot()));
+    connect( m_daqWindow->m_ui->choiceBit, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(updatePlot()));
+
+    connect( m_daqWindow->m_ui->comboBoxRunMode, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(calibAndPlotChoices()));
+    connect( m_daqWindow->m_ui->comboBoxCalibrationType, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(calibAndPlotChoices()));
+    connect( m_daqWindow->m_ui->choicePlotTime, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(calibAndPlotChoices()));
 
 }
 
+void CalibrationModule::AutomaticLatencyCalib(bool isReset) {
+    m_daqWindow->m_ui->comboBoxRunMode->setCurrentIndex(0);
+    m_isAutomatic = true;
+    if(isReset) {
+        m_daqWindow->m_ui->comboBoxCalibrationType->setCurrentIndex(10);
+    }
+    else {
+       m_daqWindow->m_ui->comboBoxCalibrationType->setCurrentIndex(11);
+    }
+    StartCalibration();
+}
 
 void CalibrationModule::calibAndPlotChoices()
 {
-    if(QObject::sender() == m_daqWindow->ui->comboBoxRunMode){
+    if(QObject::sender() == m_daqWindow->m_ui->comboBoxRunMode){
         m_daqWindow->m_calib->m_dataAvailable = false;
-        m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(-1);
-        m_daqWindow->ui->comboBoxCalibrationType->clear();
-        if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0)
+        m_daqWindow->m_ui->comboBoxCalibrationType->setCurrentIndex(-1);
+        m_daqWindow->m_ui->comboBoxCalibrationType->clear();
+        if(m_daqWindow->m_ui->comboBoxRunMode->currentIndex() == 0)
         {
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Offline ADC");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("ADC");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("TDC");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("S-curve");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Threshold");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Pedestal");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Pulser DAC");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Threshold DAC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Offline ADC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Offline Time (BCID/TDC)");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Offline Timewalk (time/ADC)");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("ADC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("TDC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("S-curve");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Threshold");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Pedestal");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Pulser DAC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Threshold DAC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Reset latency");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("TP latency");
+            //m_daqWindow->m_ui->comboBoxCalibrationType->addItem("ADC via I2C");
             //ADC calib active
-            m_daqWindow->ui->comboBoxCalibrationType->setCurrentIndex(0);
-            m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
-            m_daqWindow->ui->pushButtonCSV->setEnabled(true);
-            m_daqWindow->ui->pushButtonStoreCorrections->setText("Corrections (json)");
-            m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
+            m_daqWindow->m_ui->comboBoxCalibrationType->setCurrentIndex(0);
+            m_daqWindow->m_ui->pushButtonSavePDF->setEnabled(true);
+            m_daqWindow->m_ui->pushButtonCSV->setEnabled(true);
+            m_daqWindow->m_ui->pushButtonStoreCorrections->setText("Corrections (json)");
+            m_daqWindow->m_ui->pushButtonStoreCorrections->setEnabled(true);
             //Fill choices
-            m_daqWindow->ui->choicePlotTime->clear();
-            m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
-            m_daqWindow->ui->choicePlotTime->addItem("corrections");
-            m_daqWindow->ui->choicePlotTime->addItem("fit");
-            m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
-            m_daqWindow->ui->choicePlotTime->setVisible(true);
-            m_daqWindow->ui->choicePlotTime->setEnabled(true);
+            m_daqWindow->m_ui->choicePlotTime->clear();
+            m_daqWindow->m_ui->choicePlotTime->addItem("calibrated ADC");
+            m_daqWindow->m_ui->choicePlotTime->addItem("corrections");
+            m_daqWindow->m_ui->choicePlotTime->addItem("fit");
+            m_daqWindow->m_ui->choicePlotTime->addItem("ADC distribution");
+            m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+            m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
             // calibrated ADC active
-            m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-            m_daqWindow->ui->choiceBit->setVisible(false);
-            m_daqWindow->ui->choiceBit->setEnabled(false);
+            m_daqWindow->m_ui->choicePlotTime->setCurrentIndex(0);
+            m_daqWindow->m_ui->choiceBit->setVisible(false);
+            m_daqWindow->m_ui->choiceBit->setEnabled(false);
         }
-        else if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 1)
+        else if(m_daqWindow->m_ui->comboBoxRunMode->currentIndex() == 1)
         {
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("Channels");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("ADC");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("TDC");
-            m_daqWindow->ui->comboBoxCalibrationType->addItem("BCID");
-            m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
-            m_daqWindow->ui->pushButtonCSV->setEnabled(true);
-            m_daqWindow->ui->pushButtonSavePDF->setEnabled(true);
-            m_daqWindow->ui->choicePlotTime->setVisible(false);
-            m_daqWindow->ui->choicePlotTime->setEnabled(false);
-            m_daqWindow->ui->choiceBit->setVisible(false);
-            m_daqWindow->ui->choiceBit->setEnabled(false);
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Channels");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("ADC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("TDC");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("BCID");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("ADC spectrum");
+            m_daqWindow->m_ui->comboBoxCalibrationType->addItem("Time distribution");
+            m_daqWindow->m_ui->pushButtonStoreCorrections->setEnabled(false);
+            m_daqWindow->m_ui->pushButtonCSV->setEnabled(true);
+            m_daqWindow->m_ui->pushButtonSavePDF->setEnabled(true);
+            m_daqWindow->m_ui->choicePlotTime->setVisible(false);
+            m_daqWindow->m_ui->choicePlotTime->setEnabled(false);
+            m_daqWindow->m_ui->choiceBit->setVisible(false);
+            m_daqWindow->m_ui->choiceBit->setEnabled(false);
         }
     }
-    else if(QObject::sender() == m_daqWindow->ui->comboBoxCalibrationType){
+    else if(QObject::sender() == m_daqWindow->m_ui->comboBoxCalibrationType){
         m_daqWindow->m_calib->m_dataAvailable = false;
-        m_daqWindow->ui->comboBoxFec->clear();
-        if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0) {
+        if(m_daqWindow->m_ui->comboBoxRunMode->currentIndex() == 0) {
             //S-curve per channel for pre-selected VMM
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4 ) {
-                m_daqWindow->ui->label_vmm->setText("Display VMM");
-                m_daqWindow->ui->comboBoxFec->addItem(QString("selected VMM"));
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 5 ) {
+                m_daqWindow->m_ui->label_vmm->setText("Display VMM");
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("selected VMM"));
+            }
+            else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 10 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 11) {
+                m_daqWindow->m_ui->label_vmm->setText("Latency calibration");
+                m_daqWindow->m_ui->comboBoxFec->clear();
+                if(g_clock_source<2) {
+                    m_daqWindow->m_ui->comboBoxFec->addItem(QString("all assisters"));
+                }
+                else {
+                    m_daqWindow->m_ui->comboBoxFec->addItem(QString("all FECs"));
+                }
+                m_daqWindow->m_ui->pushButtonSavePDF->setEnabled(true);
             }
             //All others
             else {
-                m_daqWindow->ui->label_vmm->setText("Display VMMs");
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
-                if(m_vmmActs.size() >= 8 )
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
-                }
-                if(m_vmmActs.size() >= 16 )
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
-                }
-                if(m_vmmActs.size() >= 24)
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
-                }
-                if(m_vmmActs.size() >= 32 )
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
-                }
-                if(m_vmmActs.size() >= 40 )
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
-                }
-                if(m_vmmActs.size() >= 48 )
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
-                }
-                if(m_vmmActs.size() >= 56 )
-                {
-                    m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
-                }
+                AddVMMsToCombobox();
             }
-
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1) {
-                m_daqWindow->ui->pushButtonStoreCorrections->setText("Corrections (json)");
-                m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
-            }
-            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 2 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 3 ||
-                m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 5 ) {
-                m_daqWindow->ui->pushButtonStoreCorrections->setText("Corrections (GUI)");
-                m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(true);
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 10 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 11) {
+                m_daqWindow->m_ui->pushButtonCSV->setEnabled(false);
             }
             else {
-                m_daqWindow->ui->pushButtonStoreCorrections->setEnabled(false);
+                m_daqWindow->m_ui->pushButtonCSV->setEnabled(true);
             }
-
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ||
-                m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 6) {
-                m_daqWindow->ui->pushButtonLog->setEnabled(true);
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 1 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 2) {
+                m_daqWindow->m_ui->pushButtonStoreCorrections->setText("Corrections (json)");
+                m_daqWindow->m_ui->pushButtonStoreCorrections->setEnabled(true);
             }
-            else {
-                m_daqWindow->ui->pushButtonLog->setEnabled(false);
-            }
-
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1) {
-                m_daqWindow->ui->pushButtonApplyCalib->setEnabled(true);
+            else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 3 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 4 ||
+                    m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 6 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 10 ||  m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 11) {
+                m_daqWindow->m_ui->pushButtonStoreCorrections->setText("Corrections (GUI)");
+                m_daqWindow->m_ui->pushButtonStoreCorrections->setEnabled(true);
             }
             else {
-                m_daqWindow->ui->pushButtonApplyCalib->setEnabled(false);
+                m_daqWindow->m_ui->pushButtonStoreCorrections->setEnabled(false);
             }
 
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
-                m_daqWindow->ui->choicePlotTime->clear();
-                m_daqWindow->ui->choicePlotTime->addItem("calibrated ADC");
-                m_daqWindow->ui->choicePlotTime->addItem("corrections");
-                m_daqWindow->ui->choicePlotTime->addItem("fit");
-                m_daqWindow->ui->choicePlotTime->addItem("ADC distribution");
-                m_daqWindow->ui->choicePlotTime->setVisible(true);
-                m_daqWindow->ui->choicePlotTime->setEnabled(true);
-                m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-                m_daqWindow->ui->choiceBit->setVisible(false);
-                m_daqWindow->ui->choiceBit->setEnabled(false);
-            }
-            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ) {
-                m_daqWindow->ui->choicePlotTime->clear();
-                m_daqWindow->ui->choicePlotTime->addItem("calibrated time");
-                m_daqWindow->ui->choicePlotTime->addItem("corrections");
-                m_daqWindow->ui->choicePlotTime->addItem("fit");
-                m_daqWindow->ui->choicePlotTime->addItem("TDC distribution");
-                m_daqWindow->ui->choicePlotTime->addItem("BCID percentage");
-                m_daqWindow->ui->choicePlotTime->setVisible(true);
-                m_daqWindow->ui->choicePlotTime->setEnabled(true);
-                m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-                m_daqWindow->ui->choiceBit->setVisible(false);
-                m_daqWindow->ui->choiceBit->setEnabled(false);
-            }
-            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4 ) {
-                m_daqWindow->ui->choicePlotTime->clear();
-                m_daqWindow->ui->choicePlotTime->addItem("Fit results per chip");
-                m_daqWindow->ui->choicePlotTime->addItem("S-curve/gauss per channel");
-                m_daqWindow->ui->choicePlotTime->setVisible(true);
-                m_daqWindow->ui->choicePlotTime->setEnabled(true);
-                m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-                m_daqWindow->ui->choiceBit->setVisible(false);
-                m_daqWindow->ui->choiceBit->setEnabled(false);
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 1 ||
+                    m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 7) {
+                m_daqWindow->m_ui->pushButtonLog->setEnabled(true);
             }
             else {
-                m_daqWindow->ui->choicePlotTime->setVisible(false);
-                m_daqWindow->ui->choicePlotTime->setEnabled(false);
-                m_daqWindow->ui->choiceBit->setVisible(false);
-                m_daqWindow->ui->choiceBit->setEnabled(false);
+                m_daqWindow->m_ui->pushButtonLog->setEnabled(false);
             }
 
-        }
-    }
-    else if(QObject::sender() == m_daqWindow->ui->choicePlotTime){
-        if(!m_dataAvailable)
-        {
-            m_daqWindow->ui->choicePlotTime->setCurrentIndex(0);
-            return;
-        }
-        if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-            m_daqWindow->ui->choiceBit->clear();
-            if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 1 ) {
-
-                for(int i=0;i < 2; i++) {
-                    for(int n=0;n< 8; n++) {
-                        QString txt = QStringLiteral("%1 ns").arg((i*25)+n*25/8.0);
-                        m_daqWindow->ui->choiceBit->addItem(txt);
-                    }
-                }
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 0 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 1 || m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 2) {
+                m_daqWindow->m_ui->pushButtonApplyCalib->setEnabled(true);
             }
-            else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 0 ) {
-                for(int bit=0;bit< m_number_bits; bit++) {
-                    QString txt = QStringLiteral("%1 DAC").arg(m_dac_setting[bit]);
-                    m_daqWindow->ui->choiceBit->addItem(txt);
-                }
-
+            else {
+                m_daqWindow->m_ui->pushButtonApplyCalib->setEnabled(false);
             }
-            m_daqWindow->ui->choiceBit->setVisible(true);
-            m_daqWindow->ui->choiceBit->setEnabled(true);
+
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 0 ) {
+                m_daqWindow->m_ui->choicePlotTime->clear();
+                m_daqWindow->m_ui->choicePlotTime->addItem("calibrated ADC");
+                m_daqWindow->m_ui->choicePlotTime->addItem("corrections");
+                m_daqWindow->m_ui->choicePlotTime->addItem("fit");
+                m_daqWindow->m_ui->choicePlotTime->addItem("ADC distribution");
+                m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+                m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
+                m_daqWindow->m_ui->choicePlotTime->setCurrentIndex(0);
+                m_daqWindow->m_ui->choiceBit->setVisible(false);
+                m_daqWindow->m_ui->choiceBit->setEnabled(false);
+            }
+            else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 1 ) {
+                m_daqWindow->m_ui->choicePlotTime->clear();
+                m_daqWindow->m_ui->choicePlotTime->addItem("calibrated time");
+                m_daqWindow->m_ui->choicePlotTime->addItem("corrections");
+                m_daqWindow->m_ui->choicePlotTime->addItem("fit");
+                m_daqWindow->m_ui->choicePlotTime->addItem("TDC distribution");
+                m_daqWindow->m_ui->choicePlotTime->addItem("BCID percentage");
+                m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+                m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
+                m_daqWindow->m_ui->choicePlotTime->setCurrentIndex(0);
+                m_daqWindow->m_ui->choiceBit->setVisible(false);
+                m_daqWindow->m_ui->choiceBit->setEnabled(false);
+            }
+            else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 2 ) {
+                m_daqWindow->m_ui->choicePlotTime->clear();
+                m_daqWindow->m_ui->choicePlotTime->addItem("calibrated time walk");
+                m_daqWindow->m_ui->choicePlotTime->addItem("corrections");
+                m_daqWindow->m_ui->choicePlotTime->addItem("fit");
+                m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+                m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
+                m_daqWindow->m_ui->choicePlotTime->setCurrentIndex(0);
+                m_daqWindow->m_ui->choiceBit->setVisible(false);
+                m_daqWindow->m_ui->choiceBit->setEnabled(false);
+            }
+            else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 5 ) {
+                m_daqWindow->m_ui->choicePlotTime->clear();
+                m_daqWindow->m_ui->choicePlotTime->addItem("Fit results per chip");
+                m_daqWindow->m_ui->choicePlotTime->addItem("S-curve/gauss per channel");
+                m_daqWindow->m_ui->choicePlotTime->setVisible(true);
+                m_daqWindow->m_ui->choicePlotTime->setEnabled(true);
+                m_daqWindow->m_ui->choicePlotTime->setCurrentIndex(0);
+                m_daqWindow->m_ui->choiceBit->setVisible(false);
+                m_daqWindow->m_ui->choiceBit->setEnabled(false);
+            }
+            else {
+                m_daqWindow->m_ui->choicePlotTime->setVisible(false);
+                m_daqWindow->m_ui->choicePlotTime->setEnabled(false);
+                m_daqWindow->m_ui->choiceBit->setVisible(false);
+                m_daqWindow->m_ui->choiceBit->setEnabled(false);
+            }
+
         }
         else {
-            m_daqWindow->ui->choiceBit->setVisible(false);
-            m_daqWindow->ui->choiceBit->setEnabled(false);
+            AddVMMsToCombobox();
+        }
+
+    }
+    else if(QObject::sender() == m_daqWindow->m_ui->choicePlotTime){
+        if(!m_dataAvailable)
+        {
+            m_daqWindow->m_ui->choicePlotTime->setCurrentIndex(0);
+            return;
+        }
+        if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
+            m_daqWindow->m_ui->choiceBit->clear();
+            if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 1 ) {
+                for(int n=0;n< 8; n++) {
+                    QString txt = QStringLiteral("%1 ns").arg(n*g_clock_period/8.0);
+                    m_daqWindow->m_ui->choiceBit->addItem(txt);
+                }
+            }
+            else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 0 ) {
+                for(int bit=0;bit< m_number_bits; bit++) {
+                    QString txt = QStringLiteral("%1 DAC").arg(m_dac_setting[bit]);
+                    m_daqWindow->m_ui->choiceBit->addItem(txt);
+                }
+            }
+            m_daqWindow->m_ui->choiceBit->setVisible(true);
+            m_daqWindow->m_ui->choiceBit->setEnabled(true);
+        }
+        else {
+            m_daqWindow->m_ui->choiceBit->setVisible(false);
+            m_daqWindow->m_ui->choiceBit->setEnabled(false);
         }
 
         // S-curve (fit per channel)
-        if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() == 4) {
-            m_daqWindow->ui->comboBoxFec->clear();
-            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 0-7"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 8-15"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 16-23"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 24-31"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 32-39"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 40-47"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 48-55"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("CH 56-63"));
-                m_daqWindow->ui->label_vmm->setText("Display Channels");
+        if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() == 5) {
+            m_daqWindow->m_ui->comboBoxFec->clear();
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 0-7"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 8-15"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 16-23"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 24-31"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 32-39"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 40-47"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 48-55"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("CH 56-63"));
+                m_daqWindow->m_ui->label_vmm->setText("Display Channels");
             }
             else {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("selected VMM"));
-                m_daqWindow->ui->label_vmm->setText("Display VMM");
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("selected VMM"));
+                m_daqWindow->m_ui->label_vmm->setText("Display VMM");
             }
         }
-        // ADC and time calib (depending on plot choice)
-        else if(m_daqWindow->ui->comboBoxCalibrationType->currentIndex() <= 1 && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
-            m_daqWindow->ui->comboBoxFec->clear();
-            m_daqWindow->ui->label_vmm->setText("Display Channels");
+        // ADC, time and time walk calib(depending on plot choice)
+        else if(m_daqWindow->m_ui->comboBoxCalibrationType->currentIndex() <= 2 && m_daqWindow->m_ui->choicePlotTime->currentIndex() > 1) {
+            m_daqWindow->m_ui->comboBoxFec->clear();
+            m_daqWindow->m_ui->label_vmm->setText("Display Channels");
             for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 0-7"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 8-15"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 16-23"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 24-31"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 32-39"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 40-47"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 48-55"));
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 56-63"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 0-7"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 8-15"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 16-23"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 24-31"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 32-39"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 40-47"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 48-55"));
+                m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM" + QString::number(vmm) + ", CH 56-63"));
             }
         }
         else {
-            m_daqWindow->ui->comboBoxFec->clear();
-            m_daqWindow->ui->label_vmm->setText("Display VMMs");
-            m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 1-8"));
-            if(m_vmmActs.size() >= 8 )
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 9-16"));
-            }
-            if(m_vmmActs.size() >= 16 )
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 17-24"));
-            }
-            if(m_vmmActs.size() >= 24)
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 25-32"));
-            }
-            if(m_vmmActs.size() >= 32 )
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 33-40"));
-            }
-            if(m_vmmActs.size() >= 40 )
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 41-48"));
-            }
-            if(m_vmmActs.size() >= 48 )
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 49-56"));
-            }
-            if(m_vmmActs.size() >= 56 )
-            {
-                m_daqWindow->ui->comboBoxFec->addItem(QString("VMM 57-64"));
-            }
+            AddVMMsToCombobox();
         }
         //All
 
@@ -392,18 +412,22 @@ void CalibrationModule::calibAndPlotChoices()
 }
 
 
-void CalibrationModule::SaveSettings() {
+
+void CalibrationModule::LoadSettings(QString name) {
+    m_daqWindow->LoadConfig(name);
     m_daqWindow->m_daq.SendAll(false);
-    m_daqWindow->ui->line_configFile->setText("Calib_config");
-    emit m_daqWindow->on_Button_save_clicked();
     QThread::usleep(1000);
-    m_daqWindow->ui->line_configFile->setText("");
-    QThread::usleep(1000);
-    m_daqWindow->LoadConfig("Calib_config");
+    m_daqWindow->m_ui->line_configFile->setText(m_configText);
 }
 
-void CalibrationModule::LoadSettings() {
-    m_daqWindow->LoadConfig("Calib_config");
+
+void CalibrationModule::SaveSettings(QString name) {
+    m_daqWindow->m_daq.SendAll(false);
+    m_configText = m_daqWindow->m_ui->line_configFile->displayText();
+    m_daqWindow->m_ui->line_configFile->setText(name);
+    m_daqWindow->SaveConfig(name);
+    QThread::usleep(1000);
+    m_daqWindow->m_ui->line_configFile->setText(m_configText);
 }
 
 void CalibrationModule::StopDataTaking()
@@ -411,30 +435,36 @@ void CalibrationModule::StopDataTaking()
     std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Stop Data Taking" << std::endl;
     m_start = 0;
     m_end = 0;
-    m_daqWindow->ui->onACQ->setEnabled(true);
-    m_daqWindow->ui->offACQ->setEnabled(true);
-    m_daqWindow->ui->onACQ->setChecked(false);
-    m_daqWindow->ui->offACQ->setEnabled(true);
-    m_daqWindow->ui->Send->setEnabled(true);
-
+    m_daqWindow->m_ui->onACQ->setEnabled(true);
+    m_daqWindow->m_ui->offACQ->setEnabled(true);
+    m_daqWindow->m_ui->onACQ->setChecked(false);
+    m_daqWindow->m_ui->offACQ->setEnabled(true);
+    m_daqWindow->m_ui->Send->setEnabled(true);
     m_daqWindow->m_daq.ACQHandler(false);
+    m_daqWindow->m_ui->offACQ->setStyleSheet("QPushButton { color: red; }");
+    m_daqWindow->m_ui->onACQ->setStyleSheet("QPushButton { color: black; }");
     QThread::msleep(500);
     CloseDAQSocket();
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(false);
+
 }
 void CalibrationModule::StartDataTaking()
 {
-    m_daqWindow->ui->onACQ->setCheckable(true);
-    m_daqWindow->ui->onACQ->setChecked(true);
-    m_daqWindow->ui->offACQ->setChecked(false);
-    m_daqWindow->ui->Send->setEnabled(false);
+    ConnectDAQSocket();
+    m_daqWindow->m_daq.ACQHandler(false);
+    m_daqWindow->m_ui->onACQ->setCheckable(true);
+    m_daqWindow->m_ui->onACQ->setChecked(true);
+    m_daqWindow->m_ui->offACQ->setChecked(false);
+    m_daqWindow->m_ui->Send->setEnabled(false);
 
     m_daqWindow->m_daq.SendAll(false);
     m_daqWindow->m_daq.ACQHandler(true);
 
-    //emit m_daqWindow->ui->onACQ->clicked();
-    QThread::usleep(1000);
-    ConnectDAQSocket();
-    m_daqWindow->ui->pushButtonTakeData->setChecked(true);
+    m_daqWindow->m_ui->offACQ->setStyleSheet("QPushButton { color: black; }");
+    m_daqWindow->m_ui->onACQ->setStyleSheet("QPushButton { color: green; }");
+
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(true);
+
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::LoadMessageHandler(MessageHandler& m)
@@ -452,49 +482,69 @@ int CalibrationModule::GetCalibrationModeIndex(QString mode)
     {
         return 2;
     }
-    if(mode == "Online ADC")
+    else if(mode == "Offline Timewalk (time/ADC)")
     {
         return 3;
     }
-    if(mode == "Online TDC")
+    if(mode == "Online ADC")
     {
         return 4;
     }
-    if(mode == "S-curve")
+    if(mode == "Online TDC")
     {
         return 5;
     }
-    if(mode == "Threshold")
+    if(mode == "S-curve")
     {
         return 6;
     }
-    if(mode == "Pedestal")
+    if(mode == "Threshold")
     {
         return 7;
     }
-    if(mode == "Pulser DAC")
+    if(mode == "Pedestal")
     {
         return 8;
     }
-    if(mode == "Threshold DAC")
+    if(mode == "Pulser DAC")
     {
         return 9;
     }
-    if(mode == "Channels")
+    if(mode == "Threshold DAC")
     {
         return 10;
     }
-    if(mode == "ADC")
+    if(mode == "Reset latency")
     {
         return 11;
     }
-    if(mode == "TDC")
+    if(mode == "TP latency")
     {
         return 12;
     }
+    if(mode == "Channels")
+    {
+        return 20;
+    }
+    if(mode == "ADC")
+    {
+        return 21;
+    }
+    if(mode == "TDC")
+    {
+        return 22;
+    }
     if(mode == "BCID")
     {
-        return 13;
+        return 23;
+    }
+    if(mode == "ADC spectrum")
+    {
+        return 24;
+    }
+    if(mode == "Time distribution")
+    {
+        return 25;
     }
 
 
@@ -507,12 +557,12 @@ bool CalibrationModule::CheckModes()
     {
         return false;
     }
-    if(m_daqWindow->ui->comboBoxFec->currentIndex() == -1) {
-        if(m_daqWindow->ui->comboBoxFec->count() == 0) {
+    if(m_daqWindow->m_ui->comboBoxFec->currentIndex() == -1) {
+        if(m_daqWindow->m_ui->comboBoxFec->count() == 0) {
             return false;
         }
         else {
-            m_daqWindow->ui->comboBoxFec->setCurrentIndex(0);
+            m_daqWindow->m_ui->comboBoxFec->setCurrentIndex(0);
         }
     }
     return true;
@@ -531,7 +581,7 @@ bool CalibrationModule::IsCalibration()
 
 
 void CalibrationModule::FitSCurve() {
-    int fec = m_theFEC-1;
+    int fec = m_theFEC;
     int hybrid = m_theVMM / 2;
     int chip = m_theVMM % 2;
     for(unsigned int ch = 0; ch<64; ch++){
@@ -585,13 +635,14 @@ void CalibrationModule::FitSCurve() {
         }
         if(dataPoints == m_number_bits && startFound && endFound) {
             real_1d_array c;
-            c.setlength(3);
+            c.setlength(4);
 
             c[0] = 10.0;
             double sp_mean = dac_min + 0.5 * abs(dac_max - dac_min);
             double sp_sigma = abs(dac_max - dac_min) / 2.5;
             c[1] = sp_mean;
             c[2] = sp_sigma;
+            c[3] = 0;
 
 
             double epsx = 0.000001;
@@ -622,7 +673,7 @@ void CalibrationModule::FitSCurve() {
             printf("error sigma %f\n", rep.errpar[2]);
             */
 
-                m_fit_error_scale.push_back(rep.errpar[0]);
+            m_fit_error_scale.push_back(rep.errpar[0]);
             m_fit_error_mean.push_back(rep.errpar[1]);
             m_fit_error_sigma.push_back(rep.errpar[2]);
             m_fit_scale.push_back(c[0]);
@@ -631,20 +682,216 @@ void CalibrationModule::FitSCurve() {
 
         }
         else {
-            m_fit_error_scale.push_back(-1);
-            m_fit_error_mean.push_back(-1);
-            m_fit_error_sigma.push_back(-1);
-            m_fit_scale.push_back(-1);
-            m_fit_mean.push_back(-1);
-            m_fit_sigma.push_back(-1);
+            m_fit_error_scale.push_back(-9999.0);
+            m_fit_error_mean.push_back(-9999.0);
+            m_fit_error_sigma.push_back(-9999.0);
+            m_fit_scale.push_back(-9999.0);
+            m_fit_mean.push_back(-9999.0);
+            m_fit_sigma.push_back(-9999.0);
+        }
+    }
+}
+
+void CalibrationModule::FitErrorCurve() {
+    if(m_calibrationArray[m_modeIndex-1] != nullptr)
+    {
+        while(m_calibrationArray[m_modeIndex-1]->count()) {
+            m_calibrationArray[m_modeIndex-1]->pop_back();
+        }
+        delete m_calibrationArray[m_modeIndex-1];
+    }
+    m_calibrationArray[m_modeIndex-1] = new QJsonArray();
+    for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
+        int fec = GetFEC(vmm);
+        int hybrid = GetHybrid(vmm);
+        int chip = GetVMM(vmm);
+
+
+        for(unsigned int ch = 0; ch<64; ch++){
+            real_2d_array x;
+            x.setlength(m_number_bits,1);
+            real_1d_array y;
+            y.setlength(m_number_bits);
+            real_1d_array w;
+            w.setlength(m_number_bits);
+            for(int n=0; n<m_number_bits;n++) {
+                y[n] = 0;
+                w[n] = 0;
+                x[n][0] = 0;
+            }
+
+            double a_param;
+            double b_param;
+            double c_param;
+            double d_param;
+            int valid = 0;
+            for(int bit =0; bit<m_number_bits; bit++){
+                if(m_mean2[bit][fec][hybrid][chip][ch] != -9999.0 && m_mean[bit][fec][hybrid][chip][ch] != -9999.0) {
+                    x[bit][0] =  m_mean2[bit][fec][hybrid][chip][ch];
+                    //Force the time of the middle ADC value to zero
+                    y[bit] =  m_mean[bit][fec][hybrid][chip][ch]-m_mean[(int)(m_number_bits/2)][fec][hybrid][chip][ch];
+                    valid++;
+                }
+            }
+            if(valid == m_number_bits) {
+                real_1d_array c;
+                c.setlength(4);
+
+                c[0] = 30.0;
+                c[1] = 0.0;
+                c[2] = 350;
+                c[3] = -5.0;
+
+                double epsx = 0.000001;
+                ae_int_t maxits = 0;
+                ae_int_t info;
+                lsfitstate state;
+                lsfitreport rep;
+                //lsfitcreatewfg(x, y, w, c, true, state);
+                lsfitcreatefg(x, y, c, true, state);
+
+                lsfitsetcond(state, epsx, maxits);
+                alglib::lsfitfit(state, erfc_function, erfc_grad);
+                //alglib::lsfitfit(state, erfc_function_mirrored, erfc_grad_mirrored);
+                lsfitresults(state, info, c, rep);
+                a_param=c[0];
+                b_param=c[1];
+                c_param=c[2];
+                d_param=c[3];
+                m_fit_a[fec][hybrid][chip].push_back(a_param);
+                m_fit_b[fec][hybrid][chip].push_back(b_param);
+                m_fit_c[fec][hybrid][chip].push_back(c_param);
+                m_fit_d[fec][hybrid][chip].push_back(d_param);
+                m_fit_error_rms[fec][hybrid][chip].push_back(rep.rmserror);
+                m_fit_error_r2[fec][hybrid][chip].push_back(rep.r2);
+            }
+            else {
+                a_param=-9999.0;
+                b_param=-9999.0;
+                c_param=-9999.0;
+                d_param=-9999.0;
+                m_fit_a[fec][hybrid][chip].push_back(a_param);
+                m_fit_b[fec][hybrid][chip].push_back(b_param);
+                m_fit_c[fec][hybrid][chip].push_back(c_param);
+                m_fit_d[fec][hybrid][chip].push_back(d_param);
+                m_fit_error_rms[fec][hybrid][chip].push_back(-9999.0);
+                m_fit_error_r2[fec][hybrid][chip].push_back(-9999.0);
+            }
+
+            QJsonObject calibrationObject;
+            QJsonArray aArray;
+            QJsonArray bArray;
+            QJsonArray cArray;
+            QJsonArray dArray;
+            aArray.push_back(a_param);
+            bArray.push_back(b_param);
+            cArray.push_back(c_param);
+            dArray.push_back(d_param);
+            int fecId = m_fecPosID[fec];
+            calibrationObject.insert("fecID",fecId);
+            calibrationObject.insert("vmmID",hybrid*2+chip);
+            calibrationObject.insert("timewalk_a",aArray);
+            calibrationObject.insert("timewalk_b",bArray);
+            calibrationObject.insert("timewalk_c",cArray);
+            calibrationObject.insert("timewalk_d",dArray);
+            m_calibrationArray[m_modeIndex-1]->push_back(calibrationObject);
         }
     }
 }
 
 
+void CalibrationModule::Fit4PL() {
+    if(m_calibrationArray[m_modeIndex-1] != nullptr)
+    {
+        while(m_calibrationArray[m_modeIndex-1]->count()) {
+            m_calibrationArray[m_modeIndex-1]->pop_back();
+        }
+        delete m_calibrationArray[m_modeIndex-1];
+    }
+    m_calibrationArray[m_modeIndex-1] = new QJsonArray();
+    for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
+        int fec = GetFEC(vmm);
+        int hybrid = GetHybrid(vmm);
+        int chip = GetVMM(vmm);
+
+        QJsonArray aArray;
+        QJsonArray bArray;
+        QJsonArray cArray;
+        QJsonArray dArray;
+
+        for(unsigned int ch = 0; ch<64; ch++){
+            ae_int_t points = m_number_bits;
+            real_1d_array x;
+            x.setlength(points);
+            real_1d_array y;
+            y.setlength(points);
+            real_1d_array v;
+            v.setlength(4);
+            for(int n=0; n<m_number_bits;n++) {
+                y[n] = 0;
+                x[n] = 0;
+            }
+            double a;
+            double b;
+            double c;
+            double d;
+
+            int valid = 0;
+            for(int bit =0; bit<m_number_bits; bit++){
+                if(m_mean2[bit][fec][hybrid][chip][ch] != -9999.0 && m_mean[bit][fec][hybrid][chip][ch] != -9999.0) {
+                    x[bit] =  m_mean2[bit][fec][hybrid][chip][ch];
+                    //Force the time of the middle ADC value to zero
+                    y[bit] =  m_mean[bit][fec][hybrid][chip][ch]-m_mean[(int)(m_number_bits/2)][fec][hybrid][chip][ch];
+                    valid++;
+                }
+            }
+            if(valid == m_number_bits) {
+                lsfitreport rep;
+                logisticfit4(x, y, points, a, b, c, d, rep);
+                //limit the numbers to 3 significant digits
+                a = std::round(1000*a)/1000;
+                b = std::round(1000*b)/1000;
+                c = std::round(1000*c)/1000;
+                d = std::round(1000*d)/1000;
+
+                m_fit_a[fec][hybrid][chip].push_back(a);
+                m_fit_b[fec][hybrid][chip].push_back(b);
+                m_fit_c[fec][hybrid][chip].push_back(c);
+                m_fit_d[fec][hybrid][chip].push_back(d);
+                m_fit_error_rms[fec][hybrid][chip].push_back(rep.rmserror);
+                m_fit_error_r2[fec][hybrid][chip].push_back(rep.r2);
+            }
+            else {
+                a=-9999.0;
+                b=-9999.0;
+                c=-9999.0;
+                d=-9999.0;
+                m_fit_a[fec][hybrid][chip].push_back(a);
+                m_fit_b[fec][hybrid][chip].push_back(b);
+                m_fit_c[fec][hybrid][chip].push_back(c);
+                m_fit_d[fec][hybrid][chip].push_back(d);
+                m_fit_error_rms[fec][hybrid][chip].push_back(-9999.0);
+                m_fit_error_r2[fec][hybrid][chip].push_back(-9999.0);
+            }
+            aArray.push_back(a);
+            bArray.push_back(b);
+            cArray.push_back(c);
+            dArray.push_back(d);
+        }
+        QJsonObject calibrationObject;
+        int fecId = m_fecPosID[fec];
+        calibrationObject.insert("fecID",fecId);
+        calibrationObject.insert("vmmID",hybrid*2+chip);
+        calibrationObject.insert("timewalk_a",aArray);
+        calibrationObject.insert("timewalk_b",bArray);
+        calibrationObject.insert("timewalk_c",cArray);
+        calibrationObject.insert("timewalk_d",dArray);
+        m_calibrationArray[m_modeIndex-1]->push_back(calibrationObject);
+    }
+}
 
 
-void CalibrationModule::FitOfflineCalibrationData()
+void CalibrationModule::FitLinearData()
 {
     if(m_calibrationArray[m_modeIndex-1] != nullptr)
     {
@@ -701,23 +948,27 @@ void CalibrationModule::FitOfflineCalibrationData()
                 //Offline Time
                 else if(m_modeIndex == 2)
                 {
+                    //Y-values: TDC time
                     theMean = m_fit_y[bit][fec][hybrid][chip][ch];
 
-                    int m =  m_fit_start_time[fec][hybrid][chip][ch]/(3.125*TIME_FACTOR);
-                    if(m_fit_start_time[fec][hybrid][chip][ch]/(3.125*TIME_FACTOR) < 0) {
+                    int m =  m_fit_start_time[fec][hybrid][chip][ch]/(g_time_factor);
+                    if(m_fit_start_time[fec][hybrid][chip][ch]/(g_time_factor) < 0) {
                         m = m - 1;
                     }
-                    double firstTime = m*3.125*TIME_FACTOR - m_fit_start_time[fec][hybrid][chip][ch];
-                    theXValue = firstTime + bit*3.125*TIME_FACTOR;
+                    double firstTime = m*g_time_factor - m_fit_start_time[fec][hybrid][chip][ch];
+                    theXValue = firstTime + bit*g_time_factor;
+
 
                 }
-                if(theMean != -9999) {
-                    x.push_back(theXValue);
-                    y.push_back(theMean);
-                    sumX += theXValue;
-                    sumY += theMean;
-                    sumXY += theXValue * theMean;
-                    sumX2 += theXValue * theXValue;
+                if(theMean != -9999.0) {
+                    if(m_modeIndex < 3 || (m_modeIndex == 3 && bit < 3)) {
+                        x.push_back(theXValue);
+                        y.push_back(theMean);
+                        sumX += theXValue;
+                        sumY += theMean;
+                        sumXY += theXValue * theMean;
+                        sumX2 += theXValue * theXValue;
+                    }
                 }
 
             }
@@ -766,41 +1017,34 @@ void CalibrationModule::FitOfflineCalibrationData()
             QJsonObject calibrationObject;
             QJsonArray offsetArray;
             QJsonArray slopeArray;
-            double slope_corr = 1;
-            double mean_offset = 0;
             if(m_modeIndex == 1) {
                 m_dac_slope[fec][hybrid][chip] = mean_slope_perChip[vmm];
                 m_dac_offset[fec][hybrid][chip] = mean_offset_perChip[vmm];
-                if(m_dac_slope[fec][hybrid][chip] > 0) {
-                    slope_corr = 1/m_dac_slope[fec][hybrid][chip];
-                }
-                mean_offset =  m_dac_offset[fec][hybrid][chip];
-            }
-            else if(m_modeIndex == 2) {
-                slope_corr = 1;
-                mean_offset = 0;
+
             }
             for(unsigned int ch = 0; ch<64; ch++){
-                double slope = 0;
+                double slope = 1.0;
                 double offset = 0;
                 //Channel with data
-                if(m_slope[fec][hybrid][chip][ch] != 0.0)
+                if(m_slope[fec][hybrid][chip][ch] != 0)
                 {
                     if(m_modeIndex == 2) {
                         offset =  m_offset[fec][hybrid][chip][ch] - (m_fit_start_time[fec][hybrid][chip][ch])*m_slope[fec][hybrid][chip][ch];
                         slope = 1/m_slope[fec][hybrid][chip][ch];
                     }
-                    else {
+                    else if(m_modeIndex == 1) {
                         offset =  m_offset[fec][hybrid][chip][ch] - m_dac_offset[fec][hybrid][chip]*m_slope[fec][hybrid][chip][ch]/m_dac_slope[fec][hybrid][chip];
                         slope = m_dac_slope[fec][hybrid][chip]/m_slope[fec][hybrid][chip][ch];
                     }
-
                 }
-
                 //limit the numbers to 3 significant digits
                 slope = std::round(1000*slope)/1000;
                 offset = std::round(1000*offset)/1000;
-
+                //If the fit results in strange slope values, do not correct the channel
+                if(slope < 0.5 || slope > 2) {
+                    slope = 1.0;
+                    offset = 0.0;
+                }
                 m_slope[fec][hybrid][chip][ch] = slope;
                 m_offset[fec][hybrid][chip][ch] = offset;
                 slopeArray.push_back(slope);
@@ -813,7 +1057,7 @@ void CalibrationModule::FitOfflineCalibrationData()
                 calibrationObject.insert("adc_offsets",offsetArray);
                 calibrationObject.insert("adc_slopes",slopeArray);
             }
-            else {
+            else if(m_modeIndex == 2) {
                 calibrationObject.insert("time_offsets",offsetArray);
                 calibrationObject.insert("time_slopes",slopeArray);
             }
@@ -874,7 +1118,7 @@ void CalibrationModule::SaveToLog() {
     if( list.count() > 0) {
         m_hybrid_labels.clear();
         for(int n=0; n<list.count();n++) {
-            std::cout << n << " " << list.count() << " " << list[n].toStdString() << std::endl;
+            //std::cout << n << " " << list.count() << " " << list[n].toStdString() << std::endl;
             m_hybrid_labels.push_back(list[n].toStdString());
         }
     }
@@ -896,13 +1140,14 @@ void CalibrationModule::SaveToLog() {
         m_outFile << "date, hybrid_label, hybrid_id, test, gain, peaktime, bcclock, tac, polarity, timing_at_threshold, vmm0 details, vmm0 summary, vmm1 details, vmm1 summary, hybrid\n";
     }
     QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+    std::vector<int> faultyChannels0;
+    std::vector<int> faultyChannels1;
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
 
         fec = GetFEC(vmm);
         hybrid = GetHybrid(vmm);
         chip = GetVMM(vmm);
-        std::vector<int> faultyChannels0;
-        std::vector<int> faultyChannels1;
+
         unsigned long size=0;
         double norm =0;
         double mean=0;
@@ -952,12 +1197,13 @@ void CalibrationModule::SaveToLog() {
             }
         }
         if(chip == 0) {
+            faultyChannels0.clear();
             timing_at_threshold = m_timing_at_thr[fec][hybrid][chip];
             gain = m_gain[fec][hybrid][chip];
             polarity = m_polarity[fec][hybrid][chip];
             peaktime = m_shaping_time[fec][hybrid][chip];
             tac = m_tac_slope[fec][hybrid][chip];
-            bcclock = m_bc_clock[fec][hybrid];
+            bcclock = 1000.0/g_clock_period;
             m_outFile << theDate.toStdString() << "," << m_hybrid_labels[vmm*0.5] << "," << m_hybrid_id[fec][hybrid] << "," << measurementName.toStdString() << "," << gain << "," << peaktime << "," << bcclock  << "," << tac << "," << polarity << "," << timing_at_threshold << ",";
             if(m_modeIndex == 1 || m_modeIndex == 2) {
                 for(int ch = 0; ch<64; ch++){
@@ -988,6 +1234,7 @@ void CalibrationModule::SaveToLog() {
             }
         }
         else {
+            faultyChannels1.clear();
             if(m_modeIndex == 1 || m_modeIndex == 2) {
                 for(int ch = 0; ch<64; ch++){
                     if(m_slope[fec][hybrid][chip][ch] == 0) {
@@ -1004,7 +1251,8 @@ void CalibrationModule::SaveToLog() {
                     }
                     m_outFile << ",vmm1 number bad channels: " << faultyChannels1.size() << ",";
                 }
-                if(faultyChannels0.size() + faultyChannels1.size() == 0) {
+
+                if((faultyChannels0.size() == 0) && (faultyChannels1.size() == 0)) {
                     m_outFile << "ok\n";
                 }
                 else {
@@ -1034,9 +1282,27 @@ void CalibrationModule::SaveToLog() {
 }
 
 
-void CalibrationModule::ApplyCalib() {
-    if(!m_dataAvailable || m_modeIndex > 2 || !IsCalibration() ) return;
-    QString dirStr = QFileDialog::getOpenFileName(nullptr, tr("Select calibration file"), m_daqWindow->GetApplicationPath(), tr("Text (*.json)"));
+void CalibrationModule::ApplyCalib(bool isTimewalk) {
+    if( !IsCalibration() ) return;
+    if( m_modeIndex > 3 ) return;
+    if( (!m_dataAvailable && m_modeIndex <= 2) ) return;
+    QString pathStr = m_daqWindow->GetApplicationPath() + "/../calibs";
+    QString dirStr;
+    if(m_modeIndex==3) {
+        if(isTimewalk) {
+            dirStr = QFileDialog::getOpenFileName(nullptr, tr("Select calibration file with time and ADC calibration"),pathStr, tr("Text (*.json)"));
+        }
+        else {
+            dirStr = QFileDialog::getOpenFileName(nullptr, tr("Select calibration file with time walk calibration"), pathStr, tr("Text (*.json)"));
+        }
+    }
+    else if(m_modeIndex==2) {
+        dirStr = QFileDialog::getOpenFileName(nullptr, tr("Select calibration file with ADC calibration"), pathStr, tr("Text (*.json)"));
+    }
+    else if(m_modeIndex==1) {
+        dirStr = QFileDialog::getOpenFileName(nullptr, tr("Select calibration file with time calibration"), pathStr, tr("Text (*.json)"));
+    }
+
     if(dirStr == "") {
         return;
     }
@@ -1046,7 +1312,12 @@ void CalibrationModule::ApplyCalib() {
     QMessageBox msgBox;
     QPushButton *hybridIDButton = msgBox.addButton(tr("Use hybrid ID"), QMessageBox::ActionRole);
     QPushButton *fecPositionButton = msgBox.addButton(tr("Use mapping (FEC, hybrid)"), QMessageBox::ActionRole);
-    msgBox.setText("Apply stored calibration to data.");
+    if(m_modeIndex==3 && isTimewalk) {
+        msgBox.setText("ADC and time calibration will be used for timewalk calibration.");
+    }
+    else {
+        msgBox.setText("Apply stored calibration to data.");
+    }
     msgBox.setInformativeText("Do you want to apply the calibration using the hybrid ID or the mapping (FEC, hybrid)?");
     msgBox.exec();
     bool useHybridID = false;
@@ -1069,12 +1340,7 @@ void CalibrationModule::ApplyCalib() {
         int hybrid = 0;
         int chip = 0;
         QString hybridID = "";
-        std::vector<double> adc_slopes;
-        std::vector<double> adc_offsets;
-        std::vector<double> time_slopes;
-        std::vector<double> time_offsets;
         const auto& obj = value.toObject();
-        const auto& keys = obj.keys();
         int fecID = obj["fecID"].toInt();
         fec = m_fecIDPos[fecID];
         //std::cout << "FEC ID " << fecID << " " << fec << std::endl;
@@ -1096,43 +1362,317 @@ void CalibrationModule::ApplyCalib() {
             }
         }
 
-
-        std::string m_hybrid_id[FECS_PER_DAQ][HYBRIDS_PER_FEC];
-        //std::cout << "hybrid " << hybrid << " " << chip << std::endl;
-        m_file_slope[fec][hybrid][chip].clear();
-        m_file_offset[fec][hybrid][chip].clear();
-
-        if(m_modeIndex == 1) {
-
+        if(m_modeIndex == 1 || m_modeIndex == 3) {
             auto const & slopes = obj["adc_slopes"].toArray();
             auto const & offsets = obj["adc_offsets"].toArray();
+            if(!slopes.empty() && !offsets.empty()) {
+                m_file_adc_slope[fec][hybrid][chip].clear();
+                m_file_adc_offset[fec][hybrid][chip].clear();
+            }
             for(const auto &val: slopes) {
-                m_file_slope[fec][hybrid][chip].push_back(val.toDouble());
-                //std::cout << "adc slopes " << val.toDouble() << std::endl;
+                m_file_adc_slope[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "adc slopes " << fec << " " << hybrid << " " << chip << " " << val.toDouble() << std::endl;
             }
             for(const auto &val: offsets) {
-                m_file_offset[fec][hybrid][chip].push_back(val.toDouble());
-                //std::cout << "adc offsets " << val.toDouble() << std::endl;
+                m_file_adc_offset[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "adc offsets " << fec << " " << hybrid << " " << chip << " " << val.toDouble() << std::endl;
             }
-
-
         }
-        else if(m_modeIndex == 2) {
+        if(m_modeIndex == 2 || m_modeIndex == 3) {
             auto const & slopes = obj["time_slopes"].toArray();
             auto const & offsets = obj["time_offsets"].toArray();
+            if(!slopes.empty() && !offsets.empty()) {
+                m_file_time_slope[fec][hybrid][chip].clear();
+                m_file_time_offset[fec][hybrid][chip].clear();
+            }
             for(const auto &val: slopes) {
-                m_file_slope[fec][hybrid][chip].push_back(val.toDouble());
-                //std::cout << "time slopes " << val.toDouble() << std::endl;
+                m_file_time_slope[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "time slopes " << fec << " " << hybrid << " " << chip << " " << val.toDouble() << std::endl;
             }
             for(const auto &val: offsets) {
-                m_file_offset[fec][hybrid][chip].push_back(val.toDouble());
-                //std::cout << "time offsets " << val.toDouble() << std::endl;
+                m_file_time_offset[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "time offsets " << fec << " " << hybrid << " " << chip << " " << val.toDouble() << std::endl;
             }
 
+        }
+        if(m_modeIndex == 3 && !isTimewalk) {
+            auto const & arrayA = obj["time_walk_a"].toArray();
+            auto const & arrayB = obj["time_walk_b"].toArray();
+            auto const & arrayC = obj["time_walk_c"].toArray();
+            auto const & arrayD = obj["time_walk_d"].toArray();
+            if(!arrayA.empty() && !arrayB.empty() && !arrayC.empty() && !arrayD.empty()) {
+                m_file_timewalk_a[fec][hybrid][chip].clear();
+                m_file_timewalk_b[fec][hybrid][chip].clear();
+                m_file_timewalk_c[fec][hybrid][chip].clear();
+                m_file_timewalk_d[fec][hybrid][chip].clear();
+            }
+            for(const auto &val: arrayA) {
+                m_file_timewalk_a[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "timewalk a " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: arrayB) {
+                m_file_timewalk_b[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "timewalk b " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: arrayC) {
+                m_file_timewalk_c[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "timewalk c " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: arrayD) {
+                m_file_timewalk_d[fec][hybrid][chip].push_back(val.toDouble());
+                //std::cout << "timewalk d " << val.toDouble() << std::endl;
+            }
         }
 
     }
     PlotData();
+}
+
+
+void CalibrationModule::WriteSystemConfig() {
+    bool ok;
+    QString theName = QInputDialog::getText(nullptr, tr("Create system configuration file (mapping of hybrids).."),
+                                            tr("Below please state the name for the system calibration file"),
+                                            QLineEdit::Normal,"hybrid_mapping",&ok);
+    QString theDirectory = CreateDir("calibs", "");
+    QString theTime = QDateTime::currentDateTime().toString("hhmmss");
+
+    QJsonObject globalObject;
+    QJsonArray calibrationArray;
+
+    for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
+        if (m_daqWindow->m_daq.GetFEC(fec)){
+            int fecID = m_fecPosID[fec];
+            for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
+                QJsonObject calibrationObject;
+                QJsonArray adcOffsetArray;
+                QJsonArray adcSlopeArray;
+                if(m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hyb)) {
+                    std::string hybridID = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].GetInfo("hybrid_id");
+                    for(int n=0; n<2;n++) {
+                        calibrationObject.insert("hybridID",QString::fromStdString(hybridID));
+                        calibrationObject.insert("fecID",fecID);
+                        calibrationObject.insert("vmmID",n);
+                        calibrationArray.push_back(calibrationObject);
+                    }
+                }
+            }
+        }
+    }
+    theName = theDirectory + "/" + theName + "_" + theTime + ".json";
+
+    QFile jsonFile(theName);
+    jsonFile.open(QFile::WriteOnly);
+
+    globalObject.insert("hybrid_mapping",calibrationArray);
+    QJsonDocument document(globalObject);
+    jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
+    jsonFile.close();
+}
+
+
+void CalibrationModule::JoinCalib() {
+    QString pathStr = m_daqWindow->GetApplicationPath() + "/../calibs";
+    bool ok;
+    QString theName = QInputDialog::getText(nullptr, tr("Join JSON calibration files.."),
+                                            tr("To create a joined calibration file, select the individual calibration files in this order:\n"
+                                               "\t1. ADC calibration\n"
+                                               "\t2. Time calibration\n"
+                                               "\t3. Time-walk calibration\n"
+                                               "If you do not want to add a particular calibration, just press cancel in the file dialog\n\n"
+                                               "Below please state the name for the new joined calibration file"),
+                                            QLineEdit::Normal,"joined_calib",&ok);
+
+    QString dirStrADC = QFileDialog::getOpenFileName(nullptr, tr("Select ADC calibration file"), pathStr, tr("Text (*.json)"));
+    QString dirStrTime = QFileDialog::getOpenFileName(nullptr, tr("Select time calibration file"),pathStr, tr("Text (*.json)"));
+    QString dirStrTimewalk = QFileDialog::getOpenFileName(nullptr, tr("Select time walk calibration file"), pathStr, tr("Text (*.json)"));
+
+    QJsonObject newGlobalObject;
+    QJsonArray newCalibrationArray;
+
+    if(dirStrADC != "") {
+        QFile file;
+        file.setFileName(dirStrADC);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString val = file.readAll();
+        file.close();
+        QJsonDocument oldDoc = QJsonDocument::fromJson(val.toUtf8());
+
+        QJsonObject oldJsonObject = oldDoc.object();
+        QJsonArray oldJsonArray = oldJsonObject["vmm_calibration"].toArray();
+
+        foreach (const QJsonValue & value, oldJsonArray) {
+            QJsonObject newCalibrationObject;
+            QJsonArray newAdcOffsetArray;
+            QJsonArray newAdcSlopeArray;
+
+
+            int fec = 0;
+            int hybrid = 0;
+            int chip = 0;
+            QString hybridID = "";
+            const auto& obj = value.toObject();
+            int fecID = obj["fecID"].toInt();
+            fec = m_fecIDPos[fecID];
+            //std::cout << "FEC ID " << fecID << " " << fec << std::endl;
+
+            hybridID = obj["hybridID"].toString();
+            //std::cout << "hybridID " << hybridID.toStdString() << std::endl;
+
+            chip = obj["vmmID"].toInt()%2;
+            hybrid = obj["vmmID"].toInt()/2;
+
+            auto const & slopes = obj["adc_slopes"].toArray();
+            auto const & offsets = obj["adc_offsets"].toArray();
+            for(const auto &val: slopes) {
+                newAdcSlopeArray.push_back(val.toDouble());
+                //std::cout << "adc slopes " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: offsets) {
+                newAdcOffsetArray.push_back(val.toDouble());
+                //std::cout << "adc offsets " << val.toDouble() << std::endl;
+            }
+            if(!newAdcSlopeArray.empty() && !newAdcOffsetArray.empty()) {
+                newCalibrationObject.insert("fecID",fecID);
+                newCalibrationObject.insert("hybridID",hybridID);
+                newCalibrationObject.insert("vmmID",hybrid*2+chip);
+                newCalibrationObject.insert("adc_slopes",newAdcSlopeArray);
+                newCalibrationObject.insert("adc_offsets",newAdcOffsetArray);
+                newCalibrationArray.push_back(newCalibrationObject);
+            }
+        }
+    }
+
+    if(dirStrTime != "") {
+        QFile file;
+        file.setFileName(dirStrTime);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString val = file.readAll();
+        file.close();
+        QJsonDocument oldDoc = QJsonDocument::fromJson(val.toUtf8());
+
+        QJsonObject oldJsonObject = oldDoc.object();
+        QJsonArray oldJsonArray = oldJsonObject["vmm_calibration"].toArray();
+
+        foreach (const QJsonValue & value, oldJsonArray) {
+            QJsonObject newCalibrationObject;
+            QJsonArray newTimeOffsetArray;
+            QJsonArray newTimeSlopeArray;
+
+            int fec = 0;
+            int hybrid = 0;
+            int chip = 0;
+            QString hybridID = "";
+            const auto& obj = value.toObject();
+            int fecID = obj["fecID"].toInt();
+            fec = m_fecIDPos[fecID];
+            //std::cout << "FEC ID " << fecID << " " << fec << std::endl;
+
+            hybridID = obj["hybridID"].toString();
+            //std::cout << "hybridID " << hybridID.toStdString() << std::endl;
+
+            chip = obj["vmmID"].toInt()%2;
+            hybrid = obj["vmmID"].toInt()/2;
+
+            auto const & slopes = obj["time_slopes"].toArray();
+            auto const & offsets = obj["time_offsets"].toArray();
+            for(const auto &val: slopes) {
+                newTimeSlopeArray.push_back(val.toDouble());
+                //std::cout << "adc slopes " << val.toDouble() << std::endl;
+            }
+            for(const auto &val: offsets) {
+                newTimeOffsetArray.push_back(val.toDouble());
+                //std::cout << "adc offsets " << val.toDouble() << std::endl;
+            }
+            if(!newTimeSlopeArray.empty() && !newTimeOffsetArray.empty()) {
+                newCalibrationObject.insert("fecID",fecID);
+                newCalibrationObject.insert("hybridID",hybridID);
+                newCalibrationObject.insert("vmmID",hybrid*2+chip);
+                newCalibrationObject.insert("time_slopes",newTimeSlopeArray);
+                newCalibrationObject.insert("time_offsets",newTimeOffsetArray);
+                newCalibrationArray.push_back(newCalibrationObject);
+            }
+        }
+    }
+
+    if(dirStrTimewalk != "") {
+        QFile file;
+        file.setFileName(dirStrTimewalk);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString val = file.readAll();
+        file.close();
+        QJsonDocument oldDoc = QJsonDocument::fromJson(val.toUtf8());
+
+        QJsonObject oldJsonObject = oldDoc.object();
+        QJsonArray oldJsonArray = oldJsonObject["vmm_calibration"].toArray();
+
+        foreach (const QJsonValue & value, oldJsonArray) {
+            QJsonObject newCalibrationObject;
+            QJsonArray newTimewalkA_Array;
+            QJsonArray newTimewalkB_Array;
+            QJsonArray newTimewalkC_Array;
+            QJsonArray newTimewalkD_Array;
+
+            int fec = 0;
+            int hybrid = 0;
+            int chip = 0;
+            QString hybridID = "";
+            const auto& obj = value.toObject();
+            int fecID = obj["fecID"].toInt();
+            fec = m_fecIDPos[fecID];
+            //std::cout << "FEC ID " << fecId << " " << fec << std::endl;
+
+            hybridID = obj["hybridID"].toString();
+            //std::cout << "hybridID " << hybridID.toStdString() << std::endl;
+
+            chip = obj["vmmID"].toInt()%2;
+            hybrid = obj["vmmID"].toInt()/2;
+            //std::cout << "hybrid " << hybrid << " " << chip << std::endl;
+
+            auto const & arrayA = obj["time_walk_a"].toArray();
+            auto const & arrayB = obj["time_walk_b"].toArray();
+            auto const & arrayC = obj["time_walk_c"].toArray();
+            auto const & arrayD = obj["time_walk_d"].toArray();
+
+
+            for(const auto &val: arrayA) {
+                newTimewalkA_Array.push_back(val.toDouble());
+            }
+            for(const auto &val: arrayB) {
+                newTimewalkB_Array.push_back(val.toDouble());
+            }
+            for(const auto &val: arrayC) {
+                newTimewalkC_Array.push_back(val.toDouble());
+            }
+            for(const auto &val: arrayD) {
+                newTimewalkD_Array.push_back(val.toDouble());
+            }
+            if(!newTimewalkA_Array.empty() && !newTimewalkB_Array.empty() && !newTimewalkC_Array.empty() && !newTimewalkD_Array.empty()) {
+                newCalibrationObject.insert("fecID",fecID);
+                newCalibrationObject.insert("hybridID",hybridID);
+                newCalibrationObject.insert("vmmID",hybrid*2+chip);
+                newCalibrationObject.insert("time_walk_a",newTimewalkA_Array);
+                newCalibrationObject.insert("time_walk_b",newTimewalkB_Array);
+                newCalibrationObject.insert("time_walk_c",newTimewalkC_Array);
+                newCalibrationObject.insert("time_walk_d",newTimewalkD_Array);
+                newCalibrationArray.push_back(newCalibrationObject);
+            }
+        }
+    }
+
+    if(!newCalibrationArray.empty()) {
+        QString theDirectory = CreateDir("calibs", "");
+        QString theTime = QDateTime::currentDateTime().toString("hhmmss");
+        theName = theDirectory + "/" + theName + "_" + theTime + ".json";
+
+        QFile jsonFile(theName);
+        jsonFile.open(QFile::WriteOnly);
+
+        newGlobalObject.insert("vmm_calibration",newCalibrationArray);
+        QJsonDocument document(newGlobalObject);
+        jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
+        jsonFile.close();
+    }
 }
 
 
@@ -1148,25 +1688,39 @@ void CalibrationModule::SaveDataAsCSV() {
     int hybrid = 0;
     int chip = 0;
     QString name = "";
-    if(m_modeIndex == 5) {
-        fec = m_theFEC-1;
+    if(m_modeIndex == 6) {
+        fec = m_theFEC;
+        int fecId = m_fecPosID[m_theFEC];
         hybrid = m_theVMM / 2;
         chip = m_theVMM % 2;
         std::string hybridID = m_hybrid_id[fec][hybrid];
-        name = "S-curve";
+        QString theName = "S-curve";
+        QString theFitName = "Fit_S-curve";
         timing_at_threshold = m_timing_at_thr[fec][hybrid][chip];
         gain = m_gain[fec][hybrid][chip];
         polarity = m_polarity[fec][hybrid][chip];
         peaktime = m_shaping_time[fec][hybrid][chip];
         tac = m_tac_slope[fec][hybrid][chip];
-        bcclock = m_bc_clock[fec][hybrid];
-        QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
+        bcclock = 1000.0/g_clock_period;
+
+        QString theSettings = CreateFileName(polarity,gain,peaktime,tac);
+        QString theDirectory = CreateDir("data", theSettings);
+
+        QString theTime = QDateTime::currentDateTime().toString("hhmmss");
+
         if(m_scan_type == 0) {
-            theName += "scanned_threshold.csv";
+            theName += "scanned_threshold";
+            theFitName += "scanned_threshold";
         }
         else {
-            theName += "scanned_pulser.csv";
+            theName += "scanned_pulser";
+            theFitName += "scanned_pulser";
         }
+        theName = theName + "_" + theTime + ".csv";
+        theFitName = theFitName + "_" + theTime + ".csv";
+
+        theName = theDirectory + "/" + theName;
+        theFitName = theDirectory + "/" + theFitName;
         if(m_outFile.is_open())
         {
             m_outFile.close();
@@ -1180,74 +1734,77 @@ void CalibrationModule::SaveDataAsCSV() {
                     rate = m_channel_y[ch][bit]/(1000*m_time[bit]);
                 }
                 if(m_scan_type == 0) {
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_pulser_dac << "," << m_pulser_mV << "," << m_dac_setting[bit] << ","
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_pulser_dac << "," << m_pulser_mV << "," << m_dac_setting[bit] << ","
                               << m_dac_measured[fec][hybrid][chip][bit] << "," << m_time[bit] << "," << m_channel_y[ch][bit] << "," <<rate << "\n" ;
                 }
                 else {
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << "," << m_dac_measured[fec][hybrid][chip][bit] << "," << m_threshold_dac << ","
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << "," << m_dac_measured[fec][hybrid][chip][bit] << "," << m_threshold_dac << ","
                               << m_threshold_mV << "," << m_time[bit] << "," << m_channel_y[ch][bit] << "," <<rate << "\n" ;
                 }
             }
         }
         m_outFile.close();
-        theName = "FIT_" + theName;
-        m_outFile.open(theName.toStdString().c_str(), std::ofstream::out);
+        m_outFile.open(theFitName.toStdString().c_str(), std::ofstream::out);
         m_outFile << "hybrid_id, fec,vmm,ch,fit scale, error scale, fit mean, error mean, fit sigma, error sigma\n";
         for(unsigned int ch = 0; ch<64; ch++){
-            m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_fit_scale[ch] << "," <<  m_fit_error_scale[ch] << "," <<  m_fit_mean[ch] << ","
+            m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_fit_scale[ch] << "," <<  m_fit_error_scale[ch] << "," <<  m_fit_mean[ch] << ","
                       <<  m_fit_error_mean[ch] << "," <<  m_fit_sigma[ch] << "," << m_fit_error_sigma[ch] << "\n" ;
         }
         m_outFile.close();
     }
     else {
-        QString name = "";
+        QString theName = "";
         if(m_modeIndex == 1)
         {
-            name = "Offline_ADC";
+            theName = "Offline_ADC";
         }
         else if(m_modeIndex == 2)
         {
-            name = "Offline_Time";
+            theName = "Offline_Time";
         }
         else if(m_modeIndex == 3)
         {
-            name = "Online_ADC";
+            theName = "Online_Timewalk";
         }
         else if(m_modeIndex == 4)
         {
-            name = "Online_TDC";
+            theName = "Online_ADC";
         }
-        else if(m_modeIndex == 6)
+        else if(m_modeIndex == 5)
         {
-            name = "Threshold";
+            theName = "Online_TDC";
         }
         else if(m_modeIndex == 7)
         {
-            name = "Pedestal";
+            theName = "Threshold";
         }
         else if(m_modeIndex == 8)
         {
-            name = "Pulser_DAC";
+            theName = "Pedestal";
         }
         else if(m_modeIndex == 9)
         {
-            name = "Threshold_DAC";
+            theName = "Pulser_DAC";
         }
         else if(m_modeIndex == 10)
         {
-            name = "Counts_Channels";
+            theName = "Threshold_DAC";
         }
-        else if(m_modeIndex == 11)
+        else if(m_modeIndex == 20)
         {
-            name = "Mean_ADC";
+            theName = "Counts_Channels";
         }
-        else if(m_modeIndex == 12)
+        else if(m_modeIndex == 21)
         {
-            name = "Mean_TDC";
+            theName = "Mean_ADC";
         }
-        else if(m_modeIndex == 13)
+        else if(m_modeIndex == 22)
         {
-            name = "Mean_BCID";
+            theName = "Mean_TDC";
+        }
+        else if(m_modeIndex == 23)
+        {
+            theName = "Mean_BCID";
         }
         fec = GetFEC(0);
         hybrid = GetHybrid(0);
@@ -1258,10 +1815,21 @@ void CalibrationModule::SaveDataAsCSV() {
         polarity = m_polarity[fec][hybrid][chip];
         peaktime = m_shaping_time[fec][hybrid][chip];
         tac = m_tac_slope[fec][hybrid][chip];
-        bcclock = m_bc_clock[fec][hybrid];
+        int dac = m_pulser_dac;
+        int srat = m_timing_at_thr[fec][hybrid][chip];
 
-        QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
-        theName += ".csv";
+        if(m_modeIndex != 2) {
+            srat = -1;
+            dac = -1;
+        }
+
+
+        QString theSettings = CreateFileName(polarity,gain,peaktime,tac,dac);
+        QString theDirectory = CreateDir("data", theSettings);
+        QString theTime = QDateTime::currentDateTime().toString("hhmmss");
+        theName = theName + "_" + theTime + ".csv";
+        theName = theDirectory + "/" + theName;
+
 
         if(m_outFile.is_open())
         {
@@ -1274,8 +1842,7 @@ void CalibrationModule::SaveDataAsCSV() {
             hybrid = GetHybrid(vmm);
             chip = GetVMM(vmm);
             std::string hybridID = m_hybrid_id[fec][hybrid];
-
-
+            int fecId = m_fecPosID[fec];
             if(m_modeIndex == 1)
             {
                 //<< cnt << "," << std::setprecision(6) << rate<< std::endl;
@@ -1283,9 +1850,9 @@ void CalibrationModule::SaveDataAsCSV() {
                 for(int ch = 0; ch<64; ch++){
 
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << ","
+                        m_outFile << hybridID << "," << fecId << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << ","
                                   << m_mean[bit][fec][hybrid][chip][ch] << "," << m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch]
-                                  << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
+                                     << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
             }
@@ -1304,21 +1871,21 @@ void CalibrationModule::SaveDataAsCSV() {
 
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit*3.125*TIME_FACTOR << ","  <<
-                            m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch] << ",";
+                        m_outFile << hybridID << "," << fecId << "," << hybrid*2+chip << "," << ch  << "," << bit*g_time_factor << ","  <<
+                                     m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch] << ",";
                         double theTotalTime = 0;
                         int bcid = m_fit_start_bcid[fec][hybrid][chip][ch];
                         int z = 0;
                         for(int n=0; n<NUM_BCID; n++) {
-                            m_outFile << m_most_common_BCID+bcid+n << ",";
+                            m_outFile << m_reference_BCID+bcid+n << ",";
                             m_outFile << m_percent_bcid[n][bit][fec][hybrid][chip][ch] << ",";
-                            m_outFile << (bcid+n)*m_bc_period[fec][hybrid] << ",";
+                            m_outFile << (bcid+n)*g_clock_period << ",";
 
 
-                            if(m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] != -9999) {
+                            if(m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] != -9999.0) {
                                 m_outFile << m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] << ",";
                                 m_outFile << (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch] << ",";
-                                theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*m_bc_period[fec][hybrid] + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch]);
+                                theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*g_clock_period + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch]);
                                 z++;
                             }
                             else {
@@ -1327,7 +1894,7 @@ void CalibrationModule::SaveDataAsCSV() {
                             }
                         }
                         if(z==0) {
-                            theTotalTime = -9999;
+                            theTotalTime = -9999.0;
                         }
 
                         m_outFile << m_mean[bit][fec][hybrid][chip][ch] << "," << theTotalTime << "\n" ;
@@ -1337,32 +1904,85 @@ void CalibrationModule::SaveDataAsCSV() {
             }
             else if(m_modeIndex == 3)
             {
-                m_outFile << "hybrid_id, fec,vmm,ch, ADC correction [mV], ADC, calibrated value, , best common value\n";
+                m_outFile << "hybrid_id, fec,vmm,ch,";
+                m_outFile << "pulser_dac_setting,pulser_dac_measured,adc_measured,time_measured,";
+                m_outFile << "adc_correction_slope,adc_correction_offset,time_correction_slope,time_correction_offset,";
+                m_outFile << "timewalk_correction_a,timewalk_correction_b,timewalk_correction_c,timewalk_correction_d,fit r2, fit rms\n";
+
+                bool hasFileADC = false;
+                if(m_file_adc_slope[fec][hybrid][vmm].size() == 64 && m_file_adc_offset[fec][hybrid][vmm].size() == 64 ) {
+                    hasFileADC = true;
+                }
+                bool hasFileTime = false;
+                if(m_file_time_slope[fec][hybrid][vmm].size() == 64 && m_file_time_offset[fec][hybrid][vmm].size() == 64 ) {
+                    hasFileTime = true;
+                }
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                        double a = 0;
+                        double b = 1;
+                        double c = 1;
+                        double d = 0;
+                        if(m_fit_a[fec][hybrid][chip][ch] > -9999.0) {
+                            a = m_fit_a[fec][hybrid][chip][ch];
+                        }
+                        if(m_fit_b[fec][hybrid][chip][ch] > -9999.0) {
+                            b = m_fit_b[fec][hybrid][chip][ch];
+                        }
+                        if(m_fit_c[fec][hybrid][chip][ch] > -9999.0) {
+                            c = m_fit_c[fec][hybrid][chip][ch];
+                        }
+                        if(m_fit_d[fec][hybrid][chip][ch] > -9999.0) {
+                            d = m_fit_d[fec][hybrid][chip][ch];
+                        }
+                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << ",";
+                        m_outFile << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << "," << m_mean2[bit][fec][hybrid][chip][ch] << ","  << m_mean[bit][fec][hybrid][chip][ch] << ",";
+                        if(hasFileADC) {
+                            m_outFile << m_file_adc_slope[fec][hybrid][chip][ch] << ","  << m_file_adc_offset[fec][hybrid][chip][ch] << ",";
+                        }
+                        else {
+                            m_outFile << ",,";
+                        }
+                        if(hasFileTime) {
+                            m_outFile << m_file_time_slope[fec][hybrid][chip][ch] << ","  << m_file_time_offset[fec][hybrid][chip][ch] << ",";
+                        }
+                        else {
+                            m_outFile << ",,";
+                        }
+                        m_outFile << a << ","  << b << "," << c << ","  << d << ",";
+                        m_outFile << m_fit_error_r2[fec][hybrid][chip][ch] << ","  << m_fit_error_rms[fec][hybrid][chip][ch] << "\n";
                     }
                 }
 
             }
             else if(m_modeIndex == 4)
             {
+                m_outFile << "hybrid_id, fec,vmm,ch, ADC correction [mV], ADC, calibrated value, , best common value\n";
+                for(int ch = 0; ch<64; ch++){
+                    for(int bit=0; bit<m_number_bits;bit++){
+                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                    }
+                }
+
+            }
+            else if(m_modeIndex == 5)
+            {
                 m_outFile << "hybrid_id, fec,vmm,ch, TDC correction [mV], TDC, calibrated value, best common value\n";
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
             }
 
-            else if(m_modeIndex == 6)
+            else if(m_modeIndex == 7)
             {
                 name = "Threshold";
                 if(m_isThresholdCalibration) {
                     m_outFile << "hybrid_id, fec,vmm,ch, threshold correction [mV], threshold [mV], calibrated correction [mV], calibrated threshold [mV], best common value [mV]\n";
                     for(int ch = 0; ch<64; ch++){
                         for(int bit=0; bit<m_number_bits;bit++){
-                            m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_bitVal[fec][hybrid][chip][ch] << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                            m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_bitVal[fec][hybrid][chip][ch] << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
                         }
                     }
 
@@ -1370,58 +1990,58 @@ void CalibrationModule::SaveDataAsCSV() {
                 else {
                     m_outFile << "hybrid_id, fec,vmm,ch, threshold [mV]\n";
                     for(int ch = 0; ch<64; ch++){
-                        m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
 
             }
-            else if(m_modeIndex == 7)
+            else if(m_modeIndex == 8)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, pedestal [mV]\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
-                }
-            }
-            else if(m_modeIndex == 8)
-            {
-                m_outFile << "hybrid_id, fec,vmm, pulser dac setting, pulser dac measured\n";
-                for(int n=0; n<m_dac_setting.size();n++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
+                    m_outFile << hybridID << "," << fecId << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
             else if(m_modeIndex == 9)
             {
-                m_outFile << "hybrid_id, fec,vmm, threshold dac setting, threshold dac measured\n";
+                m_outFile << "hybrid_id, fec,vmm, pulser dac setting, pulser dac measured\n";
                 for(int n=0; n<m_dac_setting.size();n++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
                 }
             }
             else if(m_modeIndex == 10)
             {
-                m_outFile << "hybrid_id, fec,vmm,ch, cnt\n";
-                for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                m_outFile << "hybrid_id, fec,vmm, threshold dac setting, threshold dac measured\n";
+                for(int n=0; n<m_dac_setting.size();n++){
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
                 }
             }
-            else if(m_modeIndex == 11)
+            else if(m_modeIndex == 20)
+            {
+                m_outFile << "hybrid_id, fec,vmm,ch, cnt\n";
+                for(int ch = 0; ch<64; ch++){
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                }
+            }
+            else if(m_modeIndex == 21)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, mean ADC\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
-            else if(m_modeIndex == 12)
+            else if(m_modeIndex == 22)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, mean TDC\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
-            else if(m_modeIndex == 13)
+            else if(m_modeIndex == 23)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, mean BCID\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fec+1  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
         }
@@ -1438,32 +2058,50 @@ void CalibrationModule::SavePlotsAsPDF(){
     double tac = 0;
     double bcclock = 0;
     int timing_at_threshold = 0;
-    int theChoice =  m_daqWindow->ui->comboBoxFec->currentIndex();
-    int start = theChoice * 8;
-    int end = (theChoice +1)*8;
+
+    unsigned long theChoice =  static_cast<unsigned long>(m_daqWindow->m_ui->comboBoxFec->currentIndex());
+    unsigned long start = theChoice * 8;
+    unsigned long end = (theChoice +1)*8;
     unsigned long limit = 0;
     //S-curve
-    if(m_modeIndex == 5) {
-        limit = 64;
+    if(m_modeIndex == 6) {
+        if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1 ) {
+            limit = 64;
+        }
+        else {
+            limit = 2;
+        }
+    }
+    else if((m_modeIndex == 1  || m_modeIndex == 2 || m_modeIndex == 3) && m_daqWindow->m_ui->choicePlotTime->currentIndex() > 1) {
+        limit = 64*m_vmmActs.size();
+    }
+    else if(m_modeIndex == 11  || m_modeIndex == 12) {
+        limit = 1;
     }
     else {
         limit = m_vmmActs.size();
     }
-    for(int idx=start; idx< static_cast<int>(limit)&& idx <end; idx++){
+    for(unsigned long idx=start; idx<limit && idx <end; idx++){
         int fec = 0;
         int hybrid = 0;
         int chip = 0;
 
-        if(m_modeIndex == 5) {
-            fec = m_theFEC-1;
+        if((m_modeIndex == 1  || m_modeIndex == 2 || m_modeIndex == 3) && m_daqWindow->m_ui->choicePlotTime->currentIndex() > 1) {
+            fec = GetFEC(static_cast<int>(idx/64));
+            hybrid = GetHybrid(static_cast<int>(idx/64));
+            chip = GetVMM(static_cast<int>(idx/64));
+        }
+        else if(m_modeIndex != 6) {
+            fec = GetFEC(static_cast<int>(idx));
+            hybrid = GetHybrid(static_cast<int>(idx));
+            chip = GetVMM(static_cast<int>(idx));
+        }
+        else {
+            fec = m_theFEC;
             hybrid = m_theVMM / 2;
             chip = m_theVMM % 2;
         }
-        else {
-            fec = GetFEC(idx);
-            hybrid = GetHybrid(idx);
-            chip = GetVMM(idx);
-        }
+        int fecId = m_fecPosID[fec];
         if(idx==start)
         {
             timing_at_threshold = m_timing_at_thr[fec][hybrid][chip];
@@ -1471,7 +2109,7 @@ void CalibrationModule::SavePlotsAsPDF(){
             polarity = m_polarity[fec][hybrid][chip];
             peaktime = m_shaping_time[fec][hybrid][chip];
             tac = m_tac_slope[fec][hybrid][chip];
-            bcclock = m_bc_clock[fec][hybrid];
+            bcclock = 1000.0/g_clock_period;
         }
         QCustomPlot *plot = plotVector[idx%8];
         QString name = "";
@@ -1479,132 +2117,218 @@ void CalibrationModule::SavePlotsAsPDF(){
         if(m_modeIndex == 1)
         {
             name = "Offline_ADC";
-            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
                 name+= "_corrections";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
                 name+= "_fit_CH" + QString::number(idx);
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                name+= "_hist_CH" + QString::number(idx) + "_DAC" + QString::number(m_dac_measured[fec][hybrid][chip][m_daqWindow->ui->choiceBit->currentIndex()]);
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
+                name+= "_hist_CH" + QString::number(idx) + "_DAC" + QString::number(m_dac_measured[fec][hybrid][chip][m_daqWindow->m_ui->choiceBit->currentIndex()]);
             }
         }
         else if(m_modeIndex == 2)
         {
             name = "Offline_Time";
-            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
                 name+= "_corrections";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
                 name+= "_fit_CH" + QString::number(idx);
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                name+= "_hist_CH" + QString::number(idx) + "_" + QString::number(3.125*TIME_FACTOR*m_daqWindow->ui->choiceBit->currentIndex()) +"ns";
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
+                name+= "_hist_CH" + QString::number(idx) + "_" + QString::number(g_time_factor*m_daqWindow->m_ui->choiceBit->currentIndex()) +"ns";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 4) {
                 name+= "_bcid_percent_CH" + QString::number(idx);
             }
         }
         else if(m_modeIndex == 3)
         {
-            name = "Online_ADC";
+            name = "Timewalk";
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                name+= "_corrections";
+            }
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
+                name+= "_fit_CH" + QString::number(idx);
+            }
         }
         else if(m_modeIndex == 4)
         {
-            name = "Online_TDC";
+            name = "Online_ADC";
         }
         else if(m_modeIndex == 5)
         {
-            name = "S-curve_CH" + QString::number(idx);
+            name = "Online_TDC";
         }
         else if(m_modeIndex == 6)
         {
-            name = "Threshold";
+            name = "S-curve_CH" + QString::number(idx);
         }
         else if(m_modeIndex == 7)
         {
-            name = "Pedestal";
+            name = "Threshold";
         }
         else if(m_modeIndex == 8)
         {
-            name = "Pulser_DAC";
+            name = "Pedestal";
         }
         else if(m_modeIndex == 9)
         {
-            name = "Threshold_DAC";
+            name = "Pulser_DAC";
         }
         else if(m_modeIndex == 10)
         {
+            name = "Threshold_DAC";
+        }
+        else if(m_modeIndex == 20)
+        {
             name = "Counts_Channels";
         }
-        else if(m_modeIndex == 11)
+        else if(m_modeIndex == 21)
         {
             name = "Mean_ADC";
         }
-        else if(m_modeIndex == 12)
+        else if(m_modeIndex == 22)
         {
             name = "Mean_TDC";
         }
-        else if(m_modeIndex == 13)
+        else if(m_modeIndex == 23)
         {
             name = "Mean_BCID";
         }
 
-        if(m_modeIndex == 5) {
-            name += "_FEC" + QString::number(m_theFEC);
+        name += "_" +  QString::fromStdString(g_card_name) + QString::number(fec)+ "_IP" + QString::number(fecId);
+        if(m_modeIndex == 6) {
             name += "_VMM" + QString::number(m_theVMM);
         }
         else {
-            name += "_FEC" + QString::number(fec+1);
             name += "_VMM" + QString::number(hybrid*2+chip);
         }
+        int dac = m_pulser_dac;
+        int srat = m_timing_at_thr[fec][hybrid][chip];
 
-        QString theName = CreateFileName(name,polarity,gain,peaktime,tac,bcclock);
-        theName += ".pdf";
-        plot->savePdf(theName);
+        if(m_modeIndex != 2) {
+            srat = -1;
+            dac = -1;
+        }
+        QString theSettings = CreateFileName(polarity,gain,peaktime,tac,dac);
+        QString theDirectory = CreateDir("plots", theSettings);
+        QString theTime = QDateTime::currentDateTime().toString("hhmmss");
+        if(m_modeIndex == 11 || m_modeIndex == 12) {
+            if(m_modeIndex == 11)
+            {
+                name = "ResetLatency";
+            }
+            else if(m_modeIndex == 12)
+            {
+                name = "TPLatency";
+            }
+            name = theDirectory + "/" + name + "_" + theTime + ".pdf";
+        }
+        else {
+            name = theDirectory + "/" + name + "_" + theTime + ".pdf";
+        }
+
+
+        plot->savePdf(name);
     }
 }
 
+QString CalibrationModule::CreateDir(QString type, QString name) {
+    std::string fname = m_daqWindow->GetApplicationPath().toStdString();
+    fname+="/../";
+    fname += type.toStdString();
+    //make directory for Plots, Data or Calib
+    QDir dirType(QString::fromStdString(fname));
+    if (!dirType.exists()) {
+        dirType.mkpath(".");
+    }
+    QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd");
+    fname += "/";
+    fname += theDate.toStdString();
+    //Make directory for the data
+    QDir dirDate(QString::fromStdString(fname));
+    if (!dirDate.exists()) {
+        dirDate.mkpath(".");
+    }
+    if(name != "") {
+        fname += "/";
+        fname += name.toStdString();
+        //Make directory for the setting
+        QDir dirSettings(QString::fromStdString(fname));
+        if (!dirSettings.exists()) {
+            dirSettings.mkpath(".");
+        }
+    }
+    return QString::fromStdString(fname);
+}
 
 void CalibrationModule::PlotData(){
     for(int i=0; i< plotVector.size();i++)
     {
         QCustomPlot *plot = plotVector[i];
+        QCPColorMap *colorMap = colorMapVector[i];
+        QCPColorScale *colorScale = colorScaleVector[i];
+
+        colorMap->setVisible(false);
+        colorScale->setVisible(false);
+        colorScale->setMinimumSize(0, 0);
+        colorScale->setMaximumSize(0, 0);
+        QMargins margins;
+        margins.setTop(0);
+        margins.setBottom(0);
+        margins.setRight(0);
+        margins.setLeft(0);
+        colorScale->setMargins(margins );
+        if(plot->plotLayout()->hasElement(0,1)) {
+            plot->plotLayout()->take(colorScale);
+        }
+
         plot->clearItems();
-        plot->clearPlottables();
+        //plot->clearPlottables();
         plot->clearGraphs();
         plot->yAxis->setLabel("");
         plot->xAxis->setLabel("");
         plot->legend->setVisible(false);
+        plot->legend->clearItems();
+        plot->plotLayout()->simplify();
+        //plot->yAxis2->setVisible(false);
         plot->replot();
+
     }
     if(!CheckModes())
     {
         return;
     }
-    unsigned long theChoice =  static_cast<unsigned long>(m_daqWindow->ui->comboBoxFec->currentIndex());
+    unsigned long theChoice =  static_cast<unsigned long>(m_daqWindow->m_ui->comboBoxFec->currentIndex());
     unsigned long start = theChoice * 8;
     unsigned long end = (theChoice +1)*8;
     unsigned long limit = 0;
     //S-curve
-    if(m_modeIndex == 5) {
-        if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1 ) {
+    if(m_modeIndex == 6) {
+        if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1 ) {
             limit = 64;
         }
         else {
             limit = 2;
         }
     }
-    else if((m_modeIndex == 1  || m_modeIndex == 2) && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
+    else if((m_modeIndex == 1  || m_modeIndex == 2 || m_modeIndex == 3) && m_daqWindow->m_ui->choicePlotTime->currentIndex() > 1) {
         limit = 64*m_vmmActs.size();
+    }
+    //Latency calibration
+    else if(m_modeIndex == 11 || m_modeIndex == 12) {
+        limit = 1;
     }
     else {
         limit = m_vmmActs.size();
     }
     for(unsigned long idx=start; idx<limit && idx <end; idx++){
         QCustomPlot *plot = plotVector[idx%8];
-
-        plot->clearGraphs();
+        QCPColorMap *colorMap = colorMapVector[idx%8];
+        QCPColorScale *colorScale  = colorScaleVector[idx%8];
+        colorScale->setMaximumSize(0, 0);
         // give the axes some labels:
         plot->xAxis->setLabel("channel");
         // set axes ranges, so we see all data:
@@ -1615,24 +2339,34 @@ void CalibrationModule::PlotData(){
         int hybrid = 0;
         int chip = 0;
         int ch = 0;
-        if((m_modeIndex == 1  || m_modeIndex == 2) && m_daqWindow->ui->choicePlotTime->currentIndex() > 1) {
+        if((m_modeIndex == 1  || m_modeIndex == 2 || m_modeIndex == 3) && m_daqWindow->m_ui->choicePlotTime->currentIndex() > 1) {
             fec = GetFEC(static_cast<int>(idx/64));
+            int fecId = m_fecPosID[fec];
             hybrid = GetHybrid(static_cast<int>(idx/64));
             chip = GetVMM(static_cast<int>(idx/64));
             ch= idx%64;
-            title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
+            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
         }
-        else if(m_modeIndex != 5) {
+        else if(m_modeIndex == 11 || m_modeIndex == 12) {
             fec = GetFEC(static_cast<int>(idx));
+            int fecId = m_fecPosID[fec];
             hybrid = GetHybrid(static_cast<int>(idx));
             chip = GetVMM(static_cast<int>(idx));
-            title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hybrid*2+chip);
+            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ")";
+        }
+        else if(m_modeIndex != 6) {
+            fec = GetFEC(static_cast<int>(idx));
+            int fecId = m_fecPosID[fec];
+            hybrid = GetHybrid(static_cast<int>(idx));
+            chip = GetVMM(static_cast<int>(idx));
+            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip);
         }
         else {
-            fec = m_theFEC-1;
+            fec = m_theFEC;
+            int fecId = m_fecPosID[fec];
             hybrid = m_theVMM / 2;
             chip = m_theVMM % 2;
-            title = "FEC " + QString::number(fec+1) + " VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
+            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
         }
         unsigned int colorFactor = 0;
 
@@ -1641,18 +2375,18 @@ void CalibrationModule::PlotData(){
             colorFactor = 10;
             plot->yAxis->setRange(0.0, 1023.0);
 
-            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 0) {
                 title+= ": Mean ADC";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
-                title+= ": ADC corrections (slop/offset)";
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                title+= ": ADC corrections (slope/offset)";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
                 title+= ": Fit (measured ADC vs DAC)";
                 plot->xAxis->setLabel("measured DAC");
                 plot->xAxis->setRange(m_dac_measured[fec][hybrid][chip][0], m_dac_measured[fec][hybrid][chip][m_number_bits-1]);
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
                 title+= ": counts per ADC";
                 plot->xAxis->setRange(0, 1024);
                 plot->xAxis->setLabel("ADC");
@@ -1661,42 +2395,62 @@ void CalibrationModule::PlotData(){
         else if(m_modeIndex == 2) {
             colorFactor = 10;
             plot->yAxis->setRange(-10.0, 60.0);
-            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 0) {
                 title+= ": Mean time";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
-                title+= ": Time corrections (slop/offset)";
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                title+= ": Time corrections (slope/offset)";
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
                 title+= ": Fit (measured time vs pulse shift)";
-                plot->xAxis->setRange(0, m_number_bits*3.125*TIME_FACTOR);
+                plot->xAxis->setRange(0, m_number_bits*g_time_factor);
                 plot->xAxis->setLabel("pulse shift [ns]");
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
                 title+= ": counts per TDC";
                 plot->xAxis->setRange(0, 256);
                 plot->xAxis->setLabel("TDC");
             }
-            else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 4) {
                 title+= ": BCID percentages [%]";
-                plot->xAxis->setRange(0, m_number_bits*3.125*TIME_FACTOR);
+                plot->xAxis->setRange(0, m_number_bits*g_time_factor);
                 plot->xAxis->setLabel("pulse shift [ns]");
             }
 
         }
         else if(m_modeIndex == 3) {
+            colorFactor = 64;
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 0) {
+                title+= ": Mean time [ns]";
+                //plot->yAxis2->setLabel("charge [ADC]");
+                plot->yAxis->setRange(-4, 18.0);
+                //plot->yAxis2->setRange(0.0, 1023);
+                //plot->yAxis2->setVisible(true);
+            }
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                title+= ": Timewalk corrections (slope/offset)";
+                plot->yAxis->setRange(-10, 1000.0);
+            }
+            else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
+                title+= ": Fit (measured time vs ADC)";
+                plot->xAxis->setLabel("charge [ADC]");
+                plot->yAxis->setRange(-4, 18.0);
+                plot->xAxis->setRange(0.0, 1023);
+            }
+        }
+        else if(m_modeIndex == 4) {
             title+= ": Mean ADC";
             colorFactor = 5;
             plot->yAxis->setRange(0.0, 1023.0);
         }
-        else if(m_modeIndex == 4) {
+        else if(m_modeIndex == 5) {
             title+= ": Mean TDC";
             colorFactor = 10;
             plot->yAxis->setRange(0.0, 255.0);
         }
-        else if(m_modeIndex == 5)
+        else if(m_modeIndex == 6)
         {
-            if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1 ) {
+            if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1 ) {
                 title+= ": Rate [kHz]";
                 if(m_scan_type == 0) {
                     plot->xAxis->setLabel("threshold [mV]");
@@ -1716,79 +2470,147 @@ void CalibrationModule::PlotData(){
                 }
             }
         }
-        else if(m_modeIndex == 6) {
-            title+= ": Threshold [mV]";
+        else if(m_modeIndex == 7) {
+            if(m_isThresholdCalibration) {
+                title+= ": Threshold - Pedestal [mV]";
+            }
+            else {
+                title+= ": Threshold [mV]";
+            }
             colorFactor = 5;
             plot->yAxis->setRange(0.0, 300.0);
         }
-        else if(m_modeIndex == 7)
+        else if(m_modeIndex == 8)
         {
             title+= ": Pedestal [mV]";
             plot->yAxis->setRange(0.0, 350.0);
         }
-        else if(m_modeIndex == 8) {
+        else if(m_modeIndex == 9) {
             title+= ": Pulser DAC [mV]";
             plot->xAxis->setLabel("Pulser setting [DAC]");
             plot->xAxis->setRange(0.0, 1023.0);
             plot->yAxis->setRange(0.0, 1023.0);
         }
-        else if(m_modeIndex == 9)
+        else if(m_modeIndex == 10)
         {
             title+= ": Threshold DAC [mV]";
             plot->xAxis->setLabel("Threshold setting [DAC]");
             plot->xAxis->setRange(0.0, 1023.0);
             plot->yAxis->setRange(0.0, 1023.0);
         }
-        else if(m_modeIndex == 10)
+        else if(m_modeIndex == 11) {
+            title+= ": BCID - BC counter";
+            plot->xAxis->setLabel("reset latency");
+            plot->xAxis->setRange(m_start_reset_latency, m_start_reset_latency+m_number_bits_offline_latency);
+            plot->yAxis->setRange(-10.0, 10.0);
+        }
+        else if(m_modeIndex == 12) {
+            title+= ": BCID - TP setting";
+            plot->xAxis->setLabel("TP latency");
+            plot->xAxis->setRange(m_start_tp_latency, m_start_tp_latency+m_number_bits_offline_latency);
+            plot->yAxis->setRange(-10.0, 10.0);
+        }
+        else if(m_modeIndex == 20)
         {
             title+= ": Counts";
         }
-        else if(m_modeIndex == 11)
+        else if(m_modeIndex == 21)
         {
-            title+= ": Mean ADC";
+            title+= ": ADC";
             plot->yAxis->setRange(0.0, 1023.0);
         }
-        else if(m_modeIndex == 12)
+        else if(m_modeIndex == 22)
         {
             title+= ": Mean TDC";
             plot->yAxis->setRange(0.0, 255.0);
         }
-        else if(m_modeIndex == 13)
+        else if(m_modeIndex == 23)
         {
             title+= ": Mean BCID";
             plot->yAxis->setRange(0.0, 4095.0);
         }
-
+        else if(m_modeIndex == 24)
+        {
+            title+= ": Counts ADC";
+            plot->xAxis->setRange(0.0, 1023);
+            plot->xAxis->setLabel("ADC");
+        }
+        else if(m_modeIndex == 25)
+        {
+            title+= ": Counts Time";
+            plot->xAxis->setRange(0.0, m_daqWindow->m_ui->Runs->value());
+            plot->xAxis->setLabel("time [ms]");
+        }
 
         plot->yAxis->setLabel(title);
-        if(!IsCalibration() /*m_runMode == "User"  >= 10 */)
+        if(!IsCalibration() /*m_runMode == "User"  >= 20 */)
         {
             plot->addGraph();
             plot->graph(0)->setPen(pen);
-            plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
-            plot->yAxis->setLabel(title);
-            plot->legend->setVisible(true);
-            plot->legend->setFont(QFont("Helvetica",9));
-            plot->graph(0)->setName(title);
-            plot->yAxis->rescale();
+            if(m_modeIndex == 24) {
+                plot->graph(0)->setData( QVector<double>::fromStdVector(m_adcs), QVector<double>::fromStdVector(m_adc_data[fec][hybrid][chip]));
+            }
+            else if(m_modeIndex == 25) {
+                plot->graph(0)->setData( QVector<double>::fromStdVector(m_times), QVector<double>::fromStdVector(m_adc_data[fec][hybrid][chip]));
+            }
+            else if(m_modeIndex == 20) {
+                plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_channel_data[fec][hybrid][chip]));
+            }
+            else if(m_modeIndex == 21) {
+                plot->plotLayout()->addElement(0, 1, colorScale);
+                colorScale->setType(QCPAxis::atRight); // scale shall be vertical bar with tick/axis labels right (actually atRight is already the default)
+                colorMap->setColorScale(colorScale); // associate the color map with the color scale
+                colorScale->axis()->setLabel("Counts ADC values");
+
+                colorMap->data()->setSize(64, 1024);
+                colorMap->data()->setRange(QCPRange(0, 63), QCPRange(0, 1023));
+                colorMap->setGradient(QCPColorGradient::gpSpectrum);
+                const QCPColorGradient &grd = colorMap->gradient();
+                //grd.SetNanColor(Qt::white);
+                colorScale->setMaximumSize(50, 200);
+                colorMap->setVisible(true);
+                colorScale->setVisible(true);
+
+                for (int chNo=0; chNo<64; chNo++) {
+                    for (int adc=0; adc<1024; adc++) {
+                        const int num_items = std::count(m_data[m_bitCount][fec][hybrid][chip][chNo].cbegin(), m_data[m_bitCount][fec][hybrid][chip][chNo].cend(), adc);
+                        colorMap->data()->setCell(chNo, adc, num_items);
+                    }
+                }
+
+                colorMap->rescaleDataRange(true);
+
+                plot->rescaleAxes();
+                plot->replot();
+                plot->yAxis->setLabel(title);
+            }
+            else {
+                plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+            }
+            if(m_modeIndex != 21) {
+                plot->yAxis->setLabel(title);
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",9));
+                plot->graph(0)->setName(title);
+                plot->yAxis->rescale();
+            }
         }
         else
         {
             //Offline ADC
             if(m_modeIndex == 1)
             {
-                // calibrated time
-                if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
+                if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 0) {
                     int numPlots = 3;
-                    if(m_file_offset[fec][hybrid][chip].size() == 64 && m_file_offset[fec][hybrid][chip].size() == 64) {
+                    if(m_file_adc_offset[fec][hybrid][chip].size() == 64 && m_file_adc_offset[fec][hybrid][chip].size() == 64) {
                         numPlots = 4;
                     }
                     for(int bit=0; bit<m_number_bits;bit++){
 
                         plot->addGraph();
                         plot->graph(bit*numPlots)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
+                                    QVector<double>::fromStdVector(m_x),
+                                    QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
                         plot->graph(bit*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -1803,37 +2625,40 @@ void CalibrationModule::PlotData(){
                         }
                         plot->addGraph();
                         plot->graph(bit*numPlots+1)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(y));
+                                    QVector<double>::fromStdVector(m_x),
+                                    QVector<double>::fromStdVector(y));
                         plot->graph(bit*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                         if(bit > 0) {
-                            plot->legend->removeItem(plot->legend->itemCount()-1);
+                            plot->graph(bit*numPlots+1)->removeFromLegend();
+                            //plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
 
                         plot->addGraph();
                         plot->graph(bit*numPlots+2)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(y2));
+                                    QVector<double>::fromStdVector(m_x),
+                                    QVector<double>::fromStdVector(y2));
 
                         plot->graph(bit*numPlots+2)->setPen(QPen(Qt::blue,1,Qt::DashLine));
                         if(bit > 0) {
-                            plot->legend->removeItem(plot->legend->itemCount()-1);
+                            plot->graph(bit*numPlots+2)->removeFromLegend();
+                            //plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
 
                         if(numPlots == 4) {
                             std::vector<double> y3;
                             for(unsigned int ch=0; ch<64; ch++)
                             {
-                                double adc = (m_mean[bit][fec][hybrid][chip][ch] - m_file_offset[fec][hybrid][chip][ch])*  m_file_slope[fec][hybrid][chip][ch];
+                                double adc = (m_mean[bit][fec][hybrid][chip][ch] - m_file_adc_offset[fec][hybrid][chip][ch])*  m_file_adc_slope[fec][hybrid][chip][ch];
                                 y3.push_back(adc);
                             }
                             plot->addGraph();
                             plot->graph(bit*numPlots+3)->setData(
-                                QVector<double>::fromStdVector(m_x),
-                                QVector<double>::fromStdVector(y3));
+                                        QVector<double>::fromStdVector(m_x),
+                                        QVector<double>::fromStdVector(y3));
                             plot->graph(bit*numPlots+3)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
                             if(bit > 0) {
-                                plot->legend->removeItem(plot->legend->itemCount()-1);
+                                plot->graph(bit*numPlots+2)->removeFromLegend();
+                                //plot->legend->removeItem(plot->legend->itemCount()-1);
                             }
                         }
                     }
@@ -1844,12 +2669,13 @@ void CalibrationModule::PlotData(){
                         plot->graph(3)->setName("corrected from file");
                     }
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
+                    plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignRight);
                 }
                 // corrections
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
                     int numPlots = 2;
-                    if(m_file_offset[fec][hybrid][chip].size() == 64 && m_file_offset[fec][hybrid][chip].size() == 64) {
+                    if(m_file_adc_offset[fec][hybrid][chip].size() == 64 && m_file_adc_offset[fec][hybrid][chip].size() == 64) {
                         numPlots = 4;
                     }
                     plot->addGraph();
@@ -1865,29 +2691,29 @@ void CalibrationModule::PlotData(){
                         //}
                     }
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_offset[fec][hybrid][chip]));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_offset[fec][hybrid][chip]));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                     plot->graph(0)->setName("offset");
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_slope[fec][hybrid][chip]));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_slope[fec][hybrid][chip]));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                     plot->graph(1)->setName("slope");
                     if(numPlots == 4) {
                         plot->addGraph();
                         plot->graph(2)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_offset[fec][hybrid][chip]));
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_adc_offset[fec][hybrid][chip]));
                         plot->graph(2)->setPen(QPen(Qt::cyan,2,Qt::DotLine));
                         plot->graph(2)->setName("offset from file");
 
                         plot->addGraph();
                         plot->graph(3)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_slope[fec][hybrid][chip]));
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_adc_slope[fec][hybrid][chip]));
                         plot->graph(3)->setPen(QPen(Qt::green,2,Qt::DotLine));
                         plot->graph(3)->setName("slope from file");
                     }
@@ -1895,11 +2721,11 @@ void CalibrationModule::PlotData(){
 
 
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
                     plot->yAxis->rescale();
                 }
                 // fit
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
 
                     std::vector<double> x;
                     std::vector<double> y;
@@ -1918,15 +2744,15 @@ void CalibrationModule::PlotData(){
                     }
                     plot->addGraph();
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(y));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue));
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(yf));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(yf));
                     plot->graph(1)->setPen(QPen(Qt::red));
 
 
@@ -1935,15 +2761,15 @@ void CalibrationModule::PlotData(){
                     plot->graph(1)->setName(QString("fit: " + QString::number(slope) + "* DAC + " + QString::number(offset)));
 
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
                     plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignLeft);
                     plot->xAxis->setRange(m_dac_measured[fec][hybrid][chip][0], m_dac_measured[fec][hybrid][chip][m_number_bits-1]);
                     plot->yAxis->rescale();
 
                 }
                 //ADC distribution
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                    int bit = m_daqWindow->ui->choiceBit->currentIndex();
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
+                    int bit = m_daqWindow->m_ui->choiceBit->currentIndex();
                     if(bit == -1) {
                         bit = 0;
                     }
@@ -1970,8 +2796,8 @@ void CalibrationModule::PlotData(){
                     plot->addGraph();
 
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(y));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::darkRed));
                     plot->graph(0)->setBrush(QBrush(Qt::red));
@@ -1985,8 +2811,11 @@ void CalibrationModule::PlotData(){
             else if(m_modeIndex == 2)
             {
                 // calibrated time
-                if(m_daqWindow->ui->choicePlotTime->currentIndex() == 0) {
-
+                if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 0) {
+                    int numPlots = 2;
+                    if(m_file_time_offset[fec][hybrid][chip].size() == 64 && m_file_time_offset[fec][hybrid][chip].size() == 64) {
+                        numPlots = 3;
+                    }
                     for(int bit=0; bit<m_number_bits;bit++){
                         plot->addGraph();
                         std::vector<double> x;
@@ -1995,7 +2824,7 @@ void CalibrationModule::PlotData(){
                         std::vector<double> yc;
                         for(unsigned int ch=0; ch<64; ch++)
                         {
-                            //if(m_mean[bit][fec][hybrid][chip][ch] != -9999) {
+                            //if(m_mean[bit][fec][hybrid][chip][ch] != -9999.0) {
                             x.push_back(ch);
                             y.push_back(m_mean[bit][fec][hybrid][chip][ch]);
 
@@ -2004,8 +2833,8 @@ void CalibrationModule::PlotData(){
                             int bcid = m_fit_start_bcid[fec][hybrid][chip][ch];
                             int z = 0;
                             for(int n=0; n<NUM_BCID; n++) {
-                                //if(m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] != -9999) {
-                                theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*m_bc_period[fec][hybrid] + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch]);
+                                //if(m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] != -9999.0) {
+                                theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*g_clock_period + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])*  m_slope[fec][hybrid][chip][ch]);
                                 z++;
                                 //}
                             }
@@ -2014,60 +2843,105 @@ void CalibrationModule::PlotData(){
                             yc.push_back(theTotalTime);
                             //}
                         }
-                        plot->graph(bit*2)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(y));
-                        plot->graph(bit*2)->setPen(QPen(Qt::black,1,Qt::SolidLine));
+                        plot->graph(bit*numPlots)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(y));
+                        plot->graph(bit*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
                         plot->addGraph();
-                        plot->graph(bit*2+1)->setData(
-                            QVector<double>::fromStdVector(xc),
-                            QVector<double>::fromStdVector(yc));
-                        plot->graph(bit*2+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                        plot->graph(bit*numPlots+1)->setData(
+                                    QVector<double>::fromStdVector(xc),
+                                    QVector<double>::fromStdVector(yc));
+                        plot->graph(bit*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
+                        }
+                        if(numPlots == 3) {
+                            std::vector<double> y3;
+                            for(unsigned int ch=0; ch<64; ch++)
+                            {
+                                double theTotalTime = 0;
+                                int bcid = m_fit_start_bcid[fec][hybrid][chip][ch];
+                                int z = 0;
+                                for(int n=0; n<NUM_BCID; n++) {
+                                    theTotalTime += m_percent_bcid[n][bit][fec][hybrid][chip][ch]*((bcid+n)*g_clock_period + (m_mean_per_bcid[n][bit][fec][hybrid][chip][ch] - m_file_time_offset[fec][hybrid][chip][ch])*  m_file_time_slope[fec][hybrid][chip][ch]);
+                                    z++;
+                                }
+                                y3.push_back(theTotalTime);
+                            }
+                            plot->addGraph();
+                            plot->graph(bit*numPlots+2)->setData(
+                                        QVector<double>::fromStdVector(x),
+                                        QVector<double>::fromStdVector(y3));
+                            plot->graph(bit*numPlots+2)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
+                            if(bit > 0) {
+                                plot->legend->removeItem(plot->legend->itemCount()-1);
+                            }
                         }
                     }
                     plot->graph(0)->setName("measured");
                     plot->graph(1)->setName("corrected");
+                    if(numPlots == 3) {
+                        plot->graph(2)->setName("corrected from file");
+                    }
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
+                    plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignRight);
                 }
                 // corrections
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1) {
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                    int numPlots = 2;
+                    if(m_file_time_offset[fec][hybrid][chip].size() == 64 && m_file_time_offset[fec][hybrid][chip].size() == 64) {
+                        numPlots = 4;
+                    }
                     plot->addGraph();
                     std::vector<double> x;
                     std::vector<double> y_slope;
                     std::vector<double> y_offset;
                     for(unsigned int ch=0; ch<64; ch++)
                     {
-                        if(!(m_slope[fec][hybrid][chip][ch] == 0.0)) {
-                            x.push_back(ch);
-                            y_offset.push_back(m_offset[fec][hybrid][chip][ch]);
-                            y_slope.push_back(m_slope[fec][hybrid][chip][ch]);
-                        }
+                        //if(!(m_slope[fec][hybrid][chip][ch] == 0.0 && m_offset[fec][hybrid][chip][ch] == -1.0)) {
+                        x.push_back(ch);
+                        y_offset.push_back(m_offset[fec][hybrid][chip][ch]);
+                        y_slope.push_back(m_slope[fec][hybrid][chip][ch]);
+                        //}
                     }
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y_offset));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_offset[fec][hybrid][chip]));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
-
+                    plot->graph(0)->setName("offset");
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y_slope));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_slope[fec][hybrid][chip]));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
-                    plot->graph(0)->setName("offset");
                     plot->graph(1)->setName("slope");
+                    if(numPlots == 4) {
+                        plot->addGraph();
+                        plot->graph(2)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_time_offset[fec][hybrid][chip]));
+                        plot->graph(2)->setPen(QPen(Qt::cyan,2,Qt::DotLine));
+                        plot->graph(2)->setName("offset from file");
+
+                        plot->addGraph();
+                        plot->graph(3)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_time_slope[fec][hybrid][chip]));
+                        plot->graph(3)->setPen(QPen(Qt::green,2,Qt::DotLine));
+                        plot->graph(3)->setName("slope from file");
+                    }
+
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
                     plot->yAxis->rescale();
                 }
                 // fit
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 2) {
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
                     plot->addGraph();
                     std::vector<double> x;
                     std::vector<double> y;
@@ -2080,49 +2954,49 @@ void CalibrationModule::PlotData(){
                         offset =  m_offset[fec][hybrid][chip][ch] + (m_fit_start_time[fec][hybrid][chip][ch])*slope;
 
                     }
-                    int m =  m_fit_start_time[fec][hybrid][chip][ch]/(3.125*TIME_FACTOR);
-                    if(m_fit_start_time[fec][hybrid][chip][ch]/(3.125*TIME_FACTOR) < 0) {
+                    int m =  m_fit_start_time[fec][hybrid][chip][ch]/(g_time_factor);
+                    if(m_fit_start_time[fec][hybrid][chip][ch]/(g_time_factor) < 0) {
                         m = m - 1;
                     }
-                    double firstTime = m*3.125*TIME_FACTOR - m_fit_start_time[fec][hybrid][chip][ch];
+                    double firstTime = m*g_time_factor - m_fit_start_time[fec][hybrid][chip][ch];
                     for(int bit=0; bit<m_number_bits;bit++){
-                        if(m_fit_y[bit][fec][hybrid][chip][ch] != -9999) {
+                        if(m_fit_y[bit][fec][hybrid][chip][ch] != -9999.0) {
                             y.push_back(m_fit_y[bit][fec][hybrid][chip][ch]);
 
-                            double theTime = firstTime + bit*3.125*TIME_FACTOR;
+                            double theTime = firstTime + bit*g_time_factor;
                             x.push_back(theTime);
                             yf.push_back(offset + theTime*slope);
                         }
                     }
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(y));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                     plot->graph(0)->setName("measured");
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(yf));
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(yf));
                     plot->graph(1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                     plot->graph(1)->setName(QString("fit: " + QString::number(slope) + "* t + " + QString::number(offset)));
 
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
                     plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignLeft);
-                    plot->xAxis->setRange(firstTime, firstTime + m_number_bits*3.125*TIME_FACTOR);
+                    plot->xAxis->setRange(firstTime, firstTime + m_number_bits*g_time_factor);
                     plot->yAxis->rescale();
                 }
                 //TDC distribution
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 3) {
-                    int bit = m_daqWindow->ui->choiceBit->currentIndex();
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 3) {
+                    int bit = m_daqWindow->m_ui->choiceBit->currentIndex();
                     if(bit == -1) {
                         bit = 0;
                     }
                     plot->legend->setVisible(true);
                     plot->legend->setFont(QFont("Helvetica",9));
                     for(int n=0; n<NUM_BCID; n++) {
-                        int bcid = m_fit_start_bcid[fec][hybrid][chip][ch]+m_most_common_BCID+n;
+                        int bcid = m_fit_start_bcid[fec][hybrid][chip][ch]+m_reference_BCID+n;
 
                         plot->addGraph();
                         std::vector<double> x;
@@ -2135,28 +3009,28 @@ void CalibrationModule::PlotData(){
                         }
 
                         plot->graph(n)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(y));
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(y));
                         plot->graph(n)->setScatterStyle(QCPScatterStyle::ssDisc);
 
-                        if(bcid-m_most_common_BCID == -2) {
+                        if(bcid-m_reference_BCID == -2) {
                             plot->graph(n)->setPen(QPen(Qt::darkCyan));
                             plot->graph(n)->setBrush(QBrush(Qt::cyan));
                         }
-                        else if(bcid-m_most_common_BCID == -1) {
+                        else if(bcid-m_reference_BCID == -1) {
                             plot->graph(n)->setPen(QPen(Qt::darkRed));
                             plot->graph(n)->setBrush(QBrush(Qt::red));
                         }
-                        else if(bcid-m_most_common_BCID == 0) {
+                        else if(bcid-m_reference_BCID == 0) {
                             plot->graph(n)->setPen(QPen(Qt::darkGreen));
                             plot->graph(n)->setBrush(QBrush(Qt::green));
                         }
-                        else if(bcid-m_most_common_BCID == 1) {
+                        else if(bcid-m_reference_BCID == 1) {
                             plot->graph(n)->setPen(QPen(Qt::darkBlue));
                             plot->graph(n)->setBrush(QBrush(Qt::blue));
 
                         }
-                        else if(bcid-m_most_common_BCID == 2) {
+                        else if(bcid-m_reference_BCID == 2) {
                             plot->graph(n)->setPen(QPen(Qt::darkMagenta));
                             plot->graph(n)->setBrush(QBrush(Qt::magenta));
 
@@ -2164,64 +3038,298 @@ void CalibrationModule::PlotData(){
                         plot->graph(n)->setName(QString("BCID "+ QString::number(bcid)));
                     }
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
                     plot->yAxis->rescale();
                 }
                 // BCID percent
-                else if(m_daqWindow->ui->choicePlotTime->currentIndex() == 4) {
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 4) {
 
                     plot->legend->setVisible(true);
                     plot->legend->setFont(QFont("Helvetica",9));
                     for(int n=0; n<NUM_BCID; n++) {
-                        int bcid = m_fit_start_bcid[fec][hybrid][chip][ch]+m_most_common_BCID+n;
+                        int bcid = m_fit_start_bcid[fec][hybrid][chip][ch]+m_reference_BCID+n;
                         plot->addGraph();
                         std::vector<double> x;
                         std::vector<double> y;
                         for(int bit=0; bit<m_number_bits;bit++){
 
-                            x.push_back(bit*3.125*TIME_FACTOR);
+                            x.push_back(bit*g_time_factor);
                             y.push_back(100*m_percent_bcid[n][bit][fec][hybrid][chip][ch]);
                         }
 
                         plot->graph(n)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(y));
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(y));
 
-                        if(bcid-m_most_common_BCID == -2) {
+                        if(bcid-m_reference_BCID == -2) {
                             plot->graph(n)->setPen(QPen(Qt::darkCyan,2,Qt::SolidLine));
                         }
-                        else if(bcid-m_most_common_BCID == -1) {
+                        else if(bcid-m_reference_BCID == -1) {
                             plot->graph(n)->setPen(QPen(Qt::red,2,Qt::SolidLine));
 
                         }
-                        else if(bcid-m_most_common_BCID == 0) {
+                        else if(bcid-m_reference_BCID == 0) {
                             plot->graph(n)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
 
                         }
-                        else if(bcid-m_most_common_BCID == 1) {
+                        else if(bcid-m_reference_BCID == 1) {
                             plot->graph(n)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
 
                         }
-                        else if(bcid-m_most_common_BCID == 2) {
+                        else if(bcid-m_reference_BCID == 2) {
                             plot->graph(n)->setPen(QPen(Qt::darkMagenta,2,Qt::SolidLine));
 
                         }
                         plot->graph(n)->setName(QString("BCID "+ QString::number(bcid)));
                     }
                     plot->legend->setVisible(true);
-                    plot->legend->setFont(QFont("Helvetica",8));
+                    plot->legend->setFont(QFont("Helvetica",9));
+                    plot->xAxis->setRange(0, m_number_bits*g_time_factor);
                     plot->yAxis->rescale();
 
                 }
             }
+            //Offline Time walk
+            else if(m_modeIndex == 3)
+            {
+                // calibrated time
+                if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 0) {
+                    int numPlots = 2;
+                    if(m_file_timewalk_a[fec][hybrid][chip].size() == 64 && m_file_timewalk_b[fec][hybrid][chip].size() == 64 && m_file_timewalk_c[fec][hybrid][chip].size() == 64 && m_file_timewalk_d[fec][hybrid][chip].size() == 64) {
+                        numPlots = 3;
+                    }
+                    double plot_correction = 0;
+                    int n = 0;
+                    for(int ch=0; ch<64; ch++) {
+                        if(m_mean[m_number_bits-1][fec][hybrid][chip][ch] != -9999.0) {
+                            plot_correction += m_mean[(int)(m_number_bits/2)][fec][hybrid][chip][ch];
+                            n++;
+                        }
+                    }
+                    plot_correction = plot_correction/n;
+                    n = 0;
+                    for(int bit=0; bit<m_number_bits;bit++){
+                        if(bit%4==0) {
+                            std::vector<double> y0;
+                            std::vector<double> y2;
+                            std::vector<double> y3;
+                            for(int ch =0; ch<64; ch++){
+                                if(m_mean[m_number_bits-1][fec][hybrid][chip][ch] != -9999.0) {
+                                    y0.push_back(m_mean[bit][fec][hybrid][chip][ch] - plot_correction);
+                                }
+                                else {
+                                    y0.push_back(0);
+                                }
+                                if(m_mean2[bit][fec][hybrid][chip][ch] != -9999 && m_fit_a[fec][hybrid][chip][ch]!= -9999 && m_fit_b[fec][hybrid][chip][ch]!= -9999 && m_fit_c[fec][hybrid][chip][ch]!= -9999 && m_fit_d[fec][hybrid][chip][ch]!= -9999) {
+                                    double corrected_time = logisticcalc4(m_mean2[bit][fec][hybrid][chip][ch], m_fit_a[fec][hybrid][chip][ch], m_fit_b[fec][hybrid][chip][ch], m_fit_c[fec][hybrid][chip][ch], m_fit_d[fec][hybrid][chip][ch]);
+                                    //double corrected_time = m_fit_a[fec][hybrid][chip][ch]*0.5*errorfunctionc((m_mean2[bit][fec][hybrid][chip][ch]-m_fit_b[fec][hybrid][chip][ch])/(sqrt(2)* m_fit_c[fec][hybrid][chip][ch] )) + m_fit_d[fec][hybrid][chip][ch];
+                                    y2.push_back(m_mean[bit][fec][hybrid][chip][ch] - plot_correction - corrected_time);
+                                }
+                                else {
+                                    y2.push_back(0);
+                                }
+                                if(numPlots == 3) {
+                                    if(m_mean2[bit][fec][hybrid][chip][ch] != -9999 && m_file_timewalk_a[fec][hybrid][chip][ch]!= -9999 && m_file_timewalk_b[fec][hybrid][chip][ch]!= -9999 && m_file_timewalk_c[fec][hybrid][chip][ch]!= -9999 && m_file_timewalk_d[fec][hybrid][chip][ch]!= -9999) {
+                                        double corrected_time = logisticcalc4(m_mean2[bit][fec][hybrid][chip][ch], m_file_timewalk_a[fec][hybrid][chip][ch], m_file_timewalk_b[fec][hybrid][chip][ch], m_file_timewalk_c[fec][hybrid][chip][ch], m_file_timewalk_d[fec][hybrid][chip][ch]);
+                                        y3.push_back(m_mean[bit][fec][hybrid][chip][ch] - plot_correction - corrected_time);
+                                    }
+                                    else {
+                                        y3.push_back(0);
+                                    }
+                                }
+                            }
+
+
+                            //Time
+                            plot->addGraph(plot->xAxis, plot->yAxis);
+                            plot->graph(n*numPlots)->setData(
+                                        QVector<double>::fromStdVector(m_x),
+                                        QVector<double>::fromStdVector(y0));
+                            plot->graph(n*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
+                            if(n > 0) {
+                                plot->legend->removeItem(plot->legend->itemCount()-1);
+                            }
+                            /*
+                            //ADC
+                            plot->addGraph(plot->xAxis, plot->yAxis2);
+                            plot->graph(bit*numPlots+1)->setData(
+                                        QVector<double>::fromStdVector(m_x),
+                                        QVector<double>::fromStdVector(m_mean2[bit][fec][hybrid][chip]));
+                            plot->graph(bit*numPlots+1)->setPen(QPen(Qt::blue,1,Qt::DashLine));
+
+                            if(bit > 0) {
+                                plot->legend->removeItem(plot->legend->itemCount()-1);
+                            }
+                            */
+
+                            plot->addGraph(plot->xAxis, plot->yAxis);
+                            plot->graph(n*numPlots+1)->setData(
+                                        QVector<double>::fromStdVector(m_x),
+                                        QVector<double>::fromStdVector(y2));
+                            plot->graph(n*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
+                            if(n > 0) {
+                                plot->legend->removeItem(plot->legend->itemCount()-1);
+                            }
+
+
+                            if(numPlots == 3) {
+                                plot->addGraph(plot->xAxis, plot->yAxis);
+                                plot->graph(n*numPlots+2)->setData(
+                                            QVector<double>::fromStdVector(m_x),
+                                            QVector<double>::fromStdVector(y3));
+                                plot->graph(n*numPlots+2)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
+                                if(n > 0) {
+                                    plot->legend->removeItem(plot->legend->itemCount()-1);
+                                }
+                            }
+                            n++;
+                        }
+                    }
+                    plot->graph(0)->setName(QString("measured: " + QString::number(m_dac_setting[0]) + " DAC - " + QString::number(m_dac_setting[m_bitCount - 1]) + " DAC"));
+                    //plot->graph(1)->setName("ADC");
+                    plot->graph(1)->setName(QString("time-walk corrected: " + QString::number(m_dac_setting[0]) + " DAC - " + QString::number(m_dac_setting[m_bitCount - 1]) + " DAC"));
+                    if(numPlots == 3) {
+                        plot->graph(2)->setName("corrected from file");
+                    }
+                    plot->legend->setVisible(true);
+                    plot->legend->setFont(QFont("Helvetica",9));
+                }
+                // corrections
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1) {
+                    int numPlots = 4;
+                    if(m_file_timewalk_a[fec][hybrid][chip].size() == 64 && m_file_timewalk_b[fec][hybrid][chip].size() == 64 && m_file_timewalk_c[fec][hybrid][chip].size() == 64 && m_file_timewalk_d[fec][hybrid][chip].size() == 64) {
+                        numPlots = 8;
+                    }
+
+                    std::vector<double> x;
+                    for(unsigned int ch=0; ch<64; ch++)
+                    {
+                        x.push_back(ch);
+                    }
+                    plot->addGraph();
+                    plot->graph(0)->setData(
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_fit_a[fec][hybrid][chip]));
+                    plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
+                    plot->graph(0)->setName("a");
+
+                    plot->addGraph();
+                    plot->graph(1)->setData(
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_fit_b[fec][hybrid][chip]));
+                    plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
+                    plot->graph(1)->setName("b");
+
+                    plot->addGraph();
+                    plot->graph(2)->setData(
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_fit_c[fec][hybrid][chip]));
+                    plot->graph(2)->setPen(QPen(Qt::green,2,Qt::SolidLine));
+                    plot->graph(2)->setName("c");
+
+                    plot->addGraph();
+                    plot->graph(3)->setData(
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(m_fit_d[fec][hybrid][chip]));
+                    plot->graph(3)->setPen(QPen(Qt::cyan,2,Qt::SolidLine));
+                    plot->graph(3)->setName("d");
+
+
+                    if(numPlots == 8) {
+                        plot->addGraph();
+                        plot->graph(4)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_timewalk_a[fec][hybrid][chip]));
+                        plot->graph(4)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
+                        plot->graph(4)->setName("a from file");
+
+                        plot->addGraph();
+                        plot->graph(5)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_timewalk_b[fec][hybrid][chip]));
+                        plot->graph(5)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
+                        plot->graph(5)->setName("b from file");
+
+                        plot->addGraph();
+                        plot->graph(6)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_timewalk_c[fec][hybrid][chip]));
+                        plot->graph(6)->setPen(QPen(Qt::green,2,Qt::SolidLine));
+                        plot->graph(6)->setName("c from file");
+
+                        plot->addGraph();
+                        plot->graph(7)->setData(
+                                    QVector<double>::fromStdVector(x),
+                                    QVector<double>::fromStdVector(m_file_timewalk_d[fec][hybrid][chip]));
+                        plot->graph(7)->setPen(QPen(Qt::cyan,2,Qt::SolidLine));
+                        plot->graph(7)->setName("d from file");
+                    }
+
+                    plot->legend->setVisible(true);
+                    plot->legend->setFont(QFont("Helvetica",9));
+                    //plot->yAxis->rescale();
+                }
+                // fit
+                else if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 2) {
+
+                    std::vector<double> x;
+                    std::vector<double> xf;
+                    std::vector<double> y;
+                    std::vector<double> yf;
+                    if(m_fit_a[fec][hybrid][chip][ch] != -9999.0 && m_fit_b[fec][hybrid][chip][ch] != -9999.0 && m_fit_c[fec][hybrid][chip][ch] != -9999.0  && m_fit_d[fec][hybrid][chip][ch] != -9999.0 ) {
+                        for(int adc=0; adc<1023;adc+=50) {
+                            double fittedTime = logisticcalc4(adc, m_fit_a[fec][hybrid][chip][ch], m_fit_b[fec][hybrid][chip][ch], m_fit_c[fec][hybrid][chip][ch], m_fit_d[fec][hybrid][chip][ch]);
+                            //double fittedTime = m_fit_a[fec][hybrid][chip][ch]*0.5*errorfunctionc((adc-m_fit_b[fec][hybrid][chip][ch])/(sqrt(2)* m_fit_c[fec][hybrid][chip][ch] )) + m_fit_d[fec][hybrid][chip][ch];
+                            xf.push_back(adc);
+                            yf.push_back(fittedTime);
+                        }
+                        for(int bit=0; bit<m_number_bits;bit++) {
+                            x.push_back(m_mean2[bit][fec][hybrid][chip][ch]);
+                            y.push_back(m_mean[bit][fec][hybrid][chip][ch]-m_mean[(int)(m_number_bits/2)][fec][hybrid][chip][ch]);
+                        }
+                    }
+                    else {
+                        for(int adc=0; adc<1023;adc+=50){
+                            xf.push_back(0);
+                            yf.push_back(0);
+                        }
+                        for(int bit=0; bit<m_number_bits;bit++) {
+                            x.push_back(0);
+                            y.push_back(0);
+                        }
+                    }
+                    plot->addGraph();
+                    plot->graph(0)->setData(
+                                QVector<double>::fromStdVector(x),
+                                QVector<double>::fromStdVector(y));
+                    plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
+                    plot->graph(0)->setPen(QPen(Qt::blue));
+
+                    plot->addGraph();
+                    plot->graph(1)->setData(
+                                QVector<double>::fromStdVector(xf),
+                                QVector<double>::fromStdVector(yf));
+                    plot->graph(1)->setPen(QPen(Qt::red));
+                    plot->graph(0)->setName("measured");
+                    plot->graph(1)->setName(QString("4PL-fit:  a=") + QString::number( m_fit_a[fec][hybrid][chip][ch],'f',2)  + QString(", b=") + QString::number( m_fit_b[fec][hybrid][chip][ch],'f',2)
+                                            + QString("\nc=") + QString::number( m_fit_c[fec][hybrid][chip][ch],'f',2)  + QString(", d=") + QString::number( m_fit_d[fec][hybrid][chip][ch],'f',2)
+                                            + QString("\nr2=") + QString::number( m_fit_error_r2[fec][hybrid][chip][ch],'f',2)  + QString(", rms=") + QString::number( m_fit_error_rms[fec][hybrid][chip][ch],'f',5));
+
+                    plot->legend->setVisible(true);
+                    plot->legend->setFont(QFont("Helvetica",9));
+                    plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignRight);
+                    //plot->yAxis->rescale();
+                }
+
+            }
             //Online ADC or TDC or threshold
-            else if(m_modeIndex == 3 || m_modeIndex == 4 || (m_modeIndex == 6 && m_isThresholdCalibration))
+            else if(m_modeIndex == 4 || m_modeIndex == 5 || (m_modeIndex == 7 && m_isThresholdCalibration))
             {
                 for(int bit=0; bit<m_number_bits;bit++){
                     plot->addGraph();
                     plot->graph(bit)->setData(
-                        QVector<double>::fromStdVector(m_x),
-                        QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
+                                QVector<double>::fromStdVector(m_x),
+                                QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
                     plot->graph(bit)->setPen(QPen(QColor(static_cast<unsigned int>(bit)*colorFactor)));
                     plot->legend->removeItem(plot->legend->itemCount()-1);
                 }
@@ -2237,9 +3345,9 @@ void CalibrationModule::PlotData(){
                 plot->yAxis->rescale();
             }
             //S-curve
-            else if(m_modeIndex == 5)
+            else if(m_modeIndex == 6)
             {
-                if(m_daqWindow->ui->choicePlotTime->currentIndex() == 1 ) {
+                if(m_daqWindow->m_ui->choicePlotTime->currentIndex() == 1 ) {
                     plot->legend->setVisible(true);
                     plot->legend->setFont(QFont("Helvetica",9));
                     plot->addGraph();
@@ -2272,7 +3380,7 @@ void CalibrationModule::PlotData(){
                     }
                     errorBars->setData(QVector<double>::fromStdVector(errors));
 
-                    if(m_fit_scale[idx] != -1 && m_fit_mean[idx] != -1 && m_fit_sigma[idx] != -1) {
+                    if(m_fit_scale[idx] != -9999.0 && m_fit_mean[idx] != -9999.0 && m_fit_sigma[idx] != -9999.0) {
                         plot->addGraph();
                         std::vector<double> fit;
                         std::vector<double> x;
@@ -2339,50 +3447,32 @@ void CalibrationModule::PlotData(){
                 plot->yAxis->rescale();
             }
             //Threshold measurement
-            else if(m_modeIndex == 6 && !m_isThresholdCalibration)
+            else if(m_modeIndex == 7 && !m_isThresholdCalibration)
             {
                 plot->legend->setVisible(true);
                 plot->legend->setFont(QFont("Helvetica",9));
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Threshold"));
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                 plot->yAxis->rescale();
             }
             //Pedestal
-            else if(m_modeIndex == 7)
+            else if(m_modeIndex == 8)
             {
                 plot->legend->setVisible(true);
                 plot->legend->setFont(QFont("Helvetica",9));
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Pedestal"));
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                            QVector<double>::fromStdVector(m_x),
+                            QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
 
             }
             //Pulser DAC
-            else if(m_modeIndex == 8)
-            {
-                plot->legend->setVisible(true);
-                plot->legend->setFont(QFont("Helvetica",9));
-                double slope_high = (m_y[fec][hybrid][chip][10] - m_y[fec][hybrid][chip][2])/(m_dac_setting[10] - m_dac_setting[2]);
-                double offset_high = m_y[fec][hybrid][chip][10] - slope_high*m_dac_setting[10];
-
-                double slope_low = (m_y[fec][hybrid][chip][1] - m_y[fec][hybrid][chip][0])/(m_dac_setting[1] - m_dac_setting[0]);
-                double offset_low = m_y[fec][hybrid][chip][0];
-                plot->addGraph();
-                plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
-                                        + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
-                plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_dac_setting),
-                    QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
-                plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
-            }
-            //Threshold DAC
             else if(m_modeIndex == 9)
             {
                 plot->legend->setVisible(true);
@@ -2396,9 +3486,66 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_dac_setting),
-                    QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                            QVector<double>::fromStdVector(m_dac_setting),
+                            QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+            }
+            //Threshold DAC
+            else if(m_modeIndex == 10)
+            {
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",9));
+                double slope_high = (m_y[fec][hybrid][chip][10] - m_y[fec][hybrid][chip][2])/(m_dac_setting[10] - m_dac_setting[2]);
+                double offset_high = m_y[fec][hybrid][chip][10] - slope_high*m_dac_setting[10];
+
+                double slope_low = (m_y[fec][hybrid][chip][1] - m_y[fec][hybrid][chip][0])/(m_dac_setting[1] - m_dac_setting[0]);
+                double offset_low = m_y[fec][hybrid][chip][0];
+                plot->addGraph();
+                plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
+                                        + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
+                plot->graph(0)->setData(
+                            QVector<double>::fromStdVector(m_dac_setting),
+                            QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+            }
+            //Latency calibration
+            else if(m_modeIndex == 11 || m_modeIndex == 12)
+            {
+                plot->legend->setVisible(true);
+                plot->legend->setFont(QFont("Helvetica",9));
+                int n = -1;
+                int start = m_start_reset_latency;
+                QVector<double> m_x;
+                if(m_modeIndex == 12) {
+                    start = m_start_tp_latency;
+                }
+                for(int bit=0; bit<m_number_bits;bit++){
+                    m_x.push_back(start+bit);
+                }
+                for(int fec=0; fec<FECS_PER_DAQ; fec++) {
+                    int n = m_fecLatencyReset[fec];
+                    if(m_modeIndex == 12) {
+                        n = m_fecLatencyTP[fec];
+                    }
+                    if(n > -1) {
+                        QVector<double> m_y;
+                        for(int bit=0; bit<m_number_bits;bit++){
+                            m_y.push_back(m_mean2[bit][fec][0][0][0]);
+                            //std::cout << bit << " " <<  m_mean2[bit][fec][0][0][0] << std::endl;
+                        }
+                        plot->addGraph();
+                        if(g_clock_source < 2) {
+                            plot->graph(fec)->setName("Assister " + QString::number(fec));
+                        }
+                        else {
+                            plot->graph(fec)->setName("FEC " + QString::number(fec));
+                        }
+                        plot->graph(fec)->setData(m_x, m_y);
+                        plot->graph(fec)->setScatterStyle(QCPScatterStyle::ssDisc);
+
+                        plot->graph(fec)->setPen(QPen(QColor(0,0,fec*30+46),1,Qt::SolidLine));
+                    }
+                }
             }
         }
         plot->replot();
@@ -2421,10 +3568,8 @@ void CalibrationModule::GetActiveVMMs(){
                 if( m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
 
                     for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
-                        if (m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            m_vmmActs.push_back(fec*HYBRIDS_PER_FEC*VMMS_PER_HYBRID+
-                                                hybrid*VMMS_PER_HYBRID +vmm);
-                        }
+                        m_vmmActs.push_back(fec*HYBRIDS_PER_FEC*VMMS_PER_HYBRID+
+                                            hybrid*VMMS_PER_HYBRID +vmm);
                     }
                 }
 
@@ -2437,6 +3582,7 @@ void CalibrationModule::GetActiveVMMs(){
 
 // ------------------------------------------------------------------------ //
 void CalibrationModule::updatePlot(){
+    //std::cout << "Update Plot" << std::endl;
     PlotData();
 }
 
@@ -2464,71 +3610,127 @@ int CalibrationModule::PulseHeight_mV_to_PulserDAC( double pulseHeight, int gain
     return static_cast<int>(std::round(pulseHeight/(m_pulseSlope[gain_idx]+m_pulseOffset[gain_idx])));
 }
 
+void CalibrationModule::AddVMMsToCombobox() {
+    m_daqWindow->m_ui->comboBoxFec->clear();
+    m_daqWindow->m_ui->label_vmm->setText("Display VMMs");
+    m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 1-8"));
+    if(m_vmmActs.size() >= 8 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 9-16"));
+    }
+    if(m_vmmActs.size() >= 16 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 17-24"));
+    }
+    if(m_vmmActs.size() >= 24)
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 25-32"));
+    }
+    if(m_vmmActs.size() >= 32 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 33-40"));
+    }
+    if(m_vmmActs.size() >= 40 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 41-48"));
+    }
+    if(m_vmmActs.size() >= 48 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 49-56"));
+    }
+    if(m_vmmActs.size() >= 56 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 57-64"));
+    }
+    if(m_vmmActs.size() >= 64 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 65-72"));
+    }
+    if(m_vmmActs.size() >= 72 )
+    {
+        m_daqWindow->m_ui->comboBoxFec->addItem(QString("VMM 73-80"));
+    }
+}
+
 // ------------------------------------------------------------------------ //
 void CalibrationModule::StartCalibration(){
     m_numHits = 0;
     m_bitCount = -1;
-    m_lastUdpTimeStamp=0;
     m_start = 0;
     m_end = 0;
-
     m_dataAvailable = false;
-    emit m_daqWindow->ui->openConnection->clicked();
+    m_pulser_dac = 0;
+    emit m_daqWindow->m_ui->openConnection->clicked();
     QThread::usleep(1000);
-    if(! (m_daqWindow->ui->connectionLabel->text()==QString("all alive"))) {
+    if(! (g_connection_ok)) {
         int ret = QMessageBox::critical(nullptr, tr("FEC communication"),
                                         "Communication couldn't be established!\nexit calibration!",
                                         QMessageBox::Ok);
-        m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+        m_daqWindow->m_ui->pushButtonTakeData->setChecked(false);
         return;
     }
 
     GetSettings();
     PlotData();
 
+    GetActiveVMMs();
+    if(m_modeIndex != 11 && m_modeIndex != 12) {
+        AddVMMsToCombobox();
+    }
+    InitializeDataStructures();
     if(IsCalibration())
     {
+        SaveSettings("Latest_config");
+        if(m_modeIndex == 2) {
+            m_pulser_dac = -1;
 
-        if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
-            m_daqWindow->ui->line_configFile->setText("Calib_config");
-            SaveSettings();
-        }
-    }
-
-    GetActiveVMMs();
-    InitializeDataStructures();
-
-    //Time calibration needs different scan length depending on bc_period, works only for 40 MHz
-    if(m_modeIndex == 2) {
-
-        for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-            int fec = GetFEC(vmm);
-            int hybrid = GetHybrid(vmm);
-            int bcclock = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
-            if(bcclock != 2) {
-                int ret = QMessageBox::warning(nullptr, tr("Time calibration"),
-                                               "For the time calibration, all hybrids have to use 40 MHz BC clock!\n",
-                                               QMessageBox::Ok);
-                return;
+            unsigned long tp_offset = 4096;
+            unsigned long tp_offset_last = 4096;
+            for(int fec=0; fec < FECS_PER_DAQ; fec++) {
+                if( m_daqWindow->m_daq.m_fecActs[fec == true]) {
+                    tp_offset_last = tp_offset;
+                    tp_offset = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("tp_offset_first");
+                    if(tp_offset_last != tp_offset && tp_offset_last != 4096) {
+                        QMessageBox::warning(nullptr, tr("Time calibration"),
+                                             "All FECs/assisters need the same setting for the offset of the first TP!\n",
+                                             QMessageBox::Ok);
+                        return;
+                    }
+                }
+            }
+            m_reference_BCID = tp_offset;
+            //std::cout << "reference bcid " << m_reference_BCID << std::endl;
+            bool ok;
+            QStringList list = QInputDialog::getText(nullptr, tr("Time calibration"),
+                                                     tr("Do you want to set the pulser DAC value (-1 means the DAC is automatically chosen)?"),
+                                                     QLineEdit::Normal,"-1",&ok).split(",");
+            if(ok && list.count() == 1) {
+                m_pulser_dac = list[0].toInt();
             }
 
-            m_number_bits = m_number_bits_offline_time;
+        }
+        else if(m_modeIndex == 3){
+            ApplyCalib(true);
         }
     }
+
+
+
+
     //S-curve needs user input for parameters
-    else if(m_modeIndex == 5)
+    if(m_modeIndex == 6)
     {
         bool ok;
 
         QStringList list = QInputDialog::getText(nullptr, tr("S-curve input parameters"),
                                                  tr("S-curve measurement on one VMM with user settings (gain, polarity, channel masking). On Windows, you can only measure around 8 channels, you have to mask the other channels.\n"
-                                                    "Mandatory settings are: FEC=[1 to 8], VMM=[0 to 15]. The other settings are optionally, if they are not given the default 0 (automatically chosen) is used:\n"
+                                                    "Mandatory settings are: FEC-ID (as defined in the slow control, not IP address)=[0 to 7], VMM=[0 to 15]. The other settings are optionally, if they are not given the default 0 (automatically chosen) is used:\n"
                                                     "\tPULSE-HEIGHT=0 [0=automatically chosen (around 500 mV after per-amp), positive number=pulser DAC, -1=no test pulses (use noise)]\n"
                                                     "\tTHRESHOLD=0 [0=automatically chosen (around 500 mV), positive number=threshold DAC]\n"
                                                     "\tSCAN-WIDTH=0 [0=automatically chosen (60 steps with THRESHOLD in center), positive number=steps in scan interval (20-200)]\n"
                                                     "\tDIRECTION=0 [0=automatically chosen scan direction (up), 1=down]\n"
                                                     "\tSCAN-TYPE=0 [0=scan threshold, 1=scan pulse height]:"),
-                                                 QLineEdit::Normal,"FEC=1,VMM=0,PULSE-HEIGHT=0,THRESHOLD=0,SCAN-WIDTH=0,DIRECTION=0,SCAN-TYPE=0",&ok).split(",");
+                                                 QLineEdit::Normal,"FEC=0,VMM=0,PULSE-HEIGHT=0,THRESHOLD=0,SCAN-WIDTH=0,DIRECTION=0,SCAN-TYPE=0",&ok).split(",");
         m_pulser_dac = 0;
         int scanWidth = 60;
         int threshold = 0;
@@ -2536,9 +3738,9 @@ void CalibrationModule::StartCalibration(){
         m_theVMM = -1;
         m_scan_type = 0;
         if(list.count() < 2) {
-            int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
-                                           "The FEC and the VMM have to be specified!\n",
-                                           QMessageBox::Ok);
+            QMessageBox::warning(nullptr, tr("S-curve input parameters"),
+                                 "The FEC and the VMM have to be specified!\n",
+                                 QMessageBox::Ok);
             return;
         }
         else {
@@ -2546,9 +3748,9 @@ void CalibrationModule::StartCalibration(){
                 QString str = list[n];
                 QVector<QStringRef> words = str.splitRef('=');
                 if(words.size() != 2) {
-                    int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
-                                                   "The correct format is PARAMETER=VALUE!\n",
-                                                   QMessageBox::Ok);
+                    QMessageBox::warning(nullptr, tr("S-curve input parameters"),
+                                         "The correct format is PARAMETER=VALUE!\n",
+                                         QMessageBox::Ok);
                     return;
                 }
                 QString param = words[0].toString();
@@ -2580,29 +3782,24 @@ void CalibrationModule::StartCalibration(){
         }
 
 
-        if(m_theFEC > 8 || m_theFEC < 1 || m_theVMM > 15 || m_theVMM < 0
-            || m_theDirection < 0 || m_theDirection > 1
-            || m_scan_type < 0 || m_scan_type > 1
-            || m_pulser_dac < -1 || m_pulser_dac > 1023
-            || ((m_scan_type == 1) && (m_pulser_dac == -1))
-            || threshold < 0 || threshold > 1023
-            || scanWidth < 20 || scanWidth > 200) {
+        if(m_theFEC > 7 || m_theFEC < 0 || m_theVMM > 15 || m_theVMM < 0
+                || m_theDirection < 0 || m_theDirection > 1
+                || m_scan_type < 0 || m_scan_type > 1
+                || m_pulser_dac < -1 || m_pulser_dac > 1023
+                || ((m_scan_type == 1) && (m_pulser_dac == -1))
+                || threshold < 0 || threshold > 1023
+                || scanWidth < 20 || scanWidth > 200) {
             int ret = QMessageBox::warning(nullptr, tr("S-curve input parameters"),
                                            "Incorrect range or combination of paramters!\n",
                                            QMessageBox::Ok);
             return;
         }
 
-        int fec = m_theFEC-1;
+        int fec = m_theFEC;
         int hybrid = m_theVMM / 2;
         int chip = m_theVMM % 2;
 
-
-        int polarity = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sp");
-        int peaktime = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("peaktime");
-        int tac = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("stc");
-        int bcclock = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
-        int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+        int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
 
         m_threshold_dac = 0;
         m_threshold_mV = 0;
@@ -2628,12 +3825,16 @@ void CalibrationModule::StartCalibration(){
                 }
                 //Determine pulser mV to determine threshold
                 pulser_mV = PulserDAC_to_PulseHeight_mV(m_pulser_dac, gain);
+                //std::cout << "pulser_mV " << pulser_mV << std::endl;
+                //std::cout << "m_pulser_dac " << m_pulser_dac << std::endl;
 
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",m_pulser_dac);
+                //64=Pulser DAC
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",64);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",m_pulser_dac);
                 m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                 QThread::usleep(10000);
                 m_pulser_mV = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                //std::cout << "measured pulser_mV " << m_pulser_mV << std::endl;
             }
             //Automatically chosen threshold from pulser dac
             m_threshold_dac = Threshold_mV_to_DAC(pulser_mV);
@@ -2644,6 +3845,7 @@ void CalibrationModule::StartCalibration(){
             //Determine scan range of threshold
             min = std::max(0,int(m_threshold_dac-0.5*w));
             max = std::min(1023,int(m_threshold_dac+0.5*w));
+            std::cout << "Threshold min max " << min << " " << max << std::endl;
         }
         // scan pulser, set threshold dac
         else {
@@ -2659,7 +3861,8 @@ void CalibrationModule::StartCalibration(){
             if(threshold > 0) {
                 m_threshold_dac  = threshold;
             }
-            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
+            //65=Threshold DAC
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",65);
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",m_threshold_dac);
             m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
             QThread::usleep(10000);
@@ -2683,7 +3886,7 @@ void CalibrationModule::StartCalibration(){
             }
         }
     }
-    else if(m_modeIndex == 6) {
+    else if(m_modeIndex == 7) {
         QMessageBox::StandardButton reply;
 
         reply = QMessageBox::question(nullptr, "Calibrate or measure threshold?", "Do you want to measure (no) or calibrate (yes)?", QMessageBox::Yes | QMessageBox::No );
@@ -2693,6 +3896,14 @@ void CalibrationModule::StartCalibration(){
         else {
             m_isThresholdCalibration = true;
         }
+    }
+    else if(m_modeIndex == 11 || (m_modeIndex == 12 && !m_isAutomatic)) {
+        bool ok;
+
+        qint32 channel = QInputDialog::getInt(nullptr, tr("Latency calibration"),
+                                              tr("Please select one working channel for all VMMs."),
+                                              0,0,63,1,&ok);
+        m_theChannel = channel;
     }
 
 
@@ -2705,41 +3916,64 @@ void CalibrationModule::StartCalibration(){
             int fec = GetFEC(vmm);
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
-            if(m_modeIndex != 5) {
-                //Read Hybrid ID
-                for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-                    int fec = GetFEC(vmm);
-                    int hybrid = GetHybrid(vmm);
+            if(chip%2==0) {
+                if(m_modeIndex != 6) {
+                    //Read Hybrid ID
                     m_hybrid_id[fec][hybrid] = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadI2C(hybrid,0).toStdString();
                 }
+                else {
+                    int theFec = m_theFEC;
+                    int thehybrid = m_theVMM / 2;
+                    m_hybrid_id[fec][hybrid] = m_daqWindow->m_daq.m_fecs[theFec].m_fecConfigModule->ReadI2C(thehybrid,0).toStdString();
+                }
             }
-            else {
-                int theFec = m_theFEC-1;
-                int thehybrid = m_theVMM / 2;
-                m_hybrid_id[fec][hybrid] = m_daqWindow->m_daq.m_fecs[theFec].m_fecConfigModule->ReadI2C(thehybrid,0).toStdString();
-            }
-
             for(int ch = 0; ch<64; ch++){
                 //Offline ADC and time, online ADC and TDC calibration
-                if(m_modeIndex <= 4)
+                if(m_modeIndex <= 5)
                 {
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,ch);
+                    int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
+                    if(gain<=1) {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",1,ch);
+                    }
+                    else {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",0,ch);
+                    }
                 }
-
+                else if(m_modeIndex == 11 || m_modeIndex == 12)
+                {
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",1,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                    int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
+                    if(gain<=1) {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",1,ch);
+                    }
+                    else {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",0,ch);
+                    }
+                }
                 //threshold measurement
-                if(m_modeIndex == 6)
+                if(m_modeIndex == 7)
                 {
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",0,ch);
 
                 }
                 //S-curve (one VMM)
-                else if(m_modeIndex == 5)
+                else if(m_modeIndex == 6)
                 {
-                    int theFec = m_theFEC-1;
+                    int theFec = m_theFEC;
                     int thehybrid = m_theVMM / 2;
                     int theChip = m_theVMM % 2;
+                    int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
+                    if(gain<=1) {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",1,ch);
+                    }
+                    else {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sth",0,ch);
+                    }
                     if(fec == theFec && hybrid == thehybrid && theChip == chip)
                     {
                         if(m_pulser_dac == -1) {
@@ -2753,6 +3987,7 @@ void CalibrationModule::StartCalibration(){
                     {
                         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",1,ch);
                         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+
                     }
                 }
             }
@@ -2760,26 +3995,35 @@ void CalibrationModule::StartCalibration(){
         //check config once
         m_daqWindow->m_daq.SendAll(true);
     }
-    if(m_modeIndex == 7)
+    if(m_modeIndex == 8)
     {
         MeasurePedestalOrThreshold(true, false);
+        PlotData();
     }
-    else if(m_modeIndex == 6)
+    else if(m_modeIndex == 7)
     {
         MeasurePedestalOrThreshold(false, m_isThresholdCalibration);
-    }
-    else if(m_modeIndex == 8)
-    {
-        MeasurePulserOrThresholdDAC(true);
+        PlotData();
     }
     else if(m_modeIndex == 9)
     {
-        MeasurePulserOrThresholdDAC(false);
+        MeasurePulserOrThresholdDAC(true);
+        PlotData();
     }
-
+    else if(m_modeIndex == 10)
+    {
+        MeasurePulserOrThresholdDAC(false);
+        PlotData();
+    }
     else {
         m_nodata_start = std::chrono::high_resolution_clock::now();
-        DoCalibrationStep();
+        if(IsCalibration())
+        {
+            DoCalibrationStep();
+        }
+        else {
+            m_bitCount = 0;
+        }
         QThread::usleep(100000);
         StartDataTaking();
     }
@@ -2789,7 +4033,7 @@ void CalibrationModule::StartCalibration(){
 void CalibrationModule::DoCalibrationStep(){
     m_bitCount++;
     //Offline or online ADC or time/TDC
-    if(m_modeIndex <= 4) {
+    if(m_modeIndex <= 5 || m_modeIndex == 11 || m_modeIndex == 12) {
 
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
@@ -2800,61 +4044,107 @@ void CalibrationModule::DoCalibrationStep(){
             if(m_modeIndex == 1)
             {
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
-                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int step = (max - min)/(m_number_bits-1);
-                std::string val = std::to_string(static_cast<int>(min+m_bitCount*step));
+                int val = static_cast<int>(min+m_bitCount*step);
                 if(vmm == 0) {
-                    m_dac_setting.push_back(static_cast<int>(min+m_bitCount*step));
+                    m_dac_setting.push_back(val);
                 }
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",val);
+                //64=PulserDAC
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",64);
                 m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                 QThread::usleep(10000);
                 int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                //std::cout << "pulser Dac - vmm " << (int) val << " " << (int)vmm << ", hybrid " << (int) hybrid << ", fec " << (int)fec << ": " << measured  << std::endl;
                 m_dac_measured[fec][hybrid][chip].push_back(measured);
 
             }
             else if(m_modeIndex == 2)
             {
-                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int center = (max + min)/2;
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",center);
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_bitCount*TIME_FACTOR);
+                if( m_pulser_dac == -1) {
+                    m_pulser_dac = center;
+                }
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",m_pulser_dac);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", m_bitCount);
             }
             else if(m_modeIndex == 3)
             {
-                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
-                int center = (max + min)/(2);
-                std::string val = std::to_string(static_cast<int>(center));
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
-                for(int ch = 0; ch<64; ch++){
-                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_10", m_bitCount,ch );
+                int step = (max - min)/(m_number_bits-1);
+                int val = static_cast<int>(min+m_bitCount*step);
+                if(vmm == 0) {
+                    m_dac_setting.push_back(val);
                 }
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",val);
+                //64=PulserDAC
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",64);
+                m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
+                QThread::usleep(10000);
+                int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                m_dac_measured[fec][hybrid][chip].push_back(measured);
             }
             else if(m_modeIndex == 4)
             {
-                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("gain");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
                 int min = m_minPulseHeightTable[gain];
                 int max =  m_maxPulseHeightTable[gain];
                 int center = (max + min)/(2);
-                std::string val = std::to_string(static_cast<int>(center));
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",val);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",center);
                 for(int ch = 0; ch<64; ch++){
-                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_8", m_bitCount,ch );
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sz10b", m_bitCount,ch );
+                }
+            }
+            else if(m_modeIndex == 5)
+            {
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
+                int min = m_minPulseHeightTable[gain];
+                int max =  m_maxPulseHeightTable[gain];
+                int center = (max + min)/(2);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",center);
+                for(int ch = 0; ch<64; ch++){
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sz08b", m_bitCount,ch );
+                }
+            }
+            //Reset latency and TP latency
+            else if(m_modeIndex == 11 || m_modeIndex == 12)
+            {
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 4);
+                int gain = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].GetRegister("sg");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", m_thresholdTable[gain]);
+                int min = m_minPulseHeightTable[gain];
+                int max =  m_maxPulseHeightTable[gain];
+                int center = (max + min)/2;
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",center);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",1,m_theChannel);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm",0,m_theChannel);
+                m_daqWindow->m_daq.m_fecs[fec].SetReg("debug_data_format",  true);
+                if(m_modeIndex == 11) {
+                    m_daqWindow->m_daq.m_fecs[fec].SetReg("latency_reset", static_cast<unsigned long>(m_start_reset_latency+m_bitCount));
+                }
+                else {
+                    m_daqWindow->m_daq.m_fecs[fec].SetReg("tp_offset_first", (unsigned long)100);
+                    m_daqWindow->m_daq.m_fecs[fec].SetReg("tp_latency", static_cast<unsigned long>(m_start_tp_latency+m_bitCount));
                 }
             }
         }
     }
     //S-curve
-    else if(m_modeIndex == 5)
+    else if(m_modeIndex == 6)
     {
 
         if(m_theDirection == 0)
@@ -2866,18 +4156,21 @@ void CalibrationModule::DoCalibrationStep(){
         }
 
 
-        int fec = m_theFEC-1;
+        int fec = m_theFEC;
         int hybrid = m_theVMM / 2;
         int chip = m_theVMM % 2;
         m_srs_timestamp_start[fec][hybrid][chip]=0;
         m_srs_timestamp_end[fec][hybrid][chip]=0;
+        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].SetReg("TP_skew", 0);
         if(m_scan_type == 0) {
-            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Threshold_DAC");
+            //65="Threshold_DAC"
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",65);
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt", (int)m_dac_setting[m_theIndex]);
         }
         else {
-            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2", (int)m_dac_setting[m_theIndex]);
+            //64="Pulser_DAC"
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",64);
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10", (int)m_dac_setting[m_theIndex]);
         }
         m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
         QThread::usleep(10000);
@@ -2887,6 +4180,7 @@ void CalibrationModule::DoCalibrationStep(){
     m_daqWindow->m_daq.SendAll(false);
     QThread::usleep(100000);
 }
+
 
 // ------------------------------------------------------------------------ //
 void CalibrationModule::AccumulateData(){
@@ -2903,7 +4197,7 @@ void CalibrationModule::AccumulateData(){
         m_nodata_end = std::chrono::high_resolution_clock::now();
         auto nodata_duration = std::chrono::duration_cast<std::chrono::milliseconds>( m_nodata_end - m_nodata_start ).count();
         //If for ADC or TDC calibrations there is not data for longer than 10 s, hard reset the VMMs
-        if((IsCalibration() && m_modeIndex != 5 && nodata_duration >= 5000))
+        if((IsCalibration() && m_modeIndex != 6 && nodata_duration >= 5000))
         {
             StopDataTaking();
             Reset();
@@ -2912,9 +4206,12 @@ void CalibrationModule::AccumulateData(){
     }
     bool continueCalibration = true;
 
-    uint64_t delay_ns = m_end - m_start;
+    uint64_t delay_ns = 0;
+    if(m_end >= m_start) {
+        delay_ns = m_end - m_start;
+    }
     //convert run value from ms to ns
-    if(delay_ns >= static_cast<uint64_t>(m_daqWindow->ui->Runs->value())*1000000)
+    if(delay_ns >= static_cast<uint64_t>(m_daqWindow->m_ui->Runs->value())*1000000)
     {
         double delay_s = delay_ns*0.000000001;
         m_time.push_back(delay_s);
@@ -2923,7 +4220,7 @@ void CalibrationModule::AccumulateData(){
 
 
         std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Finished calibration acquisition " <<
-            m_bitCount << " after " << delay_ms  << " ms!"  << std::endl;
+                     m_bitCount << " after " << delay_ms  << " ms!"  << std::endl;
         //Finish calibration
         if(m_bitCount == m_number_bits-1) {
             continueCalibration = false;
@@ -2937,19 +4234,13 @@ void CalibrationModule::AccumulateData(){
         }
         else
         {
-            m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-            m_daqWindow->ui->pushButtonTakeData->setChecked(false);
+            m_daqWindow->m_ui->pushButtonTakeData->setCheckable(false);
+            m_daqWindow->m_ui->pushButtonTakeData->setChecked(false);
             m_dataAvailable = true;
             m_data_modeIndex = m_modeIndex;
 
-            if(IsCalibration())
-            {
-                if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
-                    LoadSettings();
-                }
-            }
             //Not for S-curve and time calibration
-            if(m_modeIndex != 5 && m_modeIndex != 2) {
+            if(m_modeIndex != 6 && m_modeIndex != 2) {
                 for(int bit =0; bit<m_number_bits; bit++){
                     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
                         int fec = GetFEC(vmm);
@@ -2958,21 +4249,23 @@ void CalibrationModule::AccumulateData(){
                         for(unsigned int ch = 0; ch<64; ch++){
                             unsigned long size = m_data[bit][fec][hybrid][chip][ch].size();
                             double norm = static_cast<double>(size);
-                            double mean = -9999;
-                            double median = -9999;
+                            double mean = -9999.0;
+                            double mean2 = -9999.0;
+                            double median = -9999.0;
                             if(!IsCalibration())
                             {
                                 mean = 0;
                             }
 
                             //Channels
-                            if(m_modeIndex == 10)
+                            if(m_modeIndex == 20)
                             {
                                 norm = 1.0;
                             }
                             if(size>0)
                             {
                                 mean = std::accumulate(m_data[bit][fec][hybrid][chip][ch].begin(),m_data[bit][fec][hybrid][chip][ch].end(),0.0)/norm;
+                                mean2 = std::accumulate(m_data2[bit][fec][hybrid][chip][ch].begin(),m_data2[bit][fec][hybrid][chip][ch].end(),0.0)/norm;
                                 auto nth = m_data[bit][fec][hybrid][chip][ch].begin() + (50*m_data[bit][fec][hybrid][chip][ch].size())/100;
                                 std::nth_element(m_data[bit][fec][hybrid][chip][ch].begin(), nth, m_data[bit][fec][hybrid][chip][ch].end());
                                 median = *nth;
@@ -2983,30 +4276,36 @@ void CalibrationModule::AccumulateData(){
                             else {
                                 m_mean[bit][fec][hybrid][chip].push_back(mean);
                             }
-
+                            m_mean2[bit][fec][hybrid][chip].push_back(mean2);
                         }
                     }
                 }
+
             }
             else if(m_modeIndex == 2) {
                 //Determine most common BCID in measurements over all VMMs and channels
                 long all_bcid_cnt = 0;
                 int all_bcid_max = 0;
                 int all_bcid_min = 0;
-                m_most_common_BCID = 0;
+                int measured_most_common_BCID = 0;
                 for(int i=0; i<4096; i++) {
                     long cnt = m_cnt_bcid[i];
                     if(cnt > all_bcid_cnt) {
-                        m_most_common_BCID = i;
+                        if(m_reference_BCID == -1) {
+                            m_reference_BCID = i;
+                        }
+                        measured_most_common_BCID = i;
                         all_bcid_cnt = cnt;
                     }
                 }
+                //std::cout << "reference bcid " << m_reference_BCID << std::endl;
+
                 //Accept in the subsequent search of the most common BCID per channels a range of +/- 2 BCIDs around the most common one
-                if(m_most_common_BCID-(int)(NUM_BCID/2) >=0 ) {
-                    all_bcid_min = m_most_common_BCID-(int)(NUM_BCID/2);
+                if(measured_most_common_BCID-(int)(NUM_BCID/2) >=0 ) {
+                    all_bcid_min = measured_most_common_BCID-(int)(NUM_BCID/2);
                 }
-                if(m_most_common_BCID+(int)(NUM_BCID/2) <= 4095 ) {
-                    all_bcid_max = m_most_common_BCID+(int)(NUM_BCID/2);
+                if(measured_most_common_BCID+(int)(NUM_BCID/2) <= 4095 ) {
+                    all_bcid_max = measured_most_common_BCID+(int)(NUM_BCID/2);
                 }
                 for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
                     int fec = GetFEC(vmm);
@@ -3048,36 +4347,38 @@ void CalibrationModule::AccumulateData(){
                         }
                         for(int bit = 0; bit<m_number_bits; bit++){
                             for(int n = 0; n<NUM_BCID; n++){
-                                m_mean_per_bcid[n][bit][fec][hybrid][chip].push_back(-9999);
+                                m_mean_per_bcid[n][bit][fec][hybrid][chip].push_back(-9999.0);
                                 m_percent_bcid[n][bit][fec][hybrid][chip].push_back(0);
                             }
                             m_mean[bit][fec][hybrid][chip].push_back(0);
-                            m_fit_y[bit][fec][hybrid][chip].push_back(-9999);
+                            m_fit_y[bit][fec][hybrid][chip].push_back(-9999.0);
                         }
-                        m_fit_start_time[fec][hybrid][chip].push_back(-9999);
-                        m_fit_start_bcid[fec][hybrid][chip].push_back(min-m_most_common_BCID);
+                        m_fit_start_time[fec][hybrid][chip].push_back(-9999.0);
+                        m_fit_start_bcid[fec][hybrid][chip].push_back(-9999.0);
                         if(max - min == NUM_BCID-1) {
                             //determine percentages for three BCIDs
                             for(int bit = 0; bit<m_number_bits; bit++){
                                 int total = m_data[bit][fec][hybrid][chip][ch].size();
                                 for(int bcid=min; bcid <= max; bcid++) {
-                                    double meanTDC = -9999;
-                                    double meanTime = -9999;
+                                    double meanTDC = -9999.0;
+                                    double meanTime = -9999.0;
                                     auto it = std::partition(m_data[bit][fec][hybrid][chip][ch].begin(),m_data[bit][fec][hybrid][chip][ch].end(), [bcid](int val) { return (bcid*1000 <=val && bcid*1000+255 >= val); });
                                     long cnt = std::count_if(m_data[bit][fec][hybrid][chip][ch].begin(),it, [](int val) { return true; });
                                     if(cnt > 0) {
+                                        //Algorithm to calculate mean TDC
                                         long tdc = std::accumulate(m_data[bit][fec][hybrid][chip][ch].begin(),it,0);
                                         //remove the bcid from the combined data entry (bcid*1000+tdc)
                                         meanTDC = (tdc - bcid*1000*cnt);
                                         //calculate the mean tdc for the bit value and bcid
                                         meanTDC = (double)meanTDC/(double)cnt;
+
                                         //convert BCID and TDC to time
-                                        meanTime = 1.5*m_bc_period[fec][hybrid] - (meanTDC*m_tac_slope[fec][hybrid][chip])/255;
+                                        //since the TDC ramp is stopped by the falling edge of the BCCLock, one has to use 1.5*bc_period (50% duty cycle)
+                                        meanTime = 1.5*g_clock_period - (meanTDC*m_tac_slope[fec][hybrid][chip])/255;
                                         m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch] =  (double)cnt/(double)total;
-                                        m_mean[bit][fec][hybrid][chip][ch] +=  ((bcid-m_most_common_BCID)*m_bc_period[fec][hybrid] +  meanTime)*m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch];
+                                        m_mean[bit][fec][hybrid][chip][ch] +=  ((bcid-m_reference_BCID)*g_clock_period +  meanTime)*m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch];
                                         m_mean_per_bcid[bcid-min][bit][fec][hybrid][chip][ch] = meanTime;
                                     }
-
                                 }
                             }
 
@@ -3090,11 +4391,25 @@ void CalibrationModule::AccumulateData(){
                                 if(!foundEdge) {
                                     for(int bit = 0; bit<m_number_bits-1; bit++){
                                         if(m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch] >= 0.5 && m_percent_bcid[bcid-min][bit+1][fec][hybrid][chip][ch] <= 0.5
-                                            && m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch] <= 0.5 && m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] >= 0.5) {
+                                                && m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch] <= 0.5 && m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] >= 0.5) {
                                             theBCIDIndex_50 = bcid-min+1;
                                             theTimeIndex_50 = bit;
-                                            double theTime = bit*3.125*TIME_FACTOR + (0.5 - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch])*3.125*TIME_FACTOR /(m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch]);
-                                            m_fit_start_time[fec][hybrid][chip][ch] = -((bcid+1-m_most_common_BCID)*m_bc_period[fec][hybrid]) + theTime;
+                                            //Determine the time at which 50% of BCIDs belong to one BCID and 50% belong to BCID+1
+                                            double theTime = bit*g_time_factor + (0.5 - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch])*g_time_factor /(m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch]);
+                                            //Store bcid where 50% edge occurs
+                                            m_fit_start_bcid[fec][hybrid][chip][ch] = min-m_reference_BCID;
+                                            m_fit_start_time[fec][hybrid][chip][ch] = -((bcid+1-m_reference_BCID)*g_clock_period) + theTime;
+                                            foundEdge = true;
+                                            break;
+                                        }
+                                        //Fix for cases with strange BC distribution (no crossing point at 50%)
+                                        else if(m_percent_bcid[bcid-min][bit][fec][hybrid][chip][ch] >= 0.5 && m_percent_bcid[bcid-min][bit+1][fec][hybrid][chip][ch] <= 0.5) {
+                                            theBCIDIndex_50 = bcid-min+1;
+                                            theTimeIndex_50 = bit;
+                                            double theTime = bit*g_time_factor + (0.5 - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch])*g_time_factor /(m_percent_bcid[bcid-min+1][bit+1][fec][hybrid][chip][ch] - m_percent_bcid[bcid-min+1][bit][fec][hybrid][chip][ch]);
+                                            m_fit_start_time[fec][hybrid][chip][ch] = -((bcid+1-m_reference_BCID)*g_clock_period) + theTime;
+                                            //Store bcid where 50% edge occurs
+                                            m_fit_start_bcid[fec][hybrid][chip][ch] = min-m_reference_BCID;
                                             foundEdge = true;
                                             break;
                                         }
@@ -3104,11 +4419,23 @@ void CalibrationModule::AccumulateData(){
                             if(foundEdge) {
                                 //data from 50% point until end of bits
                                 for(int n = theTimeIndex_50; n<m_number_bits; n++){
-                                    m_fit_y[n-theTimeIndex_50][fec][hybrid][chip][ch] =  m_mean_per_bcid[theBCIDIndex_50][n][fec][hybrid][chip][ch];
+                                    if(m_percent_bcid[theBCIDIndex_50][n][fec][hybrid][chip][ch] >= 0.95) {
+                                        m_fit_y[n-theTimeIndex_50][fec][hybrid][chip][ch] =  m_mean_per_bcid[theBCIDIndex_50][n][fec][hybrid][chip][ch];
+                                    }
+                                    else {
+                                        m_fit_y[n-theTimeIndex_50][fec][hybrid][chip][ch] = -9999.0;
+                                    }
                                 }
+
                                 //data from beginning to 50% point
+                                //ignore the first two data points, they are the same as the last two data points (bit 0 is identical to bit 8, bit 1 to bit 10)
                                 for(int n = 2; n< 2+theTimeIndex_50; n++){
-                                    m_fit_y[m_number_bits-theTimeIndex_50+n-2][fec][hybrid][chip][ch] = m_mean_per_bcid[theBCIDIndex_50-1][n][fec][hybrid][chip][ch];;
+                                    if(m_percent_bcid[theBCIDIndex_50-1][n][fec][hybrid][chip][ch] >= 0.95) {
+                                       m_fit_y[m_number_bits-theTimeIndex_50+n-2][fec][hybrid][chip][ch] = m_mean_per_bcid[theBCIDIndex_50-1][n][fec][hybrid][chip][ch];
+                                    }
+                                    else {
+                                        m_fit_y[m_number_bits-theTimeIndex_50+n-2][fec][hybrid][chip][ch] = -9999.0;
+                                    }
                                 }
                             }
                         }
@@ -3122,8 +4449,10 @@ void CalibrationModule::AccumulateData(){
                     int chip = GetVMM(vmm);
                     int cnt = 0;
                     for(unsigned int ch = 0; ch<64; ch++){
-                        meanOffset += m_mean[0][fec][hybrid][chip][ch];
-                        cnt++;
+                        if(m_mean[0][fec][hybrid][chip][ch] != -9999.0) {
+                            meanOffset += m_mean[0][fec][hybrid][chip][ch];
+                            cnt++;
+                        }
                     }
                     meanOffset = meanOffset/cnt;
                     if(meanOffset < minMeanOffset) {
@@ -3136,7 +4465,9 @@ void CalibrationModule::AccumulateData(){
                         int hybrid = GetHybrid(vmm);
                         int chip = GetVMM(vmm);
                         for(unsigned int ch = 0; ch<64; ch++){
-                            m_mean[bit][fec][hybrid][chip][ch] =  m_mean[bit][fec][hybrid][chip][ch] -  minMeanOffset;
+                            if(m_mean[bit][fec][hybrid][chip][ch] != -9999.0) {
+                                m_mean[bit][fec][hybrid][chip][ch] =  m_mean[bit][fec][hybrid][chip][ch] -  minMeanOffset;
+                            }
                         }
                     }
                 }
@@ -3144,35 +4475,116 @@ void CalibrationModule::AccumulateData(){
             //Offline calibration ADC or Time
             if(m_modeIndex == 1 || m_modeIndex == 2)
             {
-                FitOfflineCalibrationData();
+                FitLinearData();
+            }
+            else if(m_modeIndex == 3)
+            {
+                Fit4PL();
+                //FitErrorCurve();
             }
             //Online calibration ADC or TDC
-            else if(m_modeIndex == 3 || m_modeIndex == 4)
+            else if(m_modeIndex == 4 || m_modeIndex == 5)
             {
                 CalculateCorrections();
             }
             //S-Curve
-            else if(m_modeIndex == 5)
+            else if(m_modeIndex == 6)
             {
                 FitSCurve();
             }
-
+            //Latency calibration
+            else if(m_modeIndex == 11) {
+                CalculateLatency(true);
+            }
+            //Latency calibration
+            else if(m_modeIndex == 12) {
+                CalculateLatency(false);
+            }
             PlotData();
+            if(IsCalibration())
+            {
+                //Restore the saved settings
+                if(m_modeIndex == 4 || m_modeIndex == 5) {
+                    SaveSettings("Calib_config");
+                }
+                else {
+                    LoadSettings("Latest_config");
+                }
+            }
+            if(m_isAutomatic && (m_modeIndex == 11 || m_modeIndex == 12)) {
+                SaveCorrections();
+            }
+            m_daqWindow->LoadFECSettings();
+            m_daqWindow->LoadHybridSettings();
+            m_daqWindow->LoadVMMSettings();
+            m_daqWindow->LoadVMMChannelSettings();
         }
     }
 }
 
+
+void CalibrationModule::CalculateLatency(bool isReset) {
+    for(int bit = 0; bit<m_number_bits; bit++){
+        double fecLatency[FECS_PER_DAQ] = {0,0,0,0,0,0,0,0};
+        double nValues[FECS_PER_DAQ] = {0,0,0,0,0,0,0,0};
+        for(int vmm = 0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
+            int fec = GetFEC(vmm);
+            int hybrid = GetHybrid(vmm);
+            int chip = GetVMM(vmm);
+            if(m_mean[bit][fec][hybrid][chip][m_theChannel] > -9999.0) {
+                fecLatency[fec] += m_mean[bit][fec][hybrid][chip][m_theChannel];
+                nValues[fec]++;
+            }
+        }
+        for(int fec=0; fec<FECS_PER_DAQ;fec++) {
+            m_mean2[bit][fec][0][0].clear();
+            if(nValues[fec] > 0) {
+                fecLatency[fec] = fecLatency[fec]/nValues[fec];
+                m_mean2[bit][fec][0][0].push_back(fecLatency[fec]);
+            }
+        }
+    }
+
+    for(int fec=0; fec<FECS_PER_DAQ;fec++) {
+        double minVal = 9999.0;
+        int minBit = 0;
+        for(int bit = 0; bit<m_number_bits; bit++){
+            if(!m_mean2[bit][fec][0][0].empty() && std::abs(m_mean2[bit][fec][0][0][0]) < std::abs(minVal)) {
+                minVal = m_mean2[bit][fec][0][0][0];
+                minBit = bit;
+
+            }
+        }
+        if(isReset) {
+            if(minVal < 9999.0) {
+                m_fecLatencyReset[fec] = minBit;
+            }
+            else {
+                m_fecLatencyReset[fec] = -1;
+            }
+        }
+        else {
+            if(minVal < 9999.0) {
+                m_fecLatencyTP[fec] = minBit;
+            }
+            else {
+                m_fecLatencyTP[fec] = -1;
+            }
+        }
+    }
+}
+
+
 void CalibrationModule::Reset()
 {
-    m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-    m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(false);
+    m_daqWindow->m_ui->pushButtonTakeData->setCheckable(false);
     QThread::usleep(1000);
     std::cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX Hard Reset of VMMs!" << std::endl;
     for(int vmm =0; vmm < static_cast<int>(m_vmmActs.size()); vmm++){
         int fec = GetFEC(vmm);
         int hybrid = GetHybrid(vmm);
         int chip = GetVMM(vmm);
-        //LoadSettings();
         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 1);
         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 1);
         m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
@@ -3224,11 +4636,11 @@ void CalibrationModule::CalculateCorrections(){
         int chip = GetVMM(vmm);
         for(unsigned int ch=0; ch<64; ch++)
         {
-            if(m_mean[0][fec][hybrid][chip][ch] > -1)
+            if(m_mean[0][fec][hybrid][chip][ch]!= -9999.0)
             {
                 sorted_0mV.push_back(m_mean[0][fec][hybrid][chip][ch]);
             }
-            if(m_mean[m_number_bits-1][fec][hybrid][chip][ch] > -1)
+            if(m_mean[m_number_bits-1][fec][hybrid][chip][ch] != -9999.0)
             {
                 sorted_MAXmV.push_back(m_mean[m_number_bits-1][fec][hybrid][chip][ch]);
             }
@@ -3269,6 +4681,9 @@ void CalibrationModule::ConnectDAQSocket()
 {
     stringstream sx;
     int daqport = 6006;
+    if(g_clock_source==0) {
+        daqport = 9000;
+    }
     if(!m_udpSocket) {
         GetMessageHandler()("Initializing DAQ socket...","calibration_module::connectDAQSocket");
         m_udpSocket = new QUdpSocket();
@@ -3302,52 +4717,106 @@ void CalibrationModule::ConnectDAQSocket()
 }
 
 void CalibrationModule::SaveCorrections(){
-    if(m_modeIndex == 1 ||  m_modeIndex == 2)
+    if(m_modeIndex == 1 ||  m_modeIndex == 2 ||  m_modeIndex == 3)
     {
-        if( ! m_calibrationArray[0] &&  !m_calibrationArray[1]) {
+        int dac = -1;
+        if( ! m_calibrationArray[0] &&  !m_calibrationArray[1] && ! m_calibrationArray[2]) {
             return;
         }
-        QString name = "vmm_calibration";
+        QString theName = "vmm_calibration";
+        if(m_modeIndex == 1) {
+            theName += "_ADC";
+        }
+        else if(m_modeIndex == 2) {
+            theName += "_time";
+            dac = m_pulser_dac;
+        }
+        else if(m_modeIndex == 3) {
+            theName += "_time_walk";
+        }
         int lastFEC = -1;
+        double gain = 0;
+        int polarity = 0;
+        double peaktime =0;
+        double tac = 0;
         for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int fecId = m_fecPosID[fec];
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
-            if(lastFEC != fec+1) {
-                name += "_FEC" + QString::number(fecId);
+            if(lastFEC != fecId) {
+                theName += "_FEC" + QString::number(fecId);
             }
-            lastFEC = fec+1;
-            if(chip == 0) {
-                name += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
+            lastFEC = fecId;
+            if(chip == 0 && m_vmmActs.size() <= 4) {
+                if(QString::fromStdString(m_hybrid_id[fec][hybrid])== "ffffffffffffffffffffffffffffffff") {
+                    theName +=  "_ffffffffffffffffffffffffffffffff_" +  QString::number(fecId) + "_" +  QString::number(hybrid) + "_" + QString::number(chip);
+                }
+                else {
+                    theName += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
+                }
             }
-            name += "_VMM" + QString::number(hybrid*2+chip);
+            if(vmm == 0) {
+                theName += "_VMM" + QString::number(hybrid*2+chip);
+            }
+            else {
+                theName += "_" + QString::number(hybrid*2+chip);
+            }
+            gain = m_gain[fec][hybrid][chip];
+            polarity = m_polarity[fec][hybrid][chip];
+            peaktime = m_shaping_time[fec][hybrid][chip];
+            tac = m_tac_slope[fec][hybrid][chip];
 
         }
-        QString theName = CreateFileName(name);
-        QFile jsonFile(theName +  ".json");
+        if(m_modeIndex != 2) {
+            dac = -1;
+        }
+
+        QString theSettings = CreateFileName(polarity,gain,peaktime,tac,dac);
+        QString theDirectory = CreateDir("calibs", theSettings);
+        QString theTime = QDateTime::currentDateTime().toString("hhmmss");
+        theName = theDirectory + "/" + theName + "_" + theTime + ".json";
+
+        QFile jsonFile(theName);
         jsonFile.open(QFile::WriteOnly);
 
         QJsonObject globalObject;
+        QJsonObject globalObjectSingle;
         QJsonArray calibrationArray;
+        QJsonArray calibrationArraySingle;
         for(int vmm = 0; vmm <static_cast<int>(m_vmmActs.size()); vmm++){
             int fec = GetFEC(vmm);
             int fecId = m_fecPosID[fec];
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
-
+            if(chip==0) {
+                globalObjectSingle = QJsonObject();
+                calibrationArraySingle = QJsonArray();
+            }
             QJsonObject calibrationObject;
             QJsonArray adcOffsetArray;
             QJsonArray adcSlopeArray;
             QJsonArray timeOffsetArray;
             QJsonArray timeSlopeArray;
+            QJsonArray timeWalkArrayA;
+            QJsonArray timeWalkArrayB;
+            QJsonArray timeWalkArrayC;
+            QJsonArray timeWalkArrayD;
             calibrationObject.insert("fecID",fecId);
             calibrationObject.insert("hybridID",QString::fromStdString(m_hybrid_id[fec][hybrid]));
             calibrationObject.insert("vmmID",hybrid*2+chip);
+
+            QJsonObject calibrationObjectSingle;
+            calibrationObjectSingle.insert("hybridID",QString::fromStdString(m_hybrid_id[fec][hybrid]));
+            calibrationObjectSingle.insert("vmmID",chip);
             int theVmmId = 0;
             int theFECId = 0;
-            QString theHybridId = "";
-            if(m_calibrationArray[0]) {
+            QString theHybridId = QString::fromStdString(m_hybrid_id[fec][hybrid]);
+            if(theHybridId == "ffffffffffffffffffffffffffffffff") {
+                theHybridId += "_" +  QString::number(fecId) + "_" +  QString::number(hybrid) + "_" + QString::number(chip);
+            }
+
+            if(m_calibrationArray[0] && m_modeIndex == 1) {
                 foreach (const QJsonValue & value, *m_calibrationArray[0]) {
                     QJsonArray tempOffsetArray;
                     QJsonArray tempSlopeArray;
@@ -3359,9 +4828,6 @@ void CalibrationModule::SaveCorrections(){
                         }
                         if(key == "fecID") {
                             theFECId = obj[key].toInt();
-                        }
-                        if(key == "hybridID") {
-                            theHybridId = obj[key].toString();
                         }
                         if(key == "adc_offsets") {
 
@@ -3380,12 +4846,14 @@ void CalibrationModule::SaveCorrections(){
                     if(theVmmId == hybrid*2+chip &&  m_fecPosID[fec] == theFECId) {
                         adcOffsetArray = tempOffsetArray;
                         adcSlopeArray = tempSlopeArray;
+                        calibrationObjectSingle.insert("adc_offsets",adcOffsetArray);
+                        calibrationObjectSingle.insert("adc_slopes",adcSlopeArray);
                         break;
                     }
                 }
             }
 
-            if(m_calibrationArray[1]) {
+            if(m_calibrationArray[1] && m_modeIndex == 2) {
                 foreach (const QJsonValue & value, *m_calibrationArray[1]) {
                     QJsonArray tempOffsetArray;
                     QJsonArray tempSlopeArray;
@@ -3417,91 +4885,19 @@ void CalibrationModule::SaveCorrections(){
                     if(theVmmId == hybrid*2+chip &&  m_fecPosID[fec] == theFECId) {
                         timeOffsetArray = tempOffsetArray;
                         timeSlopeArray = tempSlopeArray;
+                        calibrationObjectSingle.insert("time_offsets",timeOffsetArray);
+                        calibrationObjectSingle.insert("time_slopes",timeSlopeArray);
                         break;
                     }
                 }
             }
 
-
-            if(adcOffsetArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    adcOffsetArray.push_back(0);
-                }
-            }
-            if(timeOffsetArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    timeOffsetArray.push_back(0);
-                }
-            }
-            if(adcSlopeArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    adcSlopeArray.push_back(1);
-                }
-            }
-            if(timeSlopeArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    timeSlopeArray.push_back(1);
-                }
-            }
-
-
-            calibrationObject.insert("time_offsets",timeOffsetArray);
-            calibrationObject.insert("time_slopes",timeSlopeArray);
-            calibrationObject.insert("adc_offsets",adcOffsetArray);
-            calibrationObject.insert("adc_slopes",adcSlopeArray);
-            calibrationArray.push_back(calibrationObject);
-        }
-
-        globalObject.insert("vmm_calibration",calibrationArray);
-        QJsonDocument document(globalObject);
-        jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
-        jsonFile.close();
-
-        //One JSON file per hybrid for to be stored in VMMDB
-        /*
-        if( ! m_calibrationArray[0] &&  !m_calibrationArray[1]) {
-            return;
-        }
-
-        for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
-            QString name = "";
-            int fec = GetFEC(vmm);
-            int fecId = m_fecPosID[fec];
-            int hybrid = GetHybrid(vmm);
-            int chip = GetVMM(vmm);
-            if(chip == 0) {
-                name = QString::fromStdString(m_hybrid_id[fec][hybrid]);
-            }
-
-
-
-        QString theName = CreateFileName(name);
-        QFile jsonFile(theName +  ".json");
-        jsonFile.open(QFile::WriteOnly);
-
-        QJsonObject globalObject;
-        QJsonArray calibrationArray;
-        for(int vmm = 0; vmm <static_cast<int>(m_vmmActs.size()); vmm++){
-            int fec = GetFEC(vmm);
-            int fecId = m_fecPosID[fec];
-            int hybrid = GetHybrid(vmm);
-            int chip = GetVMM(vmm);
-
-            QJsonObject calibrationObject;
-            QJsonArray adcOffsetArray;
-            QJsonArray adcSlopeArray;
-            QJsonArray timeOffsetArray;
-            QJsonArray timeSlopeArray;
-            calibrationObject.insert("fecID",fecId);
-            calibrationObject.insert("hybridID",QString::fromStdString(m_hybrid_id[fec][hybrid]));
-            calibrationObject.insert("vmmID",hybrid*2+chip);
-            int theVmmId = 0;
-            int theFECId = 0;
-            QString theHybridId = "";
-            if(m_calibrationArray[0]) {
-                foreach (const QJsonValue & value, *m_calibrationArray[0]) {
-                    QJsonArray tempOffsetArray;
-                    QJsonArray tempSlopeArray;
+            if(m_calibrationArray[2] && m_modeIndex == 3) {
+                foreach (const QJsonValue & value, *m_calibrationArray[2]) {
+                    QJsonArray tempArrayA;
+                    QJsonArray tempArrayB;
+                    QJsonArray tempArrayC;
+                    QJsonArray tempArrayD;
                     const auto& obj = value.toObject();
                     const auto& keys = obj.keys();
                     for(const auto& key : keys){
@@ -3514,125 +4910,143 @@ void CalibrationModule::SaveCorrections(){
                         if(key == "hybridID") {
                             theHybridId = obj[key].toString();
                         }
-                        if(key == "adc_offsets") {
-
+                        if(key == "timewalk_a") {
                             auto const & arr = obj[key].toArray();
                             for(const auto& v : arr){
-                                tempOffsetArray.push_back(v.toDouble());
+                                double val = 0;
+                                if(v.toDouble() > -9999.0) {
+                                    val = v.toDouble();
+                                }
+                                tempArrayA.push_back(val);
                             }
                         }
-                        else if(key == "adc_slopes") {
+                        else if(key == "timewalk_b") {
                             auto const & arr = obj[key].toArray();
                             for(const auto& v : arr) {
-                                tempSlopeArray.push_back(v.toDouble());
+                                double val = 1;
+                                if(v.toDouble() > -9999.0) {
+                                    val = v.toDouble();
+                                }
+                                tempArrayB.push_back(val);
+                            }
+                        }
+                        else if(key == "timewalk_c") {
+                            auto const & arr = obj[key].toArray();
+                            for(const auto& v : arr){
+                                double val = 1;
+                                if(v.toDouble() > -9999.0) {
+                                    val = v.toDouble();
+                                }
+                                tempArrayC.push_back(val);
+                            }
+                        }
+                        else if(key == "timewalk_d") {
+                            auto const & arr = obj[key].toArray();
+                            for(const auto& v : arr) {
+                                double val = 0;
+                                if(v.toDouble() > -9999.0) {
+                                    val = v.toDouble();
+                                }
+                                tempArrayD.push_back(val);
                             }
                         }
                     }
                     if(theVmmId == hybrid*2+chip &&  m_fecPosID[fec] == theFECId) {
-                        adcOffsetArray = tempOffsetArray;
-                        adcSlopeArray = tempSlopeArray;
+                        timeWalkArrayA = tempArrayA;
+                        timeWalkArrayB = tempArrayB;
+                        timeWalkArrayC = tempArrayC;
+                        timeWalkArrayD = tempArrayD;
+                        calibrationObjectSingle.insert("timewalk_a",timeWalkArrayA);
+                        calibrationObjectSingle.insert("timewalk_b",timeWalkArrayB);
+                        calibrationObjectSingle.insert("timewalk_c",timeWalkArrayC);
+                        calibrationObjectSingle.insert("timewalk_d",timeWalkArrayD);
                         break;
                     }
                 }
             }
 
-            if(m_calibrationArray[1]) {
-                foreach (const QJsonValue & value, *m_calibrationArray[1]) {
-                    QJsonArray tempOffsetArray;
-                    QJsonArray tempSlopeArray;
-                    const auto& obj = value.toObject();
-                    const auto& keys = obj.keys();
-                    for(const auto& key : keys){
-                        if(key == "vmmID") {
-                            theVmmId = obj[key].toInt();
-                        }
-                        if(key == "fecID") {
-                            theFECId = obj[key].toInt();
-                        }
-                        if(key == "hybridID") {
-                            theHybridId = obj[key].toString();
-                        }
-                        if(key == "time_offsets") {
-                            auto const & arr = obj[key].toArray();
-                            for(const auto& v : arr){
-                                tempOffsetArray.push_back(v.toDouble());
-                            }
-                        }
-                        else if(key == "time_slopes") {
-                            auto const & arr = obj[key].toArray();
-                            for(const auto& v : arr) {
-                                tempSlopeArray.push_back(v.toDouble());
-                            }
-                        }
-                    }
-                    if(theVmmId == hybrid*2+chip &&  m_fecPosID[fec] == theFECId) {
-                        timeOffsetArray = tempOffsetArray;
-                        timeSlopeArray = tempSlopeArray;
-                        break;
-                    }
-                }
+            if(m_calibrationArray[0] && m_modeIndex == 1) {
+                calibrationObject.insert("adc_offsets",adcOffsetArray);
+                calibrationObject.insert("adc_slopes", adcSlopeArray);
             }
-
-
-            if(adcOffsetArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    adcOffsetArray.push_back(0);
-                }
+            else if(m_calibrationArray[1] && m_modeIndex == 2) {
+                calibrationObject.insert("time_offsets",timeOffsetArray);
+                calibrationObject.insert("time_slopes",timeSlopeArray);
             }
-            if(timeOffsetArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    timeOffsetArray.push_back(0);
-                }
+            else if(m_calibrationArray[2] && m_modeIndex == 3) {
+                calibrationObject.insert("timewalk_a",timeWalkArrayA);
+                calibrationObject.insert("timewalk_b",timeWalkArrayB);
+                calibrationObject.insert("timewalk_c",timeWalkArrayC);
+                calibrationObject.insert("timewalk_d",timeWalkArrayD);
             }
-            if(adcSlopeArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    adcSlopeArray.push_back(1);
-                }
-            }
-            if(timeSlopeArray.empty()) {
-                for(int i=0; i< 64; i++) {
-                    timeSlopeArray.push_back(1);
-                }
-            }
-
-
-            calibrationObject.insert("time_offsets",timeOffsetArray);
-            calibrationObject.insert("time_slopes",timeSlopeArray);
-            calibrationObject.insert("adc_offsets",adcOffsetArray);
-            calibrationObject.insert("adc_slopes",adcSlopeArray);
             calibrationArray.push_back(calibrationObject);
+            calibrationArraySingle.push_back(calibrationObjectSingle);
+
+
+            //Single Hybrid Files
+            if(chip==1) {
+                QString str;
+                if(m_calibrationArray[0] && m_modeIndex == 1) {
+                    str = "vmm_adc_calibration_";
+                }
+                else if(m_calibrationArray[1] && m_modeIndex == 2) {
+                    str = "vmm_time_calibration_";
+                }
+                else if(m_calibrationArray[2] && m_modeIndex == 3) {
+                    str = "vmm_timewalk_calibration_";
+                }
+                globalObjectSingle.insert("vmm_calibration",calibrationArraySingle);
+
+                str = theDirectory + "/" + str  +  theHybridId + "_" + theTime + ".json";
+                QFile jsonFileSingle(str);
+                jsonFileSingle.open(QFile::WriteOnly);
+                QJsonDocument documentSingle(globalObjectSingle);
+                jsonFileSingle.write(documentSingle.toJson(QJsonDocument::JsonFormat::Compact));
+                jsonFileSingle.close();
+            }
         }
 
         globalObject.insert("vmm_calibration",calibrationArray);
         QJsonDocument document(globalObject);
         jsonFile.write(document.toJson(QJsonDocument::JsonFormat::Compact));
         jsonFile.close();
-
-*/
     }
     else
     {
-        if(m_modeIndex == 3 || m_modeIndex == 4 ||  m_modeIndex == 6) {
+        if(m_modeIndex == 4 || m_modeIndex == 5 ||  m_modeIndex == 7 || m_modeIndex == 11 || m_modeIndex == 12) {
             for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
+                int fec = GetFEC(vmm);
+                int hybrid = GetHybrid(vmm);
+                int chip = GetVMM(vmm);
                 for(int ch=0; ch<64; ch++)
                 {
-                    int fec = GetFEC(vmm);
-                    int hybrid = GetHybrid(vmm);
-                    int chip = GetVMM(vmm);
-
-                    if(m_modeIndex == 3)
+                    if(m_modeIndex == 4)
                     {
-                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_10", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sz10b", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
                     }
-                    else if(m_modeIndex == 4) {
-                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "ADC0_8", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
+                    else if(m_modeIndex == 5) {
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sz08b", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
                     }
-                    else if(m_modeIndex == 6) {
+                    else if(m_modeIndex == 7) {
                         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi( "sd", m_bitVal[fec][hybrid][chip][static_cast<unsigned int>(ch)]  , ch );
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
+                    }
+                }
+                if(m_modeIndex == 11) {
+                    m_daqWindow->m_daq.m_fecs[fec].SetReg("debug_data_format",  false);
+                    if( m_fecLatencyReset[fec] > -1.0) {
+                        m_daqWindow->m_daq.m_fecs[fec].SetReg("latency_reset", (unsigned long)(m_start_reset_latency+m_fecLatencyReset[fec]));
+                    }
+                }
+                else if(m_modeIndex == 12) {
+                    m_daqWindow->m_daq.m_fecs[fec].SetReg("debug_data_format",  false);
+                    if( m_fecLatencyTP[fec] > -1.0) {
+                        m_daqWindow->m_daq.m_fecs[fec].SetReg("tp_latency", (unsigned long)(m_start_tp_latency+m_fecLatencyTP[fec]));
                     }
                 }
             }
-            SaveSettings();
+            SaveSettings("Calib_config");
+            LoadSettings("Calib_config");
         }
 
     }
@@ -3643,10 +5057,8 @@ void CalibrationModule::CloseDAQSocket()
 {
     // close the socket
     if(IsDbgActive())GetMessageHandler()("Closing DAQ socket", "calibration_module::closeDAQSocket");
-    if(m_udpSocket){
-        m_udpSocket->close();
-        m_udpSocket->disconnectFromHost();
-    }
+    m_udpSocket->close();
+    m_udpSocket->disconnectFromHost();
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::readEvent()
@@ -3672,7 +5084,7 @@ void CalibrationModule::readEvent()
 void CalibrationModule::GetSettings()
 {
     m_BCID.clear();
-    QString qtext = m_daqWindow->ui->lineEditBCID->text();
+    QString qtext = m_daqWindow->m_ui->lineEditBCID->text();
     std::string text = qtext.toStdString();
     if(text.size() > 0) {
         if(qtext.contains('-')) {
@@ -3697,14 +5109,14 @@ void CalibrationModule::GetSettings()
             }
         }
     }
-    if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 0)
+    if(m_daqWindow->m_ui->comboBoxRunMode->currentIndex() == 0)
     {
         m_runMode = "Calibration";
     }
-    else if(m_daqWindow->ui->comboBoxRunMode->currentIndex() == 1){
+    else if(m_daqWindow->m_ui->comboBoxRunMode->currentIndex() == 1){
         m_runMode = "User";
     }
-    QString calibMode = m_daqWindow->ui->comboBoxCalibrationType->currentText();
+    QString calibMode = m_daqWindow->m_ui->comboBoxCalibrationType->currentText();
     m_modeIndex = GetCalibrationModeIndex(calibMode);
     if(m_modeIndex == 1){
         m_number_bits = m_number_bits_offline_adc;
@@ -3713,13 +5125,22 @@ void CalibrationModule::GetSettings()
         m_number_bits = m_number_bits_offline_time;
     }
     else if(m_modeIndex == 3){
-        m_number_bits = m_number_bits_adc;
+        m_number_bits = m_number_bits_offline_time_walk;
     }
     else if(m_modeIndex == 4){
+        m_number_bits = m_number_bits_adc;
+    }
+    else if(m_modeIndex == 5){
         m_number_bits = m_number_bits_tdc;
     }
-    else if(m_modeIndex == 6){
+    else if(m_modeIndex == 7){
         m_number_bits = m_number_bits_threshold;
+    }
+    else if(m_modeIndex == 11){
+        m_number_bits = m_number_bits_offline_latency;
+    }
+    else if(m_modeIndex == 12){
+        m_number_bits = m_number_bits_offline_latency;
     }
     else {
         m_number_bits = 1;
@@ -3730,7 +5151,6 @@ void CalibrationModule::GetSettings()
 void CalibrationModule::InitializeDataStructures()
 {
     m_theIndex = 0;
-    m_pulser_dac = 0;
     m_pulser_mV = 0;
     m_x.clear();
     m_dac_setting.clear();
@@ -3749,54 +5169,45 @@ void CalibrationModule::InitializeDataStructures()
     for(int i=0; i<4096;i++) {
         m_cnt_bcid[i] = 0;
     }
-    m_most_common_BCID = 0;
+    m_reference_BCID = -1;
+    m_adcs.clear();
+    m_times.clear();
+    double timeBin_ms = static_cast<double>(m_daqWindow->m_ui->Runs->value())/1024.0;
+    for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
+        for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
+            for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
+                m_adc_data[fec][hybrid][vmm].clear();
+                m_channel_data[fec][hybrid][vmm].clear();
+                for(int n=0; n< 1024; n++) {
+                    if(fec == 0 && hybrid ==0 && vmm==0) {
+                        m_adcs.push_back(n);
+                        m_times.push_back(timeBin_ms*n);
+                    }
+                    m_adc_data[fec][hybrid][vmm].push_back(0);
+                    if(n<=63) {
+                        m_channel_data[fec][hybrid][vmm].push_back(0);
+                    }
+
+                }
+            }
+        }
+    }
+
+
     for(unsigned int bit = 0; bit < 32; bit++) {
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
                 if(bit == 0) {
                     m_hybrid_id[fec][hybrid] = "0";
                 }
-                if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)){
-                    int ckbc = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetReg("CKBC");
-                    double period_ns = 0;
-                    double clock = 0;
-                    switch (ckbc)
-                    {
-                    case 0: period_ns = 12.5;
-                        clock = 80;
-                        break;
-                    case 1: period_ns = 12.5;
-                        clock = 80;
-                        break;
-                    case 2: period_ns = 25.0;
-                        clock = 40;
-                        break;
-                    case 3: period_ns = 50.0;
-                        clock = 20;
-                        break;
-                    case 4: period_ns = 100.0;
-                        clock = 10;
-                        break;
-                    case 5: period_ns = 200.0;
-                        clock = 5;
-                        break;
-                    case 6: period_ns = 400.0;
-                        clock = 2.5;
-                        break;
-                    case 7: period_ns = 800.0;
-                        clock = 1.25;
-                        break;
-                    }
-                    m_bc_period[fec][hybrid]= period_ns;
-                    m_bc_clock[fec][hybrid]= clock;
-                }
                 for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
-
+                    m_fit_function[bit][fec][hybrid][vmm].clear();
                     if(bit == 0)
                     {
+
                         m_dac_measured[fec][hybrid][vmm].clear();
 
-                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)  ){
                             int stc = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("stc");
                             double tac_ns = 0;
                             switch (stc)
@@ -3812,8 +5223,8 @@ void CalibrationModule::InitializeDataStructures()
                             }
                             m_tac_slope[fec][hybrid][vmm] = tac_ns;
                         }
-                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            int st = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("peaktime");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
+                            int st = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("st");
                             double shaping_time_ns = 0;
                             switch (st)
                             {
@@ -3828,8 +5239,8 @@ void CalibrationModule::InitializeDataStructures()
                             }
                             m_shaping_time[fec][hybrid][vmm] = shaping_time_ns;
                         }
-                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
-                            int sg = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("gain");
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)){
+                            int sg = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("sg");
                             double gain = 0;
                             switch (sg)
                             {
@@ -3854,7 +5265,7 @@ void CalibrationModule::InitializeDataStructures()
                             m_gain[fec][hybrid][vmm] = gain;
                         }
 
-                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
                             bool polarity = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("sp");
                             if(polarity) {
                                 m_polarity[fec][hybrid][vmm] = 1;
@@ -3864,7 +5275,7 @@ void CalibrationModule::InitializeDataStructures()
                             }
 
                         }
-                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) && m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].GetVMM(vmm) ){
+                        if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
                             bool timing = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].GetRegister("srat");
                             if(timing) {
                                 m_timing_at_thr[fec][hybrid][vmm] = 1;
@@ -3874,12 +5285,24 @@ void CalibrationModule::InitializeDataStructures()
                             }
 
                         }
-
+                        m_fit_a[fec][hybrid][vmm].clear();
+                        m_fit_b[fec][hybrid][vmm].clear();
+                        m_fit_c[fec][hybrid][vmm].clear();
+                        m_fit_d[fec][hybrid][vmm].clear();
+                        m_fit_error_r2[fec][hybrid][vmm].clear();
+                        m_fit_error_rms[fec][hybrid][vmm].clear();
 
                         m_offset[fec][hybrid][vmm].clear();
                         m_slope[fec][hybrid][vmm].clear();
-                        m_file_offset[fec][hybrid][vmm].clear();
-                        m_file_slope[fec][hybrid][vmm].clear();
+                        m_file_adc_offset[fec][hybrid][vmm].clear();
+                        m_file_adc_slope[fec][hybrid][vmm].clear();
+                        m_file_time_offset[fec][hybrid][vmm].clear();
+                        m_file_time_slope[fec][hybrid][vmm].clear();
+                        m_file_timewalk_a[fec][hybrid][vmm].clear();
+                        m_file_timewalk_b[fec][hybrid][vmm].clear();
+                        m_file_timewalk_c[fec][hybrid][vmm].clear();
+                        m_file_timewalk_d[fec][hybrid][vmm].clear();
+
                         m_calVal[fec][hybrid][vmm].clear();
                         m_bitVal[fec][hybrid][vmm].clear();
                         m_y[fec][hybrid][vmm].clear();
@@ -3892,8 +5315,8 @@ void CalibrationModule::InitializeDataStructures()
                     }
 
                     m_mean[bit][fec][hybrid][vmm].clear();
+                    m_mean2[bit][fec][hybrid][vmm].clear();
                     m_fit_y[bit][fec][hybrid][vmm].clear();
-                    m_allhitdata[bit][fec][hybrid][vmm].clear();
                     for(int n=0; n<NUM_BCID; n++) {
                         m_mean_per_bcid[n][bit][fec][hybrid][vmm].clear();
                         m_percent_bcid[n][bit][fec][hybrid][vmm].clear();
@@ -3901,6 +5324,7 @@ void CalibrationModule::InitializeDataStructures()
 
                     for (unsigned int ch=0; ch < 64; ch++){
                         m_data[bit][fec][hybrid][vmm][ch].clear();
+                        m_data2[bit][fec][hybrid][vmm][ch].clear();
                     }
                 }
             }
@@ -3917,8 +5341,8 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
         m_dac_setting.push_back(i*100);
     }
 
-    m_daqWindow->ui->pushButtonTakeData->setChecked(true);
-    m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(true);
+    m_daqWindow->m_ui->pushButtonTakeData->setCheckable(true);
 
     for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
         int fec = GetFEC(vmm);
@@ -3927,11 +5351,11 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
 
         for(int n=0; n<M; n++) {
             if(measurePulser) {
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring","Pulser_DAC");
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp_2",(int)m_dac_setting[n]);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",64);
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdp10",(int)m_dac_setting[n]);
             }
             else {
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring", "Threshold_DAC");
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0", 65);
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",(int)m_dac_setting[n]);
             }
             m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
@@ -3940,22 +5364,21 @@ void CalibrationModule::MeasurePulserOrThresholdDAC(bool measurePulser)
             //int adc_result = m_hybridWindow->m_fecWindow->m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hybridIndex, m_vmmIndex, adc_chan);
 
             m_y[fec][hybrid][chip].push_back(val);
-            std::cout << m_dac_setting[n] << ", " << val << std::endl;
+            //std::cout << m_dac_setting[n] << ", " << val << std::endl;
         }
     }
 
     m_dataAvailable = true;
     m_data_modeIndex = m_modeIndex;
-    m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-    m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-    PlotData();
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(false);
+    m_daqWindow->m_ui->pushButtonTakeData->setCheckable(false);
 }
 
 
 void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThresholdCalibration)
 {
-    m_daqWindow->ui->pushButtonTakeData->setChecked(true);
-    m_daqWindow->ui->pushButtonTakeData->setCheckable(true);
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(true);
+    m_daqWindow->m_ui->pushButtonTakeData->setCheckable(true);
 
     stringstream sx;
     if(isPedestal) {
@@ -3964,7 +5387,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
             int hybrid = GetHybrid(vmm);
             int chip = GetVMM(vmm);
             for(int ch = 0; ch<64; ch++){
-                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",ch);
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                 m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
                 m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
@@ -3976,13 +5399,74 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
     }
     else {
         if(isThresholdCalibration) {
+            bool ok;
+            qint32 deltaThreshold = QInputDialog::getInt(nullptr, tr("Channel threshold calibration"),
+                                                         tr("Please enter desired channel threshold level [mV] above pedestal.\nExample: In case of a pedstal of 170 mV, a value of 20 mV leads to a threshold of 190 mV."),
+                                                         40, 0, 1000, 1, &ok);
+            if(!ok) {
+                return;
+            }
+            const int M = 11;
+            m_dac_setting.clear();
+            for(int i=0; i<M; i++) {
+                m_dac_setting.push_back(i*100);
+            }
+            for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
+                int fec = GetFEC(vmm);
+                int hybrid = GetHybrid(vmm);
+                int chip = GetVMM(vmm);
+                //Measure threshold DAC
+                std::vector<int> thresholds;
+                for(int n=0; n<M; n++) {
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0", 65);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",(int)m_dac_setting[n]);
+                    m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
+                    QThread::usleep(10000);
+                    int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                    thresholds.push_back(val);
+                }
+                double meanPedestal = 0;
+                int n=0;
+                //Measure pedestal
+                for(int ch = 0; ch<64; ch++){
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
+                    m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
+                    QThread::usleep(10000);
+                    int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                    m_mean2[0][fec][hybrid][chip].push_back(val);
+                    if(val > 150 && val < 200) {
+                        meanPedestal += val;
+                        n++;
+                    }
+                }
+                meanPedestal = meanPedestal/n;
+                std::cout << "fec=" << (int)fec << ", hybrid=" << (int)hybrid << ", vmm=" << (int)vmm << ", mean pedestal mV=" << meanPedestal << std::endl;
+                //Calculate global threshold that is equal to pedestal + deltaThreshold
+                double slope_high = (thresholds[10] - thresholds[2])/(m_dac_setting[10] - m_dac_setting[2]);
+                double offset_high = thresholds[10] - slope_high*m_dac_setting[10];
+                int dac = 0;
+                double thr = meanPedestal + deltaThreshold+20;
+                dac =  (thr - offset_high)/slope_high;
+                std::cout << "fec=" << (int)fec << ", hybrid=" << (int)hybrid << ", vmm=" << (int)vmm << ", dac=" << dac << std::endl;
+                //Set global threshold
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sdt",(int)dac);
+                m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
+                //Read threshold back
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0", 65);
+                m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
+                QThread::usleep(10000);
+                int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                std::cout << "fec=" << (int)fec << ", hybrid=" << (int)hybrid << ", vmm=" << (int)vmm << ", threshold mV=" << val << std::endl;
+            }
             for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
                 int fec = GetFEC(vmm);
                 int hybrid = GetHybrid(vmm);
                 int chip = GetVMM(vmm);
 
                 for(int ch = 0; ch<64; ch++){
-                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
                     for(int bit=0; bit<m_number_bits;bit++){
@@ -3990,11 +5474,12 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                         m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
                         QThread::usleep(1000);
                         int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid,chip, 2);
-                        m_mean[bit][fec][hybrid][chip].push_back(val);
+                        int diff = val - m_mean2[0][fec][hybrid][chip][ch];
+                        m_mean[bit][fec][hybrid][chip].push_back(diff);
                     }
                 }
-
             }
+            CalculateCorrections();
         }
         else {
             for(int vmm=0; vmm<static_cast<int>(m_vmmActs.size()); vmm++){
@@ -4003,7 +5488,7 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 int chip = GetVMM(vmm);
 
                 for(int ch = 0; ch<64; ch++){
-                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("monitoring",std::to_string(ch));
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
                     m_daqWindow->m_daq.m_fecs[fec].SendAll(false);
@@ -4016,25 +5501,24 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
     }
     m_dataAvailable = true;
     m_data_modeIndex = m_modeIndex;
-    if(!isPedestal) {
-        if(isThresholdCalibration) {
-            CalculateCorrections();
-        }
-    }
-    m_daqWindow->ui->pushButtonTakeData->setChecked(false);
-    m_daqWindow->ui->pushButtonTakeData->setCheckable(false);
-    PlotData();
+
+    m_daqWindow->m_ui->pushButtonTakeData->setChecked(false);
+    m_daqWindow->m_ui->pushButtonTakeData->setCheckable(false);
 }
 
 
 
 // ------------------------------------------------------------------------ //
-void CalibrationModule::Receive(const char* buffer, long size, int fecId)
+void CalibrationModule::Receive(const char* buffer, long size, int IP)
 {
     stringstream sx;
-    m_lastUdpTimeStamp = m_commonData.m_udpTimeStamp;
     m_numHitsInFrame=0;
-    m_numHitsInFrame = Receive_VMM3(buffer, size, fecId);
+    if(g_clock_source <= 1) {
+        m_numHitsInFrame = Receive_VMM3(buffer, size, IP);
+    }
+    else {
+        m_numHitsInFrame = Receive_VMM3_SRS(buffer, size, IP);
+    }
 
     AccumulateData();
 }
@@ -4053,7 +5537,285 @@ int CalibrationModule::GetVMM(int vmmId) {
     return hybrid%2;
 }
 
-int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
+int CalibrationModule::Parse_VMM3(uint32_t header, uint32_t data1, uint32_t data2, uint32_t data3, uint32_t data4, int readoutIndex) {
+
+    int ring  =  (header >>24) & 0xFF;
+    int fen =  (header >>16) & 0xFF;
+    //int length =  (header & 0xFF)*256 + (header >> 8) & 0xFF;
+    uint16_t fecId =
+            static_cast<uint8_t>(ring / 2) * 32 + fen;
+
+    int fec =  m_fecIDPos[fecId];
+    uint64_t timestamp_high = ntohl(data1);
+    uint64_t timestamp_low = ntohl(data2);
+    uint16_t bcid = ntohs(data3 >> 16) & 0xFFF;
+    uint16_t overThreshold = (ntohs(data3 & 0xFFFF) >> 15) & 0x01;
+    uint16_t adc = ntohs(data3 & 0xFFFF) & 0x3FF;
+    uint8_t geoid = (data4 >> 24) & 0x3F;
+    uint8_t tdc = (data4 >> 16) & 0xFF;
+    uint8_t vmmid = (data4 >> 8) & 0x1F;
+    uint8_t chNo = (data4) & 0x3F;
+    uint16_t bc_counter_high = geoid & 0x0F;
+    uint16_t bc_counter_low = tdc;
+    uint16_t bc_counter = 256*bc_counter_high + bc_counter_low;
+
+    stringstream sx;
+    if(IsDbgActive()) {
+        sx.str("");
+        sx << "SRS Data fecId " << static_cast<int>(fecId)
+           << ", vmmId " << static_cast<int>(vmmid)
+           << ", chNo: " <<  static_cast<int>(chNo)
+           << ", bcid: " <<  static_cast<int>(bcid)
+           << ", tdc: " <<  static_cast<int>(tdc)
+           << ", adc: " <<  static_cast<int>(adc)
+           << ", overThreshold: " <<  static_cast<int>(overThreshold)
+           << ", timestamp_high: " << static_cast<int>(timestamp_high)
+           << ", timestamp_low: " << static_cast<int>(timestamp_low)
+           << "\n";
+        GetMessageHandler()(sx,"calibration_module::Parse_VMM3"); sx.str("");
+    }
+    int hybrid = vmmid/2;
+    int chip = vmmid%2;
+
+
+
+    //if(readoutIndex == 0) {
+    if(m_start == 0)
+    {
+        m_start =  timestamp_high * 1000000000 +  timestamp_low * 0.5 * g_clock_period;
+        m_srs_timestamp_end[fec][hybrid][chip] = m_start;
+        m_numHits=0;
+    }
+    m_srs_timestamp_end[fec][hybrid][chip] = timestamp_high * 1000000000 +  timestamp_low * 0.5 * g_clock_period;
+    if( m_srs_timestamp_end[fec][hybrid][chip] > m_end) {
+        m_end = m_srs_timestamp_end[fec][hybrid][chip];
+    }
+    //}
+    bool bcidFilter = true;
+    if(!m_BCID.empty()) {
+        auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
+        if(it == m_BCID.end()) {
+            bcidFilter = false;
+        }
+    }
+    if (bcidFilter)
+    {
+        //ADC calibrations or user settings average ADC
+        if(m_modeIndex == 1 || m_modeIndex == 4  || m_modeIndex == 21)
+        {
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(adc);
+        }
+        //Time calibration
+        else if(m_modeIndex == 2)
+        {
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(bcid*1000+tdc);
+            m_cnt_bcid[bcid]++;
+        }
+        //Timewalk
+        else if(m_modeIndex == 3 )
+        {
+            double adc_slope = 1;
+            double adc_offset = 0;
+            if(m_file_adc_offset[fec][hybrid][chip].size() == 64 && m_file_adc_slope[fec][hybrid][chip].size() == 64) {
+                adc_slope = m_file_adc_slope[fec][hybrid][chip][chNo];
+                adc_offset = m_file_adc_offset[fec][hybrid][chip][chNo];
+            }
+            double time_slope = 1;
+            double time_offset = 0;
+            if(m_file_time_offset[fec][hybrid][chip].size() == 64 && m_file_time_slope[fec][hybrid][chip].size() == 64) {
+                time_slope = m_file_time_slope[fec][hybrid][chip][chNo];
+                time_offset = m_file_time_offset[fec][hybrid][chip][chNo];
+            }
+            double theADC = (adc - adc_offset)*adc_slope;
+            m_data2[m_bitCount][fec][hybrid][chip][chNo].push_back(theADC);
+            double theTime = bcid*g_clock_period + (1.5*g_clock_period -  m_tac_slope[fec][hybrid][chip]*tdc/255.0 - time_offset)*time_slope;
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(theTime);
+        }
+        //TDC calibration or user settings average TDC per channel
+        else if(m_modeIndex == 5|| m_modeIndex == 22)
+        {
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(tdc);
+        }
+        //S-curve
+        else if(m_modeIndex == 6)
+        {
+            m_channel_y[chNo][m_theIndex]++;
+        }
+        //Reset Latency
+        else if(m_modeIndex == 11)
+        {
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(static_cast<int>(bcid)-static_cast<int>(bc_counter));
+        }
+        //TP Latency
+        else if(m_modeIndex == 12)
+        {
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(static_cast<int>(bcid)-100);
+        }
+        //User settings average bcid per channel
+        else if(m_modeIndex == 23)
+        {
+            m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(bcid);
+        }
+        //User settings counts per channel
+        else if(m_modeIndex == 20)
+        {
+            m_channel_data[fec][hybrid][chip][chNo]++;
+        }
+        //User settings ADC distribution
+        else if(m_modeIndex == 24)
+        {
+            if(adc >= 0 && adc <=1023) {
+                m_adc_data[fec][hybrid][chip][adc]++;
+            }
+        }
+        //User settings Time
+        else if(m_modeIndex == 25)
+        {
+            double theTime = m_end - m_start + (1.5*g_clock_period -  m_tac_slope[fec][hybrid][chip]*tdc/255.0);
+            uint64_t timeBin_ns = static_cast<uint64_t>(m_daqWindow->m_ui->Runs->value())*1000000/1024.0;
+            int timeIndex = (int)(theTime/timeBin_ns);
+            if(timeIndex >= 0 && timeIndex <=1023) {
+                //std::cout << timeIndex << " " << timeBin_ns << " " << (int)hybrid << " " << (int)chip << " " << (int)chNo << std::endl;
+                m_adc_data[fec][hybrid][chip][timeIndex]++;
+            }
+        }
+        m_numHits++;
+    }
+
+    return 1;
+}
+
+int CalibrationModule::Receive_VMM3(const char *buffer, long size, int IP) {
+    stringstream sx;
+    if (size < m_ESSHeaderSize) {
+        if(IsDbgActive()) {
+            sx.str("");
+            sx << "IP " << IP << ": Undersize data: " << size << " words!";
+            GetMessageHandler()(sx,"calibration_module::Receive_VMM3"); sx.str("");
+        }
+        return 0;
+    }
+
+
+    m_ESSheader.m_padding = (*reinterpret_cast<const uint8_t *>(&buffer[0]));
+    m_ESSheader.m_version = (*reinterpret_cast<const uint8_t *>(&buffer[1]));
+    m_ESSheader.m_cookie1 = (*reinterpret_cast<const uint8_t *>(&buffer[2]));
+    m_ESSheader.m_cookie2 = (*reinterpret_cast<const uint8_t *>(&buffer[3]));
+    m_ESSheader.m_cookie3 = (*reinterpret_cast<const uint8_t *>(&buffer[4]));
+    m_ESSheader.m_type = (*reinterpret_cast<const uint8_t *>(&buffer[5]));
+    m_ESSheader.m_length = (*reinterpret_cast<const uint16_t *>(&buffer[6]));
+    m_ESSheader.m_outputQ = (*reinterpret_cast<const uint8_t *>(&buffer[8]));
+    m_ESSheader.m_timeSrc = (*reinterpret_cast<const uint8_t *>(&buffer[9]));
+    m_ESSheader.m_pulseT_high = (*reinterpret_cast<const uint32_t *>(&buffer[10]));
+    m_ESSheader.m_pulseT_low = (*reinterpret_cast<const uint32_t *>(&buffer[14]));
+    m_ESSheader.m_prevPT_high = (*reinterpret_cast<const uint32_t *>(&buffer[18]));
+    m_ESSheader.m_prevPT_low = (*reinterpret_cast<const uint32_t *>(&buffer[22]));
+    m_ESSheader.m_seqNo = (*reinterpret_cast<const uint32_t *>(&buffer[26]));
+
+
+    /*
+    std::cout <<  "m_ESSheader.m_padding  " <<  m_ESSheader.m_padding  << std::endl;
+    std::cout <<  "m_ESSheader.m_version  " <<  m_ESSheader.m_version  << std::endl;
+    std::cout <<  "m_ESSheader.m_cookie1  " <<  m_ESSheader.m_cookie1  << std::endl;
+    std::cout <<  "m_ESSheader.m_cookie2  " <<  m_ESSheader.m_cookie2  << std::endl;
+    std::cout <<  "m_ESSheader.m_cookie3  " <<  m_ESSheader.m_cookie3  << std::endl;
+    std::cout <<  "m_ESSheader.m_type  " <<  m_ESSheader.m_type  << std::endl;
+    std::cout <<  "m_ESSheader.m_length  " <<  m_ESSheader.m_length  << std::endl;
+    std::cout <<  "m_ESSheader.m_outputQ  " <<  m_ESSheader.m_outputQ  << std::endl;
+    std::cout <<  "m_ESSheader.m_timeSrc  " <<  m_ESSheader.m_timeSrc  << std::endl;
+    std::cout <<  "m_ESSheader.m_pulseT_high  " <<  m_ESSheader.m_pulseT_high  << std::endl;
+    std::cout <<  "m_ESSheader.m_pulseT_low  " <<  m_ESSheader.m_pulseT_low  << std::endl;
+    std::cout <<  "m_ESSheader.m_prevPT_high  " <<  m_ESSheader.m_prevPT_high  << std::endl;
+    std::cout <<  "m_ESSheader.m_prevPT_low  " <<  m_ESSheader.m_prevPT_low  << std::endl;
+    std::cout <<  "m_ESSheader.m_seqNo  " <<  m_ESSheader.m_seqNo  << std::endl;
+*/
+
+    if (size < m_ESSHeaderSize + m_headerSizeAssister + m_hitSize_VMM3a) {
+        if(IsDbgActive()) {
+            sx.str("");
+            sx << "Undersized payload\n";
+            GetMessageHandler()(sx,"calibration_module::Receive_VMM3"); sx.str("");
+        }
+        return 0;
+    }
+
+    auto dataLength = size - m_ESSHeaderSize;
+    if ((dataLength % (m_headerSizeAssister + m_hitSize_VMM3a)) != 0) {
+        if(IsDbgActive()) {
+            sx.str("");
+            sx << "Invalid data length " << dataLength << "\n";
+            GetMessageHandler()(sx,"calibration_module::Receive_VMM3"); sx.str("");
+        }
+        return 0;
+    }
+    int readoutIndex = 0;
+    while (dataLength >= (m_headerSizeAssister + m_hitSize_VMM3a)) {
+        auto dataHeaderOffset = m_ESSHeaderSize + (m_headerSizeAssister + m_hitSize_VMM3a) * readoutIndex;
+        auto dataOffset = dataHeaderOffset + m_headerSizeAssister;
+
+        const uint32_t header = (*reinterpret_cast<const uint32_t *>(&buffer[dataHeaderOffset]));
+        const uint32_t data1 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset]));
+        const uint32_t data2 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+4]));
+        const uint32_t data3 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+8]));
+        const uint32_t data4 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+12]));
+
+        int res = Parse_VMM3(ntohl(header),  ntohl(data1),  ntohl(data2),  ntohl(data3),  ntohl(data4), readoutIndex);
+        readoutIndex++;
+        dataLength -=(m_headerSizeAssister + m_hitSize_VMM3a);
+
+    }
+    return readoutIndex;
+}
+
+
+
+
+QString CalibrationModule::CreateFileName(int polarity, double gain, double peaktime, double tac, int dac)
+{
+    //QString theName = m_daqWindow->GetApplicationPath() + "/" + name;
+    //QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+    QString theName="";
+    QString str;
+    if(gain != -1)
+    {
+        str = QString("%1%2").arg(gain).arg("mVfC");
+        theName = str;
+    }
+    if(peaktime != -1)
+    {
+        str = QString("%1%2").arg(peaktime).arg("ns");
+        theName = theName + "_" + str;
+    }
+    if(tac != -1)
+    {
+        str = QString("%1%2").arg(tac).arg("ns");
+        theName = theName + "_" + str;
+    }
+    if(polarity == 0)
+    {
+        str = QString("%1").arg("negative");
+        theName = theName + "_" + str;
+    }
+    else if (polarity == 1) {
+        str = QString("%1").arg("positive");
+        theName = theName + "_" + str;
+
+    }
+    if(dac != -1)
+    {
+        str = QString("%1%2").arg(dac).arg("DAC");
+        theName = theName + "_" + str;
+    }
+
+    //theName = theName + "_" + theDate;
+
+    //if(theName.length()>=245) {
+    //    theName = m_daqWindow->GetApplicationPath() + "/vmm_calibration_" + theDate;
+    //}
+    return theName;
+}
+
+int CalibrationModule::Parse_VMM3_SRS(uint32_t data1, uint16_t data2, int fecId) {
     int fec =  m_fecIDPos[fecId];
     stringstream sx;
     int dataflag = (data2 >> 15) & 0x1;
@@ -4066,6 +5828,9 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         uint8_t triggerOffset = (data1 >> 27) & 0x1F;
         uint16_t adc = (data1 >> 12) & 0x3FF;
         uint32_t bcid = Gray2bin32(data1 & 0xFFF);
+        uint16_t bc_counter_high = adc & 0x00F;
+        uint16_t bc_counter_low = tdc;
+        uint16_t bc_counter = 256*bc_counter_high + bc_counter_low;
         if(IsDbgActive()) {
             sx.str("");
             sx << "SRS Data fecId " << static_cast<int>(fecId)
@@ -4080,19 +5845,25 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
             GetMessageHandler()(sx,"calibration_module::Parse_VMM3"); sx.str("");
         }
 
-        auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
-        if ((m_BCID.empty() || it != m_BCID.end()))
+        bool bcidFilter = true;
+        if(!m_BCID.empty()) {
+            auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
+            if(it == m_BCID.end()) {
+                bcidFilter = false;
+            }
+        }
+        if (bcidFilter)
         {
             int hybrid = vmmid/2;
             int chip = vmmid%2;
 
-            if(m_srs_timestamp_start[fec][hybrid][chip] > 0)
+            if(m_srs_timestamp_start[fec][hybrid][chip] > 0 && m_srs_timestamp_end[fec][hybrid][chip] >= m_srs_timestamp_start[fec][hybrid][chip])
             {
                 uint64_t delay = m_srs_timestamp_end[fec][hybrid][chip] - m_srs_timestamp_start[fec][hybrid][chip];
-                if(delay <= static_cast<uint64_t>(m_daqWindow->ui->Runs->value())*1000000)
+                if(delay <= static_cast<uint64_t>(m_daqWindow->m_ui->Runs->value())*1000000)
                 {
                     //ADC calibrations or user settings average ADC
-                    if(m_modeIndex == 1 || m_modeIndex == 3  || m_modeIndex == 11)
+                    if(m_modeIndex == 1 || m_modeIndex == 4  || m_modeIndex == 21)
                     {
                         m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(adc);
                     }
@@ -4102,34 +5873,74 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
                         m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(bcid*1000+tdc);
                         m_cnt_bcid[bcid]++;
                     }
+                    //Timewalk
+                    else if(m_modeIndex == 3 )
+                    {
+                        double adc_slope = 1;
+                        double adc_offset = 0;
+                        if(m_file_adc_offset[fec][hybrid][chip].size() == 64 && m_file_adc_slope[fec][hybrid][chip].size() == 64) {
+                            adc_slope = m_file_adc_slope[fec][hybrid][chip][chNo];
+                            adc_offset = m_file_adc_offset[fec][hybrid][chip][chNo];
+                        }
+                        double time_slope = 1;
+                        double time_offset = 0;
+                        if(m_file_time_offset[fec][hybrid][chip].size() == 64 && m_file_time_slope[fec][hybrid][chip].size() == 64) {
+                            time_slope = m_file_time_slope[fec][hybrid][chip][chNo];
+                            time_offset = m_file_time_offset[fec][hybrid][chip][chNo];
+                        }
+                        double theADC = (adc - adc_offset)*adc_slope;
+                        m_data2[m_bitCount][fec][hybrid][chip][chNo].push_back(theADC);
+                        double theTime = bcid*g_clock_period + (1.5*g_clock_period -  m_tac_slope[fec][hybrid][chip]*tdc/255.0 - time_offset)*time_slope;
+                        m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(theTime);
+                    }
                     //TDC calibration or user settings average TDC per channel
-                    else if(m_modeIndex == 4|| m_modeIndex == 12)
+                    else if(m_modeIndex == 5|| m_modeIndex == 22)
                     {
                         m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(tdc);
                     }
                     //S-curve
-                    else if(m_modeIndex == 5)
+                    else if(m_modeIndex == 6)
                     {
                         m_channel_y[chNo][m_theIndex]++;
                     }
+                    //Reset Latency
+                    else if(m_modeIndex == 11)
+                    {
+                        m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(static_cast<int>(bcid)-static_cast<int>(bc_counter));
+                    }
+                    //TP Latency
+                    else if(m_modeIndex == 12)
+                    {
+                        m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(static_cast<int>(bcid)-100);
+                    }
                     //User settings average bcid per channel
-                    else if(m_modeIndex == 13)
+                    else if(m_modeIndex == 23)
                     {
                         m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(bcid);
                     }
                     //User settings counts per channel
-                    else if(m_modeIndex == 10)
+                    else if(m_modeIndex == 20)
                     {
-                        m_data[m_bitCount][fec][hybrid][chip][chNo].push_back(1);
+                        m_channel_data[fec][hybrid][chip][chNo]++;
                     }
-                    QVector<double> hit;
-                    hit.push_back(chNo);
-                    hit.push_back(bcid);
-                    hit.push_back(tdc);
-                    hit.push_back(adc);
-                    hit.push_back(double(overThreshold));
-                    if(m_bitCount < MAX_BITS) {
-                        m_allhitdata[m_bitCount][fec][hybrid][chip].push_back(hit);
+                    //User settings ADC distribution
+                    else if(m_modeIndex == 24)
+                    {
+                        if(adc >= 0 && adc <=1023) {
+                            m_adc_data[fec][hybrid][chip][adc]++;
+                        }
+                    }
+                    //User settings Time
+                    else if(m_modeIndex == 25)
+                    {
+                        double timeSRS = m_srs_timestamp_end[fec][hybrid][chip] - m_srs_timestamp_start[fec][hybrid][chip];
+                        double timeChip = triggerOffset*4096*g_clock_period  + bcid*g_clock_period + (1.5*g_clock_period -  m_tac_slope[fec][hybrid][chip]*tdc/255.0);
+                        double theTime = timeSRS + timeChip;
+                        int timeBin_ns = static_cast<uint64_t>(m_daqWindow->m_ui->Runs->value())*1000000/1024;
+                        int timeIndex = (int)(theTime/timeBin_ns);
+                        if(timeIndex >= 0 && timeIndex <=1023) {
+                            m_adc_data[fec][hybrid][chip][timeIndex]++;
+                        }
                     }
                     m_numHits++;
                 }
@@ -4144,20 +5955,18 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
         uint64_t timestamp_42bit = (timestamp_upper_32bit << 10) + timestamp_lower_10bit;
         int hybrid = vmmid/2;
         int chip = vmmid%2;
-        uint64_t delay = m_srs_timestamp_end[fec][hybrid][chip] - m_srs_timestamp_start[fec][hybrid][chip];
-        if(delay <= static_cast<uint64_t>(m_daqWindow->ui->Runs->value())*1000000)
-        {
-            //first timestamp/marker for this VMM
-            if(m_srs_timestamp_start[fec][hybrid][chip] == 0)
-            {
-                //42 bit timestamp, giving number of 40 MHz clock cycles
-                m_srs_timestamp_start[fec][hybrid][chip] = timestamp_42bit*25;
-                m_start = timestamp_42bit*25;
-                m_numHits=0;
-            }
-            m_srs_timestamp_end[fec][hybrid][chip] = timestamp_42bit*25;
-            m_end = timestamp_42bit*25;
+        if(m_start == 0) {
+            m_start = timestamp_42bit*g_clock_period;
         }
+        //first timestamp/marker for this VMM
+        if(m_srs_timestamp_start[fec][hybrid][chip] == 0)
+        {
+            //42 bit timestamp, giving number of 40 MHz clock cycles
+            m_srs_timestamp_start[fec][hybrid][chip] = timestamp_42bit*g_clock_period;
+            m_numHits=0;
+        }
+        m_srs_timestamp_end[fec][hybrid][chip] = timestamp_42bit*g_clock_period;
+        m_end = timestamp_42bit*g_clock_period;
 
         if(IsDbgActive()) {
             sx.str("");
@@ -4170,7 +5979,7 @@ int CalibrationModule::Parse_VMM3(uint32_t data1, uint16_t data2, int fecId) {
     }
 }
 
-int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
+int CalibrationModule::Receive_VMM3_SRS(const char *buffer, long size, int fecId) {
     int numHitsInFrame = 0;
     stringstream sx;
     if (size < 4) {
@@ -4201,8 +6010,8 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
                 sx.str("");
                 sx << "Overflow: frame counter " << m_commonData.m_frameCounter
                    << ", last frame counter " << m_commonData.m_lastFrameCounter <<
-                    ", difference " << fcDiff <<
-                    ", correction " << m_commonData.m_frameCounter + 0xFFFFFFFF << "\n";
+                      ", difference " << fcDiff <<
+                      ", correction " << m_commonData.m_frameCounter + 0xFFFFFFFF << "\n";
                 GetMessageHandler()(sx,"calibration_module::Receive_VMM3"); sx.str("");
             }
             m_commonData.m_frameCounter = m_commonData.m_frameCounter + 0xFFFFFFFF;
@@ -4251,7 +6060,7 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
 
         const uint32_t data1 = htonl(*reinterpret_cast<const uint32_t *>(&buffer[data1Offset]));
         const uint16_t data2 = htons(*reinterpret_cast<const uint16_t *>(&buffer[data2Offset]));
-        int res = Parse_VMM3(data1, data2, fecId );
+        int res = Parse_VMM3_SRS(data1, data2, fecId );
         if (res == 1) { // This was data
             numHitsInFrame++;
         }
@@ -4269,18 +6078,6 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int fecId) {
     return numHitsInFrame;
 }
 
-uint32_t CalibrationModule::Reversebits32(uint32_t x) {
-    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
-    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
-    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
-    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
-    return ((x >> 16) | (x << 16));
-}
-
-uint16_t CalibrationModule::Reversebits16(uint16_t x) {
-    uint32_t temp = Reversebits32(x);
-    return (temp >> 16);
-}
 
 uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
     num = num ^ (num >> 16);
@@ -4291,52 +6088,3 @@ uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
     return num;
 }
 
-QString CalibrationModule::CreateFileName(QString name, int polarity, double gain, double peaktime, double tac, double bcclock, int srat)
-{
-    QString theName = m_daqWindow->GetApplicationPath() + "/" + name;
-    QString theDate = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
-    QString str;
-    if(polarity == 0)
-    {
-        str = QString("%1").arg("negative");
-        theName = theName + "_" + str;
-    }
-    else if (polarity == 1) {
-        str = QString("%1").arg("positive");
-        theName = theName + "_" + str;
-
-    }
-
-    if(gain != -1)
-    {
-        str = QString("%1%2").arg(gain).arg("mVfC");
-        theName = theName + "_" + str;
-    }
-    if(peaktime != -1)
-    {
-        str = QString("%1%2").arg(peaktime).arg("ns");
-        theName = theName + "_" + str;
-    }
-    if(tac != -1)
-    {
-        str = QString("%1%2").arg(tac).arg("ns");
-        theName = theName + "_" + str;
-    }
-    if(bcclock != -1)
-    {
-        str = QString("%1%2").arg(bcclock).arg("MHz");
-        theName = theName + "_" + str;
-    }
-    if(srat == 0)
-    {
-        str = QString("%1").arg("timing_peak");
-        theName = theName + "_" + str;
-    }
-    else if(srat == 1) {
-        str = QString("%1").arg("timing_threshold");
-        theName = theName + "_" + str;
-    }
-
-    theName = theName + "_" + theDate;
-    return theName;
-}

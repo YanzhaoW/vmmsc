@@ -2,32 +2,34 @@
 #include "hybrid_window.h"
 
 
-FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
+FECWindow::FECWindow(DAQWindow *top, unsigned short fec) :
     QWidget(parent),
     m_daqWindow{top},
     m_fecIndex{fec},
     m_ui(new Ui::fec_window)
 {
-    internalClockPeriod = 25;
     m_ui->setupUi(this);
-    m_ui->trgout_time->clear();
-    m_ui->trgout_time->addItem("trg in");
-    for(int i=0; i<4096; i++) {
-        m_ui->trgout_time->addItem( QString::number(i));
-    }
+
     UpdateWindow();
     LoadSettings();
-    //    this->setStyleSheet("QWidget {background: 'white';}");
-    m_ui->linkPB->setEnabled(false);
-    m_ui->readSystemParams->setEnabled(false);
+    EnableCommunicationButtons(false);
 
-    m_ui->fec_WarmInit->setEnabled(false);
-    m_ui->onACQ->setEnabled(false);
-    m_ui->offACQ->setEnabled(false);
-    m_ui->pushButtonPowerCycle->setEnabled(false);
     m_ui->debugScreen->setReadOnly(true);
 
     SetToolTips();
+
+    if(g_clock_source <= 1) {
+        m_ui->labelDetector->setText("Detector");
+        m_ui->labelRing->setText("Ring");
+        m_ui->labelFEN->setText("FEN");
+        m_ui->pushButtonPowerCycle->setVisible(false);
+    }
+    else {
+        m_ui->labelDetector->setText("Detector");
+        m_ui->labelRing->setText("x");
+        m_ui->labelFEN->setText("y");
+        m_ui->pushButtonPowerCycle->setVisible(true);
+    }
 
     connect(m_ui->latency_reset, SIGNAL(valueChanged(int)),
             this, SLOT(onUpdateSettings()));
@@ -48,19 +50,11 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
     connect(m_ui->linkPB, SIGNAL(clicked()),
             this, SLOT(onCheckLinkStatus()));
 
-    connect(m_ui->trgin_invert, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgout_invert, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
-    connect(m_ui->trgout_time, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onUpdateSettings()));
 
-    connect(m_daqWindow->ui->openConnection, SIGNAL(clicked()),
+    connect(m_daqWindow->m_ui->openConnection, SIGNAL(clicked()),
             this, SLOT(onUpdateSettings()));
     connect(m_ui->fec_WarmInit, SIGNAL(clicked()),
             this, SLOT( onResetFEC() ));
-    connect(m_ui->pushButtonPowerCycle, SIGNAL(clicked()),
-            this, SLOT( onPowerCycleHybrids() ));
     connect(m_ui->onACQ, SIGNAL(clicked()),
             this, SLOT( onUpdateSettings() ));
     connect(m_ui->offACQ, SIGNAL(clicked()),
@@ -68,9 +62,28 @@ FECWindow::FECWindow(DAQWindow *top, unsigned short fec, QWidget *parent) :
 
     connect(m_daqWindow, SIGNAL(ChangeState()),
             this, SLOT( onACQHandler() ));
-
-
-
+    connect(m_ui->spinBoxDetector, SIGNAL(valueChanged(int)),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->spinBoxFEN,  SIGNAL(valueChanged(int)),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->spinBoxRing, SIGNAL(valueChanged(int)),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid1, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid2, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid3, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid4, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid5, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid6, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid7, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
+    connect(m_ui->Box_hybrid8, SIGNAL(clicked()),
+            this, SLOT( onUpdateSettings() ));
 }
 
 FECWindow::~FECWindow()
@@ -104,9 +117,6 @@ void FECWindow::SetToolTips()
     m_ui->tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
     m_ui->label_tp_latency->setToolTip("Latency in 40 MHz clock cycles for the VMM pulser.\nAdjust the value so that the BCID of the VMM hits are identical to the offset of the first test pulse.");
     m_ui->debug_data_format->setToolTip("Enable the debug data format.\nThe debug data format shows the trigger counter (FEC counter counting 40 MHz clock cycles) at which the hits from the VMM arrive.");
-    m_ui->trgin_invert->setToolTip("Setting (off/normal/inverted) for the NIM trigger input of the FEC. Inverted means that the signal will be low when the input is high.\nIf the setting normal or inverted, the trigger timestamp is appearing in the data as marker of VMM 31.");
-    m_ui->trgout_invert->setToolTip("Setting (off/normal/inverted) for the NIM trigger output of the FEC. Inverted only works if the trigger input is chosen as signal.\nIf the setting normal or inverted, the trigger timestamp is appearing in the data as marker of VMM 31.");
-    m_ui->trgout_time->setToolTip("Trigger output can either give out the signal from the NIM trigger input, or occur for 25 ns at the chosen BCID.");
 
 
 }
@@ -121,107 +131,91 @@ void FECWindow::onACQHandler(){
         m_ui->offACQ->setEnabled(false);
     }
     else if(m_daqWindow->m_sendstate == "GlobalACQoff" ){
-
         m_ui->onACQ->setEnabled(true);
         m_ui->offACQ->setEnabled(true);
     }
 }
 
+void FECWindow::EnableCommunicationButtons(bool enable) {
+    m_ui->onACQ->setEnabled(enable);
+    m_ui->offACQ->setEnabled(enable);
+    m_ui->fec_WarmInit->setEnabled(enable);
+    m_ui->linkPB->setEnabled(enable);
+    m_ui->readSystemParams->setEnabled(enable);
+    m_ui->pushButtonDAQIP->setEnabled(enable);
+}
+
 
 void FECWindow::onUpdateSettings(){
-   if(QObject::sender() == m_ui->tp_offset_first){
-       if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
+    if(QObject::sender() == m_ui->tp_offset_first){
+        if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
             SetFec("tp_offset_first",  m_ui->tp_offset_first->value() );
         }
-       else {
+        else {
             m_ui->tp_offset_first->setValue(GetFec("tp_offset_first"));
-       }
+        }
     }
     else if(QObject::sender() == m_ui->tp_offset){
         if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
             SetFec("tp_offset",  m_ui->tp_offset->value() );
         }
         else {
-             m_ui->tp_offset->setValue(GetFec("tp_offset"));
+            m_ui->tp_offset->setValue(GetFec("tp_offset"));
         }
     }
     else if(QObject::sender() == m_ui->tp_number){
-       if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
+        if(m_ui->tp_offset_first->value() + (m_ui->tp_number->value()-1)*m_ui->tp_offset->value() <= 4095) {
             SetFec("tp_number",  m_ui->tp_number->value() );
             if(GetFec( "tp_number" ) == 1) {
                 m_ui->tp_offset->setEnabled(false);
             }
             else {
-               m_ui->tp_offset->setEnabled(true);
+                m_ui->tp_offset->setEnabled(true);
             }
-       }
-       else {
+        }
+        else {
             m_ui->tp_number->setValue(GetFec("tp_number"));
-       }
+        }
 
     }
+    else if(QObject::sender() == m_ui->spinBoxDetector){
+        SetFec("ring",  m_ui->spinBoxDetector->value() );
+    }
+    else if(QObject::sender() == m_ui->spinBoxRing){
+        SetFec("ring",  m_ui->spinBoxRing->value() );
+    }
+    else if(QObject::sender() == m_ui->spinBoxFEN){
+        SetFec("fen",  m_ui->spinBoxFEN->value() );
+    }
     else if(QObject::sender() == m_ui->tp_latency){
-         SetFec("tp_latency",  m_ui->tp_latency->value() );
-     }
+        SetFec("tp_latency",  m_ui->tp_latency->value() );
+    }
     else if(QObject::sender() == m_ui->latency_reset){
         SetFec("latency_reset",  m_ui->latency_reset->value() );
     }
     else if(QObject::sender() == m_ui->latency_data_max){
-         SetFec("latency_data_max",  m_ui->latency_data_max->value() );
+        SetFec("latency_data_max",  m_ui->latency_data_max->value() );
     }
     else if(QObject::sender() == m_ui->latency_data_error){
-         SetFec("latency_data_error",  m_ui->latency_data_error->value() );
+        SetFec("latency_data_error",  m_ui->latency_data_error->value() );
     }
     else if(QObject::sender() == m_ui->debug_data_format){
         SetFec("debug_data_format",  m_ui->debug_data_format->isChecked() );
     }
 
-   else if(QObject::sender() == m_ui->trgin_invert){
-        SetFec("trgin_invert",  m_ui->trgin_invert->currentIndex() );
-        if(GetFec( "trgin_invert" ) == 0) {
-            SetFec("register_trigger_timestamp", 0);
-        }
-        else {
-            SetFec("register_trigger_timestamp", 1);
-        }
-
-    }
-   else if(QObject::sender() == m_ui->trgout_invert){
-       SetFec("trgout_invert",  m_ui->trgout_invert->currentIndex() );
-       if(GetFec( "trgout_invert" ) == 0) {
-           m_ui->trgout_time->setEnabled(false);
-       }
-       else {
-          m_ui->trgout_time->setEnabled(true);
-       }
-   }
-   else if(QObject::sender() == m_ui->trgout_time){
-        SetFec("trgout_time",  m_ui->trgout_time->currentIndex() );
-   }
-   else if(QObject::sender() == m_daqWindow->ui->openConnection){
-        if(m_daqWindow->ui->connectionLabel->text()==QString("all alive")){
-            m_ui->linkPB->setEnabled(true);
-            m_ui->readSystemParams->setEnabled(true);
-            m_ui->fec_WarmInit->setEnabled(true);
-            m_ui->onACQ->setEnabled(true);
-            m_ui->offACQ->setEnabled(true);
-            m_ui->pushButtonPowerCycle->setEnabled(true);
+    else if(QObject::sender() == m_daqWindow->m_ui->openConnection){
+        if(g_connection_ok){
+            EnableCommunicationButtons(true);
         }
         else{
-            //m_ui->linkPB->setEnabled(false);
-            m_ui->fec_WarmInit->setEnabled(false);
-            m_ui->readSystemParams->setEnabled(false);
-            m_ui->onACQ->setEnabled(false);
-            m_ui->offACQ->setEnabled(false);
-            m_ui->pushButtonPowerCycle->setEnabled(false);
+            EnableCommunicationButtons(false);
         }
     }
-
     else if(QObject::sender() == m_ui->onACQ){
         m_ui->onACQ->setCheckable(true);
         m_ui->onACQ->setChecked(true);
         m_ui->offACQ->setChecked(false);
-        m_daqWindow->ui->Send->setEnabled(false);
+        m_daqWindow->m_ui->Send->setEnabled(false);
         m_daqWindow->m_daq.SendAll(true);
         m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQon();
     }
@@ -229,13 +223,41 @@ void FECWindow::onUpdateSettings(){
         m_ui->offACQ->setCheckable(true);
         m_ui->offACQ->setChecked(true);
         m_ui->onACQ->setChecked(false);
-        m_daqWindow->ui->Send->setEnabled(true);
+        m_daqWindow->m_ui->Send->setEnabled(true);
         m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
     }
-
-
-
-
+    else if(QObject::sender() == m_ui->Box_hybrid1){
+        if (m_ui->Box_hybrid1->isChecked()){hybridBoxLogic(true,0);}
+        else {hybridBoxLogic(false,0);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid2){
+        if (m_ui->Box_hybrid2->isChecked()){hybridBoxLogic(true,1);}
+        else {hybridBoxLogic(false,1);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid3){
+        if (m_ui->Box_hybrid3->isChecked()){hybridBoxLogic(true,2);}
+        else {hybridBoxLogic(false,2);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid4){
+        if (m_ui->Box_hybrid4->isChecked()){hybridBoxLogic(true,3);}
+        else {hybridBoxLogic(false,3);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid5){
+        if (m_ui->Box_hybrid5->isChecked()){hybridBoxLogic(true,4);}
+        else {hybridBoxLogic(false,4);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid6){
+        if (m_ui->Box_hybrid6->isChecked()){hybridBoxLogic(true,5);}
+        else {hybridBoxLogic(false,5);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid7){
+        if (m_ui->Box_hybrid7->isChecked()){hybridBoxLogic(true,6);}
+        else {hybridBoxLogic(false,6);}
+    }
+    else if(QObject::sender() == m_ui->Box_hybrid8){
+        if (m_ui->Box_hybrid8->isChecked()){hybridBoxLogic(true,7);}
+        else {hybridBoxLogic(false,7);}
+    }
 }
 
 
@@ -248,9 +270,9 @@ void FECWindow::LoadSettings(){
 
 
     if(GetFec( "tp_offset_first" ) + (GetFec( "tp_number" )-1)*GetFec( "tp_offset" )  > 4095) {
-         SetFec("tp_number", 1);
-         SetFec("tp_offset_first", 100);
-         SetFec("tp_offset", 1000);
+        SetFec("tp_number", 1);
+        SetFec("tp_offset_first", 100);
+        SetFec("tp_offset", 1000);
     }
     m_ui->tp_number->setValue( GetFec( "tp_number" ) );
     m_ui->tp_offset->setValue( GetFec( "tp_offset" ) );
@@ -260,32 +282,19 @@ void FECWindow::LoadSettings(){
     m_ui->latency_reset->setValue( GetFec( "latency_reset" ) );
     m_ui->latency_data_max->setValue( GetFec( "latency_data_max" ) );
     m_ui->latency_data_error->setValue( GetFec( "latency_data_error" ) );
+    m_ui->spinBoxDetector->setValue( GetFec( "detector" ) );
+    m_ui->spinBoxFEN->setValue( GetFec( "fen" ) );
+    m_ui->spinBoxRing->setValue( GetFec( "ring" ) );
 
     m_ui->debug_data_format->setChecked( GetFec( "debug_data_format" ) );
+
+
     if(GetFec( "tp_number" ) <= 1) {
         m_ui->tp_offset->setEnabled(false);
     }
     else {
-       m_ui->tp_offset->setEnabled(true);
+        m_ui->tp_offset->setEnabled(true);
     }
-
-    m_ui->trgin_invert->setCurrentIndex( GetFec( "trgin_invert" ) );
-    if(GetFec( "trgin_invert" ) == 0) {
-        SetFec("register_trigger_timestamp", 0);
-    }
-    else {
-        SetFec("register_trigger_timestamp", 1);
-    }
-
-    m_ui->trgout_invert->setCurrentIndex( GetFec( "trgout_invert" ) );
-    if(GetFec( "trgout_invert" ) == 0) {
-        m_ui->trgout_time->setEnabled(false);
-    }
-    else {
-        m_ui->trgout_time->setEnabled(true);
-    }
-    m_ui->trgout_time->setCurrentIndex( GetFec( "trgout_time" ) );
-
 }
 
 bool FECWindow::SetFec(const char *feature, unsigned long val){
@@ -295,47 +304,14 @@ unsigned long FECWindow::GetFec(const char *feature){
     return m_daqWindow->m_daq.m_fecs[m_fecIndex].GetRegVal(feature);
 }
 
-void FECWindow::on_Box_hybrid1_clicked()
-{
-    if (m_ui->Box_hybrid1->isChecked()){hybridBoxLogic(true,0);}
-    else {hybridBoxLogic(false,0);}
-}
-void FECWindow::on_Box_hybrid2_clicked()
-{
-    if (m_ui->Box_hybrid2->isChecked()){hybridBoxLogic(true,1);}
-    else {hybridBoxLogic(false,1);}
-}
-void FECWindow::on_Box_hybrid3_clicked()
-{
-    if (m_ui->Box_hybrid3->isChecked()){hybridBoxLogic(true,2);}
-    else {hybridBoxLogic(false,2);}
-}
-void FECWindow::on_Box_hybrid4_clicked()
-{
-    if (m_ui->Box_hybrid4->isChecked()){hybridBoxLogic(true,3);}
-    else {hybridBoxLogic(false,3);}
-}
-void FECWindow::on_Box_hybrid5_clicked()
-{
-    if (m_ui->Box_hybrid5->isChecked()){hybridBoxLogic(true,4);}
-    else {hybridBoxLogic(false,4);}
-}
-void FECWindow::on_Box_hybrid6_clicked()
-{
-    if (m_ui->Box_hybrid6->isChecked()){hybridBoxLogic(true,5);}
-    else {hybridBoxLogic(false,5);}
-}
-void FECWindow::on_Box_hybrid7_clicked()
-{
-    if (m_ui->Box_hybrid7->isChecked()){hybridBoxLogic(true,6);}
-    else {hybridBoxLogic(false,6);}
-}
-void FECWindow::on_Box_hybrid8_clicked()
-{
-    if (m_ui->Box_hybrid8->isChecked()){hybridBoxLogic(true,7);}
-    else {hybridBoxLogic(false,7);}
-}
+
 void FECWindow::hybridBoxLogic(bool checked, unsigned short hybrid){
+    if(checked) {
+        m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,hybrid)->setBackground(Qt::red);
+    }
+    else {
+        m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,hybrid)->setBackground(Qt::gray);
+    }
 
     QList<QCheckBox*> a = m_ui->groupBox->findChildren<QCheckBox*>();
     std::sort(a.begin(), a.end(),
@@ -347,7 +323,7 @@ void FECWindow::hybridBoxLogic(bool checked, unsigned short hybrid){
         if(i<hybrid && a.at(i)->isChecked()) ActiveBefore++;
     }
     if (checked){
-        m_ui->tabWidget->insertTab(ActiveBefore, new HybridWindow(this,m_fecIndex,hybrid), QString("Hybrid %0").arg(hybrid+1));
+        m_ui->tabWidget->insertTab(ActiveBefore, new HybridWindow(this,m_fecIndex,hybrid), QString("Hybrid %0").arg(hybrid));
         m_ui->tabWidget->setCurrentIndex(ActiveBefore);
         m_daqWindow->m_daq.m_fecs[m_fecIndex].SetHybrid(hybrid, true);
     }
@@ -361,39 +337,65 @@ void FECWindow::hybridBoxLogic(bool checked, unsigned short hybrid){
 void FECWindow::UpdateWindow(){
     for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
         if(m_daqWindow->m_daq.m_fecs[m_fecIndex].GetHybrid(k)){
-            if (k == 0 && !m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(true); on_Box_hybrid1_clicked();}
-            if (k == 1 && !m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(true); on_Box_hybrid2_clicked();}
-            if (k == 2 && !m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(true); on_Box_hybrid3_clicked();}
-            if (k == 3 && !m_ui->Box_hybrid4->isChecked()){m_ui->Box_hybrid4->setChecked(true); on_Box_hybrid4_clicked();}
-            if (k == 4 && !m_ui->Box_hybrid5->isChecked()){m_ui->Box_hybrid5->setChecked(true); on_Box_hybrid5_clicked();}
-            if (k == 5 && !m_ui->Box_hybrid6->isChecked()){m_ui->Box_hybrid6->setChecked(true); on_Box_hybrid6_clicked();}
-            if (k == 6 && !m_ui->Box_hybrid7->isChecked()){m_ui->Box_hybrid7->setChecked(true); on_Box_hybrid7_clicked();}
-            if (k == 7 && !m_ui->Box_hybrid8->isChecked()){m_ui->Box_hybrid8->setChecked(true); on_Box_hybrid8_clicked();}
+            if (k == 0 && !m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(true); hybridBoxLogic(true,0);}
+            if (k == 1 && !m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(true); hybridBoxLogic(true,1);}
+            if (k == 2 && !m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(true); hybridBoxLogic(true,2);}
+            if (k == 3 && !m_ui->Box_hybrid4->isChecked()){m_ui->Box_hybrid4->setChecked(true); hybridBoxLogic(true,3);}
+            if (k == 4 && !m_ui->Box_hybrid5->isChecked()){m_ui->Box_hybrid5->setChecked(true); hybridBoxLogic(true,4);}
+            if (k == 5 && !m_ui->Box_hybrid6->isChecked()){m_ui->Box_hybrid6->setChecked(true); hybridBoxLogic(true,5);}
+            if (k == 6 && !m_ui->Box_hybrid7->isChecked()){m_ui->Box_hybrid7->setChecked(true); hybridBoxLogic(true,6);}
+            if (k == 7 && !m_ui->Box_hybrid8->isChecked()){m_ui->Box_hybrid8->setChecked(true); hybridBoxLogic(true,7);}
+
+
         }
         else{
-            if (k == 0 && m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(false); on_Box_hybrid1_clicked();}
-            if (k == 1 && m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(false); on_Box_hybrid2_clicked();}
-            if (k == 2 && m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(false); on_Box_hybrid3_clicked();}
-            if (k == 3 && m_ui->Box_hybrid4->isChecked()){m_ui->Box_hybrid4->setChecked(false); on_Box_hybrid4_clicked();}
-            if (k == 4 && m_ui->Box_hybrid5->isChecked()){m_ui->Box_hybrid5->setChecked(false); on_Box_hybrid5_clicked();}
-            if (k == 5 && m_ui->Box_hybrid6->isChecked()){m_ui->Box_hybrid6->setChecked(false); on_Box_hybrid6_clicked();}
-            if (k == 6 && m_ui->Box_hybrid7->isChecked()){m_ui->Box_hybrid7->setChecked(false); on_Box_hybrid7_clicked();}
-            if (k == 7 && m_ui->Box_hybrid8->isChecked()){m_ui->Box_hybrid8->setChecked(false); on_Box_hybrid8_clicked();}
+            if (k == 0 && m_ui->Box_hybrid1->isChecked()){m_ui->Box_hybrid1->setChecked(false); hybridBoxLogic(false,0);}
+            if (k == 1 && m_ui->Box_hybrid2->isChecked()){m_ui->Box_hybrid2->setChecked(false); hybridBoxLogic(false,1);}
+            if (k == 2 && m_ui->Box_hybrid3->isChecked()){m_ui->Box_hybrid3->setChecked(false); hybridBoxLogic(false,2);}
+            if (k == 3 && m_ui->Box_hybrid4->isChecked()){m_ui->Box_hybrid4->setChecked(false); hybridBoxLogic(false,3);}
+            if (k == 4 && m_ui->Box_hybrid5->isChecked()){m_ui->Box_hybrid5->setChecked(false); hybridBoxLogic(false,4);}
+            if (k == 5 && m_ui->Box_hybrid6->isChecked()){m_ui->Box_hybrid6->setChecked(false); hybridBoxLogic(false,5);}
+            if (k == 6 && m_ui->Box_hybrid7->isChecked()){m_ui->Box_hybrid7->setChecked(false); hybridBoxLogic(false,6);}
+            if (k == 7 && m_ui->Box_hybrid8->isChecked()){m_ui->Box_hybrid8->setChecked(false); hybridBoxLogic(false,7);}
+
         }
     }
 }
 
 
 void FECWindow::onCheckLinkStatus(){
+    m_ui->debugScreen->clear();
     QString message;
-    bool readOK= false;
-    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus(readOK, message);
-    if(readOK)
+    QVector<QString> linkStatus;
+    if(m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->CheckLinkStatus(message, linkStatus))
     {
+        for(int c=0; c<HYBRIDS_PER_FEC; c++) {
+            if(m_daqWindow->m_daq.m_fecs[m_fecIndex].GetHybrid(c)) {
+                if(linkStatus[c] == "5") {
+                    m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setBackground(Qt::cyan);
+                }
+                else if(linkStatus[c] == "4") {
+                     m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setBackground(Qt::green);
+                }
+                else if(linkStatus[c] == "3") {
+                     m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setBackground(Qt::yellow);
+                }
+                else if(linkStatus[c] == "2") {
+                    m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setBackground(Qt::red);
+                }
+                else if(linkStatus[c] == "1") {
+                     m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setBackground(Qt::red);
+                }
+                else if(linkStatus[c] == "0") {
+                     m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setBackground(Qt::red);
+                }
+                 m_daqWindow->m_ui->tableWidget_LinkStatus->item(m_fecIndex,c)->setText(linkStatus[c]);
+
+            }
+        }
         m_ui->debugScreen->insertPlainText(message);
         m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     }
-
 }
 
 
@@ -401,43 +403,47 @@ void FECWindow::onCheckLinkStatus(){
 void FECWindow::onResetFEC()
 {
     //bool do_reset = (m_ui->fec_reset == QObject::sender() ? true : false);
+
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
+    m_daqWindow->m_ui->offACQ->setCheckable(true);
+    m_daqWindow->m_ui->offACQ->setChecked(true);
+    m_daqWindow->m_ui->onACQ->setChecked(false);
     m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ResetFEC();
     m_ui->onACQ->setChecked(false);
     m_ui->offACQ->setChecked(false);
+    m_daqWindow->m_ui->Send->setEnabled(true);
 }
 // ------------------------------------------------------------------------- //
 
-// ------------------------------------------------------------------------- //
-void FECWindow::onPowerCycleHybrids()
-{
-    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->PowerCycleHybrids();
-}
-// ------------------------------------------------------------------------- //
 
-void FECWindow::on_clearDebugScreen_clicked()
-{
-    m_ui->debugScreen->clear();
-}
 
 
 
 void FECWindow::on_readSystemParams_pressed()
 {
+    m_ui->debugScreen->clear();
     QMap<QString, QString> registers;
-    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers);
-    m_daqWindow->m_daq.m_fecs[m_fecIndex].SetFirmwareVersion(registers["FirmwareVers"]);
+    if(m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers)) {
 
-    stringstream sx;
-    sx.str("");
-    sx << "**********************\n"
-       << " Firmware version:\n" << registers["FirmwareVers"].toStdString() << "\n\n"
-       << " FEC IP:\n" << registers["FECip"].toStdString() <<  "\n\n"
-       << " DAQ destination IP:\n" << registers["DAQip"].toStdString()  <<  "\n"
-       << "**********************";
-    cout << sx.str() << endl;
-    QString message = QString::fromStdString(sx.str());
-    m_ui->debugScreen->insertPlainText(message);
-    m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+        QString text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+        m_daqWindow->SetStatus(text, m_fecIndex);
+
+        m_daqWindow->m_daq.m_fecs[m_fecIndex].SetFirmwareVersion(registers["FirmwareVers"]);
+
+        stringstream sx;
+        sx.str("");
+        sx << "**********************\n"
+           << " Firmware version:\n" << registers["FirmwareVers"].toStdString() << "\n\n"
+           << " MAC Vendor part :\n" << registers["MACvendor"].toStdString() <<  "\n\n"
+           << " MAC device part:\n" << registers["MACdevice"].toStdString() <<  "\n\n"
+           << " FEC IP:\n" << registers["FECip"].toStdString() <<  "\n\n"
+           << " DAQ destination IP:\n" << registers["DAQip"].toStdString()  <<  "\n"
+           << "**********************";
+        cout << sx.str() << endl;
+        QString message = QString::fromStdString(sx.str());
+        m_ui->debugScreen->insertPlainText(message);
+        m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    }
 }
 
 
@@ -475,17 +481,25 @@ void FECWindow::on_pushButtonFECIP_pressed()
                 return;
             }
             QMessageBox::StandardButton reply;
-
-            reply = QMessageBox::question(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC stores its own IP address on the FEC EEPROM.\nATTENTION: Do you only want to change the FEC IP address in the slow control GUI (press NO), or re-program the FEC IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
-            if(reply == QMessageBox::Yes) {
-               m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
+            if(g_connection_ok) {
+                reply = QMessageBox::question(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC stores its own IP address on the FEC EEPROM.\nATTENTION: Do you only want to change the FEC IP address in the slow control GUI (press NO), or re-program the FEC IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
+                if(reply == QMessageBox::Yes) {
+                    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
+                }
+                QThread::usleep(1000);
+                SetFec("ip_fec", theIP);
+                m_ui->ip_fec->setText(result);
+                QThread::usleep(1000);
             }
-            QThread::usleep(1000);
-            SetFec("ip_fec", theIP);
-            m_ui->ip_fec->setText(result);
-            QThread::usleep(1000);
+            else {
+                reply = QMessageBox::information(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC IP address in the slow control GUI will be changed!", QMessageBox::Ok);
+                if(reply == QMessageBox::Ok) {
+                    SetFec("ip_fec", theIP);
+                    m_ui->ip_fec->setText(result);
+                }
+            }
         }
-     }
+    }
 }
 
 
@@ -527,6 +541,12 @@ void FECWindow::on_pushButtonDAQIP_pressed()
             m_ui->ip_daq->setText(result);
             QThread::usleep(1000);
         }
-     }
+    }
 }
 
+
+
+void FECWindow::on_pushButtonPowerCycle_pressed()
+{
+    m_daqWindow->m_daq.m_fecs[m_fecIndex].m_fecConfigModule->PowerCycleHybrids();
+}

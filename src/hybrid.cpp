@@ -1,39 +1,14 @@
 #include "hybrid.h"
 
-Hybrid::Hybrid(): m_vmmActs (VMMS_PER_HYBRID)
+Hybrid::Hybrid()
 {
     LoadDefault();
-    m_vmmActs[0] = 1;
-    m_vmmActs[1] = 1;
-    m_art = 0;
-
-
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"axis",0}, {"position", 0}, {"CKBC",2}, {"CKBC_skew",0}, {"CKDT",2}, {"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
-    SetReg("CKBC", (std::string)"40");
-    SetReg("CKDT", (std::string)"180");
+    m_hybrid = {{"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid_info = {{"firmware_version", ""}, {"geo_id", ""}, {"hybrid_id", ""},{"link_status", "0"}, {"description", ""}};
 }
-
-bool Hybrid::SetVMM(unsigned short vmm, bool OnOff){
-    if (vmm < VMMS_PER_HYBRID) {m_vmmActs[vmm] = OnOff; return true;}
-    else {return false;}
-}
-
-void Hybrid::SetART(bool OnOff){
-    m_art = OnOff;
-}
-
-bool Hybrid::GetVMM(unsigned short vmm){
-    if (vmm < VMMS_PER_HYBRID) {return m_vmmActs[vmm];}
-    else {return false;}
-}
-
-bool Hybrid::GetART(){
-    return m_art;
-}
-
 
 bool Hybrid::SetReg(std::string feature, std::string val){
     if (SetRegister(feature, val)) return true;
@@ -58,80 +33,13 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
     typedef std::pair<std::string, unsigned short> BiPair;
     if(m_hybrid.find(feature)==m_hybrid.end()) return false;
     else{
-        if(feature=="axis"){
-            if(value == "0"){
-                m_hybrid[feature] = 0;
-                return true;
-            }
-            else if(value == "1"){
-                m_hybrid[feature] = 1;
-                return true;
-            }
-            else if(value == "2"){
-                m_hybrid[feature] = 2;
-                return true;
-            }
-           else return false;
-        }
-        if(feature=="position"){
-           if(std::stoi(value)>=0 && std::stoi(value)<=65534){
-                 m_hybrid[feature] = std::stoi(value);
-                 return true;
-           }
-           else return false;
-        }
-
-        if(feature=="CKBC"){
+        if(feature=="TP_skew"){
             InMap m_val;
-            std::string v_val[8] = {"80", "80inv", "40", "20", "10", "5", "2.5", "1.25"};
-            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
-                unsigned short bin_val=i;
-                m_val.insert(BiPair(v_val[i], bin_val));
-                m_val.insert(BiPair(std::to_string(i), bin_val));
-            }
-            if(m_val.find(value)!=m_val.end()){
-              m_hybrid[feature] = m_val[value];
-              return true;
-            }
-            else return false;
-        }
-
-       if(feature=="CKBC_skew"){
-            InMap m_val;
-            std::string v_val[4] = {"0", "6.26", "12.52", "18.78"};
-            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
-                unsigned short bin_val=i;
-                m_val.insert(BiPair(v_val[i], bin_val));
-                m_val.insert(BiPair(std::to_string(i), bin_val));
-            }
-            if(m_val.find(value)!=m_val.end()){
-              m_hybrid[feature] = m_val[value];
-              return true;
-            }
-            else return false;
-        }
-
-        if(feature=="CKDT"){
-            InMap m_val;
-            std::string v_val[4] = {"22.5", "45", "90", "180"};
-            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
-                unsigned short bin_val=i;
-                m_val.insert(BiPair(v_val[i], bin_val));
-                m_val.insert(BiPair(std::to_string(i), bin_val));
-            }
-            if(m_val.find(value)!=m_val.end()){
-              m_hybrid[feature] = m_val[value];
-              return true;
-            }
-            else return false;
-        }
-        else if(feature=="TP_skew"){
-            InMap m_val;
-            std::string v_val[64];
-            for(int i=0;i < 8; i++) {
+            std::string v_val[16];
+            for(int i=0;i < 2; i++) {
                 for(int n=0;n< 8; n++) {
-                    QString txt = QStringLiteral("%1").arg((i*25)+n*25/8.0);
-                    v_val[i*8+n] = txt.toStdString();
+                   QString txt = QStringLiteral("%1").arg((i*g_clock_period)+n*g_time_factor);
+                   v_val[i*8+n] = txt.toStdString();
                 }
             }
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
@@ -173,7 +81,15 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
             }
             else return false;
         }
+    }
+    return false;
+}
 
+bool Hybrid::SetInfo(std::string feature, std::string value){
+    if(m_hybrid_info.find(feature)==m_hybrid_info.end()) return false;
+    else{
+       m_hybrid_info[feature] = value;
+       return true;
     }
     return false;
 }
@@ -189,7 +105,16 @@ unsigned short Hybrid::GetReg(std::string feature){
     return 0;
 }
 
+std::string Hybrid::GetInfo(std::string feature){
 
+    if(m_hybrid_info.find(feature)!=m_hybrid_info.end()){
+        return m_hybrid_info[feature];
+    }
+    else{
+        std::cout<<"ERROR the feature ::"<<feature<<":: does not exist"<<std::endl;
+    }
+    return 0;
+}
 
 Hybrid::~Hybrid()
 {

@@ -3,24 +3,25 @@
 
 
 FEC::FEC():
-    m_hybridActs (HYBRIDS_PER_FEC),
-    m_msg(0),
-    m_socketHandler(0),
-    numberOfRegisters(42),
-    m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
-    m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
-    m_chr ( new char[1000] ) //need for returning const char * in GetReg functions
+             m_hybridActs (HYBRIDS_PER_FEC),
+             m_msg(0),
+             m_socketHandler(0),
+             numberOfRegisters(42),
+             m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
+             m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
+             m_chr ( new char[1000] ) //need for returning const char * in GetReg functions
 {
     LoadDefault();
 
     m_socketHandler = new SocketHandler();
-    m_fecConfigModule = new FECConfigModule(this);
+    m_socketHandler->SetDebugMode(false);
+    m_fecConfigModule = new FECConfigModule(this, this);
     m_fecConfigModule->LoadSocket( GetSocketHandler() );
 }
 
 
 long FEC::GetID(){
-    return  ( GetRegVal("ip_fec") & 0x000000FF);
+    return m_id;
 }
 
 QString FEC::GetIP() {
@@ -35,6 +36,10 @@ long FEC::GetIP_FEC(){
 
 void FEC::SetIP_FEC(unsigned long ip) {
     SetReg("ip_fec", ip);
+    if(g_clock_source!=0) {
+        m_id = GetRegVal("ip_fec") & 0x000000FF;
+        //std::cout << "SetIP_FEC m_id=" << m_id<< std::endl;
+    }
 }
 
 long FEC::GetIP_DAQ(){
@@ -43,16 +48,6 @@ long FEC::GetIP_DAQ(){
 
 void FEC::SetIP_DAQ(unsigned long  ip) {
     SetReg("ip_daq", ip);
-}
-
-void FEC::SetFirmwareVersion(QString version)
-{
-    m_firmwareVersion = version;
-}
-
-QString FEC::GetFirmwareVersion()
-{
-    return m_firmwareVersion;
 }
 
 // ------------------------------------------------------------------------ //
@@ -65,57 +60,32 @@ void FEC::LoadMessageHandler(MessageHandler& m)
 // ------------------------------------------------------------------------- //
 
 void FEC::SendAll(bool useConfigCheck){
+    //std::cout << "IP SEND all " << this->GetIP().toStdString() << std::endl;
     // function to send all configurations to fec, hybrid and vmm
     for(int n=0; n< HYBRIDS_PER_FEC*VMMS_PER_HYBRID; n++) {
         config_error[n] = 0;
     }
-
-    unsigned long first = 0;
-    unsigned long firstIndex = 0;
-    unsigned long ckbc = 0;
-    for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
-        if(GetHybrid(k)){
-            if(firstIndex == 0) {
-                first = this->m_hybrids[k].GetReg("CKBC");
-                firstIndex = k;
-            }
-            else {
-                ckbc = this->m_hybrids[k].GetReg("CKBC");
-                if(first != ckbc) {
-                    int ret = QMessageBox::warning(nullptr, tr("Hybrid BC clock"),
-                                                   tr("Invalid hybrid BC clock setting! All hybrids on the same FEC have to have the same BC clock!"),
-                                                   QMessageBox::Ok);
-                    return;
-                }
-            }
-        }
-    }
-
-    if(first >= 2) {
-        SetReg("bcclock_factor",first-2);
-    }
-
     m_fecConfigModule->SetMask();
     m_fecConfigModule->SetTriggerAcqConstants();
+
     for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
         if(GetHybrid(k)){
-            m_fecConfigModule->ConfigTP(k);
-            m_fecConfigModule->SetS6clocks(k);
-            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                if (m_hybrids[k].GetVMM(m)){
-                    //sleep(1);
-                    bool result = m_fecConfigModule->SendConfig(k, m, useConfigCheck);
-                    if(!result) {
-                        config_error[k*VMMS_PER_HYBRID+m] = 1;
-                    }
+            m_fecConfigModule->ConfigHybrid(k);
 
+            for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
+                //sleep(1);
+                bool result = m_fecConfigModule->SendConfig(k, m, useConfigCheck);
+                if(!result) {
+                    config_error[k*VMMS_PER_HYBRID+m] = 1;
                 }
             }
-
         }
     }
+
+
+
     bool iserror = false;
-    QString message = "Configuration not loaded on FEC " + GetIP() + ":\n";
+    QString message = "Configuration not loaded on FEC " + QString::number(GetIndex()) + " (IP " + GetIP()+ "):\n";
     for (unsigned short k=0; k < VMMS_PER_HYBRID*HYBRIDS_PER_FEC; k++){
         if(config_error[k] == 1) {
             iserror = true;
@@ -136,9 +106,7 @@ quint16 FEC::GetChMap(){
     for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
         if(GetHybrid(k)){
             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                if (m_hybrids[k].GetVMM(m)){
-                    chMapString.replace(15-( k*2+m ) , 1 , QString("1") );
-                }
+                chMapString.replace(15-( k*2+m ) , 1 , QString("1") );
             }
 
         }
@@ -152,9 +120,9 @@ quint16 FEC::GetChMap(){
 void FEC::LoadDefault(){
     (*m_regNames)[0] ="tp_offset_first";         (*m_reg)[0] = 100;  //12 bit
     (*m_regNames)[1] ="tp_offset";               (*m_reg)[1] = 1000;  //12 bit
-    (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 64;  //8 bit
+    (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 65;  //8 bit
     (*m_regNames)[3] ="tp_number";               (*m_reg)[3] = 1;    //8 bit
-    (*m_regNames)[4] ="bcclock_factor";          (*m_reg)[4] = 0;
+    (*m_regNames)[4] ="not_used";                (*m_reg)[4] = 0;
     (*m_regNames)[5] ="not_used";                (*m_reg)[5] = 0;
 
     (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
@@ -179,26 +147,30 @@ void FEC::LoadDefault(){
     (*m_regNames)[23]="truncate";                (*m_reg)[23] = 0;   //6 bit
     (*m_regNames)[24]="nskip";                   (*m_reg)[24] = 0;   //7 bit
     (*m_regNames)[25]="sL0cktest";               (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
-    (*m_regNames)[26]="ip_fec";                  (*m_reg)[26] = 0x0a000002;   //
-    (*m_regNames)[27]="ip_daq";                  (*m_reg)[27] = 0x0a000003;   //
+    (*m_regNames)[26]="ip_fec";                  (*m_reg)[26] = 0xC0A83264; //
+    (*m_regNames)[27]="ip_daq";                  (*m_reg)[27] = 0xC0A83201;//
 
     (*m_regNames)[28]="i2c_port";                (*m_reg)[28] = 6604;   //32 bit
     (*m_regNames)[29]="fec_sys_port";            (*m_reg)[29] = 6023;   //32 bit
 
     (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 47;   //8 bit
-    (*m_regNames)[31]="latency_data_max";        (*m_reg)[31] = 4091; //12 bit
-    (*m_regNames)[32]="latency_data_error";      (*m_reg)[32] = 4;    //8 bit
+    (*m_regNames)[31]="latency_data_max";        (*m_reg)[31] = 4087; //12 bit
+    (*m_regNames)[32]="latency_data_error";      (*m_reg)[32] = 8;    //8 bit
     (*m_regNames)[33]="debug_data_format";       (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
-    (*m_regNames)[34]="not_used";                (*m_reg)[34] = 0;
+    (*m_regNames)[34]="dvm_i2c_port";            (*m_reg)[34] = 6601;
     (*m_regNames)[35]="trgin_invert";            (*m_reg)[35] = 0;
     (*m_regNames)[36]="trgout_invert";           (*m_reg)[36] = 0;
     (*m_regNames)[37]="trgout_time";             (*m_reg)[37] = 1;
-    (*m_regNames)[38]="dvm_i2c_port";            (*m_reg)[38] = 6601;//0x19C9
+    (*m_regNames)[38]="not_used";                (*m_reg)[38] = 0;
     (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
     (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
     (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
 
+    m_fec_info = {{"firmware_version", ""}, {"description", ""}};
+
 }
+
+
 
 // ------------------------------------------------------------------------- //
 unsigned short FEC::GetVMM(int hybrid_index, int vmm_index, std::string feature, int ch){
@@ -212,14 +184,6 @@ bool FEC::SetVMM(int hybrid_index, int vmm_index, std::string feature, int value
     }
     else return false;
 }
-
-bool FEC::SetVMM(int hybrid_index, int vmm_index, std::string feature, std::string value, int ch){
-    if(m_hybrids[hybrid_index].m_vmms[vmm_index].SetRegi(feature, value, ch)){
-        return true;
-    }
-    else return false;
-}
-
 
 bool FEC::SetHybrid(unsigned short hybrid, bool OnOff){
     if (hybrid < HYBRIDS_PER_FEC) {m_hybridActs[hybrid] = OnOff; return true;}
@@ -275,7 +239,7 @@ bool FEC::SetReg(int regnum, bool val){
 }
 
 bool FEC::SetReg(const char *reg, unsigned long val){
-    sprintf(m_chr, "%d", val); // convert int to char * to check if in allowed value list
+    sprintf(m_chr, "%ul", val); // convert int to char * to check if in allowed value list
     for (unsigned short i = 0; i < (*m_regNames).size(); i++ ){
         if(ConstCharStar_comp(reg,(*m_regNames)[i])){
             if (CheckAllowedVal(i, m_chr)){
@@ -313,7 +277,7 @@ bool FEC::SetReg(int regnum, const char *val){
 }
 
 unsigned long FEC::FindVecEntry(unsigned short regnum, const char *val){
-    unsigned long pos = 4294967296;
+    unsigned long pos = 0;
 
     if (regnum == 4) {// need to compare the strings at the const char * addresses
         if (ConstCharStar_comp(val,"0")) pos = 0;
@@ -392,6 +356,47 @@ bool FEC::ConstCharStar_comp(const char *ccs1, const char *ccs2){
     str2 << ccs2;
     if (str1.str() == str2.str()) {return true;}
     else {return false;}
+}
+
+bool FEC::SetInfo(std::string feature, std::string value){
+    if(m_fec_info.find(feature)==m_fec_info.end()) return false;
+    else{
+        if(feature=="description"){
+            m_fec_info[feature] = value;
+            //ESS master, take rings and
+            if(g_clock_source==0) {
+                QString str = QString::fromStdString(value).toUpper();
+                for(int ring=0; ring<24;ring++) {
+                    QString search="RING"+ QString::number(ring);
+                    if(str.contains(search, Qt::CaseInsensitive)) {
+                        m_id = ring * 32 + 0;
+                        for(int fen=0; fen<32;fen++) {
+                             std::cout << search.toStdString() << std::endl;
+                            if(str.contains(search, Qt::CaseInsensitive)) {
+                                m_id = ring * 32 + fen;
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                m_id = GetRegVal("ip_fec") & 0x000000FF;
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string FEC::GetInfo(std::string feature){
+
+    if(m_fec_info.find(feature)!=m_fec_info.end()){
+        return m_fec_info[feature];
+    }
+    else{
+        std::cout<<"ERROR the feature ::"<<feature<<":: does not exist"<<std::endl;
+    }
+    return 0;
 }
 
 

@@ -28,6 +28,8 @@ private slots:
     void on_Box_vmm2_clicked();
     void onUpdateSettings();
     void on_pbReadI2C_pressed();
+    void on_tpSkew_highlighted(int index);
+
 private:
     FECWindow *m_fecWindow;
     unsigned short m_fecIndex;
@@ -38,6 +40,7 @@ private:
     void LoadSettings();
     bool SetHybrid(std::string feature, unsigned short val);
     unsigned short GetHybrid(std::string feature);
+    void EnableCommunicationButtons(bool enable);
 };
 
 #endif // HYBRID_WINDOW_H

@@ -6,7 +6,7 @@
 #include "hybrid.h"
 #include "fec_config_module.h"
 #include "socket_handler.h"
-//class FEC_config_module;
+
 
 class FEC: public QObject
 {
@@ -14,14 +14,6 @@ class FEC: public QObject
 public:
     FEC();
     ~FEC();
-    friend class Commandline;
-    friend class FECConfigModule;
-    friend class FECWindow;
-    friend class VMMWindow;
-    friend class DAQWindow;
-    friend class DAQ;
-    friend class CalibrationModule;
-    friend class TestModule;
     Hybrid m_hybrids[HYBRIDS_PER_FEC];
 
     void LoadDefault();
@@ -49,12 +41,12 @@ public:
     unsigned short GetRegNumber(const char *reg);
     unsigned short GetRegSize();
 
+    unsigned short GetVMM(int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
+    bool SetVMM(int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
+    bool SetVMM(int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
+
     void SendAll(bool useConfigCheck = false);
     quint16 GetChMap();
-
-    void SetFirmwareVersion(QString version);
-    QString GetFirmwareVersion();
-
     FECConfigModule *m_fecConfigModule;
 
     long GetID();
@@ -63,7 +55,10 @@ public:
     void SetIP_FEC(unsigned long  ip);
     long GetIP_DAQ();
     void SetIP_DAQ(unsigned long  ip);
-
+    void SetIndex(int n) {m_index = n; if(g_clock_source==0) {m_id=32*n;}}
+    int GetIndex() {return m_index;}
+    bool SetInfo(std::string feature, std::string val);
+    std::string GetInfo(std::string feature);
 private:
     bool Set(unsigned short reg, unsigned long val);
     bool CheckAllowedVal(unsigned short reg, const char *val);
@@ -79,10 +74,10 @@ private:
     std::vector<unsigned long> *m_reg;
     char *m_chr;
     int config_error[HYBRIDS_PER_FEC*VMMS_PER_HYBRID];
-    unsigned short GetVMM(int hybrid_index, int vmm_index, std::string feature, int ch=-9999);
-    bool SetVMM(int hybrid_index, int vmm_index, std::string feature, int value ,int ch=-9999);
-    bool SetVMM(int hybrid_index, int vmm_index, std::string feature, std::string value, int ch=-9999);
+    std::map<std::string, std::string> m_fec_info;
+    int m_index=0;
+    //For FEC, last part of the IP address, for assister combination from ring and FEN
+    int m_id=0;
 
-    QString m_firmwareVersion;
 };
 #endif // FEC_H

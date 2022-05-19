@@ -42,28 +42,18 @@ class VMMSocket : public QObject
         quint64 WriteDatagram(const QByteArray& data, const QHostAddress& host,
                     quint16 port);
 
-        // dummy function to send string datagram to specific port on local host
-        void TestUDP();
-
         bool CheckAndReconnect(std::string fromWhere="");
         void CloseAndDisconnect(std::string fromWhere="");
 
 
         QUdpSocket& GetSocket() { return *m_socket; }
         QByteArray GetBuffer() { return m_buffer; }
-        QByteArray ProcessReply(const QString &ip_sent_to, quint32 cmd_delay = 0,
-                                quint32 count = 0);
+        void ProcessReply();
 
         void Print();
 
-    signals :
-        void dataReady();
-
-    public slots :
-        void readyRead();
-
     private :
-        bool m_dbg;
+        bool m_dbg = false;
         MessageHandler *m_msg;
         std::string m_name;
         quint16 m_bindingPort;

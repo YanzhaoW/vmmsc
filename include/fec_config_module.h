@@ -41,18 +41,17 @@ public:
     void FillChannelRegisters(std::vector<QString>& channelRegisters, int hybrid_index, int vmm_index);
 
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }
-    int Connect();
+    bool Connect();
 
-    void ConfigTP( int hybrid_index);
-    void SetS6clocks(int hybrid_index);
+    void ConfigHybrid( int hybrid_index);
     void SetTriggerAcqConstants();
-    void CheckLinkStatus(bool& readOK, QString & message);
+    void PowerCycleHybrids();
+    bool CheckLinkStatus(QString & message, QVector<QString> & linkstatus);
     void ResetLinks();
     void ResetFEC();
-    void ReadSystemRegisters(QMap<QString, QString>& registers);
+    bool ReadSystemRegisters(QMap<QString, QString>& registers);
     void writeFECip(int FECip);
     void writeDAQip(int DAQip);
-    void PowerCycleHybrids();
     void ACQon(bool broadcast=false);
     void ACQoff(bool broadcast=false);
     void SetMask();
@@ -60,24 +59,22 @@ public:
     QString ReadI2C(int hybrid_index, int choice);
     QString ReadGeoPos(int hybrid_index);
     QString ReadIDChip(int hybrid_index);
+    QString ReadFirmwareVersion(int hybrid_index);
+    QString ReadADC_I2C(int hybrid_index);
     bool CheckConfigurationOfVMMs(int hybrid_index, int vmm_index);
-    QString CommunicateWithHybridI2C(int hybrid_index, int rw, int reg_value, int bytes);
-    void VMMLoadEmit();
-    void HybridLoadEmit();
-    void VMMUpdateChannelEmit();
+    QString CommunicateWithHybridI2C(int i2c_addr, int hybrid_index, int rw, int reg_value, int bytes);
+    bool CheckIpPortSize(QHostAddress ipRead, QString ip,int portRead, int port, int size);
 private:
     FEC *m_fec;
-    bool m_dbg;
-    std::vector<int> m_hybrid_i2c;
+    bool m_dbg = false;
+    //std::vector<int> m_hybrid_i2c;
 
     SocketHandler *m_socketHandler;
 //    ConfigHandler *m_configHandler;
     MessageHandler* m_messageHandler;
 signals:
     void CheckLinks();
-    void ReloadVMM();
-    void ReloadHybrid();
-    void VMMUpdateChannel();
+
 
 public slots:
 };

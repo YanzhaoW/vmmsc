@@ -10,34 +10,22 @@ class Hybrid: public QObject
 public:
     Hybrid();
     ~Hybrid();
-    friend class VMM;
     friend class HybridConfigHandler;
-    friend class CalibrationModule;
-    friend class TestModule;
+
     VMM m_vmms[VMMS_PER_HYBRID];
 
     void LoadDefault();
-    bool SetVMM(unsigned short vmm, bool OnOff);
-    void SetART(bool OnOff);
-    bool GetVMM(unsigned short vmm);
-    bool GetART();
-
-    //void SetAxis(int);
-    //bool SetPosNo(unsigned short);
-    //bool GetAxis();
-    //unsigned short GetPosNo();
-
     bool SetReg(std::string feature, std::string val);
     bool SetReg(std::string feature, int val);
     unsigned short GetReg(std::string feature);
+    bool SetInfo(std::string feature, std::string val);
+    std::string GetInfo(std::string feature);
 private:
-    std::vector<bool> m_vmmActs;//binary to store which vmms are activated
-    bool m_art; // binary to store if ART is active
-
     //int m_axis; // hybrid is reading on x (0) or y(1) or z(2)
     //unsigned short m_posNo; // hybrid is number ? on its axis
     bool SetRegister(std::string feature, std::string value);
     std::map<std::string, unsigned short> m_hybrid;
+    std::map<std::string, std::string> m_hybrid_info;
 };
 
 #endif // HYBRID_H
