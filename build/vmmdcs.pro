@@ -1,10 +1,10 @@
 #####################################################
 # Define default value for clock source
 # 0 = ESS readout, clock via ring (44.02625 MHz)
-# 1 = ESS readout, clock from KCU705 (44.444 MHz)
+# 1 = ESS readout, clock from KC705 (44.444 MHz)
 # 2 = SRS, ESS firmware with 44.4444 MHz
 # 3 = SRS, RD51 firmware with 40 MHz
-DEFINES += CLOCK_SOURCE=1
+DEFINES += CLOCK_SOURCE=2
 #####################################################
 # directory and machine specific items here
 #####################################################

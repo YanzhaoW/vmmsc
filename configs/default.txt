@@ -1,10 +1,8 @@
 //Conneted hardware and vmm position map. No comment in the following lines, take care of syntax!
 fecs: 1
-	fec 0: hybrids: 2
-			hybrid 0: x 1, vmms: 2
+	fec 0: hybrids: 1
+			hybrid 0: vmms: 2
 				vmm 0
 				vmm 1
-			hybrid 1: y 1, vmms: 2
-				vmm 0
-				vmm 1
+
 

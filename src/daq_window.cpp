@@ -1206,7 +1206,7 @@ void DAQWindow::InitFecWidgets() {
         m_ui->line_trigger->setVisible(false);
     }
     else {
-        m_ui->pushButtonPowerCycle->setVisible(true);
+        m_ui->pushButtonPowerCycle->setVisible(false);
         m_ui->pushButtonApplyAllFecs->setText("Apply to all FECs");
         m_ui->trgout_time->clear();
         m_ui->trgout_time->addItem("trg in");
