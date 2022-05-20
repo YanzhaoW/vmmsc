@@ -2069,47 +2069,89 @@ QString FECConfigModule::ReadFirmwareVersion(int hybrid_index) {
 QString FECConfigModule::ReadADC_I2C(int hybrid_index) {
     QString sResult="error";
     int byte=0;
-    int chFromRegister = 0;
-    int higherAdc = 0;
-    int lowerAdc = 0;
-    int adc = 0;
+    int res=0;
     bool ok;
     QString sReturn;
+
 
     sReturn = CommunicateWithHybridI2C(66,hybrid_index, 0, 1, 1);
     sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
     std::cout << "Acq on write " << sReturn.toStdString() << std::endl;
 
-    QThread::msleep(2000);
-
-
-    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 0,0, 1);
+    sReturn = CommunicateWithHybridI2C(66,hybrid_index, 0, 3, 1);
     sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
-    std::cout << "Acq off write " << sReturn.toStdString() << std::endl;
 
-    int number = 128;
-    qsrand(qrand());
-    int ch = qrand() % number;
-
-    sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0,ch*2+1, 1);
-    sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
     byte = sReturn.toUInt(&ok,16);
-    chFromRegister = byte>>2;
-    higherAdc = byte & 0x03;
+    int read_count = 256*byte;
+
+    sReturn = CommunicateWithHybridI2C(66,hybrid_index, 0, 4, 1);
+    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
+    byte = sReturn.toUInt(&ok,16);
+    read_count += byte;
+    sResult = QString::number(read_count,10);
+    std::cout << "Read count " << sResult.toStdString() << std::endl;
+
+    for(int n=0; n<read_count;n++) {
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 0, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        long overflow_counter = ((0x7F & byte) << 20);
+        int vmmm  = ((0x80 & byte) >> 7);
+        std::cout << "\n" << n << std::endl;
+        std::cout << "mmm " << vmmm << std::endl;
+
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 1, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        overflow_counter += (byte << 12);
+
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 2, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        overflow_counter += (byte << 4);
+
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 3, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        overflow_counter += (byte >> 4);
+
+        int bcid = (byte & 0x03)*256;
+        std::cout << "overflow_counter " << overflow_counter << std::endl;
+
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 4, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        bcid += byte;
+        std::cout << "bcid " << bcid << std::endl;
+
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 5, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        int tdc = byte;
+        std::cout << "tdc " << tdc << std::endl;
+
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 6, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        int adc = byte*4;
 
 
-    sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0,ch*2, 1);
-    sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
-    lowerAdc = sReturn.toUInt(&ok,16);
-    adc = 256 * higherAdc + lowerAdc;
-
-
-    if(ch<64) {
-        sResult = "vmm0 " + QString::number(ch) + " " + QString::number(chFromRegister) + " adc " + QString::number(adc);
+        sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0, 7, 1);
+        sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
+        byte = sReturn.toUInt(&ok,16);
+        int channel = byte & 0x3F;
+        adc += (6 >> byte);
+        std::cout << "adc " << adc << std::endl;
+        std::cout << "channel " << channel << std::endl;
     }
-    else {
-        sResult = "vmm1 " + QString::number(ch-64) + " " + QString::number(chFromRegister) + " adc " + QString::number(adc);
-    }
+
+    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 0, 0, 1);
+    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
+    std::cout << "\nAcq off write " << sReturn.toStdString() << std::endl;
+
+
+
+
 
     return sResult;
 
@@ -2282,13 +2324,17 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
 // ------------------------------------------------------------------------ //
 QString FECConfigModule::ReadGeoPos(int hybrid_index)
 {
-    if(IsDbgEnabled())GetMessageHandler()("Reading Geo-Pos on hybrid...","FEC_config_module::ReadGeoPos");
-    QString result="0";
-    //send 1 byte of 230 to choose register 230
-    result = CommunicateWithHybridI2C(66, hybrid_index, 0, 2, 1);
 
-    //read 1 byte from register 230
-    result = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
+//    if(IsDbgEnabled())GetMessageHandler()("Reading Geo-Pos on hybrid...","FEC_config_module::ReadGeoPos");
+//    QString result="0";
+//    //send 1 byte of 230 to choose register 230
+//    result = CommunicateWithHybridI2C(66, hybrid_index, 0, 2, 1);
+
+//    //read 1 byte from register 230
+//    result = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
+
+
+    QString result = ReadADC_I2C(hybrid_index);
     return result;
 }
 // ------------------------------------------------------------------------ //
