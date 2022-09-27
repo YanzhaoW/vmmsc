@@ -27,16 +27,18 @@ class SocketHandler : public QObject
 
     public :
         explicit SocketHandler(QObject *parent = 0);
+
+        static SocketHandler* getInstance(QObject *parent = NULL);
+        static void deleteInstance();
+
+
+
         virtual ~SocketHandler(){};
         SocketHandler& SetDebugMode(bool dbg) { m_dbg = dbg; return *this; }
         bool IsDbgActive() { return m_dbg; }
 
         void LoadMessageHandler(MessageHandler& GetMessageHandler);
         MessageHandler& GetMessageHandler() { return *m_msg; }
-
-
-        bool IsPinged() { return m_pinged; }
-        void SetPinged(bool val) { m_pinged= val;}
 
         // update global command counter
         void UpdateCommandCounter();
@@ -45,8 +47,8 @@ class SocketHandler : public QObject
         void ResetCommandCounter();
 
         // add sockets
-        void AddSocket(quint16 bindingPort = 0,
-            QAbstractSocket::BindMode mode = QAbstractSocket::DefaultForPlatform);
+        void AddSocket(quint16 bindingPort,
+                       QAbstractSocket::BindMode mode);
 
         // send data
         bool SendDatagram(const QByteArray& datagram, const QString& ip,
@@ -65,11 +67,12 @@ class SocketHandler : public QObject
         void Print();
         // retrieve socket
         VMMSocket& GetSocket();
+    protected:
+        static SocketHandler* socketHandler;
 
     private :
         bool m_dbg = false;
         MessageHandler *m_msg;
-        bool m_pinged=false;
         bool m_skipProcessing;
         quint32 n_globalCommandCounter;
         VMMSocket *m_socket;

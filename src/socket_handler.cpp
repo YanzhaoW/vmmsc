@@ -15,11 +15,34 @@ using namespace std;
 // ---------------------------------------------------------------------- //
 ////////////////////////////////////////////////////////////////////////////
 
+
+
+SocketHandler* SocketHandler::socketHandler= nullptr;
+
+SocketHandler *SocketHandler::getInstance(QObject *parent)
+{
+    if(socketHandler==nullptr)
+    {
+        socketHandler = new SocketHandler(parent);
+    }
+    return socketHandler;
+}
+
+void SocketHandler::deleteInstance()
+{
+   if(socketHandler != nullptr)
+   {
+        delete socketHandler;
+        socketHandler = nullptr;
+   }
+}
+
+
+
 SocketHandler::SocketHandler(QObject* parent) :
     QObject(parent),
     m_dbg(false),
     m_msg(0),
-    m_pinged(false),
     m_skipProcessing(false),
     n_globalCommandCounter(0),
     m_socket(0),
@@ -55,9 +78,7 @@ void SocketHandler::AddSocket(quint16 bindingPort,
     m_socket->SetDebugMode(IsDbgActive());
     m_socket->SetBindingPort(bindingPort);
     bind = m_socket->BindSocket(bindingPort, mode);
-
     if(bind) m_socketSetup = true;
-    GetMessageHandler()("VMMSocket added:","SocketHandler::addSocket");
     m_socket->Print();
 
 }
@@ -76,15 +97,7 @@ bool SocketHandler::SendDatagram(const QByteArray& datagram, const QString& ip,
     std::string fn = "";
     if(callingFn!="") fn = "(" + callingFn.toStdString() + ") ";
 
-    //CHECK STATUS ENUM
-    if(!IsPinged()) {
-        GetMessageHandler()("ERROR Boards are not in pinged OK state...",
-                            "SocketHandler::SendDatagram", true);
-       return false;
-    }
-
     // make sure the socket is connected (bound) to the correct port
-
     if(!m_socket->CheckAndReconnect(callingFn.toStdString())) {
         return false;
     }
@@ -94,7 +107,7 @@ bool SocketHandler::SendDatagram(const QByteArray& datagram, const QString& ip,
     if(IsDbgActive()) {
         stringstream sx;
         sx << fn
-           << " Data from socket '" << m_socket->GetName() << "' sent to "
+           << " Data from SC socket sent to "
            << "(IP,port) = (" << ip.toStdString() << ", " << destPort << ") :\n"
            << datagram.toHex().toStdString() << "\n";
         GetMessageHandler()(sx,"SocketHandler::SendDatagram");

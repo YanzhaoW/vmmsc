@@ -85,11 +85,13 @@ bool FECConfigHandler::LoadFECConfig(std::string fname){ //load the FEC configur
                     m_daqWindow->m_daq.m_fecs[fec].SetIP_FEC(ip.toIPv4Address());
                 }
             }
+            //std::cout << a << " " << b << std::endl;
             if (!m_daqWindow->m_daq.m_fecs[fec].SetReg(a,b)) return false;
 
         }
         if( (f.fail()) ) {return false;}
     }
+    m_daqWindow->m_daq.m_fecs[fec].SetId();
     f.close();
     return true;
 }

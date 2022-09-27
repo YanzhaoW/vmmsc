@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 
+
+
 using namespace std;
 
 std::vector<int> g_hybrid_i2c;
@@ -13,27 +15,56 @@ bool g_use_config_check = true;
 
 #if CLOCK_SOURCE == 1
 double g_clock_period = 22.5;
-std::string g_card_name = "Assister";
+std::string g_card_name = "FEN";
+//Slow control assister
+int g_slow_control = 1;
 #elif CLOCK_SOURCE == 2
 double g_clock_period = 22.5;
 std::string g_card_name = "FEC";
+//Slow control SRS
+int g_slow_control = 2;
 #elif CLOCK_SOURCE == 3
 double g_clock_period = 25;
 std::string g_card_name = "FEC";
+//Slow control SRS
+int g_slow_control = 2;
 #else
 double g_clock_period = 22.7137;
-std::string g_card_name = "Assister";
+std::string g_card_name = "FEN";
+int g_slow_control = SLOW_CONTROL;
 #endif
+
+
 double g_time_factor = g_clock_period/8.0;
 
 bool g_connection_ok = false;
 
 DAQWindow::DAQWindow(QMainWindow *parent) :
-                                            QMainWindow(parent),
-                                            m_ui(new Ui::daq_window)
+    QMainWindow(parent),
+    m_ui(new Ui::daq_window)
 {
     m_ui->setupUi(this);
     this->setWindowTitle("VMM3a slow control");
+    m_ui->comboBoxSlowControl->setCurrentIndex(g_slow_control);
+    //Master (0) has only fec IP field
+    if(g_slow_control == 0) {
+        m_ui->pushButtonDAQIP->setVisible(false);
+        m_ui->ip_daq->setVisible(false);
+    }
+    else {
+        m_ui->pushButtonDAQIP->setVisible(true);
+        m_ui->ip_daq->setVisible(true);
+    }
+    if(g_slow_control == 2) {
+        m_ui->pushButtonFECIP->setText("FEC IP");
+    }
+    else if(g_slow_control == 1) {
+        m_ui->pushButtonFECIP->setText("FEN IP");
+    }
+    else if(g_slow_control == 0) {
+        m_ui->pushButtonFECIP->setText("Master IP");
+    }
+
 
     m_ui->openConnection->setStyleSheet("QPushButton { color: black; }");
     m_ui->openConnection->setToolTip("Open or check communication");
@@ -62,29 +93,31 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
     m_hybridConfigHandler = new HybridConfigHandler(this);
     m_vmmConfigHandler = new VMMConfigHandler(this);
 
-    m_ui->tableWidget_LinkStatus->setRowCount(8);
-    m_ui->tableWidget_LinkStatus->setColumnCount(8);
-    m_ui->tableWidget_LinkStatus->setVerticalHeaderLabels({"H0","H1","H2","H3","H4","H5","H6","H7"});
+    m_ui->tableWidget_LinkStatus->setRowCount(HYBRIDS_PER_FEC);
+    m_ui->tableWidget_LinkStatus->setColumnCount(FECS_PER_DAQ);
+    m_ui->tableWidget_LinkStatus->setVerticalHeaderLabels({"H0","H1","H2","H3", "H4", "H5", "H6", "H7"});
     m_ui->tableWidget_LinkStatus->setHorizontalHeaderLabels({"0","1","2","3","4","5","6","7"});
     for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
-        m_ui->tableWidget_LinkStatus->setColumnWidth(hyb,30);
         m_ui->tableWidget_LinkStatus->setRowHeight(hyb,20);
         for(int fec=0; fec<FECS_PER_DAQ; fec++) {
             m_ui->tableWidget_LinkStatus->setItem(hyb, fec, new QTableWidgetItem);
+            m_ui->tableWidget_LinkStatus->setColumnWidth(fec,33);
         }
     }
 
-    m_ui->tableWidget_Temperature->setRowCount(16);
-    m_ui->tableWidget_Temperature->setColumnCount(8);
+
+    m_ui->tableWidget_Temperature->setRowCount(HYBRIDS_PER_FEC*2);
+    m_ui->tableWidget_Temperature->setColumnCount(FECS_PER_DAQ);
     m_ui->tableWidget_Temperature->setVerticalHeaderLabels({"V0","V1","V2","V3","V4","V5","V6","V7","V8","V9","V10","V11","V12","V13","V14","V15"});
     m_ui->tableWidget_Temperature->setHorizontalHeaderLabels({"0","1","2","3","4","5","6","7"});
     for(int vmm=0; vmm<HYBRIDS_PER_FEC*2; vmm++) {
-        m_ui->tableWidget_Temperature->setColumnWidth(vmm,34);
         m_ui->tableWidget_Temperature->setRowHeight(vmm,20);
         for(int fec=0; fec<FECS_PER_DAQ; fec++) {
             m_ui->tableWidget_Temperature->setItem(vmm, fec, new QTableWidgetItem);
+            m_ui->tableWidget_Temperature->setColumnWidth(fec,33);
         }
     }
+
     if(g_clock_source < 2) {
         m_ui->trgin_invert->setVisible(false);
         m_ui->trgout_invert->setVisible(false);
@@ -130,6 +163,7 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
 }
 
 
+
 void DAQWindow::UpdateSystemStatus() {
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         SetStatus("",fec);
@@ -143,7 +177,15 @@ void DAQWindow::UpdateSystemStatus() {
         }
         if (this->m_daq.GetFEC(fec)){
             this->m_daq.m_fecs[fec].m_fecConfigModule->SetDebugMode(m_dbg);
-            QString text = QString::fromStdString(g_card_name) + " " + QString::number(fec);
+            QString text;
+            if(g_card_name == "FEN") {
+                text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
+                        + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
+                        + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0');
+            }
+            else {
+                text = QString::fromStdString(g_card_name) + QString::number(fec);
+            }
             SetStatus(text,fec);
             for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
                 if(this->m_daq.m_fecs[fec].GetHybrid(hyb)) {
@@ -196,7 +238,6 @@ void DAQWindow::EnableDAQCommunicationButtons(bool enable) {
     m_ui->onACQ->setEnabled(enable);
     m_ui->offACQ->setEnabled(enable);
     m_ui->Send->setEnabled(enable);
-    m_ui->pushButtonMeasureTemp->setEnabled(enable);
 }
 
 
@@ -241,7 +282,16 @@ void DAQWindow::LoadConfig(QString text){
             for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
                 if (this->m_daq.GetFEC(fec)){
                     QTreeWidgetItem *cardItem = new QTreeWidgetItem();
-                    cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(fec));
+                    if(g_card_name == "FEN") {
+                        int ring = m_daq.m_fecs[fec].GetRegVal("ring");
+                        int fen = m_daq.m_fecs[fec].GetRegVal("fen");
+                        m_map_id_ring_fen[fec] = qMakePair(ring, fen);
+                        m_map_ring_fen_id[qMakePair(ring,fen)] = fec;
+                        cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0') );
+                    }
+                    else {
+                        cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(fec));
+                    }
                     QString description = QString::fromStdString(m_daq.m_fecs[fec].GetInfo("description"));
                     cardItem->setText(1,description);
                     m_ui->treeWidgetSystem->addTopLevelItem(cardItem);
@@ -278,33 +328,31 @@ void DAQWindow::LoadConfig(QString text){
 void DAQWindow::MeasureVMMI2C() {
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (this->m_daq.GetFEC(fec)){
-            m_daq.m_fecs[fec].m_fecConfigModule->ACQoff();
-            m_ui->offACQ->setCheckable(true);
-            m_ui->offACQ->setChecked(true);
-            m_ui->onACQ->setChecked(false);
-            m_ui->Send->setEnabled(true);
             for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
                 if(this->m_daq.m_fecs[fec].GetHybrid(hyb)) {
-                    m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hyb, 0);
+                    if(!m_ui->onACQ->isChecked()) {
+                        m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hyb, 0);
+                    }
                     int adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, 0, 2);
+
                     double temperature = (725-adc_result)/1.85;
                     QString text;
                     if(m_ui->comboBoxI2CSetting->currentIndex()==4){
                         text = QString::number(std::round(temperature));
                         if(temperature < -10 || temperature >= 100) {
-                             m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::blue);
+                            m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::blue);
                         }
                         else if(temperature <= 40) {
-                             m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::green);
+                            m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::green);
                         }
                         else if(temperature <= 60) {
-                             m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::yellow);
+                            m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::yellow);
                         }
                         else if(temperature > 60 && temperature <= 70) {
-                             m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(QColor(255,255,0,255));
+                            m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(QColor(255,255,0,255));
                         }
                         else if(temperature > 70 && temperature < 100) {
-                             m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::red);
+                            m_ui->tableWidget_Temperature->item(hyb*2,fec)->setBackground(Qt::red);
                         }
                     }
                     else {
@@ -314,25 +362,28 @@ void DAQWindow::MeasureVMMI2C() {
                     m_ui->tableWidget_Temperature->item(2*hyb,fec)->setText(text);
                     m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetInfo("adc_value",text.toStdString());
 
-                    m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hyb, 1);
+
+                    if(!m_ui->onACQ->isChecked()) {
+                        m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hyb, 1);
+                    }
                     adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, 1, 2);
                     temperature = (725-adc_result)/1.85;
                     if(m_ui->comboBoxI2CSetting->currentIndex()==4){
                         text = QString::number(std::round(temperature));
                         if(temperature < -10 || temperature >= 100) {
-                             m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::blue);
+                            m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::blue);
                         }
                         else if(temperature <= 40) {
-                             m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::green);
+                            m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::green);
                         }
                         else if(temperature <= 60) {
-                             m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::yellow);
+                            m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::yellow);
                         }
                         else if(temperature > 60 && temperature <= 70) {
-                             m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(QColor(255,255,0,255));
+                            m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(QColor(255,255,0,255));
                         }
                         else if(temperature > 70 && temperature < 100) {
-                             m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::red);
+                            m_ui->tableWidget_Temperature->item(hyb*2+1,fec)->setBackground(Qt::red);
                         }
                     }
                     else {
@@ -353,6 +404,7 @@ void DAQWindow::MeasureVMMI2C() {
         }
     }
 }
+
 
 void DAQWindow::CheckLinkStatus(int fec, bool readHybridInfo) {
     QString message;
@@ -418,42 +470,42 @@ void DAQWindow::openConnection()
     if(!m_ui->onACQ->isDown())
     {
         EnableDAQCommunicationButtons(false);
-
-        for (unsigned short j=FECS_PER_DAQ-1; j >0; j--){
-            if (this->m_daq.GetFEC(j)){
-                QHostAddress ipAddress;
-                ipAddress.setAddress(this->m_daq.m_fecs[j].GetReg("ip_fec"));
-                long theIP = ipAddress.toIPv4Address();
-                int res = this->m_daq.CheckIP_FEC(theIP, j);
-                if(res > -1) {
-                    QMessageBox::warning(this, tr("FEC IPv4 address"),
-                                         "The last octet of the IP address is the FEC ID, and has to be hence unique.\nLast octet of FEC "
-                                             + QString::number(j+1) + " IP address already in use in FEC " + QString::number(res+1) + "\n\n"
-                                             +"To change the IP address of a FEC in case you use multiple FECs, connect the FECs one by one and change the IP.\n"
-                                             +"The default IP address for FECs is 10.0.0.2.\n",
-                                         QMessageBox::Ok);
-                    return;
-                }
-                res = this->m_daq.CheckIP_DAQ(theIP);
-                if(res > -1) {
-                    QMessageBox::warning(this, tr("FEC IPv4 address"),
-                                         "FEC " + QString::number(j+1) + " IP address already used as DAQ IP in FEC " + QString::number(res+1),
-                                         QMessageBox::Ok);
-                    return;
-                }
-                ipAddress.setAddress(this->m_daq.m_fecs[j].GetReg("ip_daq"));
-                theIP = ipAddress.toIPv4Address();
-                res = this->m_daq.CheckIP_DAQ(theIP);
-                if(res == -1) {
-                    QMessageBox::warning(this, tr("DAQ IPv4 address"),
-                                         "All FECs have to use the same DAQ IP address (IP of the computer where the slow control runs)!",
-                                         QMessageBox::Ok);
-                    return;
+        if(g_slow_control > 0){
+            for (unsigned short j=FECS_PER_DAQ-1; j >0; j--){
+                if (this->m_daq.GetFEC(j)){
+                    QHostAddress ipAddress;
+                    ipAddress.setAddress(this->m_daq.m_fecs[j].GetReg("ip_fec"));
+                    long theIP = ipAddress.toIPv4Address();
+                    int res = this->m_daq.CheckIP_FEC(theIP, j);
+                    if(res > -1) {
+                        QMessageBox::warning(this, QString::fromStdString(g_card_name) + tr(" IPv4 address"),
+                                             "The last octet of the IP address has to be hence unique.\nLast octet of " + QString::fromStdString(g_card_name)
+                                             + QString::number(j+1) + " IP address already in use in " + QString::fromStdString(g_card_name) +  " " + QString::number(res) + "\n\n"
+                                             +"To change the IP address of a " + QString::fromStdString(g_card_name) +  " in case you use multiple " + QString::fromStdString(g_card_name) +  "s, connect the "
+                                             + QString::fromStdString(g_card_name) +  "s one by one and change the IP.\n"
+                                             +"The default IP address for " + QString::fromStdString(g_card_name) +  "s is 10.0.0.2.\n",
+                                             QMessageBox::Ok);
+                        return;
+                    }
+                    res = this->m_daq.CheckIP_DAQ(theIP);
+                    if(res > -1) {
+                        QMessageBox::warning(this, QString::fromStdString(g_card_name) + tr(" IPv4 address"),
+                                             QString::fromStdString(g_card_name) + " " + QString::number(j+1) + " IP address already used as DAQ IP in " + QString::fromStdString(g_card_name) + " " + QString::number(res),
+                                             QMessageBox::Ok);
+                        return;
+                    }
+                    ipAddress.setAddress(this->m_daq.m_fecs[j].GetReg("ip_daq"));
+                    theIP = ipAddress.toIPv4Address();
+                    res = this->m_daq.CheckIP_DAQ(theIP);
+                    if(res == -1) {
+                        QMessageBox::warning(this, tr("DAQ IPv4 address"),
+                                             "All FECs have to use the same DAQ IP address (IP of the computer where the slow control runs)!",
+                                             QMessageBox::Ok);
+                        return;
+                    }
                 }
             }
-
         }
-
         m_ui->openConnection->setStyleSheet("QPushButton { color: red; }");
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             if (this->m_daq.GetFEC(fec)){
@@ -461,20 +513,47 @@ void DAQWindow::openConnection()
                     g_connection_ok = false;
                     QMap<QString, QString> registers;
                     if(this->m_daq.m_fecs[fec].m_fecConfigModule->ReadSystemRegisters(registers)) {
-                        QString text = QString::fromStdString(g_card_name) + QString::number(fec) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+                        QString text;
+                        if(g_card_name == "FEN") {
+                            text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
+                                    + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
+                                    + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0') + " "
+                                    + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+                        }
+                        else {
+                            text = QString::fromStdString(g_card_name) + QString::number(fec) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+                        }
                         SetStatus(text, fec);
                         CheckLinkStatus(fec, true);
                     }
                     else {
                         g_connection_ok = false;
-                        QString text = QString::fromStdString(g_card_name) + QString::number(fec) + " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError reading EEPROM!";
+                        QString text;
+                        if(g_card_name == "FEN") {
+                            text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
+                                    + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
+                                    + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0') +
+                                    " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError reading EEPROM!";
+                        }
+                        else {
+                            text = QString::fromStdString(g_card_name) + QString::number(fec) + " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError reading EEPROM!";
+                        }
                         SetStatus(text, fec);
                     }
 
                 }
                 else{
                     g_connection_ok = false;
-                    QString text = QString::fromStdString(g_card_name) + QString::number(fec) + " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError pinging card!";
+                    QString text;
+                    if(g_card_name == "FEN") {
+                        text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
+                                + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
+                                + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0') +
+                                + " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError pinging card!";
+                    }
+                    else {
+                        text = QString::fromStdString(g_card_name) + QString::number(fec) + " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError pinging card!";
+                    }
                     SetStatus(text, fec);
                 }
             }
@@ -714,21 +793,37 @@ void DAQWindow::onUpdateDAQSettings(){
         this->m_daq.SendAll();
     }
     else if(QObject::sender() == m_ui->onACQ){
+        this->m_daq.ACQHandler(false);
         m_ui->onACQ->setCheckable(true);
         m_ui->onACQ->setChecked(true);
         m_ui->offACQ->setChecked(false);
         m_ui->Send->setEnabled(false);
-
+        m_ui->comboBoxI2CSetting->setEnabled(false);
+        m_ui->sm5_sm0->setEnabled(false);
         this->m_daq.SendAll(true);
         this->m_daq.ACQHandler(true);
         m_ui->offACQ->setStyleSheet("QPushButton { color: black; }");
         m_ui->onACQ->setStyleSheet("QPushButton { color: green; }");
-        QThread::msleep(5);
-        for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
-            if (this->m_daq.GetFEC(fec)){
-                CheckLinkStatus(fec, false);
+        if(g_slow_control != 1) {
+            QThread::msleep(200);
+            for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
+                if (this->m_daq.GetFEC(fec)){
+                    CheckLinkStatus(fec, false);
+                }
             }
         }
+        else {
+            m_ui->linkPB->setEnabled(false);
+            m_ui->readSystemParams->setEnabled(false);
+            m_ui->pushButtonDAQIP->setEnabled(false);
+            m_ui->ReadI2C->setEnabled(false);
+            m_ui->readADC->setEnabled(false);
+            m_ui->openConnection->setEnabled(false);
+            m_ui->pushButtonMeasureTemp->setEnabled(false);
+            m_ui->pushButtonResetLatencyCalibration->setEnabled(false);
+            m_ui->pushButtonTPLatencyCalibration->setEnabled(false);
+        }
+
     }
     else if(QObject::sender() == m_ui->offACQ){
         m_ui->offACQ->setCheckable(true);
@@ -736,14 +831,28 @@ void DAQWindow::onUpdateDAQSettings(){
         m_ui->onACQ->setChecked(false);
         m_ui->Send->setEnabled(true);
         this->m_daq.ACQHandler(false);
+        m_ui->comboBoxI2CSetting->setEnabled(true);
+        m_ui->sm5_sm0->setEnabled(true);
         m_ui->offACQ->setStyleSheet("QPushButton { color: red; }");
         m_ui->onACQ->setStyleSheet("QPushButton { color: black; }");
-        QThread::msleep(5);
+        QThread::msleep(200);
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
             if (this->m_daq.GetFEC(fec)){
                 CheckLinkStatus(fec, false);
             }
         }
+        if(g_slow_control == 1) {
+            m_ui->linkPB->setEnabled(true);
+            m_ui->readSystemParams->setEnabled(true);
+            m_ui->pushButtonDAQIP->setEnabled(true);
+            m_ui->ReadI2C->setEnabled(true);
+            m_ui->readADC->setEnabled(true);
+            m_ui->openConnection->setEnabled(true);
+            m_ui->pushButtonMeasureTemp->setEnabled(true);
+            m_ui->pushButtonResetLatencyCalibration->setEnabled(true);
+            m_ui->pushButtonTPLatencyCalibration->setEnabled(true);
+        }
+
     }
     else if(QObject::sender() == m_ui->Button_save){
         QString text = m_ui->line_configFile->displayText();
@@ -840,10 +949,11 @@ void DAQWindow::onUpdateDAQSettings(){
         QMessageBox::StandardButton reply;
         bool ok;
         QString txt = m_ui->treeWidgetSystem->currentItem()->text(0);
-        if(txt.startsWith("Assister") || txt.startsWith("FEC")) {
+        if(txt.startsWith("FEN") || txt.startsWith("FEC")) {
             QMessageBox msgBox;
             msgBox.setText("Delete card:");
-            msgBox.setInformativeText("Do you want to delete " + QString::fromStdString(g_card_name) + " " + QString::number(m_fecIndex) + "?");
+            msgBox.setInformativeText("Do you want to delete " + txt + "?");
+
             QAbstractButton *myYesButton = msgBox.addButton("Yes",QMessageBox::YesRole);
             QAbstractButton *myNoButton = msgBox.addButton("No", QMessageBox::NoRole);
             msgBox.setIcon(QMessageBox::Question);
@@ -855,6 +965,12 @@ void DAQWindow::onUpdateDAQSettings(){
                 m_daq.SetFEC(m_fecIndex, false);
                 for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
                     m_daq.m_fecs[m_fecIndex].SetHybrid(hyb, false);
+                }
+                if(txt.startsWith("FEN")) {
+                    int ring = txt.mid(4,2).toInt();
+                    int fen = txt.mid(8,2).toInt();
+                    m_map_id_ring_fen.erase(m_fecIndex);
+                    m_map_ring_fen_id.erase(qMakePair(ring,fen));
                 }
                 delete m_ui->treeWidgetSystem->currentItem();
             }
@@ -881,43 +997,91 @@ void DAQWindow::onUpdateDAQSettings(){
         QString txtItem = m_ui->treeWidgetSystem->currentItem()->text(0);
         QString txtDescription = m_ui->treeWidgetSystem->currentItem()->text(1);
         bool ok;
-        QString result = QInputDialog::getText(this,txtItem, tr("Edit description:"), QLineEdit::Normal, txtDescription, &ok);
+        QString description;
+        QStringList resultList;
+        int newRing =0;
+        int newFen = 0;
+        if(txtItem.startsWith("FEN")) {
+            int ring = txtItem.mid(4,2).toInt();
+            int fen = txtItem.mid(8,2).toInt();
+            resultList = QInputDialog::getText(this,txtItem, tr("Edit ring_fen and description:"), QLineEdit::Normal, QString::number(ring).rightJustified(2, '0') + "_"
+                                               + QString::number(fen).rightJustified(2, '0')+"," + txtDescription, &ok).split(",");
+            if(resultList.size() < 2) {
+                ok = false;
+            }
+            else {
+                if(resultList[0].mid(2,1) != "_") {
+                    ok = false;
+                }
+                newRing = resultList[0].mid(0,2).toInt();
+                newFen = resultList[0].mid(3,2).toInt();
+
+                if(resultList.size() == 2) {
+                    description  =  resultList[1];
+                }
+                else {
+                    for(int n=1;n<resultList.size()-1;n++) {
+                        description  +=  resultList[n] +",";
+                    }
+                    description  +=  resultList[resultList.size()-1];
+                }
+            }
+
+        }
+        else {
+            description = QInputDialog::getText(this,txtItem, tr("Edit description:"), QLineEdit::Normal, txtDescription, &ok);
+        }
         if (ok) {
 
-            m_ui->treeWidgetSystem->currentItem()->setText(1,result);
+            m_ui->treeWidgetSystem->currentItem()->setText(1,description);
             if(txtItem.startsWith("VMM")) {
-                int vmm = txtItem.mid(4,txtItem.size()).toInt();
+                int vmm = txtItem.mid(4,1).toInt();
                 QString txtParent = m_ui->treeWidgetSystem->currentItem()->parent()->text(0);
-                int hybrid = txtParent.mid(6,txtItem.size()).toInt();
+                int hybrid = txtParent.mid(6,1).toInt();
                 QString txtGrandParent = m_ui->treeWidgetSystem->currentItem()->parent()->parent()->text(0);
-                if(txtGrandParent.startsWith("Assister")) {
-                    int fec = txtGrandParent.mid(9,txtGrandParent.size()).toInt();
-                    m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].SetInfo("description",result.toStdString());
+                if(txtGrandParent.startsWith("FEN")) {
+                    int ring = txtGrandParent.mid(4,2).toInt();
+                    int fen = txtGrandParent.mid(8,2).toInt();
+                    int fec = m_map_ring_fen_id[qMakePair(ring,fen)];
+                    m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].SetInfo("description",description.toStdString());
                 }
                 else if(txtGrandParent.startsWith("FEC")) {
-                    int fec = txtGrandParent.mid(4,txtGrandParent.size()).toInt();
-                    m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].SetInfo("description",result.toStdString());
+                    int fec = txtGrandParent.mid(4,1).toInt();
+                    m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[vmm].SetInfo("description",description.toStdString());
                 }
             }
             else if(txtItem.startsWith("Hybrid")) {
-                int hybrid = txtItem.mid(6,txtItem.size()).toInt();
+                int hybrid = txtItem.mid(6,1).toInt();
                 QString txtParent = m_ui->treeWidgetSystem->currentItem()->parent()->text(0);
-                if(txtParent.startsWith("Assister")) {
-                    int fec = txtParent.mid(9,txtParent.size()).toInt();
-                    m_daq.m_fecs[fec].m_hybrids[hybrid].SetInfo("description",result.toStdString());
+                if(txtParent.startsWith("FEN")) {
+                    int ring = txtParent.mid(4,2).toInt();
+                    int fen = txtParent.mid(8,2).toInt();
+                    int fec = m_map_ring_fen_id[qMakePair(ring,fen)];
+                    m_daq.m_fecs[fec].m_hybrids[hybrid].SetInfo("description",description.toStdString());
                 }
                 else if(txtParent.startsWith("FEC")) {
-                    int fec = txtParent.mid(4,txtParent.size()).toInt();
-                    m_daq.m_fecs[fec].m_hybrids[hybrid].SetInfo("description",result.toStdString());
+                    int fec = txtParent.mid(4,1).toInt();
+                    m_daq.m_fecs[fec].m_hybrids[hybrid].SetInfo("description",description.toStdString());
                 }
+
             }
-            else if(txtItem.startsWith("Assister")) {
-                int fec = txtItem.mid(9,txtItem.size()).toInt();
-                m_daq.m_fecs[fec].SetInfo("description",result.toStdString());
+            else if(txtItem.startsWith("FEN")) {
+                int ring = txtItem.mid(4,2).toInt();
+                int fen = txtItem.mid(8,2).toInt();
+                int fec = m_map_ring_fen_id[ qMakePair(ring,fen)];
+                m_daq.m_fecs[fec].SetInfo("description",description.toStdString());
+                m_daq.m_fecs[fec].SetReg("ring",(unsigned long)newRing);
+                m_daq.m_fecs[fec].SetReg("fen",(unsigned long)newFen);
+                m_daq.m_fecs[fec].SetId();
+                m_map_ring_fen_id.erase(qMakePair(ring,fen));
+                m_map_ring_fen_id[qMakePair(newRing,newFen)] = fec;
+                m_map_id_ring_fen[fec] = qMakePair(newRing,newFen);
+                m_ui->treeWidgetSystem->currentItem()->setText(0,"FEN " + QString::number(newRing).rightJustified(2, '0') + "_"
+                                                               + QString::number(newFen).rightJustified(2, '0'));
             }
             else if(txtItem.startsWith("FEC")) {
-                int fec = txtItem.mid(4,txtItem.size()).toInt();
-                m_daq.m_fecs[fec].SetInfo("description",result.toStdString());
+                int fec = txtItem.mid(4,1).toInt();
+                m_daq.m_fecs[fec].SetInfo("description",description.toStdString());
             }
         }
     }
@@ -928,10 +1092,15 @@ void DAQWindow::onUpdateDAQSettings(){
         bool ok;
         QString txt = m_ui->treeWidgetSystem->currentItem()->text(0);
 
-        if(txt.startsWith("Assister") || txt.startsWith("FEC")) {
-            int fecIndex =  txt.mid(9,txt.size()).toInt();
-            if(txt.startsWith("FEC")) {
-                fecIndex = txt.mid(4,txt.size()).toInt();
+        if(txt.startsWith("FEN") || txt.startsWith("FEC")) {
+            int fecIndex = 0;
+            if(txt.startsWith("FEN")) {
+                int ring = txt.mid(4,2).toInt();
+                int fen = txt.mid(8,2).toInt();
+                fecIndex = m_map_ring_fen_id[qMakePair((int)ring, (int)fen)];
+            }
+            else {
+                fecIndex = txt.mid(4,1).toInt();
             }
             int numFreeHybrids = 0;
             for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
@@ -983,14 +1152,48 @@ void DAQWindow::onUpdateDAQSettings(){
                         break;
                     }
                 }
-                long theIP = m_daq.m_fecs[lastFecIndex].GetRegVal("ip_fec")+1;
+                long theIP = 0;
+                if(g_slow_control == 0) {
+                    theIP = m_daq.m_fecs[lastFecIndex].GetRegVal("ip_fec");
+                }
+                else {
+                    theIP  = m_daq.m_fecs[lastFecIndex].GetRegVal("ip_fec")+1;
+                }
                 QHostAddress ipAddress;
                 ipAddress.setAddress(theIP);
                 QString ipString = "";
-                if(g_card_name == "Assister") {
-                    ipString = QInputDialog::getText(nullptr, tr("Add assister"),
-                                                     tr("IP for new assister ?"),
-                                                     QLineEdit::Normal,ipAddress.toString(),&ok);
+                QString ringFenString = "";
+                unsigned long ring = 0;
+                unsigned long fen=0;
+                if(g_card_name == "FEN") {
+                    ringFenString = QInputDialog::getText(nullptr, tr("Add FEN"),
+                                                          tr("Ring and FEN number ?"),
+                                                          QLineEdit::Normal,"00_00",&ok);
+                    ring = ringFenString.mid(0,2).toInt();
+                    fen = ringFenString.mid(3,2).toInt();
+
+                    if(ok && ring >=0 && ring <=11 && fen >=0 && fen <=3) {
+                        auto search = m_map_ring_fen_id.find(qMakePair((int)ring, (int)fen));
+                        if (search != m_map_ring_fen_id.end()) {
+
+                            QMessageBox msgError;
+                            msgError.setText("This ring and fen combination exists already!");
+                            msgError.setIcon(QMessageBox::Critical);
+                            msgError.setWindowTitle("Danger");
+                            msgError.exec();
+                        }
+                        else {
+                            if(g_slow_control == 1) {
+                                ipString = QInputDialog::getText(nullptr, tr("Add FEN"),
+                                                                 tr("IP for new FEN ?"),
+                                                                 QLineEdit::Normal,ipAddress.toString(),&ok);
+                            }
+                            else {
+                                ipString = ipAddress.toString();
+                            }
+                        }
+                    }
+
                 }
                 else {
                     ipString = QInputDialog::getText(nullptr, tr("Add FEC"),
@@ -998,13 +1201,29 @@ void DAQWindow::onUpdateDAQSettings(){
                                                      QLineEdit::Normal,ipAddress.toString(),&ok);
                 }
                 if(ok && ipString != "") {
-                    QTreeWidgetItem *cardItem = new QTreeWidgetItem();
-                    cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(lastFecIndex+1));
-                    m_ui->treeWidgetSystem->addTopLevelItem(cardItem);
-                    m_daq.SetFEC(lastFecIndex+1, true);
+                    QHostAddress ipAddress;
                     ipAddress.setAddress(ipString);
-                    theIP = ipAddress.toIPv4Address();
-                    m_daq.m_fecs[lastFecIndex+1].SetIP_FEC(theIP);
+                    long ip = ipAddress.toIPv4Address();
+                    QTreeWidgetItem *cardItem = new QTreeWidgetItem();
+                    if(g_card_name == "FEN") {
+                        cardItem->setText(0,"FEN " + QString::number(ring).rightJustified(2, '0') + "_"
+                                          + QString::number(fen).rightJustified(2, '0'));
+
+                        m_daq.SetFEC(lastFecIndex+1, true);
+                        m_daq.m_fecs[lastFecIndex+1].SetIP_FEC(ip);
+                        m_daq.m_fecs[lastFecIndex+1].SetReg("ring", ring);
+                        m_daq.m_fecs[lastFecIndex+1].SetReg("fen", fen);
+                        m_daq.m_fecs[lastFecIndex+1].SetId();
+                        m_map_id_ring_fen[lastFecIndex+1] = qMakePair((int)ring, (int)fen);
+                        m_map_ring_fen_id[qMakePair((int)ring, (int)fen)] = lastFecIndex+1;
+                    }
+                    else {
+                        cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(lastFecIndex+1));
+                        m_daq.SetFEC(lastFecIndex+1, true);
+                        m_daq.m_fecs[lastFecIndex+1].SetIP_FEC(ip);
+                        m_daq.m_fecs[lastFecIndex+1].SetId();
+                    }
+                    m_ui->treeWidgetSystem->addTopLevelItem(cardItem);
                 }
             }
             else if(msgBox.clickedButton() == myHybridButton) {
@@ -1043,20 +1262,23 @@ void DAQWindow::onUpdateDAQSettings(){
         if(txt.startsWith("Hybrid")) {
             m_ui->treeDelete->setEnabled(true);
             m_ui->treeEdit->setEnabled(true);
-            m_hybridIndex =  txt.mid(7,txt.size()).toInt();
+            m_hybridIndex =  txt.mid(7,1).toInt();
             QString parent = m_ui->treeWidgetSystem->currentItem()->parent()->text(0);
-            if(parent.startsWith("Assister")) {
-                m_fecIndex =  parent.mid(9,parent.size()).toInt();
+
+            if(parent.startsWith("FEN")) {
+                int ring  =  parent.mid(4,2).toInt();
+                int fen =  parent.mid(8,2).toInt();
+                m_fecIndex = m_map_ring_fen_id[qMakePair(ring, fen)];
             }
             else if(parent.startsWith("FEC")) {
-                m_fecIndex =  parent.mid(4,parent.size()).toInt();
+                m_fecIndex =  parent.mid(4,1).toInt();
             }
             //std::cout << "FEC INDEX " << m_fecIndex << ", HYBRID INDEX " << m_hybridIndex << ", VMM INDEX " << m_vmmIndex << std::endl;
             LoadFECSettings();
             LoadHybridSettings();
             if(m_ui->treeWidgetSystem->currentItem()->childCount() > 0) {
                 QString child = m_ui->treeWidgetSystem->currentItem()->child(0)->text(0);
-                m_vmmIndex =  child.mid(4,child.size()).toInt();
+                m_vmmIndex =  child.mid(4,1).toInt();
                 LoadVMMSettings();
                 LoadVMMChannelSettings();
                 m_ui->groupBoxFec->setTitle(parent);
@@ -1084,18 +1306,21 @@ void DAQWindow::onUpdateDAQSettings(){
         }
         else if(txt.startsWith("VMM")) {
             m_ui->treeEdit->setEnabled(true);
-            m_vmmIndex =  txt.mid(4,txt.size()).toInt();
+            m_vmmIndex =  txt.mid(4,1).toInt();
             QString parent = m_ui->treeWidgetSystem->currentItem()->parent()->text(0);
             if(parent.startsWith("Hybrid")) {
-                m_hybridIndex =  parent.mid(7,parent.size()).toInt();
+                m_hybridIndex =  parent.mid(7,1).toInt();
             }
             QString grandparent = m_ui->treeWidgetSystem->currentItem()->parent()->parent()->text(0);
-            if(grandparent.startsWith("Assister")) {
-                m_fecIndex =  grandparent.mid(9,grandparent.size()).toInt();
+            if(grandparent.startsWith("FEN")) {
+                int ring  =  grandparent.mid(4,2).toInt();
+                int fen =  grandparent.mid(8,2).toInt();
+                m_fecIndex = m_map_ring_fen_id[qMakePair(ring, fen)];
             }
             else if(grandparent.startsWith("FEC")) {
-                m_fecIndex =  grandparent.mid(4,grandparent.size()).toInt();
+                m_fecIndex =  grandparent.mid(4,1).toInt();
             }
+
             //std::cout << "FEC INDEX " << m_fecIndex << ", HYBRID INDEX " << m_hybridIndex << ", VMM INDEX " << m_vmmIndex << std::endl;
             LoadFECSettings();
             LoadHybridSettings();
@@ -1127,11 +1352,13 @@ void DAQWindow::onUpdateDAQSettings(){
             m_ui->treeAdd->setEnabled(true);
             m_ui->treeDelete->setEnabled(false);
             m_ui->treeEdit->setEnabled(true);
-            if(txt.startsWith("Assister")) {
-                m_fecIndex =  txt.mid(9,txt.size()).toInt();
+            if(txt.startsWith("FEN")) {
+                int ring  =  txt.mid(4,2).toInt();
+                int fen =  txt.mid(8,2).toInt();
+                m_fecIndex = m_map_ring_fen_id[qMakePair(ring, fen)];
             }
             else if(txt.startsWith("FEC")) {
-                m_fecIndex =  txt.mid(4,txt.size()).toInt();
+                m_fecIndex =  txt.mid(4,1).toInt();
             }
             int numFecs = -1;
             for(int fec=0; fec<FECS_PER_DAQ; fec++) {
@@ -1146,11 +1373,11 @@ void DAQWindow::onUpdateDAQSettings(){
             LoadFECSettings();
             if(m_ui->treeWidgetSystem->currentItem()->childCount() > 0) {
                 QString child = m_ui->treeWidgetSystem->currentItem()->child(0)->text(0);
-                m_hybridIndex =  child.mid(7,child.size()).toInt();
+                m_hybridIndex =  child.mid(7,1).toInt();
                 LoadHybridSettings();
                 if(m_ui->treeWidgetSystem->currentItem()->child(0)->childCount() > 0) {
                     QString grandchild = m_ui->treeWidgetSystem->currentItem()->child(0)->child(0)->text(0);
-                    m_vmmIndex =  grandchild.mid(4,grandchild.size()).toInt();
+                    m_vmmIndex =  grandchild.mid(4,1).toInt();
                     LoadVMMSettings();
                     LoadVMMChannelSettings();
                     m_ui->groupBoxFec->setTitle(txt);
@@ -1375,18 +1602,22 @@ void DAQWindow::onUpdateFECSettings(){
         m_ui->onACQ_FEC->setChecked(true);
         m_ui->offACQ_FEC->setChecked(false);
         m_ui->Send->setEnabled(false);
+        m_ui->comboBoxI2CSetting->setEnabled(false);
+        m_ui->sm5_sm0->setEnabled(false);
         m_daq.SendAll(true);
         m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQon();
-        QThread::msleep(5);
+        QThread::msleep(1000);
         CheckLinkStatus(m_fecIndex, false);
     }
-    else if(QObject::sender() == m_ui->offACQ){
-        m_ui->offACQ->setCheckable(true);
-        m_ui->offACQ->setChecked(true);
-        m_ui->onACQ->setChecked(false);
+    else if(QObject::sender() == m_ui->offACQ_FEC){
+        m_ui->offACQ_FEC->setCheckable(true);
+        m_ui->offACQ_FEC->setChecked(true);
+        m_ui->onACQ_FEC->setChecked(false);
         m_ui->Send->setEnabled(true);
         m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
-        QThread::msleep(5);
+        m_ui->comboBoxI2CSetting->setEnabled(true);
+        m_ui->sm5_sm0->setEnabled(true);
+        QThread::msleep(1000);
         CheckLinkStatus(m_fecIndex, false);
     }
     else if(QObject::sender() == m_ui->comboBoxClockSource){
@@ -1404,6 +1635,15 @@ void DAQWindow::onUpdateFECSettings(){
         if(m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers)) {
 
             QString text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+            if(g_card_name == "FEN") {
+                text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " "
+                        + QString::number( m_map_id_ring_fen[m_fecIndex].first).rightJustified(2, '0') + "_"
+                        + QString::number( m_map_id_ring_fen[m_fecIndex].second).rightJustified(2, '0') + " "
+                        + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+            }
+            else {
+                text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+            }
             SetStatus(text, m_fecIndex);
 
             m_daq.m_fecs[m_fecIndex].SetInfo("firmware_version", registers["FirmwareVers"].toStdString());
@@ -1447,7 +1687,7 @@ void DAQWindow::onUpdateFECSettings(){
                 int res = m_daq.CheckIP_FEC(theIP, -1);
                 if(res > -1) {
                     QMessageBox::warning(this, tr("DAQ IPv4 address"),
-                                         "DAQ IP address already in use as FEC IP in FEC " + QString::number(res+1),
+                                         "DAQ IP address already in use as FEC IP in FEC " + QString::number(res),
                                          QMessageBox::Ok);
                     return;
                 }
@@ -1471,47 +1711,107 @@ void DAQWindow::onUpdateFECSettings(){
         theIP = GetFec("ip_fec");
         QHostAddress ipAddress;
         ipAddress.setAddress(theIP);
-        QString result = QInputDialog::getText(this, tr("FEC IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal, ipAddress.toString(), &ok);
+        QHostAddress newIpAddress;
+        QString result = "";
+        if(g_slow_control == 2) {
+            result = QInputDialog::getText(this, tr("FEC IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal, ipAddress.toString(), &ok);
+        }
+        else if(g_slow_control == 0) {
+            result = QInputDialog::getText(this, tr("Master IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal, ipAddress.toString(), &ok);
+        }
+        else {
+            result = QInputDialog::getText(this, tr("FEN IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal, ipAddress.toString(), &ok);
+        }
 
         if (ok && !result.isEmpty())
         {
             if (!ipAddress.setAddress(result)){
-                QMessageBox::warning(this, tr("FEC IPv4 address setting"),
-                                     tr("Invalid IPv4 address!"),
-                                     QMessageBox::Ok);
+                if(g_slow_control == 2) {
+                    QMessageBox::warning(this, QString::fromStdString(g_card_name) + tr(" IPv4 address setting"),
+                                         tr("Invalid IPv4 address!"),
+                                         QMessageBox::Ok);
+                }
+                else if(g_slow_control == 0) {
+                    QMessageBox::warning(this, tr("Master IPv4 address setting"),
+                                         tr("Invalid IPv4 address!"),
+                                         QMessageBox::Ok);
+                }
+                else {
+                    QMessageBox::warning(this, tr("FEN IPv4 address setting"),
+                                         tr("Invalid IPv4 address!"),
+                                         QMessageBox::Ok);
+                }
+
             }
             else {
                 theIP = ipAddress.toIPv4Address();
-                int res = m_daq.CheckIP_FEC(theIP, m_fecIndex);
-                if(res > -1) {
-                    QMessageBox::warning(this, tr("FEC IPv4 address setting"),
-                                         "The last octet of the IP address is the FEC ID, and has to be hence unique.\n"
-                                         "Last octet of FEC IP address already in use in FEC " + QString::number(res+1),
-                                         QMessageBox::Ok);
-                    return;
-                }
-                res = m_daq.CheckIP_DAQ(theIP);
-                if(res > -1) {
-                    QMessageBox::warning(this, tr("FEC IPv4 address setting"),
-                                         "FEC IP address already in use as DAQ IP in FEC " + QString::number(res+1),
-                                         QMessageBox::Ok);
-                    return;
+
+                if(g_slow_control > 0) {
+
+                    int res = m_daq.CheckIP_FEC(theIP, m_fecIndex);
+                    if(res > -1) {
+                        if(g_slow_control == 2) {
+                            QMessageBox::warning(this, QString::fromStdString(g_card_name) + tr(" IPv4 address setting"),
+                                                 "The last octet of the IP address is the " + QString::fromStdString(g_card_name) + " ID, and has to be hence unique.\n"
+                                                                                                                                    "Last octet of " + QString::fromStdString(g_card_name) + " IP address already in use in " + QString::fromStdString(g_card_name) + " " + QString::number(res),
+                                                 QMessageBox::Ok);
+                        }
+                        else {
+                            QString ring =  m_daq.m_fecs[res].GetReg("ring");
+                            QString fen =  m_daq.m_fecs[res].GetReg("fen");
+
+                            QMessageBox::warning(this, tr("FEN IPv4 address setting"),
+                                                 "The FEN IPv4 address has to be unique.\n"
+                                                 "Last octet of FEN IP address already in use in ring " + ring + ", FEN " +  fen + " !",
+                                                 QMessageBox::Ok);
+                        }
+                        return;
+                    }
+                    res = m_daq.CheckIP_DAQ(theIP);
+                    if(res > -1) {
+                        QMessageBox::warning(this, QString::fromStdString(g_card_name) + tr(" IPv4 address setting"),
+                                             QString::fromStdString(g_card_name) + " IP address already in use as DAQ IP in " + QString::fromStdString(g_card_name) + " " + QString::number(res),
+                                             QMessageBox::Ok);
+                        return;
+                    }
                 }
                 QMessageBox::StandardButton reply;
                 if(g_connection_ok) {
-                    reply = QMessageBox::question(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC stores its own IP address on the FEC EEPROM.\nATTENTION: Do you only want to change the FEC IP address in the slow control GUI (press NO), or re-program the FEC IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
+                    if(g_slow_control == 2) {
+                        reply = QMessageBox::question(this,  "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC stores its own IP address on the FEC EEPROM.\nATTENTION: Do you only want to change the FEC IP address in the slow control GUI (press NO), or re-program the FEC IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
+                    }
+                    else if(g_slow_control == 1) {
+                        reply = QMessageBox::question(this,  "FEN IPv4 address setting", "The assister FEN is connected via ethernet cable to a network card on the slow control PC. The FEN IP address is the address to which the PC sends its commands. The FEN stores its own IP address on the FEN EEPROM.\nATTENTION: Do you only want to change the FEN IP address in the slow control GUI (press NO), or re-program the FEN IP address in the FEN EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
+                    }
+                    else {
+                        reply = QMessageBox::information(this, "Master IPv4 address setting", "The Master IP address in the slow control GUI will be changed!", QMessageBox::Ok);
+                        if(reply == QMessageBox::Ok) {
+                            SetFec("ip_fec", theIP);
+                            m_ui->ip_fec->setText(result);
+                            return;
+                        }
+                    }
                     if(reply == QMessageBox::Yes) {
                         m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
                     }
                     QThread::usleep(1000);
                     SetFec("ip_fec", theIP);
+                    m_daq.m_fecs[m_fecIndex].SetId();
                     m_ui->ip_fec->setText(result);
                     QThread::usleep(1000);
+
                 }
                 else {
-                    reply = QMessageBox::information(this, "FEC IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The FEC IP address is the address to which the PC sends its commands. The FEC IP address in the slow control GUI will be changed!", QMessageBox::Ok);
+                    if(g_slow_control > 0) {
+                        reply = QMessageBox::information(this, QString::fromStdString(g_card_name) + " IPv4 address setting", "The " + QString::fromStdString(g_card_name) + " IP address in the slow control GUI will be changed!", QMessageBox::Ok);
+                    }
+                    else {
+                        reply = QMessageBox::information(this, "Master IPv4 address setting", "The Master IP address in the slow control GUI will be changed!", QMessageBox::Ok);
+
+                    }
                     if(reply == QMessageBox::Ok) {
                         SetFec("ip_fec", theIP);
+                        m_daq.m_fecs[m_fecIndex].SetId();
                         m_ui->ip_fec->setText(result);
                     }
                 }
@@ -1559,7 +1859,7 @@ void DAQWindow::EnableFECCommunicationButtons(bool enable) {
     m_ui->offACQ_FEC->setEnabled(enable);
     m_ui->fec_WarmInit->setEnabled(enable);
     m_ui->linkPB->setEnabled(enable);
-    m_ui->readSystemParams->setEnabled(enable);
+    m_ui->readSystemParams->setEnabled(true);
     m_ui->pushButtonDAQIP->setEnabled(enable);
 }
 
@@ -1652,12 +1952,19 @@ void DAQWindow::InitHybridWidgets() {
         m_ui->ckbc_info->setText("44.44 MHz");
         m_ui->ckdt_info->setText("177.78 MHz");
     }
-
+    if(g_clock_source == 2 && g_slow_control == 2) {
+        m_ui->tpDisable->setVisible(true);
+    }
+    else {
+        m_ui->tpDisable->setVisible(false);
+    }
     connect(m_ui->tpSkew, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onUpdateHybridSettings()));
     connect(m_ui->tpWidth, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onUpdateHybridSettings()));
     connect(m_ui->tpPolarity, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onUpdateHybridSettings()));
+    connect(m_ui->tpDisable, SIGNAL(stateChanged(int)),
             this, SLOT(onUpdateHybridSettings()));
 
     connect(m_ui->ApplyAllHybrids, SIGNAL(clicked()),
@@ -1714,6 +2021,9 @@ void DAQWindow::onUpdateHybridSettings(){
     }
     else if(QObject::sender() == m_ui->tpPolarity){
         SetHybrid("TP_pol", m_ui->tpPolarity->currentIndex());
+    }
+    else if(QObject::sender() == m_ui->tpDisable){
+        SetHybrid("TP_disable", m_ui->tpDisable->isChecked());
     }
     else if(QObject::sender() == m_ui->ApplyAllHybrids){
         for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
@@ -2127,7 +2437,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     QList<QPushButton *> listPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
     std::sort(listPushButtons.begin(), listPushButtons.end(),
               [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listPushButtons.size(); n++) {
         listPushButtons[n]->setStyleSheet("");
         if(GetVMM("sc",n)) {
@@ -2139,7 +2449,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
     std::sort(listPushButtons.begin(), listPushButtons.end(),
               [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listPushButtons.size(); n++) {
         listPushButtons[n]->setStyleSheet("");
         if(GetVMM("sl",n)) {
@@ -2151,7 +2461,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
     std::sort(listPushButtons.begin(), listPushButtons.end(),
               [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listPushButtons.size(); n++) {
         listPushButtons[n]->setStyleSheet("");
         if(GetVMM("st",n)) {
@@ -2163,7 +2473,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
     std::sort(listPushButtons.begin(), listPushButtons.end(),
               [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listPushButtons.size(); n++) {
         listPushButtons[n]->setStyleSheet("");
         if(GetVMM("sth",n)) {
@@ -2175,7 +2485,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
     std::sort(listPushButtons.begin(), listPushButtons.end(),
               [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listPushButtons.size(); n++) {
         listPushButtons[n]->setStyleSheet("");
         if(GetVMM("sm",n)) {
@@ -2187,7 +2497,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
     std::sort(listPushButtons.begin(), listPushButtons.end(),
               [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listPushButtons.size(); n++) {
         listPushButtons[n]->setStyleSheet("");
         if(GetVMM("smx",n)) {
@@ -2200,7 +2510,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     QList<QComboBox *> listComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
     std::sort(listComboBoxes.begin(), listComboBoxes.end(),
               [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listComboBoxes.size(); n++) {
         unsigned short value = GetVMM("sd",n);
         listComboBoxes[n]->setCurrentIndex(value);
@@ -2210,7 +2520,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
     std::sort(listComboBoxes.begin(), listComboBoxes.end(),
               [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listComboBoxes.size(); n++) {
         unsigned short value = GetVMM("sz10b",n);
         listComboBoxes[n]->setCurrentIndex(value);
@@ -2220,7 +2530,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
     std::sort(listComboBoxes.begin(), listComboBoxes.end(),
               [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listComboBoxes.size(); n++) {
         unsigned short value = GetVMM("sz08b",n);
         listComboBoxes[n]->setCurrentIndex(value);
@@ -2230,7 +2540,7 @@ void DAQWindow::LoadVMMChannelSettings() {
     listComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
     std::sort(listComboBoxes.begin(), listComboBoxes.end(),
               [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-              });
+    });
     for(int n=0; n<listComboBoxes.size(); n++) {
         unsigned short value = GetVMM("sz06b",n);
         listComboBoxes[n]->setCurrentIndex(value);
@@ -2731,12 +3041,9 @@ void DAQWindow::onUpdateVMMSettings()
 
     }
     else if(QObject::sender() == m_ui->readADC){
-        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ACQoff();
-        m_ui->offACQ->setCheckable(true);
-        m_ui->offACQ->setChecked(true);
-        m_ui->onACQ->setChecked(false);
-        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
-        m_ui->Send->setEnabled(true);
+        if(!m_ui->onACQ->isChecked()) {
+            m_daq.m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
+        }
 
         int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | prepare to read other channels
 
@@ -2896,7 +3203,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QPushButton *> childPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
         std::sort(childPushButtons.begin(), childPushButtons.end(),
                   [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         if(m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetInfo("all_sc") == "0"){
             for(int n=0; n<childPushButtons.size(); n++) {
                 childPushButtons[n]->setStyleSheet("background-color: green");
@@ -2919,7 +3226,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QPushButton *> childPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
         std::sort(childPushButtons.begin(), childPushButtons.end(),
                   [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         if(m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetInfo("all_sl") == "0"){
             for(int n=0; n<childPushButtons.size(); n++) {
                 childPushButtons[n]->setStyleSheet("background-color: green");
@@ -2941,7 +3248,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QPushButton *> childPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
         std::sort(childPushButtons.begin(), childPushButtons.end(),
                   [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         if(m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetInfo("all_st") == "0"){
             for(int n=0; n<childPushButtons.size(); n++) {
                 childPushButtons[n]->setStyleSheet("background-color: green");
@@ -2963,7 +3270,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QPushButton *> childPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
         std::sort(childPushButtons.begin(), childPushButtons.end(),
                   [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         if(m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetInfo("all_sth") == "0"){
             for(int n=0; n<childPushButtons.size(); n++) {
                 childPushButtons[n]->setStyleSheet("background-color: green");
@@ -2985,7 +3292,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QPushButton *> childPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
         std::sort(childPushButtons.begin(), childPushButtons.end(),
                   [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         if(m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetInfo("all_sm") == "0"){
             for(int n=0; n<childPushButtons.size(); n++) {
                 childPushButtons[n]->setStyleSheet("background-color: green");
@@ -3007,7 +3314,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QPushButton *> childPushButtons = m_ui->scrollArea->findChildren<QPushButton *>(exp);
         std::sort(childPushButtons.begin(), childPushButtons.end(),
                   [](const QPushButton* x, const QPushButton* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         if(m_daq.m_fecs[m_fecIndex].m_hybrids[m_hybridIndex].m_vmms[m_vmmIndex].GetInfo("all_smx") == "0"){
             for(int n=0; n<childPushButtons.size(); n++) {
                 childPushButtons[n]->setStyleSheet("background-color: green");
@@ -3109,7 +3416,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QComboBox *> childComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
         std::sort(childComboBoxes.begin(), childComboBoxes.end(),
                   [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         for(int n=0; n<childComboBoxes.size(); n++) {
             SetVMM("sd", index, n);
             childComboBoxes[n]->setCurrentIndex(index);
@@ -3121,7 +3428,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QComboBox *> childComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
         std::sort(childComboBoxes.begin(), childComboBoxes.end(),
                   [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         for(int n=0; n<childComboBoxes.size(); n++) {
             SetVMM("sz10b", index, n);
             childComboBoxes[n]->setCurrentIndex(index);
@@ -3133,7 +3440,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QComboBox *> childComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
         std::sort(childComboBoxes.begin(), childComboBoxes.end(),
                   [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         for(int n=0; n<childComboBoxes.size(); n++) {
             SetVMM("sz08b", index, n);
             childComboBoxes[n]->setCurrentIndex(index);
@@ -3145,7 +3452,7 @@ void DAQWindow::onUpdateVMMChannelSettings()
         QList<QComboBox *> childComboBoxes = m_ui->scrollArea->findChildren<QComboBox *>(exp);
         std::sort(childComboBoxes.begin(), childComboBoxes.end(),
                   [](const QComboBox* x, const QComboBox* y) -> bool { return x->objectName() <  y->objectName();
-                  });
+        });
         for(int n=0; n<childComboBoxes.size(); n++) {
             SetVMM("sz06b", index, n);
             childComboBoxes[n]->setCurrentIndex(index);

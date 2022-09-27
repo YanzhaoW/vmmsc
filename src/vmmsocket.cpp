@@ -20,7 +20,6 @@ VMMSocket::VMMSocket(QObject* parent) :
     QObject(parent),
     m_dbg(false),
     m_msg(0),
-    m_name(""),
     m_socket(0)
 {
     m_socket = new QUdpSocket(this);
@@ -35,22 +34,24 @@ bool VMMSocket::BindSocket(quint16 port, QAbstractSocket::BindMode mode)
 {
     bool bind = true;
     if(m_socket) {
-        bind = m_socket->bind(port, QAbstractSocket:: ShareAddress);
-        //bind = m_socket->bind(address, port, QAbstractSocket::ShareAddress | QAbstractSocket::ReuseAddressHint);
+        //bind = m_socket->bind(port, QAbstractSocket:: ShareAddress);
+        bind = m_socket->bind(port, QAbstractSocket::ShareAddress | QAbstractSocket::ReuseAddressHint);
     }
     else {
-        GetMessageHandler()("Socket named " + GetName() + " is null!",
+        GetMessageHandler()("SC Socket is null!",
                             "VMMSocket::bindSocket",true);
         bind = false;
     }
     if(!bind) {
-        GetMessageHandler()("Unable to bind socket named " + GetName(),
+        GetMessageHandler()("Unable to bind SC socket",
                             "VMMSocket::bindSocket", true);
     }
     else {
-        stringstream sx;
-        sx << "Socket named " << GetName() << " successfully bound to port " << port;
-        GetMessageHandler()(sx, "VMMSocket::bindSocket");
+        if(IsDbgActive()) {
+            stringstream sx;
+            sx << "Socket successfully bound to port " << port;
+            GetMessageHandler()(sx, "VMMSocket::bindSocket");
+        }
     }
     return bind;
 }
@@ -95,28 +96,17 @@ bool VMMSocket::CheckAndReconnect(std::string callingFn)
         if(callingFn!="") fn = "(" + callingFn + ") ";
 
         if(IsDbgActive()) {
-            sx << fn << "About to rebind socket named " << GetName() << " to port "
+            sx << fn << "About to rebind SC socket to port "
                << GetBindingPort();
             GetMessageHandler()(sx, "VMMSocket::checkAndReconnect");
         }
-        bool bnd = m_socket->bind(GetBindingPort(), QAbstractSocket::ShareAddress);
-
+        bool bnd = BindSocket(GetBindingPort(), QAbstractSocket::ShareAddress | QAbstractSocket::ReuseAddressHint);
         if(!bnd) {
             status = false;
-            sx.str("");
-            sx << fn << "ERROR Unable to re-bind socket named " << GetName() << " to port "
-               << GetBindingPort();
-            GetMessageHandler()(sx, "VMMSocket::checkAndReconnect");
             CloseAndDisconnect(callingFn);
         }
         else {
             status = true;
-            if(IsDbgActive()) {
-                sx.str("");
-                sx << fn << "Socket named " << GetName() << " successfully rebound to port "
-                   << GetBindingPort();
-                GetMessageHandler()(sx,"VMMSocket::checkAndReconnect");
-            }
         }
     }
     return status;
@@ -129,8 +119,8 @@ void VMMSocket::CloseAndDisconnect(std::string callingFn)
     string fn = "";
     if(callingFn!="") fn = "(" + callingFn + ") ";
     if(IsDbgActive()) {
-        sx << fn << "Closing and disconnecting from host the socket"
-           << " named " << GetName() << " (bound on port " << GetBindingPort()
+        sx << fn << "Closing and disconnecting from host the SC socket"
+           << " (bound on port " << GetBindingPort()
            << ")";
         GetMessageHandler()(sx,"VMMSocket::closeAndDisconnect");
     }
@@ -156,7 +146,7 @@ void VMMSocket::ProcessReply()
 void VMMSocket::Print()
 {
     stringstream ss;
-    ss << "    Name          : " << GetName() << "\n"
+    ss << "    Name          : SC socket\n"
        << "    Bound to port : " << GetBindingPort() << "\n"
        << "    Status        : " << m_socket->state();
     GetMessageHandler()(ss,"VMMSocket::Print");

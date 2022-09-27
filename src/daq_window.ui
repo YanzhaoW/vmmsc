@@ -16938,9 +16938,9 @@ stpp,stot[01]: ToT</string>
                </layout>
               </item>
               <item row="0" column="0">
-               <widget class="QCheckBox" name="checkBox_enable_TP">
+               <widget class="QCheckBox" name="tpDisable">
                 <property name="text">
-                 <string>Enable TP Generator</string>
+                 <string>Disable TP Generator</string>
                 </property>
                </widget>
               </item>
@@ -17987,6 +17987,45 @@ error</string>
               <string>Cards</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_3">
+              <item row="4" column="0">
+               <widget class="QLabel" name="labelClockSource">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Clock Source</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QPushButton" name="pushButtonResetLatencyCalibration">
+                <property name="text">
+                 <string>1. Reset latency calib</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QCheckBox" name="checkBoxConfigCheck">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>25</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
               <item row="4" column="1">
                <widget class="QComboBox" name="comboBoxClockSource">
                 <property name="enabled">
@@ -18029,20 +18068,7 @@ error</string>
                 </item>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="labelClockSource">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>25</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string>Clock Source</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_3">
                 <property name="minimumSize">
                  <size>
@@ -18061,36 +18087,39 @@ error</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
-               <widget class="QCheckBox" name="checkBoxConfigCheck">
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>25</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QPushButton" name="pushButtonResetLatencyCalibration">
-                <property name="text">
-                 <string>1. Reset latency calib</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
+              <item row="7" column="1">
                <widget class="QPushButton" name="pushButtonTPLatencyCalibration">
                 <property name="text">
                  <string>2. TP latency calib</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QComboBox" name="comboBoxSlowControl">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>ESS master</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>ESS assister</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SRS</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="labelSlowControl">
+                <property name="text">
+                 <string>Slow control</string>
                 </property>
                </widget>
               </item>
@@ -18281,7 +18310,7 @@ error</string>
               </size>
              </property>
              <property name="currentIndex">
-              <number>0</number>
+              <number>1</number>
              </property>
              <widget class="QWidget" name="tabConfig">
               <attribute name="title">
@@ -18429,7 +18458,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 0</string>
+                  <string>FEN 0</string>
                  </property>
                 </widget>
                </item>
@@ -18466,7 +18495,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 1</string>
+                  <string>FEN 1</string>
                  </property>
                 </widget>
                </item>
@@ -18503,7 +18532,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 2</string>
+                  <string>FEN 2</string>
                  </property>
                 </widget>
                </item>
@@ -18540,7 +18569,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 3</string>
+                  <string>FEN 3</string>
                  </property>
                 </widget>
                </item>
@@ -18577,7 +18606,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 4</string>
+                  <string>FEN 4</string>
                  </property>
                 </widget>
                </item>
@@ -18614,7 +18643,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 5</string>
+                  <string>FEN 5</string>
                  </property>
                 </widget>
                </item>
@@ -18651,7 +18680,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 6</string>
+                  <string>FEN 6</string>
                  </property>
                 </widget>
                </item>
@@ -18688,7 +18717,7 @@ error</string>
                   <enum>QFrame::Box</enum>
                  </property>
                  <property name="text">
-                  <string>Assister 7</string>
+                  <string>FEN 7</string>
                  </property>
                 </widget>
                </item>
@@ -18696,8 +18725,8 @@ error</string>
                 <widget class="QTableWidget" name="tableWidget_LinkStatus">
                  <property name="minimumSize">
                   <size>
-                   <width>220</width>
-                   <height>200</height>
+                   <width>240</width>
+                   <height>100</height>
                   </size>
                  </property>
                  <property name="maximumSize">
@@ -18710,7 +18739,7 @@ error</string>
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0: not connected&lt;/p&gt;&lt;p&gt;1: start alignment&lt;/p&gt;&lt;p&gt;2: align&lt;/p&gt;&lt;p&gt;3: link&lt;/p&gt;&lt;p&gt;4: idle&lt;/p&gt;&lt;p&gt;5: acq&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="rowCount">
-                  <number>8</number>
+                  <number>5</number>
                  </property>
                  <property name="columnCount">
                   <number>8</number>
@@ -18732,9 +18761,6 @@ error</string>
                    <string/>
                   </property>
                  </row>
-                 <row/>
-                 <row/>
-                 <row/>
                  <row/>
                  <row/>
                  <row/>
@@ -18775,6 +18801,12 @@ error</string>
                  <property name="horizontalScrollMode">
                   <enum>QAbstractItemView::ScrollPerItem</enum>
                  </property>
+                 <property name="rowCount">
+                  <number>8</number>
+                 </property>
+                 <property name="columnCount">
+                  <number>8</number>
+                 </property>
                  <attribute name="horizontalHeaderMinimumSectionSize">
                   <number>20</number>
                  </attribute>
@@ -18787,6 +18819,22 @@ error</string>
                  <attribute name="verticalHeaderDefaultSectionSize">
                   <number>20</number>
                  </attribute>
+                 <row/>
+                 <row/>
+                 <row/>
+                 <row/>
+                 <row/>
+                 <row/>
+                 <row/>
+                 <row/>
+                 <column/>
+                 <column/>
+                 <column/>
+                 <column/>
+                 <column/>
+                 <column/>
+                 <column/>
+                 <column/>
                 </widget>
                </item>
                <item row="0" column="0">
@@ -19952,7 +20000,7 @@ error</string>
                <double>100000.000000000000000</double>
               </property>
               <property name="value">
-               <double>1000.000000000000000</double>
+               <double>2000.000000000000000</double>
               </property>
              </widget>
             </widget>

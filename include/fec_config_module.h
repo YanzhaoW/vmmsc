@@ -16,8 +16,7 @@ using namespace std;
 #include <QByteArray>
 #include <QProcess>
 
-
-
+class DAQWindow;
 class FEC;
 
 class FECConfigModule : public QObject
@@ -64,14 +63,23 @@ public:
     bool CheckConfigurationOfVMMs(int hybrid_index, int vmm_index);
     QString CommunicateWithHybridI2C(int i2c_addr, int hybrid_index, int rw, int reg_value, int bytes);
     bool CheckIpPortSize(QHostAddress ipRead, QString ip,int portRead, int port, int size);
+
+    unsigned int ESS_GetAddress(QString command_reg);
+    QString ESS_ReadSc(QString command_reg, int index, QString read_reg, bool &readOk);
+    void ESS_WriteSc(QString the_reg, unsigned int val, bool &readOk);
+    bool ESS_ResetSc();
+
 private:
     FEC *m_fec;
+    DAQWindow *m_daqWindow;
     bool m_dbg = false;
+    bool m_isPinged = false;
     //std::vector<int> m_hybrid_i2c;
 
     SocketHandler *m_socketHandler;
 //    ConfigHandler *m_configHandler;
     MessageHandler* m_messageHandler;
+    std::map<std::string, uint32_t> m_registers;
 signals:
     void CheckLinks();
 
@@ -84,3 +92,4 @@ public slots:
 #ifndef _FEC_HPP
 #include "fec.h"
 #endif
+

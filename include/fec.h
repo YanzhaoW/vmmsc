@@ -49,6 +49,7 @@ public:
     quint16 GetChMap();
     FECConfigModule *m_fecConfigModule;
 
+    bool SetId();
     long GetID();
     QString GetIP();
     long GetIP_FEC();

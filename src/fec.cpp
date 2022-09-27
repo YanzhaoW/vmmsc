@@ -13,7 +13,7 @@ FEC::FEC():
 {
     LoadDefault();
 
-    m_socketHandler = new SocketHandler();
+    m_socketHandler = SocketHandler::getInstance();
     m_socketHandler->SetDebugMode(false);
     m_fecConfigModule = new FECConfigModule(this, this);
     m_fecConfigModule->LoadSocket( GetSocketHandler() );
@@ -36,10 +36,6 @@ long FEC::GetIP_FEC(){
 
 void FEC::SetIP_FEC(unsigned long ip) {
     SetReg("ip_fec", ip);
-    if(g_clock_source!=0) {
-        m_id = GetRegVal("ip_fec") & 0x000000FF;
-        //std::cout << "SetIP_FEC m_id=" << m_id<< std::endl;
-    }
 }
 
 long FEC::GetIP_DAQ(){
@@ -73,7 +69,6 @@ void FEC::SendAll(bool useConfigCheck){
             m_fecConfigModule->ConfigHybrid(k);
 
             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                //sleep(1);
                 bool result = m_fecConfigModule->SendConfig(k, m, useConfigCheck);
                 if(!result) {
                     config_error[k*VMMS_PER_HYBRID+m] = 1;
@@ -125,14 +120,14 @@ void FEC::LoadDefault(){
     (*m_regNames)[4] ="not_used";                (*m_reg)[4] = 0;
     (*m_regNames)[5] ="not_used";                (*m_reg)[5] = 0;
 
-    (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
+    (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 8181;    //32 bit
     (*m_regNames)[7] ="daq_port";                (*m_reg)[7] = 6006;    //32 bit
     (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
     (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
     (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
-    (*m_regNames)[11]="not_used";                (*m_reg)[11] = 0;
-    (*m_regNames)[12]="not_used";                (*m_reg)[12] = 0;
-    (*m_regNames)[13]="not_used";                (*m_reg)[13] = 0;
+    (*m_regNames)[11]="ess_sc_port";              (*m_reg)[11] = 65535;
+    (*m_regNames)[12]="ring";                (*m_reg)[12] = 0;
+    (*m_regNames)[13]="fen";                (*m_reg)[13] = 0;
 
     (*m_regNames)[14]="not_used";                        (*m_reg)[14] = 0;
     (*m_regNames)[15]="not_used";                        (*m_reg)[15] = 0;   //
@@ -147,7 +142,7 @@ void FEC::LoadDefault(){
     (*m_regNames)[23]="truncate";                (*m_reg)[23] = 0;   //6 bit
     (*m_regNames)[24]="nskip";                   (*m_reg)[24] = 0;   //7 bit
     (*m_regNames)[25]="sL0cktest";               (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
-    (*m_regNames)[26]="ip_fec";                  (*m_reg)[26] = 0xC0A83264; //
+    (*m_regNames)[26]="ip_fec";                  (*m_reg)[26] = 0xC0A83202; //
     (*m_regNames)[27]="ip_daq";                  (*m_reg)[27] = 0xC0A83201;//
 
     (*m_regNames)[28]="i2c_port";                (*m_reg)[28] = 6604;   //32 bit
@@ -358,32 +353,24 @@ bool FEC::ConstCharStar_comp(const char *ccs1, const char *ccs2){
     else {return false;}
 }
 
+bool FEC::SetId(){
+    //ESS master and assister, take rings and FENs
+    if(g_slow_control !=2) {
+        unsigned long ring = GetRegVal("ring");
+        unsigned long fen = GetRegVal("fen");
+        m_id = ring*32+fen;
+    }
+    else {
+        m_id = GetRegVal("ip_fec") & 0x000000FF;
+    }
+    return true;
+}
+
 bool FEC::SetInfo(std::string feature, std::string value){
     if(m_fec_info.find(feature)==m_fec_info.end()) return false;
     else{
-        if(feature=="description"){
-            m_fec_info[feature] = value;
-            //ESS master, take rings and
-            if(g_clock_source==0) {
-                QString str = QString::fromStdString(value).toUpper();
-                for(int ring=0; ring<24;ring++) {
-                    QString search="RING"+ QString::number(ring);
-                    if(str.contains(search, Qt::CaseInsensitive)) {
-                        m_id = ring * 32 + 0;
-                        for(int fen=0; fen<32;fen++) {
-                             std::cout << search.toStdString() << std::endl;
-                            if(str.contains(search, Qt::CaseInsensitive)) {
-                                m_id = ring * 32 + fen;
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                m_id = GetRegVal("ip_fec") & 0x000000FF;
-            }
-            return true;
-        }
+        m_fec_info[feature] = value;
+        return true;
     }
     return false;
 }
@@ -416,4 +403,5 @@ FEC::~FEC()
     if( m_chr != NULL ){
         delete[] m_chr;}
     m_chr = NULL;
+    m_socketHandler->deleteInstance();
 }

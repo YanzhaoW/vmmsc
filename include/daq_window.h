@@ -2,6 +2,7 @@
 #define DAQ_WINDOW_H
 
 #include <QWidget>
+#include <QPair>
 #include "ui_daq_window.h"
 #include "calibration_module.h"
 #include "globparameter.h"
@@ -87,6 +88,8 @@ public:
     bool SetVMM(std::string feature, int val ,int ch=-9999);
     bool SetVMM(std::string feature, bool value, int ch=-9999);
 
+    std::map<int,QPair<int,int>> m_map_id_ring_fen;
+    std::map<QPair<int,int>,int> m_map_ring_fen_id;
 
 
 
@@ -118,6 +121,8 @@ private:
     int m_fecIndex = 0;
     int m_hybridIndex = 0;
     int m_vmmIndex = 0;
+
+
 
 };
 

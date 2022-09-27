@@ -86,25 +86,37 @@ int DAQ::CheckIP_DAQ(long ip){
 
 
 void DAQ::ACQHandler(bool on){
-    QStringList subnetList;
-    QList<int> fecList;
-    for (unsigned short j=0; j < FECS_PER_DAQ; j++){
-        if ( GetFEC(j)){
-            QString ip = m_fecs[j].GetIP();
-            QStringList list = ip.split(".");
-            QString subnet = list[0] + "." + list[1] + "." + list[2];
-            if(!subnetList.contains(subnet)) {
-                subnetList.append(subnet);
-                fecList.append(j);
+    //Assister (1) and SRS (2) have one IP per card
+    if(g_slow_control != 0){
+        QStringList subnetList;
+        QList<int> fecList;
+        for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+            if ( GetFEC(j)){
+                QString ip = m_fecs[j].GetIP();
+                QStringList list = ip.split(".");
+                QString subnet = list[0] + "." + list[1] + "." + list[2];
+                if(!subnetList.contains(subnet)) {
+                    subnetList.append(subnet);
+                    fecList.append(j);
+                }
+
             }
+        }
+        for(int n=0; n<subnetList.size();n++) {
+            //std::cout << "FEC ID " << fecList[n] << " subnet " << subnetList[n].toStdString() << std::endl;
+            if(on) m_fecs[fecList[n]].m_fecConfigModule->ACQon(true);
+            else if(!on) m_fecs[fecList[n]].m_fecConfigModule->ACQoff(true);
 
         }
     }
-    for(int n=0; n<subnetList.size();n++) {
-        //std::cout << "FEC ID " << fecList[n] << " subnet " << subnetList[n].toStdString() << std::endl;
-        if(on) m_fecs[fecList[n]].m_fecConfigModule->ACQon(true);
-        else if(!on) m_fecs[fecList[n]].m_fecConfigModule->ACQoff(true);
-
+    //Master (0) has just one IP
+    else {
+        for (unsigned short j=0; j < FECS_PER_DAQ; j++){
+            if ( GetFEC(j)){
+                if(on) m_fecs[j].m_fecConfigModule->ACQon();
+                else if(!on) m_fecs[j].m_fecConfigModule->ACQoff();
+            }
+        }
     }
 }
 

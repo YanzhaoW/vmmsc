@@ -1,5 +1,6 @@
 fec 0
-
+ring 0
+fen 0
 tp_offset_first 100
 tp_offset 1000
 tp_latency 65
@@ -18,11 +19,11 @@ window 0
 truncate 0
 nskip 0
 sL0cktest 0
-ip_fec 192.168.50.100
+ip_fec 192.168.50.2
 ip_daq 192.168.50.1
 i2c_port 6604
 fec_sys_port 6023
 latency_reset 47
-latency_data_max 4091
-latency_data_error 4
+latency_data_max 4087
+latency_data_error 8
 debug_data_format 0

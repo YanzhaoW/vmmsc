@@ -223,6 +223,7 @@ private:
     int m_theFEC = 0;
     int m_theDirection = 0;
     int m_scan_type = 0;
+    int m_packetCounter = 0;
 
 
     bool m_isThresholdCalibration = false;
@@ -246,7 +247,7 @@ private:
     const static int m_number_bits_threshold = 32;
     const static int m_number_bits_offline_time = 10;
     const static int m_number_bits_offline_adc= 4;
-    const static int m_number_bits_offline_time_walk = 10;
+    const static int m_number_bits_offline_timewalk = 10;
     const static int m_number_bits_offline_latency = 15;
     const static int m_start_reset_latency = 42;
     const static int m_start_tp_latency = 56;

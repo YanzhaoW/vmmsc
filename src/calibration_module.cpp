@@ -1396,10 +1396,10 @@ void CalibrationModule::ApplyCalib(bool isTimewalk) {
 
         }
         if(m_modeIndex == 3 && !isTimewalk) {
-            auto const & arrayA = obj["time_walk_a"].toArray();
-            auto const & arrayB = obj["time_walk_b"].toArray();
-            auto const & arrayC = obj["time_walk_c"].toArray();
-            auto const & arrayD = obj["time_walk_d"].toArray();
+            auto const & arrayA = obj["timewalk_a"].toArray();
+            auto const & arrayB = obj["timewalk_b"].toArray();
+            auto const & arrayC = obj["timewalk_c"].toArray();
+            auto const & arrayD = obj["timewalk_d"].toArray();
             if(!arrayA.empty() && !arrayB.empty() && !arrayC.empty() && !arrayD.empty()) {
                 m_file_timewalk_a[fec][hybrid][chip].clear();
                 m_file_timewalk_b[fec][hybrid][chip].clear();
@@ -1443,6 +1443,12 @@ void CalibrationModule::WriteSystemConfig() {
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (m_daqWindow->m_daq.GetFEC(fec)){
             int fecID = m_fecPosID[fec];
+            //Master (0) or Assister (1)
+            if(g_slow_control < 2) {
+                int ring = m_daqWindow->m_map_id_ring_fen[fec].first;
+                int fen = m_daqWindow->m_map_id_ring_fen[fec].second;
+                fecID =  ring * 32 + fen;
+            }
             for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
                 QJsonObject calibrationObject;
                 QJsonArray adcOffsetArray;
@@ -1450,9 +1456,16 @@ void CalibrationModule::WriteSystemConfig() {
                 if(m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hyb)) {
                     std::string hybridID = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].GetInfo("hybrid_id");
                     for(int n=0; n<2;n++) {
-                        calibrationObject.insert("hybridID",QString::fromStdString(hybridID));
+                        if(hybridID == "ffffffffffffffffffffffffffffffff") {
+                            QString theId = QString::fromStdString(hybridID) + "_" + QString::number(fecID) + "_" +  QString::number(hyb*2+n);
+                            calibrationObject.insert("hybridID",theId);
+                        }
+                        else {
+                            calibrationObject.insert("hybridID",QString::fromStdString(hybridID));
+                        }
+
                         calibrationObject.insert("fecID",fecID);
-                        calibrationObject.insert("vmmID",n);
+                        calibrationObject.insert("vmmID",hyb*2+n);
                         calibrationArray.push_back(calibrationObject);
                     }
                 }
@@ -1629,10 +1642,10 @@ void CalibrationModule::JoinCalib() {
             hybrid = obj["vmmID"].toInt()/2;
             //std::cout << "hybrid " << hybrid << " " << chip << std::endl;
 
-            auto const & arrayA = obj["time_walk_a"].toArray();
-            auto const & arrayB = obj["time_walk_b"].toArray();
-            auto const & arrayC = obj["time_walk_c"].toArray();
-            auto const & arrayD = obj["time_walk_d"].toArray();
+            auto const & arrayA = obj["timewalk_a"].toArray();
+            auto const & arrayB = obj["timewalk_b"].toArray();
+            auto const & arrayC = obj["timewalk_c"].toArray();
+            auto const & arrayD = obj["timewalk_d"].toArray();
 
 
             for(const auto &val: arrayA) {
@@ -1651,10 +1664,10 @@ void CalibrationModule::JoinCalib() {
                 newCalibrationObject.insert("fecID",fecID);
                 newCalibrationObject.insert("hybridID",hybridID);
                 newCalibrationObject.insert("vmmID",hybrid*2+chip);
-                newCalibrationObject.insert("time_walk_a",newTimewalkA_Array);
-                newCalibrationObject.insert("time_walk_b",newTimewalkB_Array);
-                newCalibrationObject.insert("time_walk_c",newTimewalkC_Array);
-                newCalibrationObject.insert("time_walk_d",newTimewalkD_Array);
+                newCalibrationObject.insert("timewalk_a",newTimewalkA_Array);
+                newCalibrationObject.insert("timewalk_b",newTimewalkB_Array);
+                newCalibrationObject.insert("timewalk_c",newTimewalkC_Array);
+                newCalibrationObject.insert("timewalk_d",newTimewalkD_Array);
                 newCalibrationArray.push_back(newCalibrationObject);
             }
         }
@@ -1690,7 +1703,16 @@ void CalibrationModule::SaveDataAsCSV() {
     QString name = "";
     if(m_modeIndex == 6) {
         fec = m_theFEC;
-        int fecId = m_fecPosID[m_theFEC];
+        QString fecId = "";
+        //SRS (2)
+        if(g_slow_control == 2){
+            fecId = QString::number(m_fecPosID[m_theFEC]);
+        }
+        else {
+            int ring = m_daqWindow->m_daq.m_fecs[m_theFEC].GetRegVal("ring");
+            int fen = m_daqWindow->m_daq.m_fecs[m_theFEC].GetRegVal("fen");
+            fecId = QString::number(ring).rightJustified(2, '0') + "_"+QString::number(fen).rightJustified(2, '0');
+        }
         hybrid = m_theVMM / 2;
         chip = m_theVMM % 2;
         std::string hybridID = m_hybrid_id[fec][hybrid];
@@ -1734,11 +1756,11 @@ void CalibrationModule::SaveDataAsCSV() {
                     rate = m_channel_y[ch][bit]/(1000*m_time[bit]);
                 }
                 if(m_scan_type == 0) {
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_pulser_dac << "," << m_pulser_mV << "," << m_dac_setting[bit] << ","
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_pulser_dac << "," << m_pulser_mV << "," << m_dac_setting[bit] << ","
                               << m_dac_measured[fec][hybrid][chip][bit] << "," << m_time[bit] << "," << m_channel_y[ch][bit] << "," <<rate << "\n" ;
                 }
                 else {
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << "," << m_dac_measured[fec][hybrid][chip][bit] << "," << m_threshold_dac << ","
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << "," << m_dac_measured[fec][hybrid][chip][bit] << "," << m_threshold_dac << ","
                               << m_threshold_mV << "," << m_time[bit] << "," << m_channel_y[ch][bit] << "," <<rate << "\n" ;
                 }
             }
@@ -1747,7 +1769,7 @@ void CalibrationModule::SaveDataAsCSV() {
         m_outFile.open(theFitName.toStdString().c_str(), std::ofstream::out);
         m_outFile << "hybrid_id, fec,vmm,ch,fit scale, error scale, fit mean, error mean, fit sigma, error sigma\n";
         for(unsigned int ch = 0; ch<64; ch++){
-            m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_fit_scale[ch] << "," <<  m_fit_error_scale[ch] << "," <<  m_fit_mean[ch] << ","
+            m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_fit_scale[ch] << "," <<  m_fit_error_scale[ch] << "," <<  m_fit_mean[ch] << ","
                       <<  m_fit_error_mean[ch] << "," <<  m_fit_sigma[ch] << "," << m_fit_error_sigma[ch] << "\n" ;
         }
         m_outFile.close();
@@ -1842,7 +1864,17 @@ void CalibrationModule::SaveDataAsCSV() {
             hybrid = GetHybrid(vmm);
             chip = GetVMM(vmm);
             std::string hybridID = m_hybrid_id[fec][hybrid];
-            int fecId = m_fecPosID[fec];
+            QString fecId = "";
+            //SRS (2)
+            if(g_slow_control == 2){
+                fecId = QString::number(m_fecPosID[fec]);
+            }
+            else {
+                int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
+                int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
+                fecId = QString::number(ring).rightJustified(2, '0') + "_"+QString::number(fen).rightJustified(2, '0');
+            }
+
             if(m_modeIndex == 1)
             {
                 //<< cnt << "," << std::setprecision(6) << rate<< std::endl;
@@ -1850,7 +1882,7 @@ void CalibrationModule::SaveDataAsCSV() {
                 for(int ch = 0; ch<64; ch++){
 
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fecId << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << ","
+                        m_outFile << hybridID << "," << fecId.toStdString() << "," << hybrid*2+chip << "," << ch  << "," << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << ","
                                   << m_mean[bit][fec][hybrid][chip][ch] << "," << m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch]
                                      << "," << (m_mean[bit][fec][hybrid][chip][ch] - m_offset[fec][hybrid][chip][ch])* m_slope[fec][hybrid][chip][ch] << "\n" ;
                     }
@@ -1871,7 +1903,7 @@ void CalibrationModule::SaveDataAsCSV() {
 
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fecId << "," << hybrid*2+chip << "," << ch  << "," << bit*g_time_factor << ","  <<
+                        m_outFile << hybridID << "," << fecId.toStdString() << "," << hybrid*2+chip << "," << ch  << "," << bit*g_time_factor << ","  <<
                                      m_slope[fec][hybrid][chip][ch] << "," << m_offset[fec][hybrid][chip][ch] << ",";
                         double theTotalTime = 0;
                         int bcid = m_fit_start_bcid[fec][hybrid][chip][ch];
@@ -1935,7 +1967,7 @@ void CalibrationModule::SaveDataAsCSV() {
                         if(m_fit_d[fec][hybrid][chip][ch] > -9999.0) {
                             d = m_fit_d[fec][hybrid][chip][ch];
                         }
-                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << ",";
+                        m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << ",";
                         m_outFile << m_dac_setting[bit] << ","  << m_dac_measured[fec][hybrid][chip][bit] << "," << m_mean2[bit][fec][hybrid][chip][ch] << ","  << m_mean[bit][fec][hybrid][chip][ch] << ",";
                         if(hasFileADC) {
                             m_outFile << m_file_adc_slope[fec][hybrid][chip][ch] << ","  << m_file_adc_offset[fec][hybrid][chip][ch] << ",";
@@ -1960,7 +1992,7 @@ void CalibrationModule::SaveDataAsCSV() {
                 m_outFile << "hybrid_id, fec,vmm,ch, ADC correction [mV], ADC, calibrated value, , best common value\n";
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                        m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
 
@@ -1970,7 +2002,7 @@ void CalibrationModule::SaveDataAsCSV() {
                 m_outFile << "hybrid_id, fec,vmm,ch, TDC correction [mV], TDC, calibrated value, best common value\n";
                 for(int ch = 0; ch<64; ch++){
                     for(int bit=0; bit<m_number_bits;bit++){
-                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                        m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
             }
@@ -1982,7 +2014,7 @@ void CalibrationModule::SaveDataAsCSV() {
                     m_outFile << "hybrid_id, fec,vmm,ch, threshold correction [mV], threshold [mV], calibrated correction [mV], calibrated threshold [mV], best common value [mV]\n";
                     for(int ch = 0; ch<64; ch++){
                         for(int bit=0; bit<m_number_bits;bit++){
-                            m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_bitVal[fec][hybrid][chip][ch] << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
+                            m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << bit << "," << m_mean[bit][fec][hybrid][chip][ch]  << "," << m_bitVal[fec][hybrid][chip][ch] << "," << m_calVal[fec][hybrid][chip][ch] << "," << m_y[fec][hybrid][chip][ch] << "\n" ;
                         }
                     }
 
@@ -1990,7 +2022,7 @@ void CalibrationModule::SaveDataAsCSV() {
                 else {
                     m_outFile << "hybrid_id, fec,vmm,ch, threshold [mV]\n";
                     for(int ch = 0; ch<64; ch++){
-                        m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                        m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                     }
                 }
 
@@ -1999,49 +2031,49 @@ void CalibrationModule::SaveDataAsCSV() {
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, pedestal [mV]\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fecId << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString() << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
             else if(m_modeIndex == 9)
             {
                 m_outFile << "hybrid_id, fec,vmm, pulser dac setting, pulser dac measured\n";
                 for(int n=0; n<m_dac_setting.size();n++){
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
                 }
             }
             else if(m_modeIndex == 10)
             {
                 m_outFile << "hybrid_id, fec,vmm, threshold dac setting, threshold dac measured\n";
                 for(int n=0; n<m_dac_setting.size();n++){
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << m_dac_setting[n] << "," << m_y[fec][hybrid][chip][n] << "\n" ;
                 }
             }
             else if(m_modeIndex == 20)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, cnt\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
             else if(m_modeIndex == 21)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, mean ADC\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
             else if(m_modeIndex == 22)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, mean TDC\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
             else if(m_modeIndex == 23)
             {
                 m_outFile << "hybrid_id, fec,vmm,ch, mean BCID\n";
                 for(int ch = 0; ch<64; ch++){
-                    m_outFile << hybridID << "," << fecId  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
+                    m_outFile << hybridID << "," << fecId.toStdString()  << "," << hybrid*2+chip << "," << ch  << "," << m_mean[0][fec][hybrid][chip][ch] << "\n" ;
                 }
             }
         }
@@ -2345,28 +2377,64 @@ void CalibrationModule::PlotData(){
             hybrid = GetHybrid(static_cast<int>(idx/64));
             chip = GetVMM(static_cast<int>(idx/64));
             ch= idx%64;
-            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
+            //SRS (2)
+            if(g_slow_control == 2){
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
+            }
+            else {
+                int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
+                int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
+                        + "_"+QString::number(fen).rightJustified(2, '0') + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
+            }
         }
         else if(m_modeIndex == 11 || m_modeIndex == 12) {
             fec = GetFEC(static_cast<int>(idx));
             int fecId = m_fecPosID[fec];
             hybrid = GetHybrid(static_cast<int>(idx));
             chip = GetVMM(static_cast<int>(idx));
-            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ")";
+            //SRS (2)
+            if(g_slow_control == 2){
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ")";
+            }
+            else {
+                int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
+                int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
+                        + "_"+QString::number(fen).rightJustified(2, '0') + ")";
+            }
         }
         else if(m_modeIndex != 6) {
             fec = GetFEC(static_cast<int>(idx));
             int fecId = m_fecPosID[fec];
             hybrid = GetHybrid(static_cast<int>(idx));
             chip = GetVMM(static_cast<int>(idx));
-            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip);
+            //SRS (2)
+            if(g_slow_control == 2){
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip);
+            }
+            else {
+                int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
+                int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
+                        + "_"+QString::number(fen).rightJustified(2, '0') + ") VMM " + QString::number(hybrid*2+chip);
+            }
         }
         else {
             fec = m_theFEC;
             int fecId = m_fecPosID[fec];
             hybrid = m_theVMM / 2;
             chip = m_theVMM % 2;
-            title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
+            //SRS (2)
+            if(g_slow_control == 2){
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
+            }
+            else {
+                int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
+                int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
+                        + "_"+QString::number(fen).rightJustified(2, '0') + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
+            }
         }
         unsigned int colorFactor = 0;
 
@@ -3564,6 +3632,8 @@ void CalibrationModule::GetActiveVMMs(){
         if (m_daqWindow->m_daq.GetFEC(fec) ){
             m_fecPosID[fec] = m_daqWindow->m_daq.m_fecs[fec].GetID();
             m_fecIDPos[m_daqWindow->m_daq.m_fecs[fec].GetID()] = fec;
+            //std::cout << "m_daqWindow->m_daq.m_fecs[fec].GetID() " << m_daqWindow->m_daq.m_fecs[fec].GetID()
+            //          << " fec " << fec << std::endl;
             for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
                 if( m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid) ){
 
@@ -4016,6 +4086,7 @@ void CalibrationModule::StartCalibration(){
         PlotData();
     }
     else {
+        m_packetCounter = 0;
         m_nodata_start = std::chrono::high_resolution_clock::now();
         if(IsCalibration())
         {
@@ -4216,6 +4287,9 @@ void CalibrationModule::AccumulateData(){
         double delay_s = delay_ns*0.000000001;
         m_time.push_back(delay_s);
         double delay_ms = delay_ns*0.000001;
+
+
+
         StopDataTaking();
 
 
@@ -4681,7 +4755,7 @@ void CalibrationModule::ConnectDAQSocket()
 {
     stringstream sx;
     int daqport = 6006;
-    if(g_clock_source==0) {
+    if(g_clock_source <= 1) {
         daqport = 9000;
     }
     if(!m_udpSocket) {
@@ -4732,7 +4806,7 @@ void CalibrationModule::SaveCorrections(){
             dac = m_pulser_dac;
         }
         else if(m_modeIndex == 3) {
-            theName += "_time_walk";
+            theName += "_timewalk";
         }
         int lastFEC = -1;
         double gain = 0;
@@ -4750,7 +4824,7 @@ void CalibrationModule::SaveCorrections(){
             lastFEC = fecId;
             if(chip == 0 && m_vmmActs.size() <= 4) {
                 if(QString::fromStdString(m_hybrid_id[fec][hybrid])== "ffffffffffffffffffffffffffffffff") {
-                    theName +=  "_ffffffffffffffffffffffffffffffff_" +  QString::number(fecId) + "_" +  QString::number(hybrid) + "_" + QString::number(chip);
+                    theName +=  "_ffffffffffffffffffffffffffffffff_" +  QString::number(fecId) + "_" +  QString::number(hybrid*2+chip);
                 }
                 else {
                     theName += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
@@ -4813,7 +4887,7 @@ void CalibrationModule::SaveCorrections(){
             int theFECId = 0;
             QString theHybridId = QString::fromStdString(m_hybrid_id[fec][hybrid]);
             if(theHybridId == "ffffffffffffffffffffffffffffffff") {
-                theHybridId += "_" +  QString::number(fecId) + "_" +  QString::number(hybrid) + "_" + QString::number(chip);
+                theHybridId += "_" +  QString::number(fecId) + "_" +  QString::number(hybrid*2+chip);
             }
 
             if(m_calibrationArray[0] && m_modeIndex == 1) {
@@ -5125,7 +5199,7 @@ void CalibrationModule::GetSettings()
         m_number_bits = m_number_bits_offline_time;
     }
     else if(m_modeIndex == 3){
-        m_number_bits = m_number_bits_offline_time_walk;
+        m_number_bits = m_number_bits_offline_timewalk;
     }
     else if(m_modeIndex == 4){
         m_number_bits = m_number_bits_adc;
@@ -5541,11 +5615,13 @@ int CalibrationModule::Parse_VMM3(uint32_t header, uint32_t data1, uint32_t data
 
     int ring  =  (header >>24) & 0xFF;
     int fen =  (header >>16) & 0xFF;
+
     //int length =  (header & 0xFF)*256 + (header >> 8) & 0xFF;
     uint16_t fecId =
             static_cast<uint8_t>(ring / 2) * 32 + fen;
 
     int fec =  m_fecIDPos[fecId];
+    //std::cout << ring << " " << fen << " " << fecId << " " << fec << std::endl;
     uint64_t timestamp_high = ntohl(data1);
     uint64_t timestamp_low = ntohl(data2);
     uint16_t bcid = ntohs(data3 >> 16) & 0xFFF;
@@ -5713,22 +5789,22 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int IP) {
     m_ESSheader.m_seqNo = (*reinterpret_cast<const uint32_t *>(&buffer[26]));
 
 
-    /*
-    std::cout <<  "m_ESSheader.m_padding  " <<  m_ESSheader.m_padding  << std::endl;
-    std::cout <<  "m_ESSheader.m_version  " <<  m_ESSheader.m_version  << std::endl;
-    std::cout <<  "m_ESSheader.m_cookie1  " <<  m_ESSheader.m_cookie1  << std::endl;
-    std::cout <<  "m_ESSheader.m_cookie2  " <<  m_ESSheader.m_cookie2  << std::endl;
-    std::cout <<  "m_ESSheader.m_cookie3  " <<  m_ESSheader.m_cookie3  << std::endl;
-    std::cout <<  "m_ESSheader.m_type  " <<  m_ESSheader.m_type  << std::endl;
-    std::cout <<  "m_ESSheader.m_length  " <<  m_ESSheader.m_length  << std::endl;
-    std::cout <<  "m_ESSheader.m_outputQ  " <<  m_ESSheader.m_outputQ  << std::endl;
-    std::cout <<  "m_ESSheader.m_timeSrc  " <<  m_ESSheader.m_timeSrc  << std::endl;
-    std::cout <<  "m_ESSheader.m_pulseT_high  " <<  m_ESSheader.m_pulseT_high  << std::endl;
-    std::cout <<  "m_ESSheader.m_pulseT_low  " <<  m_ESSheader.m_pulseT_low  << std::endl;
-    std::cout <<  "m_ESSheader.m_prevPT_high  " <<  m_ESSheader.m_prevPT_high  << std::endl;
-    std::cout <<  "m_ESSheader.m_prevPT_low  " <<  m_ESSheader.m_prevPT_low  << std::endl;
-    std::cout <<  "m_ESSheader.m_seqNo  " <<  m_ESSheader.m_seqNo  << std::endl;
-*/
+
+//    std::cout <<  "m_ESSheader.m_padding  " <<  m_ESSheader.m_padding  << std::endl;
+//    std::cout <<  "m_ESSheader.m_version  " <<  m_ESSheader.m_version  << std::endl;
+//    std::cout <<  "m_ESSheader.m_cookie1  " <<  m_ESSheader.m_cookie1  << std::endl;
+//    std::cout <<  "m_ESSheader.m_cookie2  " <<  m_ESSheader.m_cookie2  << std::endl;
+//    std::cout <<  "m_ESSheader.m_cookie3  " <<  m_ESSheader.m_cookie3  << std::endl;
+//    std::cout <<  "m_ESSheader.m_type  " <<  m_ESSheader.m_type  << std::endl;
+//    std::cout <<  "m_ESSheader.m_length  " <<  m_ESSheader.m_length  << std::endl;
+//    std::cout <<  "m_ESSheader.m_outputQ  " <<  m_ESSheader.m_outputQ  << std::endl;
+//    std::cout <<  "m_ESSheader.m_timeSrc  " <<  m_ESSheader.m_timeSrc  << std::endl;
+//    std::cout <<  "m_ESSheader.m_pulseT_high  " <<  m_ESSheader.m_pulseT_high  << std::endl;
+//    std::cout <<  "m_ESSheader.m_pulseT_low  " <<  m_ESSheader.m_pulseT_low  << std::endl;
+//    std::cout <<  "m_ESSheader.m_prevPT_high  " <<  m_ESSheader.m_prevPT_high  << std::endl;
+//    std::cout <<  "m_ESSheader.m_prevPT_low  " <<  m_ESSheader.m_prevPT_low  << std::endl;
+//    std::cout <<  "m_ESSheader.m_seqNo  " <<  m_ESSheader.m_seqNo  << std::endl;
+
 
     if (size < m_ESSHeaderSize + m_headerSizeAssister + m_hitSize_VMM3a) {
         if(IsDbgActive()) {
@@ -5749,20 +5825,24 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int IP) {
         return 0;
     }
     int readoutIndex = 0;
-    while (dataLength >= (m_headerSizeAssister + m_hitSize_VMM3a)) {
-        auto dataHeaderOffset = m_ESSHeaderSize + (m_headerSizeAssister + m_hitSize_VMM3a) * readoutIndex;
-        auto dataOffset = dataHeaderOffset + m_headerSizeAssister;
+    m_packetCounter++;
+    //std::cout << m_packetCounter << std::endl;
+    if(m_packetCounter > 1) {
+        while (dataLength >= (m_headerSizeAssister + m_hitSize_VMM3a)) {
+            auto dataHeaderOffset = m_ESSHeaderSize + (m_headerSizeAssister + m_hitSize_VMM3a) * readoutIndex;
+            auto dataOffset = dataHeaderOffset + m_headerSizeAssister;
 
-        const uint32_t header = (*reinterpret_cast<const uint32_t *>(&buffer[dataHeaderOffset]));
-        const uint32_t data1 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset]));
-        const uint32_t data2 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+4]));
-        const uint32_t data3 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+8]));
-        const uint32_t data4 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+12]));
+            const uint32_t header = (*reinterpret_cast<const uint32_t *>(&buffer[dataHeaderOffset]));
+            const uint32_t data1 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset]));
+            const uint32_t data2 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+4]));
+            const uint32_t data3 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+8]));
+            const uint32_t data4 = (*reinterpret_cast<const uint32_t *>(&buffer[dataOffset+12]));
 
-        int res = Parse_VMM3(ntohl(header),  ntohl(data1),  ntohl(data2),  ntohl(data3),  ntohl(data4), readoutIndex);
-        readoutIndex++;
-        dataLength -=(m_headerSizeAssister + m_hitSize_VMM3a);
+            int res = Parse_VMM3(ntohl(header),  ntohl(data1),  ntohl(data2),  ntohl(data3),  ntohl(data4), readoutIndex);
+            readoutIndex++;
+            dataLength -=(m_headerSizeAssister + m_hitSize_VMM3a);
 
+        }
     }
     return readoutIndex;
 }

@@ -6,6 +6,13 @@
 # 3 = SRS, RD51 firmware with 40 MHz
 DEFINES += CLOCK_SOURCE=2
 #####################################################
+# Define default value for slow control (does not matter for SRS FEC)
+# only relevant for ESS assister
+# 0 = ESS over master
+# 1 = ESS over assister
+# 2 = SRS
+DEFINES += SLOW_CONTROL=2
+#####################################################
 # directory and machine specific items here
 #####################################################
 linebreak="---------------------------------------------------------------"
@@ -117,6 +124,7 @@ HEADERS  += $$includepath/socket_handler.h\
             $$includepath/hybrid_config_handler.h \
             $$includepath/fec_config_handler.h \
             $$includepath/fec_config_module.h \
+            $$includepath/vmm_sys_regs_map.h \
             $$alglibpath/alglibinternal.h \
             $$alglibpath/alglibmisc.h \
             $$alglibpath/ap.h \

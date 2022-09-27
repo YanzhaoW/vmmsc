@@ -6,7 +6,7 @@ Hybrid::Hybrid()
 }
 
 void Hybrid::LoadDefault(){
-    m_hybrid = {{"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}};
+    m_hybrid = {{"TP_skew", 0}, {"TP_width", 0}, {"TP_pol", 0}, {"TP_disable", 0}};
     m_hybrid_info = {{"firmware_version", ""}, {"geo_id", ""}, {"hybrid_id", ""},{"link_status", "0"}, {"description", ""}};
 }
 
@@ -70,6 +70,20 @@ bool Hybrid::SetRegister(std::string feature, std::string value){
         else if(feature=="TP_pol"){
             InMap m_val;
             std::string v_val[2] = {"positive", "negative"};
+            for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
+                unsigned short bin_val=i;
+                m_val.insert(BiPair(v_val[i], bin_val));
+                m_val.insert(BiPair(std::to_string(i), bin_val));
+            }
+            if(m_val.find(value)!=m_val.end()){
+              m_hybrid[feature] = m_val[value];
+              return true;
+            }
+            else return false;
+        }
+        else if(feature=="TP_disable"){
+            InMap m_val;
+            std::string v_val[2] = {"0", "1"};
             for(unsigned int i=0 ; i<sizeof(v_val)/sizeof(*v_val); i++){
                 unsigned short bin_val=i;
                 m_val.insert(BiPair(v_val[i], bin_val));

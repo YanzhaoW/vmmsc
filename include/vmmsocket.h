@@ -25,8 +25,6 @@ class VMMSocket : public QObject
         void LoadMessageHandler(MessageHandler& GetMessageHandler);
         MessageHandler& GetMessageHandler() { return *m_msg; }
 
-        void SetName(std::string n = "") { m_name = n; }
-        std::string GetName() { return m_name; }
         void SetBindingPort(quint16 port) { m_bindingPort = port; }
         quint16 GetBindingPort() { return m_bindingPort; }
 
@@ -55,7 +53,6 @@ class VMMSocket : public QObject
     private :
         bool m_dbg = false;
         MessageHandler *m_msg;
-        std::string m_name;
         quint16 m_bindingPort;
         QUdpSocket *m_socket;
         QByteArray m_buffer;
