@@ -1,7 +1,6 @@
 fec 0
 hybrid 0
 vmm 1
-
 L0offset_i 0
 nskip_i 0
 nskipm_i 0

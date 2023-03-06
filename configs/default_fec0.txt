@@ -1,6 +1,7 @@
 fec 0
 ring 0
 fen 0
+description ""
 tp_offset_first 100
 tp_offset 1000
 tp_latency 65
@@ -27,3 +28,7 @@ latency_reset 47
 latency_data_max 4087
 latency_data_error 8
 debug_data_format 0
+dvm_i2c_port 6601
+trgin_invert 0
+trgout_invert 0
+trgout_time 0

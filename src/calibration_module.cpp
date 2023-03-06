@@ -464,7 +464,6 @@ void CalibrationModule::StartDataTaking()
     m_daqWindow->m_ui->onACQ->setStyleSheet("QPushButton { color: green; }");
 
     m_daqWindow->m_ui->pushButtonTakeData->setChecked(true);
-
 }
 // ------------------------------------------------------------------------ //
 void CalibrationModule::LoadMessageHandler(MessageHandler& m)
@@ -1041,7 +1040,7 @@ void CalibrationModule::FitLinearData()
                 slope = std::round(1000*slope)/1000;
                 offset = std::round(1000*offset)/1000;
                 //If the fit results in strange slope values, do not correct the channel
-                if(slope < 0.5 || slope > 2) {
+                if(slope < 0.2 || slope > 5) {
                     slope = 1.0;
                     offset = 0.0;
                 }
@@ -1455,15 +1454,15 @@ void CalibrationModule::WriteSystemConfig() {
                 QJsonArray adcSlopeArray;
                 if(m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hyb)) {
                     std::string hybridID = m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].GetInfo("hybrid_id");
+                    //hybridID = "abcd";
+                    if(hybridID == "ffffffffffffffffffffffffffffffff") {
+                        QString theId = QString::fromStdString(hybridID) + "_" + QString::number(fecID) + "_" +  QString::number(hyb);
+                        calibrationObject.insert("hybridID",theId);
+                    }
+                    else {
+                        calibrationObject.insert("hybridID",QString::fromStdString(hybridID));
+                    }
                     for(int n=0; n<2;n++) {
-                        if(hybridID == "ffffffffffffffffffffffffffffffff") {
-                            QString theId = QString::fromStdString(hybridID) + "_" + QString::number(fecID) + "_" +  QString::number(hyb*2+n);
-                            calibrationObject.insert("hybridID",theId);
-                        }
-                        else {
-                            calibrationObject.insert("hybridID",QString::fromStdString(hybridID));
-                        }
-
                         calibrationObject.insert("fecID",fecID);
                         calibrationObject.insert("vmmID",hyb*2+n);
                         calibrationArray.push_back(calibrationObject);
@@ -1502,7 +1501,8 @@ void CalibrationModule::JoinCalib() {
 
     QJsonObject newGlobalObject;
     QJsonArray newCalibrationArray;
-
+    bool adcFound = false;
+    bool timeFound = false;
     if(dirStrADC != "") {
         QFile file;
         file.setFileName(dirStrADC);
@@ -1552,6 +1552,7 @@ void CalibrationModule::JoinCalib() {
                 newCalibrationObject.insert("adc_slopes",newAdcSlopeArray);
                 newCalibrationObject.insert("adc_offsets",newAdcOffsetArray);
                 newCalibrationArray.push_back(newCalibrationObject);
+                adcFound = true;
             }
         }
     }
@@ -1598,12 +1599,27 @@ void CalibrationModule::JoinCalib() {
                 //std::cout << "adc offsets " << val.toDouble() << std::endl;
             }
             if(!newTimeSlopeArray.empty() && !newTimeOffsetArray.empty()) {
-                newCalibrationObject.insert("fecID",fecID);
-                newCalibrationObject.insert("hybridID",hybridID);
-                newCalibrationObject.insert("vmmID",hybrid*2+chip);
-                newCalibrationObject.insert("time_slopes",newTimeSlopeArray);
-                newCalibrationObject.insert("time_offsets",newTimeOffsetArray);
-                newCalibrationArray.push_back(newCalibrationObject);
+                if(!adcFound) {
+                    newCalibrationObject.insert("fecID",fecID);
+                    newCalibrationObject.insert("hybridID",hybridID);
+                    newCalibrationObject.insert("vmmID",hybrid*2+chip);
+                }
+                else {
+                    for (int n = 0; n < newCalibrationArray.size(); n++)
+                    {
+                        QJsonObject theObject = newCalibrationArray.at(n).toObject();
+                        int theFecID = theObject["fecID"].toInt();
+                        QString theHybridID = theObject["hybridID"].toString();
+                        int theVmmID = theObject["vmmID"].toInt();
+                        if(theFecID == fecID && theHybridID == hybridID && theVmmID == hybrid*2+chip) {
+                            theObject.insert("time_slopes",newTimeSlopeArray);
+                            theObject.insert("time_offsets",newTimeOffsetArray);
+                            newCalibrationArray.replace(n,theObject);
+                        }
+
+                    }
+
+                }
             }
         }
     }
@@ -1661,14 +1677,29 @@ void CalibrationModule::JoinCalib() {
                 newTimewalkD_Array.push_back(val.toDouble());
             }
             if(!newTimewalkA_Array.empty() && !newTimewalkB_Array.empty() && !newTimewalkC_Array.empty() && !newTimewalkD_Array.empty()) {
-                newCalibrationObject.insert("fecID",fecID);
-                newCalibrationObject.insert("hybridID",hybridID);
-                newCalibrationObject.insert("vmmID",hybrid*2+chip);
-                newCalibrationObject.insert("timewalk_a",newTimewalkA_Array);
-                newCalibrationObject.insert("timewalk_b",newTimewalkB_Array);
-                newCalibrationObject.insert("timewalk_c",newTimewalkC_Array);
-                newCalibrationObject.insert("timewalk_d",newTimewalkD_Array);
-                newCalibrationArray.push_back(newCalibrationObject);
+                if(!adcFound && !timeFound) {
+                    newCalibrationObject.insert("fecID",fecID);
+                    newCalibrationObject.insert("hybridID",hybridID);
+                    newCalibrationObject.insert("vmmID",hybrid*2+chip);
+                }
+                else {
+                    for (int n = 0; n < newCalibrationArray.size(); n++)
+                    {
+                        QJsonObject theObject = newCalibrationArray.at(n).toObject();
+                        int theFecID = theObject["fecID"].toInt();
+                        QString theHybridID = theObject["hybridID"].toString();
+                        int theVmmID = theObject["vmmID"].toInt();
+                        if(theFecID == fecID && theHybridID == hybridID && theVmmID == hybrid*2+chip) {
+                            theObject.insert("timewalk_a",newTimewalkA_Array);
+                            theObject.insert("timewalk_b",newTimewalkB_Array);
+                            theObject.insert("timewalk_c",newTimewalkC_Array);
+                            theObject.insert("timewalk_d",newTimewalkD_Array);
+                            newCalibrationArray.replace(n,theObject);
+                        }
+
+                    }
+
+                }
             }
         }
     }
@@ -3753,7 +3784,10 @@ void CalibrationModule::StartCalibration(){
         SaveSettings("Latest_config");
         if(m_modeIndex == 2) {
             m_pulser_dac = -1;
-
+            m_bcid_percentage = 0.90;
+            if(g_clock_source==0) {
+                m_bcid_percentage = 0.80;
+            }
             unsigned long tp_offset = 4096;
             unsigned long tp_offset_last = 4096;
             for(int fec=0; fec < FECS_PER_DAQ; fec++) {
@@ -3772,10 +3806,23 @@ void CalibrationModule::StartCalibration(){
             //std::cout << "reference bcid " << m_reference_BCID << std::endl;
             bool ok;
             QStringList list = QInputDialog::getText(nullptr, tr("Time calibration"),
-                                                     tr("Do you want to set the pulser DAC value (-1 means the DAC is automatically chosen)?"),
-                                                     QLineEdit::Normal,"-1",&ok).split(",");
-            if(ok && list.count() == 1) {
-                m_pulser_dac = list[0].toInt();
+                                                     tr("Do you want to set the pulser DAC value [0-1023] and the BCID percentage [0.0-1.0] for the fit (-1 means the values are automatically chosen) ?"),
+                                                     QLineEdit::Normal,"DAC=-1,BCID_PERCENT=-1",&ok).split(",");
+            if(ok && list.count() == 2) {
+                QString str = list[0];
+                QVector<QStringRef> words = str.splitRef('=');
+                QString param = words[0].toString();
+                QString val = words[1].toString();
+                if(param=="DAC") {
+                    m_pulser_dac = val.toInt();
+                }
+                str = list[1];
+                words = str.splitRef('=');
+                param = words[0].toString();
+                val = words[1].toString();
+                if(param=="BCID_PERCENT") {
+                    m_bcid_percentage = val.toDouble();
+                }
             }
 
         }
@@ -4086,8 +4133,6 @@ void CalibrationModule::StartCalibration(){
         PlotData();
     }
     else {
-        m_packetCounter = 0;
-        m_nodata_start = std::chrono::high_resolution_clock::now();
         if(IsCalibration())
         {
             DoCalibrationStep();
@@ -4097,6 +4142,8 @@ void CalibrationModule::StartCalibration(){
         }
         QThread::usleep(100000);
         StartDataTaking();
+        m_packetCounter = 0;
+        m_nodata_start = std::chrono::high_resolution_clock::now();
     }
 }
 
@@ -4248,8 +4295,8 @@ void CalibrationModule::DoCalibrationStep(){
         int measured = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
         m_dac_measured[fec][hybrid][chip][m_theIndex] = measured;
     }
-    m_daqWindow->m_daq.SendAll(false);
-    QThread::usleep(100000);
+    //m_daqWindow->m_daq.SendAll(false);
+    //QThread::usleep(100000);
 }
 
 
@@ -4268,7 +4315,7 @@ void CalibrationModule::AccumulateData(){
         m_nodata_end = std::chrono::high_resolution_clock::now();
         auto nodata_duration = std::chrono::duration_cast<std::chrono::milliseconds>( m_nodata_end - m_nodata_start ).count();
         //If for ADC or TDC calibrations there is not data for longer than 10 s, hard reset the VMMs
-        if((IsCalibration() && m_modeIndex != 6 && nodata_duration >= 5000))
+        if((IsCalibration() && m_modeIndex != 6 && nodata_duration >= 20000))
         {
             StopDataTaking();
             Reset();
@@ -4493,7 +4540,7 @@ void CalibrationModule::AccumulateData(){
                             if(foundEdge) {
                                 //data from 50% point until end of bits
                                 for(int n = theTimeIndex_50; n<m_number_bits; n++){
-                                    if(m_percent_bcid[theBCIDIndex_50][n][fec][hybrid][chip][ch] >= 0.95) {
+                                    if(m_percent_bcid[theBCIDIndex_50][n][fec][hybrid][chip][ch] >= m_bcid_percentage) {
                                         m_fit_y[n-theTimeIndex_50][fec][hybrid][chip][ch] =  m_mean_per_bcid[theBCIDIndex_50][n][fec][hybrid][chip][ch];
                                     }
                                     else {
@@ -4504,7 +4551,7 @@ void CalibrationModule::AccumulateData(){
                                 //data from beginning to 50% point
                                 //ignore the first two data points, they are the same as the last two data points (bit 0 is identical to bit 8, bit 1 to bit 10)
                                 for(int n = 2; n< 2+theTimeIndex_50; n++){
-                                    if(m_percent_bcid[theBCIDIndex_50-1][n][fec][hybrid][chip][ch] >= 0.95) {
+                                    if(m_percent_bcid[theBCIDIndex_50-1][n][fec][hybrid][chip][ch] >= m_bcid_percentage) {
                                        m_fit_y[m_number_bits-theTimeIndex_50+n-2][fec][hybrid][chip][ch] = m_mean_per_bcid[theBCIDIndex_50-1][n][fec][hybrid][chip][ch];
                                     }
                                     else {
@@ -4661,11 +4708,11 @@ void CalibrationModule::Reset()
         int chip = GetVMM(vmm);
         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 1);
         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 1);
-        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
+        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid, chip);
         QThread::msleep(100);
         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset1", 0);
         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("reset2", 0);
-        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hybrid, chip);
+        m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid, chip);
         QThread::msleep(100);
 
         m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ResetFEC();
@@ -4824,7 +4871,7 @@ void CalibrationModule::SaveCorrections(){
             lastFEC = fecId;
             if(chip == 0 && m_vmmActs.size() <= 4) {
                 if(QString::fromStdString(m_hybrid_id[fec][hybrid])== "ffffffffffffffffffffffffffffffff") {
-                    theName +=  "_ffffffffffffffffffffffffffffffff_" +  QString::number(fecId) + "_" +  QString::number(hybrid*2+chip);
+                    theName +=  "_ffffffffffffffffffffffffffffffff_" +  QString::number(fecId) + "_" +  QString::number(hybrid);
                 }
                 else {
                     theName += "_" + QString::fromStdString(m_hybrid_id[fec][hybrid]);
@@ -4887,7 +4934,7 @@ void CalibrationModule::SaveCorrections(){
             int theFECId = 0;
             QString theHybridId = QString::fromStdString(m_hybrid_id[fec][hybrid]);
             if(theHybridId == "ffffffffffffffffffffffffffffffff") {
-                theHybridId += "_" +  QString::number(fecId) + "_" +  QString::number(hybrid*2+chip);
+                theHybridId += "_" +  QString::number(fecId) + "_" +  QString::number(hybrid);
             }
 
             if(m_calibrationArray[0] && m_modeIndex == 1) {
@@ -5246,9 +5293,13 @@ void CalibrationModule::InitializeDataStructures()
     m_reference_BCID = -1;
     m_adcs.clear();
     m_times.clear();
+    m_total_channels = 0;
     double timeBin_ms = static_cast<double>(m_daqWindow->m_ui->Runs->value())/1024.0;
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         for (unsigned short hybrid=0; hybrid < HYBRIDS_PER_FEC; hybrid++){
+            if (m_daqWindow->m_daq.GetFEC(fec) &&  m_daqWindow->m_daq.m_fecs[fec].GetHybrid(hybrid)){
+                m_total_channels +=128;
+            }
             for (unsigned short vmm=0; vmm < VMMS_PER_HYBRID; vmm++){
                 m_adc_data[fec][hybrid][vmm].clear();
                 m_channel_data[fec][hybrid][vmm].clear();
@@ -5654,19 +5705,31 @@ int CalibrationModule::Parse_VMM3(uint32_t header, uint32_t data1, uint32_t data
     int chip = vmmid%2;
 
 
+    if(readoutIndex == 0) {
+        if(m_start == 0)  {
+            m_start =  timestamp_high * 1000000000 +  timestamp_low * 0.5 * g_clock_period;
+            m_numHits=0;
+        }
+    }
+    uint64_t runLength = static_cast<uint64_t>(m_daqWindow->m_ui->Runs->value())*1000000;
+    uint64_t cntPerChannel = 50;
+    uint64_t nowTime = timestamp_high * 1000000000 +  timestamp_low * 0.5 * g_clock_period;
+    if( m_start > 0 && nowTime > m_end) {
+        if(m_numHits >= cntPerChannel*m_total_channels) {
+            m_end = nowTime ;
+        }
+    }
 
-    //if(readoutIndex == 0) {
-    if(m_start == 0)
+    uint64_t delay_ns = 0;
+    if(m_end >= m_start) {
+        delay_ns = m_end - m_start;
+    }
+    //convert run value from ms to ns
+    if(delay_ns >= runLength)
     {
-        m_start =  timestamp_high * 1000000000 +  timestamp_low * 0.5 * g_clock_period;
-        m_srs_timestamp_end[fec][hybrid][chip] = m_start;
-        m_numHits=0;
+        return 1;
     }
-    m_srs_timestamp_end[fec][hybrid][chip] = timestamp_high * 1000000000 +  timestamp_low * 0.5 * g_clock_period;
-    if( m_srs_timestamp_end[fec][hybrid][chip] > m_end) {
-        m_end = m_srs_timestamp_end[fec][hybrid][chip];
-    }
-    //}
+
     bool bcidFilter = true;
     if(!m_BCID.empty()) {
         auto it = find (m_BCID.begin(), m_BCID.end(), bcid);
@@ -5826,8 +5889,7 @@ int CalibrationModule::Receive_VMM3(const char *buffer, long size, int IP) {
     }
     int readoutIndex = 0;
     m_packetCounter++;
-    //std::cout << m_packetCounter << std::endl;
-    if(m_packetCounter > 1) {
+    if(m_packetCounter >= 3) {
         while (dataLength >= (m_headerSizeAssister + m_hitSize_VMM3a)) {
             auto dataHeaderOffset = m_ESSHeaderSize + (m_headerSizeAssister + m_hitSize_VMM3a) * readoutIndex;
             auto dataOffset = dataHeaderOffset + m_headerSizeAssister;
@@ -5922,7 +5984,7 @@ int CalibrationModule::Parse_VMM3_SRS(uint32_t data1, uint16_t data2, int fecId)
                << ", overThreshold: " <<  static_cast<int>(overThreshold)
                << ", triggerOffset: " << static_cast<int>(triggerOffset)
                << "\n";
-            GetMessageHandler()(sx,"calibration_module::Parse_VMM3"); sx.str("");
+            GetMessageHandler()(sx,"calibration_module::Parse_VMM3_SRS"); sx.str("");
         }
 
         bool bcidFilter = true;
@@ -6053,7 +6115,7 @@ int CalibrationModule::Parse_VMM3_SRS(uint32_t data1, uint16_t data2, int fecId)
             sx << "SRS Marker fecId " << static_cast<int>(m_commonData.m_fecId) << ", vmmId " << vmmid << ", timestamp lower 10bit: " <<  timestamp_lower_10bit
                << ", timestamp upper 32bit: " <<  timestamp_upper_32bit
                << ", timestamp 42bit: " <<  timestamp_42bit << "\n";
-            GetMessageHandler()(sx,"calibration_module::Parse_VMM3"); sx.str("");
+            GetMessageHandler()(sx,"calibration_module::Parse_VMM3_SRS"); sx.str("");
         }
         return 0;
     }
@@ -6167,4 +6229,3 @@ uint32_t CalibrationModule::Gray2bin32(uint32_t num) {
     num = num ^ (num >> 1);
     return num;
 }
-

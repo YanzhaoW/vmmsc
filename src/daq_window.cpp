@@ -48,12 +48,10 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
     m_ui->comboBoxSlowControl->setCurrentIndex(g_slow_control);
     //Master (0) has only fec IP field
     if(g_slow_control == 0) {
-        m_ui->pushButtonDAQIP->setVisible(false);
-        m_ui->ip_daq->setVisible(false);
+        m_ui->pushButtonDAQIP->setText("Board-ID");
     }
     else {
-        m_ui->pushButtonDAQIP->setVisible(true);
-        m_ui->ip_daq->setVisible(true);
+        m_ui->pushButtonDAQIP->setText("DAQ IP");
     }
     if(g_slow_control == 2) {
         m_ui->pushButtonFECIP->setText("FEC IP");
@@ -62,7 +60,7 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
         m_ui->pushButtonFECIP->setText("FEN IP");
     }
     else if(g_slow_control == 0) {
-        m_ui->pushButtonFECIP->setText("Master IP");
+        m_ui->pushButtonFECIP->setText("Master");
     }
 
 
@@ -117,18 +115,17 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
             m_ui->tableWidget_Temperature->setColumnWidth(fec,33);
         }
     }
-
+    m_ui->trgout_time->clear();
+    m_ui->trgout_time->addItem("trg in");
+    for(int i=0; i<4096; i++) {
+        m_ui->trgout_time->addItem( QString::number(i));
+    }
     if(g_clock_source < 2) {
         m_ui->trgin_invert->setVisible(false);
         m_ui->trgout_invert->setVisible(false);
         m_ui->trgout_time->setVisible(false);
     }
     else {
-        m_ui->trgout_time->clear();
-        m_ui->trgout_time->addItem("trg in");
-        for(int i=0; i<4096; i++) {
-            m_ui->trgout_time->addItem( QString::number(i));
-        }
         m_ui->trgin_invert->setVisible(true);
         m_ui->trgout_invert->setVisible(true);
         m_ui->trgout_time->setVisible(true);
@@ -287,7 +284,9 @@ void DAQWindow::LoadConfig(QString text){
                         int fen = m_daq.m_fecs[fec].GetRegVal("fen");
                         m_map_id_ring_fen[fec] = qMakePair(ring, fen);
                         m_map_ring_fen_id[qMakePair(ring,fen)] = fec;
-                        cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0') );
+                        QString node =  QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0');
+                        cardItem->setText(0,node);
+                        m_daq.m_fecs[fec].SetInfo("node",node.toStdString());
                     }
                     else {
                         cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(fec));
@@ -331,7 +330,7 @@ void DAQWindow::MeasureVMMI2C() {
             for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
                 if(this->m_daq.m_fecs[fec].GetHybrid(hyb)) {
                     if(!m_ui->onACQ->isChecked()) {
-                        m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hyb, 0);
+                        m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, 0);
                     }
                     int adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, 0, 2);
 
@@ -364,7 +363,7 @@ void DAQWindow::MeasureVMMI2C() {
 
 
                     if(!m_ui->onACQ->isChecked()) {
-                        m_daq.m_fecs[fec].m_fecConfigModule->SendConfig(hyb, 1);
+                        m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, 1);
                     }
                     adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, 1, 2);
                     temperature = (725-adc_result)/1.85;
@@ -518,7 +517,7 @@ void DAQWindow::openConnection()
                             text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
                                     + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
                                     + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0') + " "
-                                    + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+                                    + " board-ID " + registers["boardId"];
                         }
                         else {
                             text = QString::fromStdString(g_card_name) + QString::number(fec) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
@@ -533,7 +532,7 @@ void DAQWindow::openConnection()
                             text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
                                     + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
                                     + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0') +
-                                    " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError reading EEPROM!";
+                                    + "\nError reading EEPROM!";
                         }
                         else {
                             text = QString::fromStdString(g_card_name) + QString::number(fec) + " - IP " + this->m_daq.m_fecs[fec].GetIP() + "\nError reading EEPROM!";
@@ -1015,7 +1014,6 @@ void DAQWindow::onUpdateDAQSettings(){
                 }
                 newRing = resultList[0].mid(0,2).toInt();
                 newFen = resultList[0].mid(3,2).toInt();
-
                 if(resultList.size() == 2) {
                     description  =  resultList[1];
                 }
@@ -1026,7 +1024,6 @@ void DAQWindow::onUpdateDAQSettings(){
                     description  +=  resultList[resultList.size()-1];
                 }
             }
-
         }
         else {
             description = QInputDialog::getText(this,txtItem, tr("Edit description:"), QLineEdit::Normal, txtDescription, &ok);
@@ -1073,11 +1070,14 @@ void DAQWindow::onUpdateDAQSettings(){
                 m_daq.m_fecs[fec].SetReg("ring",(unsigned long)newRing);
                 m_daq.m_fecs[fec].SetReg("fen",(unsigned long)newFen);
                 m_daq.m_fecs[fec].SetId();
+
                 m_map_ring_fen_id.erase(qMakePair(ring,fen));
                 m_map_ring_fen_id[qMakePair(newRing,newFen)] = fec;
                 m_map_id_ring_fen[fec] = qMakePair(newRing,newFen);
                 m_ui->treeWidgetSystem->currentItem()->setText(0,"FEN " + QString::number(newRing).rightJustified(2, '0') + "_"
                                                                + QString::number(newFen).rightJustified(2, '0'));
+                QString node =  QString::fromStdString(g_card_name)+" " + QString::number(newRing).rightJustified(2, '0')  + "_" + QString::number(newFen).rightJustified(2, '0');
+                m_daq.m_fecs[fec].SetInfo("node",node.toStdString());
             }
             else if(txtItem.startsWith("FEC")) {
                 int fec = txtItem.mid(4,1).toInt();
@@ -1216,6 +1216,9 @@ void DAQWindow::onUpdateDAQSettings(){
                         m_daq.m_fecs[lastFecIndex+1].SetId();
                         m_map_id_ring_fen[lastFecIndex+1] = qMakePair((int)ring, (int)fen);
                         m_map_ring_fen_id[qMakePair((int)ring, (int)fen)] = lastFecIndex+1;
+
+                        QString node =  QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0');
+                        m_daq.m_fecs[lastFecIndex+1].SetInfo("node",node.toStdString());
                     }
                     else {
                         cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(lastFecIndex+1));
@@ -1634,30 +1637,40 @@ void DAQWindow::onUpdateFECSettings(){
         QMap<QString, QString> registers;
         if(m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadSystemRegisters(registers)) {
 
-            QString text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+            QString text;
+            stringstream sx;
             if(g_card_name == "FEN") {
                 text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " "
                         + QString::number( m_map_id_ring_fen[m_fecIndex].first).rightJustified(2, '0') + "_"
-                        + QString::number( m_map_id_ring_fen[m_fecIndex].second).rightJustified(2, '0') + " "
-                        + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+                        + QString::number( m_map_id_ring_fen[m_fecIndex].second).rightJustified(2, '0')
+                        + " Board-ID " + registers["boardId"];
+                SetStatus(text, m_fecIndex);
+
+                m_daq.m_fecs[m_fecIndex].SetInfo("boardId", registers["boardId"].toStdString());
+
+
+                sx.str("");
+                sx << "**********************\n"
+                   << " Board-ID:\n" << registers["boardId"].toStdString() << "\n\n"
+                   << "**********************";
+                cout << sx.str() << endl;
             }
             else {
                 text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
+                SetStatus(text, m_fecIndex);
+
+                m_daq.m_fecs[m_fecIndex].SetInfo("firmware_version", registers["FirmwareVers"].toStdString());
+                sx.str("");
+                sx << "**********************\n"
+                   << " Firmware version:\n" << registers["FirmwareVers"].toStdString() << "\n\n"
+                   << " MAC Vendor part :\n" << registers["MACvendor"].toStdString() <<  "\n\n"
+                   << " MAC device part:\n" << registers["MACdevice"].toStdString() <<  "\n\n"
+                   << " FEC IP:\n" << registers["FECip"].toStdString() <<  "\n\n"
+                   << " DAQ destination IP:\n" << registers["DAQip"].toStdString()  <<  "\n"
+                   << "**********************";
+                cout << sx.str() << endl;
             }
-            SetStatus(text, m_fecIndex);
 
-            m_daq.m_fecs[m_fecIndex].SetInfo("firmware_version", registers["FirmwareVers"].toStdString());
-
-            stringstream sx;
-            sx.str("");
-            sx << "**********************\n"
-               << " Firmware version:\n" << registers["FirmwareVers"].toStdString() << "\n\n"
-               << " MAC Vendor part :\n" << registers["MACvendor"].toStdString() <<  "\n\n"
-               << " MAC device part:\n" << registers["MACdevice"].toStdString() <<  "\n\n"
-               << " FEC IP:\n" << registers["FECip"].toStdString() <<  "\n\n"
-               << " DAQ destination IP:\n" << registers["DAQip"].toStdString()  <<  "\n"
-               << "**********************";
-            cout << sx.str() << endl;
             QString message = QString::fromStdString(sx.str());
             m_ui->debugScreen->insertPlainText(message);
             m_ui->debugScreen->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
@@ -1667,42 +1680,66 @@ void DAQWindow::onUpdateFECSettings(){
         m_daq.m_fecs[m_fecIndex].m_fecConfigModule->PowerCycleHybrids();
     }
     else if(QObject::sender() == m_ui->pushButtonDAQIP){
-        long theIP = 0x0a000003;
-        bool ok;
-        theIP = GetFec("ip_daq");
-        QHostAddress ipAddress;
-        ipAddress.setAddress(theIP);
+        if(g_slow_control != 0) {
+            long theIP = 0x0a000003;
+            bool ok;
+            theIP = GetFec("ip_daq");
+            QHostAddress ipAddress;
+            ipAddress.setAddress(theIP);
 
-        QString result = QInputDialog::getText(this, tr("DAQ IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal,  ipAddress.toString(), &ok);
+            QString result = QInputDialog::getText(this, tr("DAQ IPv4 address"), tr("New IPv4 address:"), QLineEdit::Normal,  ipAddress.toString(), &ok);
 
-        if (ok && !result.isEmpty())
-        {
-            if (!ipAddress.setAddress(result)){
-                QMessageBox::warning(this, tr("DAQ IPv4 address"),
-                                     tr("Invalid IPv4 address!"),
-                                     QMessageBox::Ok);
-            }
-            else {
-                theIP = ipAddress.toIPv4Address();
-                int res = m_daq.CheckIP_FEC(theIP, -1);
-                if(res > -1) {
+            if (ok && !result.isEmpty())
+            {
+                if (!ipAddress.setAddress(result)){
                     QMessageBox::warning(this, tr("DAQ IPv4 address"),
-                                         "DAQ IP address already in use as FEC IP in FEC " + QString::number(res),
+                                         tr("Invalid IPv4 address!"),
                                          QMessageBox::Ok);
-                    return;
                 }
+                else {
+                    theIP = ipAddress.toIPv4Address();
+                    int res = m_daq.CheckIP_FEC(theIP, -1);
+                    if(res > -1) {
+                        QMessageBox::warning(this, tr("DAQ IPv4 address"),
+                                             "DAQ IP address already in use as FEC IP in FEC " + QString::number(res),
+                                             QMessageBox::Ok);
+                        return;
+                    }
 
-                QMessageBox::StandardButton reply;
+                    QMessageBox::StandardButton reply;
 
-                reply = QMessageBox::question(this, "DAQ IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The DAQ IP address is the address of this network card, and the FEC card has to know it to send data to the PC.\nATTENTION: Do you only want to change the DAQ IP address in the slow control GUI (press NO), or re-program the DAQ IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
-                if(reply == QMessageBox::Yes) {
-                    m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
+                    reply = QMessageBox::question(this, "DAQ IPv4 address setting", "The SRS FEC is connected via ethernet cable to a network card on the slow control PC. The DAQ IP address is the address of this network card, and the FEC card has to know it to send data to the PC.\nATTENTION: Do you only want to change the DAQ IP address in the slow control GUI (press NO), or re-program the DAQ IP address in the FEC EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
+                    if(reply == QMessageBox::Yes) {
+                        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
+                    }
+                    QThread::usleep(1000);
+                    SetFec("ip_daq", theIP);
+                    m_ui->ip_daq->setText(result);
+                    QThread::usleep(1000);
                 }
-                QThread::usleep(1000);
-                SetFec("ip_daq", theIP);
-                m_ui->ip_daq->setText(result);
-                QThread::usleep(1000);
             }
+        }
+        else {
+            long theBoardId = 0;
+            bool ok;
+            theBoardId = GetFec("board_id");
+
+            QString result = QInputDialog::getText(this, tr("Board ID"), tr("New board id:"), QLineEdit::Normal,  QString::number(theBoardId), &ok);
+
+            if (ok && !result.isEmpty())
+            {
+               QMessageBox::StandardButton reply;
+
+               reply = QMessageBox::question(this, "Board ID", "The board ID is stored on the EEPROM of the assister board.\nATTENTION: Do you only want to change the board ID in the slow control GUI (press NO), or re-program the board ID in the EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
+               if(reply == QMessageBox::Yes) {
+                    m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeBoardId(theBoardId);
+               }
+               QThread::usleep(1000);
+               SetFec("board_id", theBoardId);
+               m_ui->ip_daq->setText(result);
+               QThread::usleep(1000);
+           }
+
         }
     }
     else if(QObject::sender() == m_ui->pushButtonFECIP){
@@ -1872,8 +1909,14 @@ void DAQWindow::LoadFECSettings(){
     QHostAddress ipAddress;
     ipAddress.setAddress(GetFec( "ip_fec" ));
     m_ui->ip_fec->setText( ipAddress.toString());
-    ipAddress.setAddress(GetFec( "ip_daq" ));
-    m_ui->ip_daq->setText( ipAddress.toString());
+    if(g_slow_control == 0) {
+        m_ui->ip_daq->setText(QString::number(GetFec( "board_id" )));
+    }
+    else {
+        ipAddress.setAddress(GetFec( "ip_daq" ));
+        m_ui->ip_daq->setText( ipAddress.toString());
+    }
+
 
 
     if(GetFec( "tp_offset_first" ) + (GetFec( "tp_number" )-1)*GetFec( "tp_offset" )  > 4095) {
@@ -1977,6 +2020,7 @@ void DAQWindow::InitHybridWidgets() {
 void DAQWindow::EnableHybridCommunicationButtons(bool enable) {
     m_ui->ApplyAllHybrids->setEnabled(enable);
     m_ui->ReadI2C->setEnabled(enable);
+    m_ui->pushButtonMeasureTemp->setEnabled(enable);
 }
 
 
@@ -2919,11 +2963,11 @@ void DAQWindow::onUpdateVMMSettings()
 
                             m_daq.m_fecs[j].SetVMM(k,m,"reset1", 1);
                             m_daq.m_fecs[j].SetVMM(k,m,"reset2", 1);
-                            m_daq.m_fecs[j].m_fecConfigModule->SendConfig(k, m);
+                            m_daq.m_fecs[j].m_fecConfigModule->ConfigVMM(k, m);
                             QThread::msleep(100);
                             m_daq.m_fecs[j].SetVMM(k,m,"reset1", 0);
                             m_daq.m_fecs[j].SetVMM(k,m,"reset2", 0);
-                            m_daq.m_fecs[j].m_fecConfigModule->SendConfig(k, m);
+                            m_daq.m_fecs[j].m_fecConfigModule->ConfigVMM(k, m);
 
                         }
 
@@ -2946,11 +2990,11 @@ void DAQWindow::onUpdateVMMSettings()
         m_ui->onACQ->setChecked(false);
         SetVMM("reset1", 1);
         SetVMM("reset2", 1);
-        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
+        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ConfigVMM(m_hybridIndex, m_vmmIndex);
         QThread::sleep(1);
         SetVMM("reset1", 0);
         SetVMM("reset2", 0);
-        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
+        m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ConfigVMM(m_hybridIndex, m_vmmIndex);
         m_ui->Send->setEnabled(true);
     }
     else if(QObject::sender() == m_ui->ChannelSettingsAll){
@@ -3042,15 +3086,15 @@ void DAQWindow::onUpdateVMMSettings()
     }
     else if(QObject::sender() == m_ui->readADC){
         if(!m_ui->onACQ->isChecked()) {
-            m_daq.m_fecs[m_fecIndex].m_fecConfigModule->SendConfig(m_hybridIndex, m_vmmIndex);
+            m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ConfigVMM(m_hybridIndex, m_vmmIndex);
         }
 
         int adc_chan = 2; // 0: tdo, 1: pdo, 2: Mo, 3: not used | prepare to read other channels
 
         int adc_result = m_daq.m_fecs[m_fecIndex].m_fecConfigModule->ReadADC(m_hybridIndex, m_vmmIndex, adc_chan);
-        double temperature = (725-adc_result)/1.85;
         QString text;
         if(m_ui->sm5_sm0->currentIndex()==3){
+            double temperature = (725-adc_result)/1.85;
             text = QString::number(temperature);
             text.append(" °C");
             m_ui->ADCresult->setText(text);

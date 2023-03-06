@@ -34,32 +34,35 @@ public:
 
     FECConfigModule& LoadSocket(SocketHandler& GetSocketHandler);
 
-    bool SendConfig(int hybrid_index, int vmm_index, bool enableConfigCheck=false);
+    void ACQon(bool broadcast=false);
+    void ACQoff(bool broadcast=false);
+
+    void ConfigFEC();
+    void ConfigHybrid( int hybrid_index);
+    bool ConfigVMM(int hybrid_index, int vmm_index, bool enableConfigCheck=false);
     void FillGlobalRegisters(std::vector<QString>& globalRegisters, int hybrid_index, int vmm_index);
     void FillGlobalRegisters2(std::vector<QString>& globalRegisters, int hybrid_index, int vmm_index);
     void FillChannelRegisters(std::vector<QString>& channelRegisters, int hybrid_index, int vmm_index);
 
     SocketHandler& GetSocketHandler() { return *m_socketHandler; }
     bool Connect();
-
-    void ConfigHybrid( int hybrid_index);
-    void SetTriggerAcqConstants();
     void PowerCycleHybrids();
     bool CheckLinkStatus(QString & message, QVector<QString> & linkstatus);
     void ResetLinks();
     void ResetFEC();
-    bool ReadSystemRegisters(QMap<QString, QString>& registers);
+
     void writeFECip(int FECip);
     void writeDAQip(int DAQip);
-    void ACQon(bool broadcast=false);
-    void ACQoff(bool broadcast=false);
-    void SetMask();
+    void writeBoardId(int boardId);
+
     int ReadADC(int hybrid_index, int vmm_index, int adc_chan);
     QString ReadI2C(int hybrid_index, int choice);
     QString ReadGeoPos(int hybrid_index);
     QString ReadIDChip(int hybrid_index);
     QString ReadFirmwareVersion(int hybrid_index);
     QString ReadADC_I2C(int hybrid_index);
+    bool ReadSystemRegisters(QMap<QString, QString>& registers);
+
     bool CheckConfigurationOfVMMs(int hybrid_index, int vmm_index);
     QString CommunicateWithHybridI2C(int i2c_addr, int hybrid_index, int rw, int reg_value, int bytes);
     bool CheckIpPortSize(QHostAddress ipRead, QString ip,int portRead, int port, int size);

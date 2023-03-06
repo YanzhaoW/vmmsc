@@ -47,16 +47,22 @@ Navigate to the following repository:
 ```
 cd slow_control_vmm3a/build
 ```
-Edit the vmmdcs.pro file and choose the correct clock source:
+Edit the vmmdcs.pro file and choose the correct clock source and slow control type:
 #####################################################
 # Define default value for clock source
 # 0 = ESS readout, clock via ring (44.02625 MHz)
-# 1 = ESS readout, clock from KCU705 (44.444 MHz)
+# 1 = ESS readout, clock from KC705 (44.444 MHz)
 # 2 = SRS, ESS firmware with 44.4444 MHz
 # 3 = SRS, RD51 firmware with 40 MHz
+DEFINES += CLOCK_SOURCE=0
 
-For SRS with RD51 firmware, choose option 3
-DEFINES += CLOCK_SOURCE=3
+#####################################################
+# Define default value for slow control (does not matter for SRS FEC)
+# only relevant for ESS assister
+# 0 = SRS
+# 1 = ESS over master
+# 2 = ESS over assister
+DEFINES += SLOW_CONTROL=1
 
 make sure you use the correct qmake in case you have several QT versions installed and run qmake:
 ```

@@ -215,7 +215,7 @@ private:
     static const int m_maxHits_VMM3 { static_cast<int>(m_data1Size / m_hitAndMarkerSize_VMM3) };
 
     int m_numHitsInFrame = 0;
-    int m_numHits = 0;
+    uint64_t m_numHits = 0;
     int m_bitCount=-1;
     int m_number_bits = 0;
     unsigned int m_theChannel = 0;
@@ -318,6 +318,7 @@ private:
     double m_pulser_mV = 0;
     int m_threshold_dac = 0;
     double m_threshold_mV = 0;
+    double m_bcid_percentage = 0.0;
     
     std::vector<std::string> m_hybrid_labels;
     std::string m_hybrid_id[FECS_PER_DAQ][HYBRIDS_PER_FEC];
@@ -369,7 +370,7 @@ private:
     QString m_jsonObjectName = "vmm_calibration";
     std::ofstream m_outFile;
     QString m_configText = "";
-
+    uint64_t m_total_channels=0;
 };
 
 #endif // CALIBRATION_MODULE_H

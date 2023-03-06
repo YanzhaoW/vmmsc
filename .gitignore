@@ -34,8 +34,8 @@
 !configs/
 configs/*
 !configs/default*
-!configs/Calib*
-!configs/examples*
+!configs/vmm_sys_regs_map.txt
+
 
 attic/
 

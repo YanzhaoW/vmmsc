@@ -61,15 +61,14 @@ void FEC::SendAll(bool useConfigCheck){
     for(int n=0; n< HYBRIDS_PER_FEC*VMMS_PER_HYBRID; n++) {
         config_error[n] = 0;
     }
-    m_fecConfigModule->SetMask();
-    m_fecConfigModule->SetTriggerAcqConstants();
+    m_fecConfigModule->ConfigFEC();
 
     for (unsigned short k=0; k < HYBRIDS_PER_FEC; k++){
         if(GetHybrid(k)){
             m_fecConfigModule->ConfigHybrid(k);
 
             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                bool result = m_fecConfigModule->SendConfig(k, m, useConfigCheck);
+                bool result = m_fecConfigModule->ConfigVMM(k, m, useConfigCheck);
                 if(!result) {
                     config_error[k*VMMS_PER_HYBRID+m] = 1;
                 }
@@ -117,21 +116,21 @@ void FEC::LoadDefault(){
     (*m_regNames)[1] ="tp_offset";               (*m_reg)[1] = 1000;  //12 bit
     (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 65;  //8 bit
     (*m_regNames)[3] ="tp_number";               (*m_reg)[3] = 1;    //8 bit
-    (*m_regNames)[4] ="not_used";                (*m_reg)[4] = 0;
+    (*m_regNames)[4] ="board_id";                (*m_reg)[4] = 0;
     (*m_regNames)[5] ="not_used";                (*m_reg)[5] = 0;
 
-    (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 8181;    //32 bit
+    (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
     (*m_regNames)[7] ="daq_port";                (*m_reg)[7] = 6006;    //32 bit
     (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
     (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
     (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
-    (*m_regNames)[11]="ess_sc_port";              (*m_reg)[11] = 65535;
-    (*m_regNames)[12]="ring";                (*m_reg)[12] = 0;
-    (*m_regNames)[13]="fen";                (*m_reg)[13] = 0;
+    (*m_regNames)[11]="ess_sc_port";             (*m_reg)[11] = 65535;
+    (*m_regNames)[12]="ring";                    (*m_reg)[12] = 0;
+    (*m_regNames)[13]="fen";                     (*m_reg)[13] = 0;
 
-    (*m_regNames)[14]="not_used";                        (*m_reg)[14] = 0;
-    (*m_regNames)[15]="not_used";                        (*m_reg)[15] = 0;   //
-    (*m_regNames)[16]="not_used";                        (*m_reg)[16] = 0;   //
+    (*m_regNames)[14]="not_used";                (*m_reg)[14] = 0;
+    (*m_regNames)[15]="not_used";                (*m_reg)[15] = 0;   //
+    (*m_regNames)[16]="not_used";                (*m_reg)[16] = 0;   //
 
     (*m_regNames)[17]="sL0enaV";                 (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
     (*m_regNames)[18]="sL0ena";                  (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
@@ -161,7 +160,7 @@ void FEC::LoadDefault(){
     (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
     (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
 
-    m_fec_info = {{"firmware_version", ""}, {"description", ""}};
+    m_fec_info = {{"firmware_version", ""}, {"boardId", ""},{"description", ""}, {"node", ""}};
 
 }
 

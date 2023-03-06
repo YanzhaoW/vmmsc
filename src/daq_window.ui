@@ -3638,8 +3638,8 @@ stpp,stot[01]: ToT</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>521</width>
-                   <height>1410</height>
+                   <width>523</width>
+                   <height>1544</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -18310,7 +18310,7 @@ error</string>
               </size>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>2</number>
              </property>
              <widget class="QWidget" name="tabConfig">
               <attribute name="title">
@@ -20245,7 +20245,7 @@ error</string>
      <x>0</x>
      <y>0</y>
      <width>1861</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
