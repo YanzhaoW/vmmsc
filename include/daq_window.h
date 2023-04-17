@@ -9,10 +9,7 @@
 // vmm
 #include "socket_handler.h"
 #include "message_handler.h"
-#include "vmm_config_handler.h"
-#include "hybrid_config_handler.h"
-#include "daq_config_handler.h"
-#include "fec_config_handler.h"
+#include "daq_config.h"
 #include "daq.h"
 
 namespace Ui {
@@ -24,10 +21,7 @@ class DAQWindow : public QMainWindow
 {
     Q_OBJECT
 
-    friend class VMMConfigHandler;
-    friend class HybridConfigHandler;
-    friend class DAQConfigHandler;
-    friend class FECConfigHandler;
+    friend class DAQConfig;
     friend class CalibrationModule;
 
     DAQ m_daq;
@@ -40,10 +34,7 @@ public:
     void SaveConfig(QString text, bool addDate=false);
     bool FileExists(const char *fileName);
 
-    VMMConfigHandler *m_vmmConfigHandler;
-    HybridConfigHandler *m_hybridConfigHandler;
-    DAQConfigHandler *m_daqConfigHandler;
-    FECConfigHandler *m_fecConfigHandler;
+    DAQConfig *m_daqConfig;
     DAQWindow *m_daqWindow;
     QString GetApplicationPath();
     bool IsDbgActive() { return m_dbg; }

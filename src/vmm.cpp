@@ -1,7 +1,7 @@
 #include "vmm.h"
 
 VMM::VMM():
-    m_vmmSettings ( new VMMSettings)
+             m_vmmSettings ( new VMMSettings)
 {
     LoadDefault();
 }
@@ -36,9 +36,9 @@ void VMM::LoadDefault(){
     SetRegi("sbfm",true);
     SetRegi("sdcks",true);
 
-//    SetRegi("sttt",1);
-//    SetRegi("stot",1);
-//    SetRegi("s6b",0);
+    //    SetRegi("sttt",1);
+    //    SetRegi("stot",1);
+    //    SetRegi("s6b",0);
 
 
 
@@ -315,7 +315,7 @@ double VMM::GetRegister( std::string feature, int ch ){
             return m_vmmSettings->m_globalRegs->at(feature);
         }
         else{
-           std::cout<<"ERROR the feature ::"<<feature<<":: does not exist"<<std::endl;
+            std::cout<<"ERROR the feature ::"<<feature<<":: does not exist"<<std::endl;
         }
     }
     else if(ch>=0 && ch<64){

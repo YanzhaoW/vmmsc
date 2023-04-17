@@ -1,6 +1,0 @@
-fec 0
-hybrid 0
-TP_pol 0
-TP_skew 0
-TP_width 0
-

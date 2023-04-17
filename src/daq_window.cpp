@@ -85,11 +85,7 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
     else {
         m_ui->checkBoxConfigCheck->setChecked(false);
     }
-
-    m_daqConfigHandler = new DAQConfigHandler(this);
-    m_fecConfigHandler = new FECConfigHandler(this);
-    m_hybridConfigHandler = new HybridConfigHandler(this);
-    m_vmmConfigHandler = new VMMConfigHandler(this);
+    m_daqConfig = new DAQConfig(this);
 
     m_ui->tableWidget_LinkStatus->setRowCount(HYBRIDS_PER_FEC);
     m_ui->tableWidget_LinkStatus->setColumnCount(FECS_PER_DAQ);
@@ -150,9 +146,9 @@ DAQWindow::DAQWindow(QMainWindow *parent) :
     if(execPath.find("/debug") !=std::string::npos || execPath.find("/release") !=std::string::npos) {
         m_execPath += "/..";
     }
-    QString correctedFileName = this->GetApplicationPath() +  "/../configs/default.txt";
+    QString correctedFileName = this->GetApplicationPath() +  "/../configs/default.json";
     if(FileExists(correctedFileName.toStdString().c_str())){
-        LoadConfig("default");
+        LoadConfig("default.json");
     }
 
     UpdateSystemStatus();
@@ -235,6 +231,8 @@ void DAQWindow::EnableDAQCommunicationButtons(bool enable) {
     m_ui->onACQ->setEnabled(enable);
     m_ui->offACQ->setEnabled(enable);
     m_ui->Send->setEnabled(enable);
+    m_ui->pushButtonResetLatencyCalibration->setEnabled(enable);
+    m_ui->pushButtonTPLatencyCalibration->setEnabled(enable);
 }
 
 
@@ -258,24 +256,23 @@ void DAQWindow::LoadConfig(QString text){
         m_ui->line_configFile->insert("ERROR: no file name given");
     }
     else {
-        if(!text.contains(".txt")) {
-            fname+=".txt";
+        if(!text.contains(".json")) {
+            fname+=".json";
         }
         for (unsigned short j=0; j < FECS_PER_DAQ; j++){
             m_ui->treeWidgetSystem->clear();
             this->m_daq.SetFEC(j,false);
         }
 
-        bool found = this->m_daqConfigHandler->LoadDAQConf(fname.c_str());
+        bool found = this->m_daqConfig->LoadDAQConf(fname.c_str());
         if (!found){
             std::cout << "File not found" << std::endl;
             m_ui->line_configFile->insert("ERROR: not found");
         }
 
         else {
-            this->m_fecConfigHandler->LoadAllFECConf(filename);
-            this->m_hybridConfigHandler->LoadAllHybridConf(filename);
-            this->m_vmmConfigHandler->LoadAllVMMConf(filename);
+            m_map_id_ring_fen.clear();
+            m_map_ring_fen_id.clear();
             for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
                 if (this->m_daq.GetFEC(fec)){
                     QTreeWidgetItem *cardItem = new QTreeWidgetItem();
@@ -284,9 +281,9 @@ void DAQWindow::LoadConfig(QString text){
                         int fen = m_daq.m_fecs[fec].GetRegVal("fen");
                         m_map_id_ring_fen[fec] = qMakePair(ring, fen);
                         m_map_ring_fen_id[qMakePair(ring,fen)] = fec;
+
                         QString node =  QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0');
                         cardItem->setText(0,node);
-                        m_daq.m_fecs[fec].SetInfo("node",node.toStdString());
                     }
                     else {
                         cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(fec));
@@ -514,10 +511,16 @@ void DAQWindow::openConnection()
                     if(this->m_daq.m_fecs[fec].m_fecConfigModule->ReadSystemRegisters(registers)) {
                         QString text;
                         if(g_card_name == "FEN") {
+                            bool ok;
+                            long boardId = registers["board_id"].toLong(&ok,16);
+                            if(fec == m_fecIndex) {
+                                m_ui->ip_daq->setText(QString::number(boardId));
+                            }
+                            m_daq.m_fecs[fec].SetInfo("board_id", registers["board_id"].toStdString());
                             text = QString::fromStdString(g_card_name) + QString::number(fec) + " "
                                     + QString::number(m_map_id_ring_fen[fec].first).rightJustified(2, '0') + "_"
                                     + QString::number(m_map_id_ring_fen[fec].second).rightJustified(2, '0') + " "
-                                    + " board-ID " + registers["boardId"];
+                                    + " board-ID " + registers["board_id"] + " (" + QString::number(boardId) + ")";
                         }
                         else {
                             text = QString::fromStdString(g_card_name) + QString::number(fec) + " " + registers["FirmwareVers"]+" MAC " + registers["MACvendor"]+registers["MACdevice"]+"\nIP " + registers["FECip"] + ",DAQ " + registers["DAQip"];
@@ -709,11 +712,9 @@ void DAQWindow::SaveConfig(QString text, bool addDate){
     else {
         theName = fname;
     }
-    this->m_vmmConfigHandler->WriteAllVMMConf(theName.toStdString().data());
-    this->m_hybridConfigHandler->WriteAllHybridConf(theName.toStdString().data());
-    this->m_fecConfigHandler->WriteAllFECConf(theName.toStdString().data());
-    QString theNameWithExtension = theName + ".txt";
-    this->m_daqConfigHandler->WriteDAQConf(theNameWithExtension.toStdString().data());
+    QString theNameWithExtension = theName + ".json";
+    std::cout << theNameWithExtension.toStdString() << std::endl;
+    this->m_daqConfig->WriteDAQConf(theNameWithExtension.toStdString().data());
     std::cout << "writing to file " << theNameWithExtension.toStdString() << std::endl;
 }
 
@@ -907,7 +908,7 @@ void DAQWindow::onUpdateDAQSettings(){
         //    getdir.setProxyModel();
         QString dirStr = QFileDialog::getOpenFileName(this,
                                                       tr("Select config file"), this->GetApplicationPath() + "/../configs",
-                                                      tr("Text (*.txt)") );
+                                                      tr("Text (*.json)") );
         if(dirStr=="") return;
         if(!dirStr.contains("/configs/")){
             qDebug()<< "Config file not located in config folder/subfolder  -- Abort";
@@ -915,11 +916,8 @@ void DAQWindow::onUpdateDAQSettings(){
             return;
         }
         QString fname = dirStr.split("/").last();
-        if(fname.contains("_fec")){
-            fname = fname.split("_fec").first();
-        }
-        if(fname.endsWith(".txt")) {
-            fname.remove(fname.size()-4,4);
+        if(fname.endsWith(".json")) {
+            fname.remove(fname.size()-5,5);
         }
 
         m_ui->line_configFile->setText(fname);
@@ -1074,10 +1072,8 @@ void DAQWindow::onUpdateDAQSettings(){
                 m_map_ring_fen_id.erase(qMakePair(ring,fen));
                 m_map_ring_fen_id[qMakePair(newRing,newFen)] = fec;
                 m_map_id_ring_fen[fec] = qMakePair(newRing,newFen);
-                m_ui->treeWidgetSystem->currentItem()->setText(0,"FEN " + QString::number(newRing).rightJustified(2, '0') + "_"
-                                                               + QString::number(newFen).rightJustified(2, '0'));
                 QString node =  QString::fromStdString(g_card_name)+" " + QString::number(newRing).rightJustified(2, '0')  + "_" + QString::number(newFen).rightJustified(2, '0');
-                m_daq.m_fecs[fec].SetInfo("node",node.toStdString());
+                m_ui->treeWidgetSystem->currentItem()->setText(0,node);
             }
             else if(txtItem.startsWith("FEC")) {
                 int fec = txtItem.mid(4,1).toInt();
@@ -1206,8 +1202,8 @@ void DAQWindow::onUpdateDAQSettings(){
                     long ip = ipAddress.toIPv4Address();
                     QTreeWidgetItem *cardItem = new QTreeWidgetItem();
                     if(g_card_name == "FEN") {
-                        cardItem->setText(0,"FEN " + QString::number(ring).rightJustified(2, '0') + "_"
-                                          + QString::number(fen).rightJustified(2, '0'));
+                        QString node =  QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0');
+                        cardItem->setText(0,node);
 
                         m_daq.SetFEC(lastFecIndex+1, true);
                         m_daq.m_fecs[lastFecIndex+1].SetIP_FEC(ip);
@@ -1216,9 +1212,6 @@ void DAQWindow::onUpdateDAQSettings(){
                         m_daq.m_fecs[lastFecIndex+1].SetId();
                         m_map_id_ring_fen[lastFecIndex+1] = qMakePair((int)ring, (int)fen);
                         m_map_ring_fen_id[qMakePair((int)ring, (int)fen)] = lastFecIndex+1;
-
-                        QString node =  QString::fromStdString(g_card_name)+" " + QString::number(ring).rightJustified(2, '0')  + "_" + QString::number(fen).rightJustified(2, '0');
-                        m_daq.m_fecs[lastFecIndex+1].SetInfo("node",node.toStdString());
                     }
                     else {
                         cardItem->setText(0,QString::fromStdString(g_card_name)+" " + QString::number(lastFecIndex+1));
@@ -1640,18 +1633,20 @@ void DAQWindow::onUpdateFECSettings(){
             QString text;
             stringstream sx;
             if(g_card_name == "FEN") {
+                bool ok;
+                long boardId = registers["board_id"].toLong(&ok,16);
+                m_ui->ip_daq->setText(QString::number(boardId));
                 text = QString::fromStdString(g_card_name) + QString::number(m_fecIndex) + " "
                         + QString::number( m_map_id_ring_fen[m_fecIndex].first).rightJustified(2, '0') + "_"
                         + QString::number( m_map_id_ring_fen[m_fecIndex].second).rightJustified(2, '0')
-                        + " Board-ID " + registers["boardId"];
+                        + " Board-ID " + registers["board_id"] + " (" + QString::number(boardId) + ")";
                 SetStatus(text, m_fecIndex);
 
-                m_daq.m_fecs[m_fecIndex].SetInfo("boardId", registers["boardId"].toStdString());
-
+                m_daq.m_fecs[m_fecIndex].SetInfo("board_id", registers["board_id"].toStdString());
 
                 sx.str("");
                 sx << "**********************\n"
-                   << " Board-ID:\n" << registers["boardId"].toStdString() << "\n\n"
+                   << " Board-ID:\n" << registers["board_id"].toStdString() << " (" <<  boardId << ")" << "\n\n"
                    << "**********************";
                 cout << sx.str() << endl;
             }
@@ -1712,18 +1707,18 @@ void DAQWindow::onUpdateFECSettings(){
                     if(reply == QMessageBox::Yes) {
                         m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeDAQip(theIP);
                     }
-                    QThread::usleep(1000);
+                    QThread::msleep(1);
                     SetFec("ip_daq", theIP);
                     m_ui->ip_daq->setText(result);
-                    QThread::usleep(1000);
+                    QThread::msleep(1);
                 }
             }
         }
         else {
             long theBoardId = 0;
             bool ok;
-            theBoardId = GetFec("board_id");
-
+            theBoardId = QString::fromStdString(m_daq.m_fecs[m_fecIndex].GetInfo("board_id")).toLong(&ok, 16);
+            QString sBoardId = QString::fromStdString(m_daq.m_fecs[m_fecIndex].GetInfo("board_id"));
             QString result = QInputDialog::getText(this, tr("Board ID"), tr("New board id:"), QLineEdit::Normal,  QString::number(theBoardId), &ok);
 
             if (ok && !result.isEmpty())
@@ -1732,12 +1727,16 @@ void DAQWindow::onUpdateFECSettings(){
 
                reply = QMessageBox::question(this, "Board ID", "The board ID is stored on the EEPROM of the assister board.\nATTENTION: Do you only want to change the board ID in the slow control GUI (press NO), or re-program the board ID in the EEPROM (press YES)?", QMessageBox::Yes | QMessageBox::No );
                if(reply == QMessageBox::Yes) {
+                    theBoardId = result.toLong();
                     m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeBoardId(theBoardId);
+                    bool ok;
+                    unsigned long id = result.toULong(&ok,10);
+                    sBoardId = QString("%1").arg(id, 8, 16);
                }
-               QThread::usleep(1000);
-               SetFec("board_id", theBoardId);
-               m_ui->ip_daq->setText(result);
-               QThread::usleep(1000);
+               QThread::msleep(1);
+               m_daq.m_fecs[m_fecIndex].SetInfo("board_id", sBoardId.toStdString());
+               m_ui->ip_daq->setText(QString::number(theBoardId));
+               QThread::msleep(1000);
            }
 
         }
@@ -1831,11 +1830,11 @@ void DAQWindow::onUpdateFECSettings(){
                     if(reply == QMessageBox::Yes) {
                         m_daq.m_fecs[m_fecIndex].m_fecConfigModule->writeFECip(theIP);
                     }
-                    QThread::usleep(1000);
+                    QThread::msleep(1);
                     SetFec("ip_fec", theIP);
                     m_daq.m_fecs[m_fecIndex].SetId();
                     m_ui->ip_fec->setText(result);
-                    QThread::usleep(1000);
+                    QThread::msleep(1);
 
                 }
                 else {
@@ -1896,8 +1895,9 @@ void DAQWindow::EnableFECCommunicationButtons(bool enable) {
     m_ui->offACQ_FEC->setEnabled(enable);
     m_ui->fec_WarmInit->setEnabled(enable);
     m_ui->linkPB->setEnabled(enable);
-    m_ui->readSystemParams->setEnabled(true);
+    m_ui->readSystemParams->setEnabled(enable);
     m_ui->pushButtonDAQIP->setEnabled(enable);
+    m_ui->pushButtonApplyAllFecs->setEnabled(enable);
 }
 
 
@@ -1910,7 +1910,9 @@ void DAQWindow::LoadFECSettings(){
     ipAddress.setAddress(GetFec( "ip_fec" ));
     m_ui->ip_fec->setText( ipAddress.toString());
     if(g_slow_control == 0) {
-        m_ui->ip_daq->setText(QString::number(GetFec( "board_id" )));
+        bool ok;
+        long boardId = QString::fromStdString(m_daq.m_fecs[m_fecIndex].GetInfo("board_id")).toLong(&ok, 16);
+        m_ui->ip_daq->setText(QString::number(boardId));
     }
     else {
         ipAddress.setAddress(GetFec( "ip_daq" ));

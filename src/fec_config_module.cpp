@@ -1682,7 +1682,7 @@ QString FECConfigModule::ESS_ReadSc(QString command_reg, int index, QString read
     out.device()->seek(0); //rewind
 
     //Do not read registers back too soon, otherwise old ADC value is read
-    QThread::msleep(10);
+    QThread::usleep(7000);
 
     command = 0xE55C0001;
     reg = ESS_GetAddress(read_reg);
@@ -1829,7 +1829,7 @@ bool FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers) {
         if(!ok) {
             return false;
         }
-        registers["boardId"] = result;
+        registers["board_id"] = result;
         read_registers = true;
 
     }
@@ -1947,7 +1947,7 @@ bool FECConfigModule::ReadSystemRegisters(QMap<QString, QString>& registers) {
 // ------------------------------------------------------------------------ //
 void FECConfigModule::writeBoardId(int boardId) {
     GetMessageHandler()("Write new board id...","FEC_config_module::writeBoardId");
-
+    std::cout << boardId << std::endl;
     bool ok;
     if(g_slow_control == 0) {
         ESS_WriteSc("eeprom_board_id", boardId, ok);
@@ -2438,13 +2438,6 @@ int FECConfigModule::ReadADC(int hybrid_index, int vmm_index, int adc_chan)
     if(m_fec->m_hybrids[hybrid_index].m_vmms[vmm_index].GetRegister("sp") != 0 && m_fec->m_hybrids[hybrid_index].m_vmms[vmm_index].GetRegister("sm5_sm0") == 1) {
         ADCresult_int = 1200 - ADCresult_int;
     }
-    if(g_slow_control != 2) {
-        std::cout << m_fec->GetInfo("node") << ", Hybrid " << hybrid_index << ", VMM " << vmm_index << ", ADC value read:" << ADCresult_int << std::endl;
-    }
-    else {
-        std::cout << "FEC " << m_fec->GetIP().toStdString() << ", Hybrid " << hybrid_index << ", VMM " << vmm_index << ", ADC value read:" << ADCresult_int << std::endl;
-
-    }
     return ADCresult_int;
 }
 // ------------------------------------------------------------------------ //
@@ -2476,57 +2469,6 @@ QString FECConfigModule::ReadFirmwareVersion(int hybrid_index) {
         result = CommunicateWithHybridI2C(65, hybrid_index, 1, 0, 4);
     }
     return result;
-}
-
-
-
-QString FECConfigModule::ReadADC_I2C(int hybrid_index) {
-    QString sResult="error";
-    int byte=0;
-    int chFromRegister = 0;
-    int higherAdc = 0;
-    int lowerAdc = 0;
-    int adc = 0;
-    bool ok;
-    QString sReturn;
-
-    sReturn = CommunicateWithHybridI2C(66,hybrid_index, 0, 1, 1);
-    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
-    //std::cout << "Acq on write " << sReturn.toStdString() << std::endl;
-
-    QThread::msleep(2000);
-
-
-    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 0,0, 1);
-    sReturn = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
-    //std::cout << "Acq off write " << sReturn.toStdString() << std::endl;
-
-    int number = 128;
-    qsrand(qrand());
-    int ch = qrand() % number;
-
-    sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0,ch*2+1, 1);
-    sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
-    byte = sReturn.toUInt(&ok,16);
-    chFromRegister = byte>>2;
-    higherAdc = byte & 0x03;
-
-
-    sReturn = CommunicateWithHybridI2C(67,hybrid_index, 0,ch*2, 1);
-    sReturn = CommunicateWithHybridI2C(67, hybrid_index, 1, 0, 1);
-    lowerAdc = sReturn.toUInt(&ok,16);
-    adc = 256 * higherAdc + lowerAdc;
-
-
-    if(ch<64) {
-        sResult = "vmm0 " + QString::number(ch) + " " + QString::number(chFromRegister) + " adc " + QString::number(adc);
-    }
-    else {
-        sResult = "vmm1 " + QString::number(ch-64) + " " + QString::number(chFromRegister) + " adc " + QString::number(adc);
-    }
-
-    return sResult;
-
 }
 
 

@@ -6,7 +6,7 @@ FEC::FEC():
              m_hybridActs (HYBRIDS_PER_FEC),
              m_msg(0),
              m_socketHandler(0),
-             numberOfRegisters(42),
+             numberOfRegisters(40),
              m_regNames ( new std::vector<const char*> (numberOfRegisters) ),
              m_reg ( new std::vector<unsigned long> (numberOfRegisters) ),
              m_chr ( new char[1000] ) //need for returning const char * in GetReg functions
@@ -112,55 +112,61 @@ quint16 FEC::GetChMap(){
 // ------------------------------------------------------------------------- //
 
 void FEC::LoadDefault(){
-    (*m_regNames)[0] ="tp_offset_first";         (*m_reg)[0] = 100;  //12 bit
-    (*m_regNames)[1] ="tp_offset";               (*m_reg)[1] = 1000;  //12 bit
-    (*m_regNames)[2] ="tp_latency";              (*m_reg)[2] = 65;  //8 bit
-    (*m_regNames)[3] ="tp_number";               (*m_reg)[3] = 1;    //8 bit
-    (*m_regNames)[4] ="board_id";                (*m_reg)[4] = 0;
-    (*m_regNames)[5] ="not_used";                (*m_reg)[5] = 0;
+    (*m_regNames)[0]="ring";                    (*m_reg)[0] = 0;
+    (*m_regNames)[1]="fen";                     (*m_reg)[1] = 0;
+    (*m_regNames)[2]="ip_daq";                  (*m_reg)[2] = 0xC0A83201;//
+    (*m_regNames)[3]="ip_fec";                  (*m_reg)[3] = 0xC0A83202; //
 
-    (*m_regNames)[6] ="fec_port";                (*m_reg)[6] = 6007;    //32 bit
-    (*m_regNames)[7] ="daq_port";                (*m_reg)[7] = 6006;    //32 bit
-    (*m_regNames)[8] ="vmmasic_port";            (*m_reg)[8] = 6603;    //32 bit
-    (*m_regNames)[9] ="vmmapp_port";             (*m_reg)[9] = 6600;    //32 bit
-    (*m_regNames)[10]="s6_port";                 (*m_reg)[10] = 6602;   //32 bit
-    (*m_regNames)[11]="ess_sc_port";             (*m_reg)[11] = 65535;
-    (*m_regNames)[12]="ring";                    (*m_reg)[12] = 0;
-    (*m_regNames)[13]="fen";                     (*m_reg)[13] = 0;
+    (*m_regNames)[4]="debug_data_format";        (*m_reg)[4] = 0; // 1bit: 0 for normal data format, 1 for debug format
+    (*m_regNames)[5] ="tp_offset_first";         (*m_reg)[5] = 100;  //12 bit
+    (*m_regNames)[6] ="tp_offset";               (*m_reg)[6] = 1000;  //12 bit
+    (*m_regNames)[7] ="tp_latency";              (*m_reg)[7] = 65;  //8 bit
+    (*m_regNames)[8] ="tp_number";               (*m_reg)[8] = 1;    //8 bit
 
-    (*m_regNames)[14]="not_used";                (*m_reg)[14] = 0;
-    (*m_regNames)[15]="not_used";                (*m_reg)[15] = 0;   //
-    (*m_regNames)[16]="not_used";                (*m_reg)[16] = 0;   //
+    (*m_regNames)[9]="latency_reset";           (*m_reg)[9] = 47;   //8 bit
+    (*m_regNames)[10]="latency_data_max";        (*m_reg)[10] = 4087; //12 bit
+    (*m_regNames)[11]="latency_data_error";      (*m_reg)[11] = 8;    //8 bit
 
-    (*m_regNames)[17]="sL0enaV";                 (*m_reg)[17] = 0;   //{"0", "1", "false", "true"}
-    (*m_regNames)[18]="sL0ena";                  (*m_reg)[18] = 0;   //{"0", "1", "false", "true"}
-    (*m_regNames)[19]="l0offset";                (*m_reg)[19] = 0;   //12 bit
-    (*m_regNames)[20]="offset";                  (*m_reg)[20] = 0;   //12 bit
-    (*m_regNames)[21]="rollover";                (*m_reg)[21] = 0;   //12 bit
-    (*m_regNames)[22]="window";                  (*m_reg)[22] = 0;   //3 bit
-    (*m_regNames)[23]="truncate";                (*m_reg)[23] = 0;   //6 bit
-    (*m_regNames)[24]="nskip";                   (*m_reg)[24] = 0;   //7 bit
-    (*m_regNames)[25]="sL0cktest";               (*m_reg)[25] = 0;   //{"0", "1", "false", "true"}
-    (*m_regNames)[26]="ip_fec";                  (*m_reg)[26] = 0xC0A83202; //
-    (*m_regNames)[27]="ip_daq";                  (*m_reg)[27] = 0xC0A83201;//
 
-    (*m_regNames)[28]="i2c_port";                (*m_reg)[28] = 6604;   //32 bit
-    (*m_regNames)[29]="fec_sys_port";            (*m_reg)[29] = 6023;   //32 bit
+    (*m_regNames)[12]="not_used";                (*m_reg)[12] = 0;
+    (*m_regNames)[13]="not_used";                (*m_reg)[13] = 0;
+    (*m_regNames)[14]="not_used";                (*m_reg)[14] = 0; //
+    (*m_regNames)[15]="not_used";                (*m_reg)[15] = 0;//
+    (*m_regNames)[16] ="not_used";                (*m_reg)[16] = 0;
+    (*m_regNames)[17] ="not_used";                (*m_reg)[17] = 0;
+    (*m_regNames)[18] ="not_used";                (*m_reg)[18] = 0;
+    (*m_regNames)[19] ="not_used";                (*m_reg)[19] = 0;
 
-    (*m_regNames)[30]="latency_reset";           (*m_reg)[30] = 47;   //8 bit
-    (*m_regNames)[31]="latency_data_max";        (*m_reg)[31] = 4087; //12 bit
-    (*m_regNames)[32]="latency_data_error";      (*m_reg)[32] = 8;    //8 bit
-    (*m_regNames)[33]="debug_data_format";       (*m_reg)[33] = 0; // 1bit: 0 for normal data format, 1 for debug format
-    (*m_regNames)[34]="dvm_i2c_port";            (*m_reg)[34] = 6601;
-    (*m_regNames)[35]="trgin_invert";            (*m_reg)[35] = 0;
-    (*m_regNames)[36]="trgout_invert";           (*m_reg)[36] = 0;
-    (*m_regNames)[37]="trgout_time";             (*m_reg)[37] = 1;
-    (*m_regNames)[38]="not_used";                (*m_reg)[38] = 0;
-    (*m_regNames)[39]="not_used";                (*m_reg)[39] = 0;
-    (*m_regNames)[40]="not_used";                (*m_reg)[40] = 0;   //
-    (*m_regNames)[41]="not_used";                (*m_reg)[41] = 0;   //
 
-    m_fec_info = {{"firmware_version", ""}, {"boardId", ""},{"description", ""}, {"node", ""}};
+
+    // SRS: daq_port 6006
+    (*m_regNames)[20]="ess_sc_port";             (*m_reg)[20] = 65535;
+    (*m_regNames)[21] ="fec_port";                (*m_reg)[21] = 6007;    //32 bit
+    (*m_regNames)[22]="dvm_i2c_port";            (*m_reg)[22] = 6601;
+    (*m_regNames)[23] ="vmmasic_port";            (*m_reg)[23] = 6603;    //32 bit
+    (*m_regNames)[24] ="vmmapp_port";             (*m_reg)[24] = 6600;    //32 bit
+    (*m_regNames)[25]="s6_port";                 (*m_reg)[25] = 6602;   //32 bit
+    (*m_regNames)[26]="i2c_port";                (*m_reg)[26] = 6604;   //32 bit
+    (*m_regNames)[27]="fec_sys_port";            (*m_reg)[27] = 6023;   //32 bit
+
+
+    (*m_regNames)[28]="sL0enaV";                 (*m_reg)[28] = 0;   //{"0", "1", "false", "true"}
+    (*m_regNames)[29]="sL0ena";                  (*m_reg)[29] = 0;   //{"0", "1", "false", "true"}
+    (*m_regNames)[30]="l0offset";                (*m_reg)[30] = 0;   //12 bit
+    (*m_regNames)[31]="offset";                  (*m_reg)[31] = 0;   //12 bit
+    (*m_regNames)[32]="rollover";                (*m_reg)[32] = 0;   //12 bit
+    (*m_regNames)[33]="window";                  (*m_reg)[33] = 0;   //3 bit
+    (*m_regNames)[34]="truncate";                (*m_reg)[34] = 0;   //6 bit
+    (*m_regNames)[35]="nskip";                   (*m_reg)[35] = 0;   //7 bit
+    (*m_regNames)[36]="sL0cktest";               (*m_reg)[36] = 0;   //{"0", "1", "false", "true"}
+
+
+    (*m_regNames)[37]="trgin_invert";            (*m_reg)[37] = 0;
+    (*m_regNames)[38]="trgout_invert";           (*m_reg)[38] = 0;
+    (*m_regNames)[39]="trgout_time";             (*m_reg)[39] = 1;
+
+
+    m_fec_info = {{"firmware_version", ""}, {"board_id", ""},{"description", ""}};
 
 }
 

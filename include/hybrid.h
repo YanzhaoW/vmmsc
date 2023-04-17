@@ -10,7 +10,7 @@ class Hybrid: public QObject
 public:
     Hybrid();
     ~Hybrid();
-    friend class HybridConfigHandler;
+    friend class DAQConfig;
 
     VMM m_vmms[VMMS_PER_HYBRID];
 

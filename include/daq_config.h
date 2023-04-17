@@ -1,21 +1,22 @@
-#ifndef DAQ_CONFIG_HANDLER_H
-#define DAQ_CONFIG_HANDLER_H
+#ifndef DAQ_CONFIG_H
+#define DAQ_CONFIG_H
 #include "globparameter.h"
 
 
 #include <QObject>
+#include <QJsonObject>
 #include <fstream>
 #include <iostream>
 
 
 class DAQWindow;
 
-class DAQConfigHandler : public QObject
+class DAQConfig : public QObject
 {
     Q_OBJECT
 public:
-    explicit DAQConfigHandler(DAQWindow *top, QObject *parent = 0);
-    ~DAQConfigHandler();
+    explicit DAQConfig(DAQWindow *top, QObject *parent = 0);
+    ~DAQConfig();
     bool LoadDAQConf(const char* filename); // only one DAQ implemented
     bool WriteDAQConf(const char* filename);
 private:
@@ -24,7 +25,7 @@ private:
     bool WriteDAQConfig(std::string fname);
 };
 
-#endif // DAQ_CONFIG_HANDLER_H
+#endif // DAQ_CONFIG_H
 
 #ifndef _DAQWINDOW_HPP
 #include "daq_window.h"

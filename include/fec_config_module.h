@@ -60,7 +60,6 @@ public:
     QString ReadGeoPos(int hybrid_index);
     QString ReadIDChip(int hybrid_index);
     QString ReadFirmwareVersion(int hybrid_index);
-    QString ReadADC_I2C(int hybrid_index);
     bool ReadSystemRegisters(QMap<QString, QString>& registers);
 
     bool CheckConfigurationOfVMMs(int hybrid_index, int vmm_index);
@@ -80,7 +79,6 @@ private:
     //std::vector<int> m_hybrid_i2c;
 
     SocketHandler *m_socketHandler;
-//    ConfigHandler *m_configHandler;
     MessageHandler* m_messageHandler;
     std::map<std::string, uint32_t> m_registers;
 signals:

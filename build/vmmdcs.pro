@@ -86,15 +86,12 @@ SOURCES += $$sourcepath/main.cpp\
            $$sourcepath/socket_handler.cpp\
            $$sourcepath/vmmsocket.cpp\
            $$sourcepath/message_handler.cpp\
-           $$sourcepath/vmm_config_handler.cpp \
-           $$sourcepath/daq_config_handler.cpp \
-           $$sourcepath/fec_config_handler.cpp \
             $$sourcepath/vmm.cpp \
             $$sourcepath/daq.cpp \
             $$sourcepath/hybrid.cpp \
             $$sourcepath/fec.cpp \
             $$sourcepath/daq_window.cpp \
-            $$sourcepath/hybrid_config_handler.cpp \
+            $$sourcepath/daq_config.cpp \
             $$sourcepath/calibration_module.cpp \
             $$sourcepath/qcustomplot.cpp \
             $$sourcepath/fec_config_module.cpp \
@@ -111,9 +108,8 @@ SOURCES += $$sourcepath/main.cpp\
 HEADERS  += $$includepath/socket_handler.h\
             $$includepath/vmmsocket.h\
             $$includepath/message_handler.h\
-            $$includepath/vmm_config_handler.h\
             $$includepath/calibration_module.h\
-            $$includepath/daq_config_handler.h\
+            $$includepath/daq_config.h\
             $$includepath/globparameter.h \
             $$includepath/qcustomplot.h \
             $$includepath/vmm.h \
@@ -121,8 +117,6 @@ HEADERS  += $$includepath/socket_handler.h\
             $$includepath/hybrid.h \
             $$includepath/fec.h \
             $$includepath/daq_window.h \
-            $$includepath/hybrid_config_handler.h \
-            $$includepath/fec_config_handler.h \
             $$includepath/fec_config_module.h \
             $$includepath/vmm_sys_regs_map.h \
             $$alglibpath/alglibinternal.h \

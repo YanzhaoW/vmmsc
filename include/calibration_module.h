@@ -3,7 +3,7 @@
 
 
 #define MAX_BITS 33
-#define NUM_BCID 3
+#define NUM_BCID 5
 #include <QObject>
 
 // qt
@@ -218,7 +218,7 @@ private:
     uint64_t m_numHits = 0;
     int m_bitCount=-1;
     int m_number_bits = 0;
-    unsigned int m_theChannel = 0;
+    int m_theChannel = 0;
     int m_theVMM = 0;
     int m_theFEC = 0;
     int m_theDirection = 0;
@@ -234,7 +234,7 @@ private:
     QString m_polarityTable[2] = {"negative", "positive"};
 
     int m_thresholdTable[8] = {243,243,243,243,243,243,243,243};
-
+    int m_threshold=-1;
     //int m_minPulseHeightTable[8] = {949,482,165,120,94,60,49,39};
     //int m_maxPulseHeightTable[8] = {1023,1023,879,590,446,301,227,171};
 
