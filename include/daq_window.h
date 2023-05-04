@@ -50,7 +50,7 @@ public:
     void openConnection();
     void CheckLinkStatus(int fec, bool readHybridInfo);
     void UpdateSystemStatus();
-    void MeasureVMMI2C();
+    void MeasureVMMI2C(std::vector<int> &values);
 
     //FEC
     void InitFecWidgets();

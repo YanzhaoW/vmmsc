@@ -146,22 +146,22 @@
                     </property>
                     <item>
                      <property name="text">
-                      <string>Pulser DAC</string>
+                      <string>Pulser DAC [mV]</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Threshold DAC</string>
+                      <string>Threshold DAC [mV]</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Bandgap ref.</string>
+                      <string>Bandgap ref. [mV]</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Temperature</string>
+                      <string>Temperature [deg .C]</string>
                      </property>
                     </item>
                     <item>
@@ -767,13 +767,13 @@
                    <widget class="QPushButton" name="ssh">
                     <property name="minimumSize">
                      <size>
-                      <width>110</width>
-                      <height>38</height>
+                      <width>140</width>
+                      <height>25</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>110</width>
+                      <width>140</width>
                       <height>38</height>
                      </size>
                     </property>
@@ -787,8 +787,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>Sub hysteresis
-(ssh)</string>
+                     <string>Sub hysteresis (ssh)</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -934,13 +933,13 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>110</width>
-                      <height>38</height>
+                      <width>140</width>
+                      <height>25</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>110</width>
+                      <width>140</width>
                       <height>38</height>
                      </size>
                     </property>
@@ -954,8 +953,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>DDR CKDT
-(sdcks)</string>
+                     <string>DDR CKDT (sdcks)</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -1048,13 +1046,13 @@
                    <widget class="QPushButton" name="sng">
                     <property name="minimumSize">
                      <size>
-                      <width>110</width>
-                      <height>38</height>
+                      <width>140</width>
+                      <height>25</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>110</width>
+                      <width>140</width>
                       <height>38</height>
                      </size>
                     </property>
@@ -1068,8 +1066,7 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>Neigbor trigger
-(sng)</string>
+                     <string>Neigbor trigger (sng)</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -1086,19 +1083,18 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>110</width>
-                      <height>38</height>
+                      <width>140</width>
+                      <height>25</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>110</width>
+                      <width>140</width>
                       <height>38</height>
                      </size>
                     </property>
                     <property name="text">
-                     <string>Bipolar shape
-(sbip)</string>
+                     <string>Bipolar shape (sbip)</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -1374,8 +1370,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="3">
-                   <widget class="QPushButton" name="sbfp">
+                  <item row="0" column="0">
+                   <widget class="QPushButton" name="sbfm">
                     <property name="minimumSize">
                      <size>
                       <width>60</width>
@@ -1392,13 +1388,10 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>sbfp</string>
+                     <string>sbfm</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
-                    </property>
-                    <property name="autoDefault">
-                     <bool>false</bool>
                     </property>
                    </widget>
                   </item>
@@ -1433,8 +1426,8 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QPushButton" name="sbfm">
+                  <item row="0" column="3">
+                   <widget class="QPushButton" name="sbfp">
                     <property name="minimumSize">
                      <size>
                       <width>60</width>
@@ -1451,10 +1444,13 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>sbfm</string>
+                     <string>sbfp</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
+                    </property>
+                    <property name="autoDefault">
+                     <bool>false</bool>
                     </property>
                    </widget>
                   </item>
@@ -1478,91 +1474,14 @@
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
-                   <height>16777215</height>
+                   <height>170</height>
                   </size>
                  </property>
+                 <property name="title">
+                  <string/>
+                 </property>
                  <layout class="QGridLayout" name="gridLayout_06">
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="sdpLabel_02">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Test Pulse DAC
-(sdp)</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="sdtLabel">
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>40</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Threshold DAC
-(sdt)</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="dacmvLabel">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>130</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>TextLabel</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
+                  <item row="1" column="1">
                    <widget class="QSpinBox" name="sdp10">
                     <property name="minimumSize">
                      <size>
@@ -1593,7 +1512,33 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="sdpLabel_02">
+                    <property name="minimumSize">
+                     <size>
+                      <width>40</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                    <property name="font">
+                     <font>
+                      <family>Arial</family>
+                      <pointsize>11</pointsize>
+                      <weight>50</weight>
+                      <italic>false</italic>
+                      <bold>false</bold>
+                     </font>
+                    </property>
+                    <property name="text">
+                     <string>Test Pulse DAC
+(sdp)</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
                    <widget class="QSpinBox" name="sdt">
                     <property name="minimumSize">
                      <size>
@@ -1624,18 +1569,49 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QLabel" name="dacmvLabel_TP">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
+                  <item row="1" column="2" colspan="2">
+                   <widget class="QWidget" name="widget_3" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_7">
+                     <item>
+                      <widget class="QLabel" name="dacmvLabel_TP">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="minimumSize">
+                        <size>
+                         <width>30</width>
+                         <height>0</height>
+                        </size>
+                       </property>
+                       <property name="font">
+                        <font>
+                         <family>Arial</family>
+                         <pointsize>11</pointsize>
+                         <weight>50</weight>
+                         <italic>false</italic>
+                         <bold>false</bold>
+                        </font>
+                       </property>
+                       <property name="text">
+                        <string>TextLabel</string>
+                       </property>
+                       <property name="wordWrap">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="sdtLabel">
                     <property name="minimumSize">
                      <size>
-                      <width>130</width>
-                      <height>0</height>
+                      <width>40</width>
+                      <height>40</height>
                      </size>
                     </property>
                     <property name="font">
@@ -1648,11 +1624,88 @@
                      </font>
                     </property>
                     <property name="text">
-                     <string>TextLabel</string>
+                     <string>Threshold DAC
+(sdt)</string>
                     </property>
-                    <property name="wordWrap">
-                     <bool>true</bool>
+                    <property name="alignment">
+                     <set>Qt::AlignCenter</set>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="2" colspan="2">
+                   <widget class="QWidget" name="widget_5" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                     <item>
+                      <widget class="QWidget" name="widget_4" native="true">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <layout class="QHBoxLayout" name="horizontalLayout_6">
+                        <item alignment="Qt::AlignBottom">
+                         <widget class="QPushButton" name="pbThresholdMinus">
+                          <property name="minimumSize">
+                           <size>
+                            <width>20</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>20</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>-</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item alignment="Qt::AlignBottom">
+                         <widget class="QSpinBox" name="spinBoxThreshold">
+                          <property name="minimumSize">
+                           <size>
+                            <width>40</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="maximum">
+                           <number>1023</number>
+                          </property>
+                         </widget>
+                        </item>
+                        <item alignment="Qt::AlignBottom">
+                         <widget class="QPushButton" name="pbThresholdPlus">
+                          <property name="minimumSize">
+                           <size>
+                            <width>20</width>
+                            <height>1</height>
+                           </size>
+                          </property>
+                          <property name="maximumSize">
+                           <size>
+                            <width>20</width>
+                            <height>16777215</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>+</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLabel" name="labelChangeThreshold">
+                       <property name="text">
+                        <string>Change threshold all VMM</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -1675,13 +1728,32 @@
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
-                   <height>16777215</height>
+                   <height>170</height>
                   </size>
                  </property>
                  <property name="title">
-                  <string>All VMMs: Settings and reset</string>
+                  <string>Apply to all vmm: Settings and reset</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_09">
+                  <item row="2" column="0">
+                   <widget class="QPushButton" name="ApplyAllVMM1">
+                    <property name="minimumSize">
+                     <size>
+                      <width>160</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>160</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>Global settings VMM 1</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="3" column="1">
                    <widget class="QPushButton" name="vmmResetAll">
                     <property name="sizePolicy">
@@ -1698,7 +1770,7 @@
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>16777215</width>
+                      <width>170</width>
                       <height>25</height>
                      </size>
                     </property>
@@ -1716,25 +1788,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QPushButton" name="ApplyAllVMM0">
-                    <property name="minimumSize">
-                     <size>
-                      <width>155</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>155</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>Global Settings VMM0s</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="3" column="0">
                    <widget class="QPushButton" name="vmmReset">
                     <property name="enabled">
@@ -1748,13 +1801,13 @@
                     </property>
                     <property name="minimumSize">
                      <size>
-                      <width>155</width>
+                      <width>160</width>
                       <height>20</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>155</width>
+                      <width>160</width>
                       <height>16777215</height>
                      </size>
                     </property>
@@ -1772,97 +1825,35 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="1">
-                   <widget class="QPushButton" name="ChannelSettingsAllVMM0">
-                    <property name="minimumSize">
-                     <size>
-                      <width>170</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string>Channel settings VMM0s</string>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="0">
-                   <widget class="QPushButton" name="ApplyAllVMMs">
-                    <property name="minimumSize">
-                     <size>
-                      <width>155</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>155</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string extracomment="Applies the settings of current VMM to all activated VMMs">Global settings all</string>
-                    </property>
+                   <widget class="QWidget" name="widget_2" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <item>
+                      <widget class="QCheckBox" name="cbIncludeThreshold">
+                       <property name="text">
+                        <string>Include Threshold</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QPushButton" name="ChannelSettingsAll">
+                  <item row="1" column="0">
+                   <widget class="QPushButton" name="ApplyAllVMM0">
                     <property name="minimumSize">
                      <size>
-                      <width>170</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="font">
-                     <font>
-                      <family>Arial</family>
-                      <pointsize>11</pointsize>
-                      <weight>50</weight>
-                      <italic>false</italic>
-                      <bold>false</bold>
-                     </font>
-                    </property>
-                    <property name="text">
-                     <string>Channel settings all</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QPushButton" name="ApplyAllVMM1">
-                    <property name="minimumSize">
-                     <size>
-                      <width>155</width>
+                      <width>160</width>
                       <height>0</height>
                      </size>
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>155</width>
+                      <width>160</width>
                       <height>16777215</height>
                      </size>
                     </property>
                     <property name="text">
-                     <string>Global settings VMM1s</string>
+                     <string>Global Settings VMM 0</string>
                     </property>
                    </widget>
                   </item>
@@ -1876,13 +1867,45 @@
                     </property>
                     <property name="maximumSize">
                      <size>
-                      <width>16777215</width>
+                      <width>170</width>
                       <height>16777215</height>
                      </size>
                     </property>
                     <property name="text">
-                     <string>Channel settings VMM1s</string>
+                     <string>Channel settings VMM 1</string>
                     </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QPushButton" name="ChannelSettingsAllVMM0">
+                    <property name="minimumSize">
+                     <size>
+                      <width>170</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>170</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>Channel settings VMM 0</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QWidget" name="widget_3" native="true">
+                    <layout class="QHBoxLayout" name="horizontalLayout_5">
+                     <item>
+                      <widget class="QCheckBox" name="cbVMM0And1">
+                       <property name="text">
+                        <string>both VMM 0 and 1</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </widget>
                   </item>
                  </layout>
@@ -3638,8 +3661,8 @@ stpp,stot[01]: ToT</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>523</width>
-                   <height>1544</height>
+                   <width>524</width>
+                   <height>1410</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -18851,8 +18874,15 @@ error</string>
                  <property name="frameShadow">
                   <enum>QFrame::Raised</enum>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
-                  <item>
+                 <layout class="QGridLayout" name="gridLayout_14">
+                  <item row="0" column="2">
+                   <widget class="QPushButton" name="pushButtonMeasureTemp">
+                    <property name="text">
+                     <string>Measure</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
                    <widget class="QComboBox" name="comboBoxI2CSetting">
                     <item>
                      <property name="text">
@@ -18861,22 +18891,22 @@ error</string>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Pulser DAC</string>
+                      <string>Pulser DAC [mV]</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Threshold DAC</string>
+                      <string>Threshold DAC [mV]</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Bandgap reference</string>
+                      <string>Bandgap reference [mV]</string>
                      </property>
                     </item>
                     <item>
                      <property name="text">
-                      <string>Temperature</string>
+                      <string>Temperature [deg. C]</string>
                      </property>
                     </item>
                     <item>
@@ -19201,10 +19231,10 @@ error</string>
                     </item>
                    </widget>
                   </item>
-                  <item>
-                   <widget class="QPushButton" name="pushButtonMeasureTemp">
+                  <item row="1" column="1">
+                   <widget class="QCheckBox" name="cbMeasureThreshold">
                     <property name="text">
-                     <string>Measure</string>
+                     <string>Channel threshold [mV]</string>
                     </property>
                    </widget>
                   </item>
@@ -19368,7 +19398,7 @@ error</string>
         </sizepolicy>
        </property>
        <attribute name="title">
-        <string>Calibration</string>
+        <string>DAQ and Calibration</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_9">
         <item row="7" column="1" colspan="6">
@@ -19851,7 +19881,7 @@ error</string>
            </font>
           </property>
           <property name="title">
-           <string>Run Setting</string>
+           <string>Run Setting (Calibration or DAQ with user settings)</string>
           </property>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
@@ -20245,7 +20275,7 @@ error</string>
      <x>0</x>
      <y>0</y>
      <width>1861</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

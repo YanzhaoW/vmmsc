@@ -2409,13 +2409,13 @@ void CalibrationModule::PlotData(){
             ch= idx%64;
             //SRS (2)
             if(g_slow_control == 2){
-                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") Hybrid " + QString::number(hybrid) + "(VMM " + QString::number(chip) + ") CH " + QString::number(ch);
             }
             else {
                 int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
                 int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
                 title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
-                        + "_"+QString::number(fen).rightJustified(2, '0') + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(ch);
+                        + "_"+QString::number(fen).rightJustified(2, '0') + ") Hybrid " + QString::number(hybrid) + "(VMM " + QString::number(chip) + ") CH " + QString::number(ch);
             }
         }
         else if(m_modeIndex == 11 || m_modeIndex == 12) {
@@ -2437,13 +2437,13 @@ void CalibrationModule::PlotData(){
             chip = GetVMM(static_cast<int>(idx));
             //SRS (2)
             if(g_slow_control == 2){
-                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip);
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") Hybrid " + QString::number(hybrid) + "(VMM " + QString::number(chip) + ")";
             }
             else {
                 int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
                 int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
                 title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
-                        + "_"+QString::number(fen).rightJustified(2, '0') + ") VMM " + QString::number(hybrid*2+chip);
+                    + "_"+QString::number(fen).rightJustified(2, '0') + ") Hybrid " + QString::number(hybrid) + "(VMM " + QString::number(chip) + ")";
             }
         }
         else {
@@ -2453,13 +2453,13 @@ void CalibrationModule::PlotData(){
             chip = m_theVMM % 2;
             //SRS (2)
             if(g_slow_control == 2){
-                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
+                title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (IP " +  QString::number(fecId) + ") Hybrid " + QString::number(hybrid) + "(VMM " + QString::number(chip) + ") CH " + QString::number(idx);
             }
             else {
                 int ring = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("ring");
                 int fen = m_daqWindow->m_daq.m_fecs[fec].GetRegVal("fen");
                 title = QString::fromStdString(g_card_name) + " " + QString::number(fec) + " (" +QString::number(ring).rightJustified(2, '0')
-                        + "_"+QString::number(fen).rightJustified(2, '0') + ") VMM " + QString::number(hybrid*2+chip) + " CH " + QString::number(idx);
+                        + "_"+QString::number(fen).rightJustified(2, '0') + ") Hybrid " + QString::number(hybrid) + "(VMM " + QString::number(chip) + ") CH " + QString::number(idx);
             }
         }
         unsigned int colorFactor = 0;
@@ -3546,11 +3546,23 @@ void CalibrationModule::PlotData(){
                 plot->legend->setVisible(true);
                 plot->legend->setFont(QFont("Helvetica",9));
                 plot->addGraph();
-                plot->graph(0)->setName(QString("Threshold"));
+                plot->graph(0)->setName(QString("Total Threshold"));
                 plot->graph(0)->setData(
                             QVector<double>::fromStdVector(m_x),
                             QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
+                plot->addGraph();
+                plot->graph(1)->setName(QString("Channel Threshold"));
+                plot->graph(1)->setData(
+                    QVector<double>::fromStdVector(m_x),
+                    QVector<double>::fromStdVector(m_mean[1][fec][hybrid][chip]));
+                plot->graph(1)->setPen(QPen(Qt::darkGreen,1,Qt::SolidLine));
+                plot->addGraph();
+                plot->graph(2)->setName(QString("Global Threshold"));
+                plot->graph(2)->setData(
+                    QVector<double>::fromStdVector(m_x),
+                    QVector<double>::fromStdVector(m_mean[2][fec][hybrid][chip]));
+                plot->graph(2)->setPen(QPen(Qt::red,1,Qt::DashLine));
                 plot->yAxis->rescale();
             }
             //Pedestal
@@ -4051,15 +4063,22 @@ void CalibrationModule::StartCalibration(){
         }
     }
     else if(m_modeIndex == 7) {
-        QMessageBox::StandardButton reply;
+       QMessageBox msgBox;
 
-        reply = QMessageBox::question(nullptr, "Calibrate or measure threshold?", "Do you want to measure (no) or calibrate (yes)?", QMessageBox::Yes | QMessageBox::No );
-        if(reply == QMessageBox::No) {
+       msgBox.setWindowTitle(tr("Calibrate or measure threshold?"));
+       msgBox.setText(tr("Do you want to measure or calibrate?"));
+       QAbstractButton* pButtonYes = msgBox.addButton(tr("Calibrate"), QMessageBox::YesRole);
+       msgBox.addButton(tr("Measure"), QMessageBox::NoRole);
+       msgBox.setIcon(QMessageBox::Question);
+       msgBox.exec();
+       if (msgBox.clickedButton()==pButtonYes) {
+           m_isThresholdCalibration = true;
+       }
+       else {
             m_isThresholdCalibration = false;
-        }
-        else {
-            m_isThresholdCalibration = true;
-        }
+       }
+
+
     }
     else if(m_modeIndex == 11 || (m_modeIndex == 12 && !m_isAutomatic)) {
         bool ok;
@@ -5661,9 +5680,11 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sd",bit,ch);
                         m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
                         int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid,chip, 2);
+                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
                         int diff = val - m_mean2[0][fec][hybrid][chip][ch];
                         m_mean[bit][fec][hybrid][chip].push_back(diff);
                     }
+                    m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
                     std::cout << "VMM " << (int)vmm << " channel " << (int)ch  << " done!" << std::endl;
                 }
 
@@ -5675,15 +5696,21 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                 int fec = GetFEC(vmm);
                 int hybrid = GetHybrid(vmm);
                 int chip = GetVMM(vmm);
-
-                for(int ch = 0; ch<64; ch++){
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0", 65);
+                m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
+                int global_threshold = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                for(int ch = 0; ch<64; ch++){  
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sm5_sm0",ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("st",0,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
                     int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
+                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
                     m_mean[0][fec][hybrid][chip].push_back(val);
+                    m_mean[1][fec][hybrid][chip].push_back(val- global_threshold);
+                    m_mean[2][fec][hybrid][chip].push_back(global_threshold);
                 }
+                m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
                 std::cout << "VMM " << (int)vmm << " done!" << std::endl;
             }
         }
