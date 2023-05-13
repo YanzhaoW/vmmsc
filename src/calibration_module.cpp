@@ -5680,7 +5680,6 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                         m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("sd",bit,ch);
                         m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
                         int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid,chip, 2);
-                        m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
                         int diff = val - m_mean2[0][fec][hybrid][chip][ch];
                         m_mean[bit][fec][hybrid][chip].push_back(diff);
                     }
@@ -5705,7 +5704,6 @@ void CalibrationModule::MeasurePedestalOrThreshold(bool isPedestal, bool isThres
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",1,ch);
                     m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hybrid,chip,false);
                     int val = m_daqWindow->m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hybrid, chip, 2);
-                    m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hybrid].m_vmms[chip].SetRegi("smx",0,ch);
                     m_mean[0][fec][hybrid][chip].push_back(val);
                     m_mean[1][fec][hybrid][chip].push_back(val- global_threshold);
                     m_mean[2][fec][hybrid][chip].push_back(global_threshold);
