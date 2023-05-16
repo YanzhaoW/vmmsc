@@ -50,7 +50,7 @@ public:
     void openConnection();
     void CheckLinkStatus(int fec, bool readHybridInfo);
     void UpdateSystemStatus();
-    void MeasureVMMI2C(std::vector<int> &values);
+    void MeasureVMMI2C();
 
     //FEC
     void InitFecWidgets();
@@ -90,6 +90,7 @@ private slots:
 
     //DAQ Window
     void onUpdateDAQSettings();
+    void onSelectVMM_TableWidgets(int row, int column);
 
     // FEC Window
     void onUpdateFECSettings();

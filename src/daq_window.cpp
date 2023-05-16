@@ -316,30 +316,46 @@ void DAQWindow::LoadConfig(QString text){
             LoadVMMChannelSettings();
             UpdateSystemStatus();
             m_ui->tabWidgetTree->setCurrentIndex(0);
+            QTreeWidgetItemIterator it( m_ui->treeWidgetSystem);
+            while (*it) {
+                m_ui->treeWidgetSystem->setCurrentItem((*it));
+                break;
+            }
         } //else file found
     } //end else not ""
 }
 
 
-void DAQWindow::MeasureVMMI2C(std::vector<int> &values) {
-    int n = 0;
+void DAQWindow::MeasureVMMI2C() {
     for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
         if (this->m_daq.GetFEC(fec)){
             for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
                 if(this->m_daq.m_fecs[fec].GetHybrid(hyb)) {
-                    if(!m_ui->onACQ->isChecked()) {
-                        m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, 0);
-                        m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, 1);
-                    }
                     for(int vmm=0; vmm<2;vmm++) {
-                        int adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, vmm, 2);
-                        if(m_ui->comboBoxI2CSetting->currentIndex()>=5 && m_ui->cbMeasureThreshold->isChecked()) {
-                            if(int(values.size()) >= n+1) {
-                                adc_result = adc_result - values[n];
-                            }
-                            n++;
-                        }
+                        int adc_result = 0;
 
+                        if(m_ui->comboBoxI2CSetting->currentIndex() >= 5 && m_ui->cbMeasureThreshold->isChecked()){
+                            m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].SetRegi("smx",1, m_ui->comboBoxI2CSetting->currentIndex()-5);
+                            if(!m_ui->onACQ->isChecked()) {
+                                m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, vmm);
+                            }
+                            int threshold = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, vmm, 2);
+
+
+                            m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].SetRegi("smx",0,m_ui->comboBoxI2CSetting->currentIndex()-5);
+                            if(!m_ui->onACQ->isChecked()) {
+                                m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, vmm);
+                            }
+                            adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, vmm, 2);
+                            adc_result = threshold - adc_result;
+                        }
+                        //Pulser DAC, Threshold DAC, Band gap, Temperature or just channel without threshold checkbox
+                        else {
+                            if(!m_ui->onACQ->isChecked()) {
+                                m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb, vmm);
+                            }
+                            adc_result = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, vmm, 2);
+                        }
                         QString text;
                         if(m_ui->comboBoxI2CSetting->currentIndex()==4){
                             double temperature = (725-adc_result)/1.85;
@@ -669,6 +685,73 @@ void DAQWindow::InitDAQWidgets() {
             this, SLOT( onUpdateDAQSettings() ));
     connect(m_ui->comboBoxI2CSetting, SIGNAL(currentIndexChanged(int)),
             this, SLOT( onUpdateDAQSettings() ));
+    connect(m_ui->tableWidget_LinkStatus, SIGNAL(cellClicked(int,int)),
+            this, SLOT( onSelectVMM_TableWidgets(int,int) ));
+    connect(m_ui->tableWidget_Temperature, SIGNAL(cellClicked(int,int)),
+            this, SLOT( onSelectVMM_TableWidgets(int,int) ));
+}
+
+void DAQWindow::onSelectVMM_TableWidgets(int row, int column) {
+    int hyb =0;
+    int vmm = 0;
+    int fec = column;
+    if(QObject::sender() == m_ui->tableWidget_LinkStatus) {
+        hyb = row;
+    }
+    else {
+        hyb = row/2;
+        vmm = row%2;
+    }
+    if (m_daq.GetFEC(fec) ){
+        if( m_daq.m_fecs[fec].GetHybrid(hyb) ){
+            m_fecIndex = fec;
+            m_hybridIndex = hyb;
+            m_vmmIndex = vmm;
+            QTreeWidgetItemIterator it( m_ui->treeWidgetSystem);
+            while (*it) {
+                QString txt = (*it)->text(0);
+
+                if(txt.startsWith("FEN")) {
+                    int theRing  =  txt.mid(4,2).toInt();
+                    int theFen =  txt.mid(8,2).toInt();
+                    int ring = m_map_id_ring_fen[m_fecIndex].first;
+                    int fen = m_map_id_ring_fen[m_fecIndex].second;
+
+                    if(fen == theFen && ring == theRing) {
+                        for(int n=0; n <(*it)->childCount(); n++) {
+                            QString txtHyb = (*it)->child(n)->text(0);
+                            if(txtHyb.startsWith("Hybrid")) {
+                                int hybId =  txtHyb.mid(7,1).toInt();
+                                if(hybId == m_hybridIndex) {
+                                    m_ui->treeWidgetSystem->setCurrentItem((*it)->child(n)->child(m_vmmIndex));
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                }
+                else if(txt.startsWith("FEC")) {
+                    int theFecId =  txt.mid(4,1).toInt();
+                    if(theFecId == m_fecIndex) {
+                        for(int n=0; n <(*it)->childCount(); n++) {
+                            QString txtHyb = (*it)->child(n)->text(0);
+                            if(txtHyb.startsWith("Hybrid")) {
+                                int hybId =  txtHyb.mid(7,1).toInt();
+                                if(hybId == m_hybridIndex) {
+                                    m_ui->treeWidgetSystem->setCurrentItem((*it)->child(n)->child(m_vmmIndex));
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+                ++it;
+            }
+
+        }
+    }
+
 }
 
 
@@ -711,14 +794,6 @@ void DAQWindow::onUpdateDAQSettings(){
                             else {
                                 m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetRegi("sm5_sm0", m_ui->comboBoxI2CSetting->currentIndex()-5);
                                 m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[1].SetRegi("sm5_sm0", m_ui->comboBoxI2CSetting->currentIndex()-5);
-                                for(int ch=0; ch<64; ch++) {
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetRegi("smx",0,ch);
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[1].SetRegi("smx",0,ch);
-                                }
-                                if(m_ui->cbMeasureThreshold->isChecked()) {
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetRegi("smx",1,m_ui->comboBoxI2CSetting->currentIndex()-5);
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[1].SetRegi("smx",1,m_ui->comboBoxI2CSetting->currentIndex()-5);
-                                }
                             }
                         }
                     }
@@ -732,25 +807,6 @@ void DAQWindow::onUpdateDAQSettings(){
 
     }
     else if(QObject::sender() == m_ui->pushButtonMeasureTemp){
-        std::vector<int> globalThreshold;
-        if(m_ui->comboBoxI2CSetting->currentIndex()>=5 && m_ui->cbMeasureThreshold->isChecked()) {
-            for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
-                if (this->m_daq.GetFEC(fec)){
-                    for(int hyb=0; hyb<HYBRIDS_PER_FEC; hyb++) {
-                        if(this->m_daq.m_fecs[fec].GetHybrid(hyb)) {
-                            if(!m_ui->onACQ->isChecked()) {
-                                for(int vmm=0; vmm<2; vmm++) {
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].SetRegi("sm5_sm0", 65);
-                                    m_daq.m_fecs[fec].m_fecConfigModule->ConfigVMM(hyb,vmm,false);
-                                    int global_threshold = m_daq.m_fecs[fec].m_fecConfigModule->ReadADC(hyb, vmm, 2);
-                                    globalThreshold.push_back(global_threshold);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         if(m_ui->comboBoxI2CSetting->currentIndex() > 0) {
             for (unsigned short fec=0; fec < FECS_PER_DAQ; fec++){
@@ -764,14 +820,6 @@ void DAQWindow::onUpdateDAQSettings(){
                             else {
                                 m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetRegi("sm5_sm0", m_ui->comboBoxI2CSetting->currentIndex()-5);
                                 m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[1].SetRegi("sm5_sm0", m_ui->comboBoxI2CSetting->currentIndex()-5);
-                                for(int ch=0; ch<64; ch++) {
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetRegi("smx",0,ch);
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[1].SetRegi("smx",0,ch);
-                                }
-                                if(m_ui->cbMeasureThreshold->isChecked()) {
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[0].SetRegi("smx",1,m_ui->comboBoxI2CSetting->currentIndex()-5);
-                                    m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[1].SetRegi("smx",1,m_ui->comboBoxI2CSetting->currentIndex()-5);
-                                }
                             }
                         }
                     }
@@ -782,7 +830,7 @@ void DAQWindow::onUpdateDAQSettings(){
             }
             else m_ui->sm5_sm0->setCurrentIndex(GetVMM("sm5_sm0")-1);
         }
-        MeasureVMMI2C(globalThreshold);
+        MeasureVMMI2C();
     }
     else if(QObject::sender() == m_ui->openConnection){
         openConnection();

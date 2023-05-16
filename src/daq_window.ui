@@ -3661,8 +3661,8 @@ stpp,stot[01]: ToT</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>524</width>
-                   <height>1410</height>
+                   <width>523</width>
+                   <height>1544</height>
                   </rect>
                  </property>
                  <property name="sizePolicy">
@@ -16626,7 +16626,7 @@ stpp,stot[01]: ToT</string>
               </font>
              </property>
              <property name="title">
-              <string>S6</string>
+              <string>Spartan FPGA</string>
              </property>
              <widget class="QWidget" name="gridLayoutWidget">
               <property name="geometry">
@@ -20275,7 +20275,7 @@ error</string>
      <x>0</x>
      <y>0</y>
      <width>1861</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
