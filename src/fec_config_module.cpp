@@ -2671,7 +2671,7 @@ QString FECConfigModule::ReadGeoPos(int hybrid_index)
         //read 1 byte from register 0
         result = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
     }
-    return result;
+    return result.mid(6);
 
 }
 // ------------------------------------------------------------------------ //
