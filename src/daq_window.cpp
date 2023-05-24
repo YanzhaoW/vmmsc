@@ -2051,7 +2051,7 @@ void DAQWindow::InitHybridWidgets() {
         m_ui->ckbc_info->setText("44.03 MHz");
         m_ui->ckdt_info->setText("176.11 MHz");
     }
-    if(g_clock_source == 3) {
+    else if(g_clock_source == 3) {
         m_ui->ckbc_info->setText("40 MHz");
         m_ui->ckdt_info->setText("180 MHz");
     }
