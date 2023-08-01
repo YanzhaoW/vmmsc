@@ -1,4 +1,4 @@
-# Unified VMM3 Slow Control and Calibration Software
+# VMM3a Slow Control and Calibration Software
 
 # Contents
 
@@ -100,6 +100,15 @@ The full installation procedure of Qt takes less than 1 hour on a machine with a
 Detailed instructions on how to download, setup the installation, and install Qt are described in this set of
 [Qt installation slides](https://twiki.cern.ch/twiki/pub/Atlas/NSWVmmDaqSoftware/qt_installation_PDF.pdf). Please
 use these instructions to setup Qt for use with **VMM Software**.
+
+
+## Documentation
+
+The working principle of the calibration procedures of the slow control are described in:
+
+L. Scharenberg, Next-Generation Electronics for the Read-Out of Micro-Pattern Gaseous Detectors, PhD Thesis, Rheinische Friedrich-Wilhelms-Universität Bonn (2022), CERN-THESIS-2022-360. https://cds.cern.ch/record/2860765/
+
+The actual operation of the slow control GUI is shown in the [VMM3a/SRS documentation](https://vmm-srs.docs.cern.ch).
 
 ## Contact
 
