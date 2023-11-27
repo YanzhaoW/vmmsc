@@ -86,9 +86,15 @@ bool DAQConfig::LoadDAQConfig(std::string fname) {
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].SetReg("TP_pol", val);
             val = hybridObj["TP_disable"].toInt();
             m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].SetReg("TP_disable", val);
+            QString description = hybridObj["description"].toString();
+            m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].SetInfo("description", description.toStdString());
+
             for (int vmm = 0; vmm < 2; vmm++) {
                 QString name = "vmm" + QString::number(vmm);
                 const auto &vmmObj = hybridObj[name].toObject();
+                QString description = vmmObj["description"].toString();
+                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].SetInfo("description", description.toStdString());
+
                 for (const auto &vmmSetting : (*m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].m_vmmSettings->m_globalRegs)) {
                     unsigned int val =  vmmObj[QString::fromStdString(vmmSetting.first)].toInt();
                     m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].SetRegister(vmmSetting.first, val);
@@ -174,6 +180,11 @@ bool DAQConfig::WriteDAQConfig(std::string fname) {
                     for (unsigned short vmm = 0; vmm < VMMS_PER_HYBRID; vmm++) {
                         QJsonObject vmmObject;
                         vmmObject.insert("vmm", vmm);
+                        vmmObject.insert(
+                            "description",
+                            QString::fromStdString(
+                                m_daqWindow->m_daq.m_fecs[fec].m_hybrids[hyb].m_vmms[vmm].GetInfo(
+                                    "description")));
                         for (const auto &entr : (*m_daqWindow->m_daq.m_fecs[fec]
                                                       .m_hybrids[hyb]
                                                       .m_vmms[vmm]

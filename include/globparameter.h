@@ -3,7 +3,7 @@
 #define GLOBPARAMETER
 
 #include <vector>
-#include <string>
+#include <QString>
 #define CONFIG_DIR "configs"
 
 #define RINGS_PER_DAQ 12 // max number, can be actived/deactivated
@@ -21,5 +21,6 @@ extern bool g_use_config_check;
 extern double g_clock_period;
 extern double g_time_factor;
 extern bool g_connection_ok;
-extern std::string g_card_name;
+extern QString g_card_name;
+extern QString g_instrument;
 #endif // GLOBPARAMETER

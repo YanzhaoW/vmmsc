@@ -2,4 +2,22 @@
     <qresource prefix="/">
         <file>directory.png</file>
     </qresource>
+	<qresource prefix="/">
+        <file>srs.png</file>
+    </qresource>
+	<qresource prefix="/">
+        <file>ess.png</file>
+    </qresource>
+	<qresource prefix="/">
+        <file>cern.png</file>
+    </qresource>
+	<qresource prefix="/">
+        <file>mb.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>detg.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>nmx.png</file>
+    </qresource>
 </RCC>

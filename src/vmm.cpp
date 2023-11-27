@@ -34,7 +34,7 @@ void VMM::LoadDefault(){
     SetRegi("srat",0);
     SetRegi("sbip",true);
     SetRegi("sbfm",true);
-    SetRegi("sdcks",true);
+    SetRegi("sdcks",false);
 
     //    SetRegi("sttt",1);
     //    SetRegi("stot",1);

@@ -367,8 +367,26 @@ void FECConfigModule::FillGlobalRegisters(std::vector<QString>& global, int hybr
                  QString::number( m_fec->GetRegVal("sL0enaV") ) );
     sequence++;
 
-    //[22,29] not used
-    sequence+=8;
+    // congurable feedback currents (factor 10x)
+    // [22]
+    spi0.replace(sequence,1,
+                 QString::number( m_fec->GetVMM( hybrid_index,  vmm_index,"slh") ) );
+    sequence++;
+
+    // congurable feedback currents (factor 100x)
+    // [23]
+    spi0.replace(sequence,1,
+                 QString::number( m_fec->GetVMM( hybrid_index,  vmm_index,"slxh") ) );
+    sequence++;
+
+    // extreme charge handling compensation
+    // [24]
+    spi0.replace(sequence,1,
+                 QString::number( m_fec->GetVMM( hybrid_index,  vmm_index,"stgc") ) );
+    sequence++;
+
+    //[25,29] not used
+    sequence+=5;
 
     // reset (1)
     // [30]
@@ -850,10 +868,6 @@ void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hyb
                              12,2,QChar('0'));
     spi1.replace(sequence,tmp.size(),tmp);
     sequence += tmp.size();
-
-
-
-    //fec->GetRegVal("sL0enaV")
 
 
     if(m_dbg)
@@ -1498,7 +1512,7 @@ void FECConfigModule::ResetFEC()
             GetSocketHandler().ProcessReply();
         } else {
             if(IsDbgEnabled())GetMessageHandler()("Timeout while waiting for replies from VMM",
-                                    "FEC_config_module::resetFEC",true);
+                                                  "FEC_config_module::resetFEC",true);
         }
     }
     GetSocketHandler().CloseAndDisconnect("FEC_config_module::resetFEC");

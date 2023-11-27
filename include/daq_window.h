@@ -82,7 +82,7 @@ public:
     std::map<int,QPair<int,int>> m_map_id_ring_fen;
     std::map<QPair<int,int>,int> m_map_ring_fen_id;
 
-
+    bool eventFilter(QObject *obj, QEvent *e);
 
 private slots:
     //Calibration Window

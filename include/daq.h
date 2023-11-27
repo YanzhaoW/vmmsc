@@ -37,7 +37,8 @@ public:
     bool ValidNewFECIP(unsigned int ip);
     void ACQHandler(bool on);
     std::vector<bool> m_fecActs;//binary to store which fecs are activated
-   // unsigned int GetFECID_from_IP()
+
+    QString GetClockSourceSettings(int clockSource,int slowControl, QString instrument);
 private:
     std::map<int, int> *m_hybridPos = new std::map<int, int>; // map< int FEC*100 + hybrid_index*10, int position>
     std::map<int, int> *m_hybridAxis = new std::map<int, int>; // map< int FEC*100 + hybrid_index*10, int axis> 0 for x axis and 1 for y

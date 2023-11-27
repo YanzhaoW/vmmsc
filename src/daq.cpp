@@ -16,6 +16,52 @@ DAQ::DAQ():
 
 }
 
+
+QString DAQ::GetClockSourceSettings(int clockSource,int slowControl, QString instrument) {
+    QString setting = "NOT SUPPORTED";
+    if(clockSource==0) {
+        if(slowControl == 0) {
+            setting = instrument;
+            if(instrument == "AMOR") {
+                setting += " instrument PSI";
+            }
+            else {
+                setting += " instrument";
+            }
+        }
+        else {
+            setting = "NOT SUPPORTED";
+        }
+    }
+    else if(clockSource==1) {
+    	if(slowControl < 2) {
+             setting = "ESS 44.444 MHz";
+        }
+        else {
+            setting = "NOT SUPPORTED";
+        }
+    }
+    else if(clockSource==2) {
+
+        if(slowControl == 2) {
+            setting = "SRS 44.444 MHz";
+        }
+        else {
+            setting = "NOT SUPPORTED";
+        }
+    }
+    else if(clockSource==3) {
+        if(slowControl == 2) {
+            setting = "SRS 40.000 MHz";
+        }
+        else {
+            setting = "NOT SUPPORTED";
+        }
+
+    }
+    return setting;
+}
+
 void DAQ::SendAll(bool useConfigCheck){
 
     for (unsigned short j=0; j < FECS_PER_DAQ; j++){

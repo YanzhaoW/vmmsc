@@ -148,7 +148,7 @@ private:
     void Receive(const char* buffer, long size, int fecId);
     int Receive_VMM3(const char* buffer, long size, int fecId);
     int Parse_VMM3(uint32_t header, uint32_t data1, uint32_t data2, uint32_t data3, uint32_t data4, int readoutIndex);
-
+    void SaveCorrectionsEFU(QString name);
 
     const static int maxModes = 20;
 
@@ -250,7 +250,7 @@ private:
     const static int m_number_bits_offline_timewalk = 10;
     const static int m_number_bits_offline_latency = 15;
     const static int m_start_reset_latency = 42;
-    const static int m_start_tp_latency = 56;
+    const static int m_start_tp_latency = 60;
 
     uint64_t m_srs_timestamp_end[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
     uint64_t m_srs_timestamp_start[FECS_PER_DAQ][HYBRIDS_PER_FEC][VMMS_PER_HYBRID];
