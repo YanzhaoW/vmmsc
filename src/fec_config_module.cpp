@@ -916,7 +916,6 @@ void FECConfigModule::FillGlobalRegisters2(std::vector<QString>& global, int hyb
 
 bool FECConfigModule::Connect()
 {
-
     QString ip =  m_fec->GetIP();
 
     if(GetSocketHandler().IsFECSocketOK() && m_isPinged) {
@@ -1110,8 +1109,7 @@ void FECConfigModule::ConfigFEC()
         uint32_t trgout_sel = 0;
         // index = 0: input, index 1-4096: generate trigger
         if(trgout_time > 0) {
-            trgout_sel = 1;
-            trgout_time =  trgout_time - 1;
+           trgout_time =  trgout_time - 1;
         }
 
         uint32_t trgin_on = 0;
@@ -1130,6 +1128,9 @@ void FECConfigModule::ConfigFEC()
             trgout_invert = trgout_invert - 1;
             //create a trigger output
             trgout_on = 1;
+        }
+        if(trgout_on == 1) {
+             trgout_sel = 1;
         }
         uint32_t trg_on_off =  trgin_on + 2*trgout_on;
         uint32_t trg_invert =  trgin_invert +2*trgout_invert +4*trgout_sel;

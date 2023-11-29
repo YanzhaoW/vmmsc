@@ -163,7 +163,7 @@ void FEC::LoadDefault(){
 
     (*m_regNames)[37]="trgin_invert";            (*m_reg)[37] = 0;
     (*m_regNames)[38]="trgout_invert";           (*m_reg)[38] = 0;
-    (*m_regNames)[39]="trgout_time";             (*m_reg)[39] = 1;
+    (*m_regNames)[39]="trgout_time";             (*m_reg)[39] = 0;
 
 
     m_fec_info = {{"firmware_version", ""}, {"board_id", ""},{"description", ""}};
