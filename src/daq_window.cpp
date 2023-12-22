@@ -11,7 +11,11 @@ using namespace std;
 std::vector<int> g_hybrid_i2c;
 int g_clock_source = CLOCK_SOURCE;
 bool g_use_config_check = true;
-
+#if BOARD == 1
+int g_board = 1;
+#else
+int g_board = 0;
+#endif
 
 #if CLOCK_SOURCE == 1
 double g_clock_period = 22.5;

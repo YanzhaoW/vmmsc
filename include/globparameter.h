@@ -17,6 +17,7 @@
 extern std::vector<int> g_hybrid_i2c;
 extern int g_clock_source;
 extern int g_slow_control;
+extern int g_board;
 extern bool g_use_config_check;
 extern double g_clock_period;
 extern double g_time_factor;
