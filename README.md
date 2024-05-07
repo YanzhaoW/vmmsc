@@ -13,7 +13,7 @@
 
 
 ## Prerequisites
-The slow control software controls one or several SRS FEC v6 cards or ESS assister cards. If SRS FEC cards are used, the VMM3a hybrids have to be connected to a DVM v5 card. For SRS FECs, the recommended bitfile (fecv6_vmm3_top_21032100.bit) is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read "21031200".
+The slow control software controls one or several SRS FEC v6 cards or ESS assister cards. If SRS FEC cards are used, the VMM3a hybrids have to be connected to a DVM v5 card. For SRS FECs, the recommended bitfile (1e58934_44MHz_FEC.bit) is provided in the slow control repo. When reading the firmware version number with the slow control (button "system parameters"), the version should read something like "21031200".
 
 A really essential tool that you should install even before installing the slow control is Wireshark. Please install Wireshark with Lua support. In the slow control folder, we provide a lua script, that disassembles the UDP packages from the FEC, and displays the hits from the VMMs. The script vmm3a_plugin.lua is also provided in the slow control repository. Usually we create an alias in .bashrc to start Wireshark with the script:
 ```
@@ -21,19 +21,14 @@ alias essws='wireshark -X lua_script:/path_to_slow_control/vmmsc/vmm3a_plugin.lu
 ```
 
 ## Recommended Release
-The recommended release is **v1.0** which is for *VMM3* slow control and calibration. To obtain this release do:
+The recommended release is the large_systems branch, which is the the default one. To obtain it, do:
 ```
-git clone https://bitbucket.org/europeanspallationsource/slow_control_vmm3a.git
+git clone https://gitlab.cern.ch/rd51-slow-control/vmmsc
 ```
 and follow the installation instructions below.
 
-## Requirements
-
-Here we list the (tested) software requirements.
-
-* [Qt 5.7](https://www.qt.io/qt5-11)
-* C++11 (gcc >=4.7)
-
+For the dependencies see https://vmm-srs.docs.cern.ch/software/ and https://vmm-srs.docs.cern.ch/software/installation/, as well as the instructions below.
+Please read them before proceeding with the installation steps.
 
 
 ## Installation
