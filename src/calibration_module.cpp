@@ -449,7 +449,6 @@ void CalibrationModule::StopDataTaking()
 }
 void CalibrationModule::StartDataTaking()
 {
-     std::cout << "StartDataTaking 1 " << std::endl;
     ConnectDAQSocket();
     m_daqWindow->m_daq.ACQHandler(false);
     m_daqWindow->m_ui->onACQ->setCheckable(true);
@@ -5172,16 +5171,13 @@ void CalibrationModule::ConnectDAQSocket()
     if(g_clock_source <= 1) {
         daqport = 9000;
     }
-    std::cout << "1" << std::endl;
     if(!m_udpSocket) {
         GetMessageHandler()("Initializing DAQ socket...","calibration_module::connectDAQSocket");
         m_udpSocket = new QUdpSocket();
         connect(m_udpSocket, SIGNAL(readyRead()), this, SLOT(readEvent()));
     }
-    std::cout << "2 " << std::endl;
     //if(m_udpSocket->state() == QAbstractSocket::UnconnectedState) {
     if(m_udpSocket->state() != m_udpSocket->BoundState) {
-        std::cout << "3" << std::endl;
         if(IsDbgActive()){
             sx << "About to re-bind DAQ socket";
             GetMessageHandler()(sx,"calibration_module::connectDAQSocket"); sx.str("");
