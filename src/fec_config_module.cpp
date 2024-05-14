@@ -1,6 +1,7 @@
 #include <QThread>
 #include <QMessageBox>
 #include "fec_config_module.h"
+#include "globparameter.h"
 #include "vmm_sys_regs_map.h"
 
 FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
@@ -2030,7 +2031,10 @@ void FECConfigModule::writeFECip(int FECip)
         cmdType = "AA"; // pairs
         cmdLength = "FFFF";
         msbCounter = "0x80000000";
-
+        quint32 address = 0xa0f30000;
+        if(g_board == 1) {
+            address = 0xa8f30000;
+        }
         QString ip = m_fec->GetIP();
         datagram.clear();
         QDataStream out (&datagram, QIODevice::WriteOnly);
@@ -2053,7 +2057,7 @@ void FECConfigModule::writeFECip(int FECip)
         // word
         ///////////////////////////
         out << (quint32) 0 //[12,15]
-            << (quint32) 0xa8f30000 // FEC ip register on FEC EEPROM (via I2C)
+            << (quint32) address // FEC ip register on FEC EEPROM (via I2C)
             << (quint32) FECip; // value 167772162=10.0.0.2
 
         if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::writeFECip")) {
@@ -2099,7 +2103,10 @@ void FECConfigModule::writeDAQip(int DAQip)
         cmdType = "AA"; // pairs
         cmdLength = "FFFF";
         msbCounter = "0x80000000";
-
+        quint32 address = 0xa0f30012;
+        if(g_board == 1) {
+            address = 0xa8f30012;
+        }
         QString ip = m_fec->GetIP();
 
 
@@ -2124,7 +2131,7 @@ void FECConfigModule::writeDAQip(int DAQip)
         // word
         ///////////////////////////
         out << (quint32) 0x0 //[12,15]
-            << (quint32) 0xa8f30012// DAQ ip register on FEC EEPROM (via I2C)
+            << (quint32) address// DAQ ip register on FEC EEPROM (via I2C)
             << (quint32) DAQip; // value 167772162=10.0.0.2
 
         if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::writeDAQip")) {

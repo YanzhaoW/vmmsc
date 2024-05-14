@@ -13,6 +13,8 @@ int g_clock_source = CLOCK_SOURCE;
 bool g_use_config_check = true;
 #if BOARD == 1
 int g_board = 1;
+#elif BOARD == 2
+int g_board = 2;
 #else
 int g_board = 0;
 #endif

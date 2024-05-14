@@ -94,7 +94,7 @@ public slots:
 private:
 
     DAQWindow *m_daqWindow;
-    bool m_dbg = false;
+    bool m_dbg = true;
     QUdpSocket *m_udpSocket;
 
 

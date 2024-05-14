@@ -16,6 +16,7 @@ DEFINES += SLOW_CONTROL=2
 # Define board type
 # 0 = SRS
 # 1 = KC705
+# 2 = uROC
 DEFINES += BOARD=0
 #####################################################
 # directory and machine specific items here
