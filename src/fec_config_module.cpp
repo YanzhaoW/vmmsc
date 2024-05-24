@@ -12,7 +12,7 @@ FECConfigModule::FECConfigModule(FEC *top, QObject *parent) :
     m_messageHandler(0)
 {
     g_hybrid_i2c.clear();
-    if(g_clock_source <= 1 || g_board == 1) {
+    if(g_clock_source <= 1 || g_board > 0) {
         g_hybrid_i2c.push_back(0);
         g_hybrid_i2c.push_back(1);
         g_hybrid_i2c.push_back(2);
