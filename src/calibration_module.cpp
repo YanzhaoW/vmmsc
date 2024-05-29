@@ -1165,7 +1165,7 @@ void CalibrationModule::SaveToLog() {
             norm = static_cast<double>(size);
             if(size>0)
             {
-                mean = std::accumulate(m_mean[0][fec][hybrid][chip].begin(),m_mean[0][fec][hybrid][chip].end(),0.0)/norm;
+                mean = std::accumulate(m_mean[0][fec][hybrid][chip].begin(),m_mean[0][fec][hybrid][chip].end(),0ll)/norm;
 
                 auto nth = m_mean[0][fec][hybrid][chip].begin() + (50*m_mean[0][fec][hybrid][chip].size())/100;
                 std::nth_element(m_mean[0][fec][hybrid][chip].begin(), nth, m_mean[0][fec][hybrid][chip].end());
@@ -1184,7 +1184,7 @@ void CalibrationModule::SaveToLog() {
                     return accumulator + ((val - mean)*(val - mean) / (size - 1));
                 };
 
-                stddev = std::accumulate(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end(), 0.0, variance_func);
+                stddev = std::accumulate(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end(), 0ll, variance_func);
                 stddev = sqrt(stddev);
 
                 std::vector<double>::iterator result = std::min_element(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end());
@@ -4751,8 +4751,8 @@ void CalibrationModule::AccumulateData(){
                             }
                             if(size>0)
                             {
-                                mean = std::accumulate(m_data[bit][fec][hybrid][chip][ch].begin(),m_data[bit][fec][hybrid][chip][ch].end(),0.0)/norm;
-                                mean2 = std::accumulate(m_data2[bit][fec][hybrid][chip][ch].begin(),m_data2[bit][fec][hybrid][chip][ch].end(),0.0)/norm;
+                                mean = std::accumulate(m_data[bit][fec][hybrid][chip][ch].begin(),m_data[bit][fec][hybrid][chip][ch].end(),0ll)/norm;
+                                mean2 = std::accumulate(m_data2[bit][fec][hybrid][chip][ch].begin(),m_data2[bit][fec][hybrid][chip][ch].end(),0ll)/norm;
                                 auto nth = m_data[bit][fec][hybrid][chip][ch].begin() + (50*m_data[bit][fec][hybrid][chip][ch].size())/100;
                                 std::nth_element(m_data[bit][fec][hybrid][chip][ch].begin(), nth, m_data[bit][fec][hybrid][chip][ch].end());
                                 median = *nth;
@@ -4853,7 +4853,7 @@ void CalibrationModule::AccumulateData(){
                                     long cnt = std::count_if(m_data[bit][fec][hybrid][chip][ch].begin(),it, [](int val) { return true; });
                                     if(cnt > 0) {
                                         //Algorithm to calculate mean TDC
-                                        long tdc = std::accumulate(m_data[bit][fec][hybrid][chip][ch].begin(),it,0);
+                                        long tdc = std::accumulate(m_data[bit][fec][hybrid][chip][ch].begin(),it,0ll);
                                         //remove the bcid from the combined data entry (bcid*1000+tdc)
                                         meanTDC = (tdc - bcid*1000*cnt);
                                         //calculate the mean tdc for the bit value and bcid
