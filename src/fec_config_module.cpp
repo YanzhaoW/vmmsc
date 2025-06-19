@@ -2719,6 +2719,7 @@ QString FECConfigModule::ReadGeoPos(int hybrid_index)
     QString result="0";
     if(g_slow_control != 2) {
         result = ESS_ReadSc("sc_i2c_geo_id", hybrid_index, "hyb_i2c_geoid0" + QString::number(hybrid_index), ok);
+        result = result.mid(6);
     }
     else {
         //send 1 byte of 0 to choose register 0
@@ -2727,7 +2728,7 @@ QString FECConfigModule::ReadGeoPos(int hybrid_index)
         //read 1 byte from register 0
         result = CommunicateWithHybridI2C(66, hybrid_index, 1, 0, 1);
     }
-    return result.mid(6);
+    return result;
 
 }
 // ------------------------------------------------------------------------ //
