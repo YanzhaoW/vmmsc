@@ -76,14 +76,16 @@ RCC_DIR     += ./rcc/
 UI_DIR      += ./ui/
 
 linux {
-    QMAKE_CXXFLAGS += -std=c++11
+    QMAKE_CXXFLAGS += -std=c++17
+    QMAKE_CXXFLAGS += -fmax-errors=3
+    QMAKE_CXXFLAGS += -isystem /usr/include/x86_64-linux-gnu/qt6
 }
 else:win32 {
     LIBS += -lws2_32
 }
 else {
     QMAKE_CXXFLAGS += -stdlib=libc++
-    QMAKE_CXXFLAGS += -std=c++11
+    QMAKE_CXXFLAGS += -std=c++17
     QMAKE_LFLAGS   += -stdlib=libc++
 }
 

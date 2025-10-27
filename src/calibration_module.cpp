@@ -2912,13 +2912,13 @@ void CalibrationModule::PlotData(){
             plot->addGraph();
             plot->graph(0)->setPen(pen);
             if(m_modeIndex == 24) {
-                plot->graph(0)->setData( QVector<double>::fromStdVector(m_adcs), QVector<double>::fromStdVector(m_adc_data[fec][hybrid][chip]));
+                plot->graph(0)->setData( QVector<double>(m_adcs.begin(), m_adcs.end()), QVector<double>(m_adc_data[fec][hybrid][chip].begin(), m_adc_data[fec][hybrid][chip].end()));
             }
             else if(m_modeIndex == 25) {
-                plot->graph(0)->setData( QVector<double>::fromStdVector(m_times), QVector<double>::fromStdVector(m_adc_data[fec][hybrid][chip]));
+                plot->graph(0)->setData( QVector<double>(m_times.begin(), m_times.end()), QVector<double>(m_adc_data[fec][hybrid][chip].begin(), m_adc_data[fec][hybrid][chip].end()));
             }
             else if(m_modeIndex == 20) {
-                plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_channel_data[fec][hybrid][chip]));
+                plot->graph(0)->setData( QVector<double>(m_x.begin(), m_x.end()), QVector<double>(m_channel_data[fec][hybrid][chip].begin(), m_channel_data[fec][hybrid][chip].end()));
             }
             else if(m_modeIndex == 21) {
                 plot->plotLayout()->addElement(0, 1, colorScale);
@@ -2949,7 +2949,7 @@ void CalibrationModule::PlotData(){
                 plot->yAxis->setLabel(title);
             }
             else {
-                plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                plot->graph(0)->setData( QVector<double>(m_x.begin(), m_x.end()), QVector<double>(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end()));
             }
             if(m_modeIndex != 21) {
                 plot->yAxis->setLabel(title);
@@ -2973,8 +2973,8 @@ void CalibrationModule::PlotData(){
 
                         plot->addGraph();
                         plot->graph(bit*numPlots)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
+                            QVector<double>(m_x.begin(), m_x.end()),
+                            QVector<double>(m_mean[bit][fec][hybrid][chip].begin(), m_mean[bit][fec][hybrid][chip].end()));
                         plot->graph(bit*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -2989,8 +2989,8 @@ void CalibrationModule::PlotData(){
                         }
                         plot->addGraph();
                         plot->graph(bit*numPlots+1)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(y));
+                            QVector<double>(m_x.begin(), m_x.end()),
+                            QVector<double>(y.begin(), y.end()));
                         plot->graph(bit*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->graph(bit*numPlots+1)->removeFromLegend();
@@ -2999,8 +2999,8 @@ void CalibrationModule::PlotData(){
 
                         plot->addGraph();
                         plot->graph(bit*numPlots+2)->setData(
-                            QVector<double>::fromStdVector(m_x),
-                            QVector<double>::fromStdVector(y2));
+                            QVector<double>(m_x.begin(), m_x.end()),
+                            QVector<double>(y2.begin(), y2.end()));
 
                         plot->graph(bit*numPlots+2)->setPen(QPen(Qt::blue,1,Qt::DashLine));
                         if(bit > 0) {
@@ -3017,8 +3017,8 @@ void CalibrationModule::PlotData(){
                             }
                             plot->addGraph();
                             plot->graph(bit*numPlots+3)->setData(
-                                QVector<double>::fromStdVector(m_x),
-                                QVector<double>::fromStdVector(y3));
+                                QVector<double>(m_x.begin(), m_x.end()),
+                                QVector<double>(y3.begin(), y3.end()));
                             plot->graph(bit*numPlots+3)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
                             if(bit > 0) {
                                 plot->graph(bit*numPlots+2)->removeFromLegend();
@@ -3055,29 +3055,29 @@ void CalibrationModule::PlotData(){
                         //}
                     }
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_offset[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_offset[fec][hybrid][chip].begin(), m_offset[fec][hybrid][chip].end()));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                     plot->graph(0)->setName("offset");
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_slope[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_slope[fec][hybrid][chip].begin(), m_slope[fec][hybrid][chip].end()));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                     plot->graph(1)->setName("slope");
                     if(numPlots == 4) {
                         plot->addGraph();
                         plot->graph(2)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_adc_offset[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_adc_offset[fec][hybrid][chip].begin(), m_file_adc_offset[fec][hybrid][chip].end()));
                         plot->graph(2)->setPen(QPen(Qt::cyan,2,Qt::DotLine));
                         plot->graph(2)->setName("offset from file");
 
                         plot->addGraph();
                         plot->graph(3)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_adc_slope[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_adc_slope[fec][hybrid][chip].begin(), m_file_adc_slope[fec][hybrid][chip].end()));
                         plot->graph(3)->setPen(QPen(Qt::green,2,Qt::DotLine));
                         plot->graph(3)->setName("slope from file");
                     }
@@ -3108,15 +3108,15 @@ void CalibrationModule::PlotData(){
                     }
                     plot->addGraph();
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(y.begin(), y.end()));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue));
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(yf));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(yf.begin(), yf.end()));
                     plot->graph(1)->setPen(QPen(Qt::red));
 
 
@@ -3160,8 +3160,8 @@ void CalibrationModule::PlotData(){
                     plot->addGraph();
 
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(y.begin(), y.end()));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::darkRed));
                     plot->graph(0)->setBrush(QBrush(Qt::red));
@@ -3208,16 +3208,16 @@ void CalibrationModule::PlotData(){
                             //}
                         }
                         plot->graph(bit*numPlots)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(y));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(y.begin(), y.end()));
                         plot->graph(bit*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
                         }
                         plot->addGraph();
                         plot->graph(bit*numPlots+1)->setData(
-                            QVector<double>::fromStdVector(xc),
-                            QVector<double>::fromStdVector(yc));
+                            QVector<double>(xc.begin(), xc.end()),
+                            QVector<double>(yc.begin(), yc.end()));
                         plot->graph(bit*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                         if(bit > 0) {
                             plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -3237,8 +3237,8 @@ void CalibrationModule::PlotData(){
                             }
                             plot->addGraph();
                             plot->graph(bit*numPlots+2)->setData(
-                                QVector<double>::fromStdVector(x),
-                                QVector<double>::fromStdVector(y3));
+                                QVector<double>(x.begin(), x.end()),
+                                QVector<double>(y3.begin(), y3.end()));
                             plot->graph(bit*numPlots+2)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
                             if(bit > 0) {
                                 plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -3273,29 +3273,29 @@ void CalibrationModule::PlotData(){
                         //}
                     }
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_offset[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_offset[fec][hybrid][chip].begin(), m_offset[fec][hybrid][chip].end()));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                     plot->graph(0)->setName("offset");
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_slope[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_slope[fec][hybrid][chip].begin(), m_slope[fec][hybrid][chip].end()));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                     plot->graph(1)->setName("slope");
                     if(numPlots == 4) {
                         plot->addGraph();
                         plot->graph(2)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_time_offset[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_time_offset[fec][hybrid][chip].begin(), m_file_time_offset[fec][hybrid][chip].end()));
                         plot->graph(2)->setPen(QPen(Qt::cyan,2,Qt::DotLine));
                         plot->graph(2)->setName("offset from file");
 
                         plot->addGraph();
                         plot->graph(3)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_time_slope[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_time_slope[fec][hybrid][chip].begin(), m_file_time_slope[fec][hybrid][chip].end()));
                         plot->graph(3)->setPen(QPen(Qt::green,2,Qt::DotLine));
                         plot->graph(3)->setName("slope from file");
                     }
@@ -3333,15 +3333,15 @@ void CalibrationModule::PlotData(){
                         }
                     }
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(y.begin(), y.end()));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                     plot->graph(0)->setName("measured");
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(yf));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(yf.begin(), yf.end()));
                     plot->graph(1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                     plot->graph(1)->setName(QString("fit: " + QString::number(slope) + "* t + " + QString::number(offset)));
 
@@ -3373,8 +3373,8 @@ void CalibrationModule::PlotData(){
                         }
 
                         plot->graph(n)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(y));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(y.begin(), y.end()));
                         plot->graph(n)->setScatterStyle(QCPScatterStyle::ssDisc);
 
                         if(bcid-m_reference_BCID == -2) {
@@ -3422,8 +3422,8 @@ void CalibrationModule::PlotData(){
                         }
 
                         plot->graph(n)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(y));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(y.begin(), y.end()));
 
                         if(bcid-m_reference_BCID == -2) {
                             plot->graph(n)->setPen(QPen(Qt::darkCyan,2,Qt::SolidLine));
@@ -3507,8 +3507,8 @@ void CalibrationModule::PlotData(){
                             //Time
                             plot->addGraph(plot->xAxis, plot->yAxis);
                             plot->graph(n*numPlots)->setData(
-                                QVector<double>::fromStdVector(m_x),
-                                QVector<double>::fromStdVector(y0));
+                                QVector<double>(m_x.begin(), m_x.end()),
+                                QVector<double>(y0.begin(), y0.end()));
                             plot->graph(n*numPlots)->setPen(QPen(Qt::black,1,Qt::SolidLine));
                             if(n > 0) {
                                 plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -3517,8 +3517,8 @@ void CalibrationModule::PlotData(){
                             //ADC
                             plot->addGraph(plot->xAxis, plot->yAxis2);
                             plot->graph(bit*numPlots+1)->setData(
-                                        QVector<double>::fromStdVector(m_x),
-                                        QVector<double>::fromStdVector(m_mean2[bit][fec][hybrid][chip]));
+                                        QVector<double>(m_x.begin(), m_x.end()),
+                                        QVector<double>(m_mean2[bit][fec][hybrid][chip].begin(), m_mean2[bit][fec][hybrid][chip].end()));
                             plot->graph(bit*numPlots+1)->setPen(QPen(Qt::blue,1,Qt::DashLine));
 
                             if(bit > 0) {
@@ -3528,8 +3528,8 @@ void CalibrationModule::PlotData(){
 
                             plot->addGraph(plot->xAxis, plot->yAxis);
                             plot->graph(n*numPlots+1)->setData(
-                                QVector<double>::fromStdVector(m_x),
-                                QVector<double>::fromStdVector(y2));
+                                QVector<double>(m_x.begin(), m_x.end()),
+                                QVector<double>(y2.begin(), y2.end()));
                             plot->graph(n*numPlots+1)->setPen(QPen(Qt::red,1,Qt::SolidLine));
                             if(n > 0) {
                                 plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -3539,8 +3539,8 @@ void CalibrationModule::PlotData(){
                             if(numPlots == 3) {
                                 plot->addGraph(plot->xAxis, plot->yAxis);
                                 plot->graph(n*numPlots+2)->setData(
-                                    QVector<double>::fromStdVector(m_x),
-                                    QVector<double>::fromStdVector(y3));
+                                    QVector<double>(m_x.begin(), m_x.end()),
+                                    QVector<double>(y3.begin(), y3.end()));
                                 plot->graph(n*numPlots+2)->setPen(QPen(Qt::magenta,1,Qt::SolidLine));
                                 if(n > 0) {
                                     plot->legend->removeItem(plot->legend->itemCount()-1);
@@ -3572,29 +3572,29 @@ void CalibrationModule::PlotData(){
                     }
                     plot->addGraph();
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_fit_a[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_fit_a[fec][hybrid][chip].begin(), m_fit_a[fec][hybrid][chip].end()));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                     plot->graph(0)->setName("a");
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_fit_b[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_fit_b[fec][hybrid][chip].begin(), m_fit_b[fec][hybrid][chip].end()));
                     plot->graph(1)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                     plot->graph(1)->setName("b");
 
                     plot->addGraph();
                     plot->graph(2)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_fit_c[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_fit_c[fec][hybrid][chip].begin(), m_fit_c[fec][hybrid][chip].end()));
                     plot->graph(2)->setPen(QPen(Qt::green,2,Qt::SolidLine));
                     plot->graph(2)->setName("c");
 
                     plot->addGraph();
                     plot->graph(3)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(m_fit_d[fec][hybrid][chip]));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(m_fit_d[fec][hybrid][chip].begin(), m_fit_d[fec][hybrid][chip].end()));
                     plot->graph(3)->setPen(QPen(Qt::cyan,2,Qt::SolidLine));
                     plot->graph(3)->setName("d");
 
@@ -3602,29 +3602,29 @@ void CalibrationModule::PlotData(){
                     if(numPlots == 8) {
                         plot->addGraph();
                         plot->graph(4)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_timewalk_a[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_timewalk_a[fec][hybrid][chip].begin(), m_file_timewalk_a[fec][hybrid][chip].end()));
                         plot->graph(4)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                         plot->graph(4)->setName("a from file");
 
                         plot->addGraph();
                         plot->graph(5)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_timewalk_b[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_timewalk_b[fec][hybrid][chip].begin(), m_file_timewalk_b[fec][hybrid][chip].end()));
                         plot->graph(5)->setPen(QPen(Qt::darkGreen,2,Qt::SolidLine));
                         plot->graph(5)->setName("b from file");
 
                         plot->addGraph();
                         plot->graph(6)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_timewalk_c[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_timewalk_c[fec][hybrid][chip].begin(), m_file_timewalk_c[fec][hybrid][chip].end()));
                         plot->graph(6)->setPen(QPen(Qt::green,2,Qt::SolidLine));
                         plot->graph(6)->setName("c from file");
 
                         plot->addGraph();
                         plot->graph(7)->setData(
-                            QVector<double>::fromStdVector(x),
-                            QVector<double>::fromStdVector(m_file_timewalk_d[fec][hybrid][chip]));
+                            QVector<double>(x.begin(), x.end()),
+                            QVector<double>(m_file_timewalk_d[fec][hybrid][chip].begin(), m_file_timewalk_d[fec][hybrid][chip].end()));
                         plot->graph(7)->setPen(QPen(Qt::cyan,2,Qt::SolidLine));
                         plot->graph(7)->setName("d from file");
                     }
@@ -3664,15 +3664,15 @@ void CalibrationModule::PlotData(){
                     }
                     plot->addGraph();
                     plot->graph(0)->setData(
-                        QVector<double>::fromStdVector(x),
-                        QVector<double>::fromStdVector(y));
+                        QVector<double>(x.begin(), x.end()),
+                        QVector<double>(y.begin(), y.end()));
                     plot->graph(0)->setScatterStyle(QCPScatterStyle::ssDisc);
                     plot->graph(0)->setPen(QPen(Qt::blue));
 
                     plot->addGraph();
                     plot->graph(1)->setData(
-                        QVector<double>::fromStdVector(xf),
-                        QVector<double>::fromStdVector(yf));
+                        QVector<double>(xf.begin(), xf.end()),
+                        QVector<double>(yf.begin(), yf.end()));
                     plot->graph(1)->setPen(QPen(Qt::red));
                     plot->graph(0)->setName("measured");
                     plot->graph(1)->setName(QString("4PL-fit:  a=") + QString::number( m_fit_a[fec][hybrid][chip][ch],'f',2)  + QString(", b=") + QString::number( m_fit_b[fec][hybrid][chip][ch],'f',2)
@@ -3692,8 +3692,8 @@ void CalibrationModule::PlotData(){
                 for(int bit=0; bit<m_number_bits;bit++){
                     plot->addGraph();
                     plot->graph(bit)->setData(
-                        QVector<double>::fromStdVector(m_x),
-                        QVector<double>::fromStdVector(m_mean[bit][fec][hybrid][chip]));
+                        QVector<double>(m_x.begin(), m_x.end()),
+                        QVector<double>(m_mean[bit][fec][hybrid][chip].begin(), m_mean[bit][fec][hybrid][chip].end()));
                     plot->graph(bit)->setPen(QPen(QColor(static_cast<unsigned int>(bit)*colorFactor)));
                     plot->legend->removeItem(plot->legend->itemCount()-1);
                 }
@@ -3701,9 +3701,9 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(n_graph)->setPen(QPen(Qt::red,4,Qt::SolidLine));
                 plot->graph(n_graph)->setName("Best common value");
-                plot->graph(n_graph)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                plot->graph(n_graph)->setData( QVector<double>(m_x.begin(), m_x.end()), QVector<double>(m_y[fec][hybrid][chip].begin(), m_y[fec][hybrid][chip].end()));
                 plot->addGraph();
-                plot->graph(n_graph+1)->setData(QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(m_calVal[fec][hybrid][chip] ));
+                plot->graph(n_graph+1)->setData(QVector<double>(m_x.begin(), m_x.end()), QVector<double>(m_calVal[fec][hybrid][chip].begin(), m_calVal[fec][hybrid][chip].end()));
                 plot->graph(n_graph+1)->setPen(QPen(Qt::green,4,Qt::SolidLine));
                 plot->graph(n_graph+1)->setName("Calibrated curve");
                 plot->yAxis->rescale();
@@ -3725,7 +3725,7 @@ void CalibrationModule::PlotData(){
                             y.push_back(cnt/(1000*theTime));
                         }
                     }
-                    plot->graph(0)->setData( QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(y));
+                    plot->graph(0)->setData( QVector<double>(x.begin(), x.end()), QVector<double>(y.begin(), y.end()));
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
                     plot->graph(0)->setLineStyle(QCPGraph::lsLine);
                     plot->graph(0)->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssDisc, 3));
@@ -3742,7 +3742,7 @@ void CalibrationModule::PlotData(){
                     for(int bit=0; bit<m_number_bits;bit++) {
                         errors.push_back(sqrt(m_channel_y[idx][bit])/(1000*m_time[bit]));
                     }
-                    errorBars->setData(QVector<double>::fromStdVector(errors));
+                    errorBars->setData(QVector<double>(errors.begin(), errors.end()));
 
                     if(m_fit_scale[idx] != -9999.0 && m_fit_mean[idx] != -9999.0 && m_fit_sigma[idx] != -9999.0) {
                         plot->addGraph();
@@ -3761,7 +3761,7 @@ void CalibrationModule::PlotData(){
                             }
                             fit.push_back(val);
                         }
-                        plot->graph(1)->setData( QVector<double>::fromStdVector(x), QVector<double>::fromStdVector(fit));
+                        plot->graph(1)->setData( QVector<double>(x.begin(), x.end()), QVector<double>(fit.begin(), fit.end()));
                         plot->graph(1)->setPen(QPen(Qt::red,2,Qt::SolidLine));
                         plot->graph(1)->setLineStyle(QCPGraph::lsLine);
                         plot->graph(1)->setName(QString("Fit\nScale ") + QString::number(m_fit_scale[idx],'f',2)  + " (+/- " + QString::number(m_fit_error_scale[idx],'f',5) + ")"
@@ -3791,14 +3791,14 @@ void CalibrationModule::PlotData(){
                     errorBars->setPen(QPen(QColor(180,180,180)));
 
                     if(idx == 0) {
-                        plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(y_mean));
+                        plot->graph(0)->setData( QVector<double>(m_x.begin(), m_x.end()), QVector<double>(y_mean.begin(), y_mean.end()));
                         plot->graph(0)->setName(QString("Fit mean"));
-                        errorBars->setData(QVector<double>::fromStdVector(error_mean));
+                        errorBars->setData(QVector<double>(error_mean.begin(), error_mean.end()));
                     }
                     else {
-                        plot->graph(0)->setData( QVector<double>::fromStdVector(m_x), QVector<double>::fromStdVector(y_sigma));
+                        plot->graph(0)->setData( QVector<double>(m_x.begin(), m_x.end()), QVector<double>(y_sigma.begin(), y_sigma.end()));
                         plot->graph(0)->setName(QString("Fit sigma"));
-                        errorBars->setData(QVector<double>::fromStdVector(error_sigma));
+                        errorBars->setData(QVector<double>(error_sigma.begin(), error_sigma.end()));
                     }
 
                     plot->graph(0)->setPen(QPen(Qt::blue,2,Qt::SolidLine));
@@ -3818,20 +3818,20 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Total Threshold"));
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                    QVector<double>(m_x.begin(), m_x.end()),
+                    QVector<double>(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end()));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
                 plot->addGraph();
                 plot->graph(1)->setName(QString("Channel Threshold"));
                 plot->graph(1)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[1][fec][hybrid][chip]));
+                    QVector<double>(m_x.begin(), m_x.end()),
+                    QVector<double>(m_mean[1][fec][hybrid][chip].begin(), m_mean[1][fec][hybrid][chip].end()));
                 plot->graph(1)->setPen(QPen(Qt::darkGreen,1,Qt::SolidLine));
                 plot->addGraph();
                 plot->graph(2)->setName(QString("Global Threshold"));
                 plot->graph(2)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[2][fec][hybrid][chip]));
+                    QVector<double>(m_x.begin(), m_x.end()),
+                    QVector<double>(m_mean[2][fec][hybrid][chip].begin(), m_mean[2][fec][hybrid][chip].end()));
                 plot->graph(2)->setPen(QPen(Qt::red,1,Qt::DashLine));
                 plot->yAxis->rescale();
             }
@@ -3843,8 +3843,8 @@ void CalibrationModule::PlotData(){
                 plot->addGraph();
                 plot->graph(0)->setName(QString("Pedestal"));
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_x),
-                    QVector<double>::fromStdVector(m_mean[0][fec][hybrid][chip]));
+                    QVector<double>(m_x.begin(), m_x.end()),
+                    QVector<double>(m_mean[0][fec][hybrid][chip].begin(), m_mean[0][fec][hybrid][chip].end()));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
 
             }
@@ -3862,8 +3862,8 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_dac_setting),
-                    QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                    QVector<double>(m_dac_setting.begin(), m_dac_setting.end()),
+                    QVector<double>(m_y[fec][hybrid][chip].begin(), m_y[fec][hybrid][chip].end()));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
             }
             //Threshold DAC
@@ -3880,8 +3880,8 @@ void CalibrationModule::PlotData(){
                 plot->graph(0)->setName(QString("measured DAC [mV]\n(slope low: ") + QString::number(slope_low,'f',2)  + ", offset low " + QString::number(offset_low,'f',2) + ",\n"
                                         + QString("slope high: ") + QString::number(slope_high,'f',2)  + QString(", offset high ") + QString::number(offset_high,'f',2) + ")");
                 plot->graph(0)->setData(
-                    QVector<double>::fromStdVector(m_dac_setting),
-                    QVector<double>::fromStdVector(m_y[fec][hybrid][chip]));
+                    QVector<double>(m_dac_setting.begin(), m_dac_setting.end()),
+                    QVector<double>(m_y[fec][hybrid][chip].begin(), m_y[fec][hybrid][chip].end()));
                 plot->graph(0)->setPen(QPen(Qt::blue,1,Qt::SolidLine));
             }
             //Latency calibration
@@ -4128,35 +4128,40 @@ void CalibrationModule::StartCalibration(){
             QStringList list = QInputDialog::getText(nullptr, tr("Time calibration"),
                                                      tr("Do you want to set the pulser DAC value [1-1023], the threshold DAC [1-1023] and the BCID percentage [0.0-1.0] for the fit\n(-1 means the values are automatically chosen, Threshold=0 takes threshold active in slow control)?"),
                                                      QLineEdit::Normal,"DAC=-1,THR=-1,BCID_PERCENT=-1",&ok).split(",");
-            if(ok && list.count() == 3) {
-                QString str = list[0];
-                QVector<QStringRef> words = str.splitRef('=');
-                QString param = words[0].toString();
-                QString val = words[1].toString();
-                if(param=="DAC") {
-                    m_pulser_dac = val.toInt();
-                }
 
-                str = list[1];
-                words = str.splitRef('=');
-                param = words[0].toString();
-                val = words[1].toString();
-                if(param=="THR") {
-                    if(val.toDouble()>=0) {
-                        m_threshold = val.toDouble();
-                    }
-                }
+			if (ok && list.count() == 3)
+			{
+				QString str = list[0];
+				QVector<QStringView> words = QStringView{str}.split('=');
+				QString param = words[0].toString();
+				QString val = words[1].toString();
+				if (param == "DAC")
+				{
+					m_pulser_dac = val.toInt();
+				}
 
-                str = list[2];
-                words = str.splitRef('=');
-                param = words[0].toString();
-                val = words[1].toString();
-                if(param=="BCID_PERCENT") {
-                    m_bcid_percentage = val.toDouble();
-                }
-            }
+				str = list[1];
+				words = QStringView{str}.split('=');
+				param = words[0].toString();
+				val = words[1].toString();
+				if (param == "THR")
+				{
+					if (val.toDouble() >= 0)
+					{
+						m_threshold = val.toDouble();
+					}
+				}
 
-        }
+				str = list[2];
+				words = QStringView{str}.split('=');
+				param = words[0].toString();
+				val = words[1].toString();
+				if (param == "BCID_PERCENT")
+				{
+					m_bcid_percentage = val.toDouble();
+				}
+			}
+		}
         else if(m_modeIndex == 3){
             ApplyCalib(true);
         }
@@ -4194,14 +4199,15 @@ void CalibrationModule::StartCalibration(){
         else {
             for(int n=0; n<list.count();n++) {
                 QString str = list[n];
-                QVector<QStringRef> words = str.splitRef('=');
-                if(words.size() != 2) {
-                    QMessageBox::warning(nullptr, tr("S-curve input parameters"),
+				QVector<QStringView> words = QStringView{str}.split('=');
+				if (words.size() != 2)
+				{
+					QMessageBox::warning(nullptr, tr("S-curve input parameters"),
                                          "The correct format is PARAMETER=VALUE!\n",
                                          QMessageBox::Ok);
                     return;
-                }
-                QString param = words[0].toString();
+				}
+				QString param = words[0].toString();
                 QString val = words[1].toString();
                 if(param == "FEC") {
                     m_theFEC = val.toInt();
@@ -4355,9 +4361,9 @@ void CalibrationModule::StartCalibration(){
                                                  QLineEdit::Normal,"CH=-1,THR=-1",&ok).split(",");
         if(ok && list.count() == 2) {
             QString str = list[0];
-            QVector<QStringRef> words = str.splitRef('=');
-            QString param = words[0].toString();
-            QString val = words[1].toString();
+			QVector<QStringView> words = QStringView{str}.split('=');
+			QString param = words[0].toString();
+			QString val = words[1].toString();
             if(param == "CH") {
                 if(val.toInt() > -1) {
                     m_theChannel = val.toInt();
@@ -4365,8 +4371,8 @@ void CalibrationModule::StartCalibration(){
             }
 
             str = list[1];
-            words = str.splitRef('=');
-            param = words[0].toString();
+			words = QStringView{str}.split('=');
+			param = words[0].toString();
             val = words[1].toString();
             if(param.toStdString() == "THR") {
                 if(val.toDouble()>=0) {

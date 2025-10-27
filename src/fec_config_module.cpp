@@ -2663,7 +2663,7 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
         if(g_slow_control != 2) {
             result = ESS_ReadSc("sc_i2c_config_check", hybrid_index, "hyb_i2c_config_check0" + QString::number(hybrid_index), ok);
             if(!ok) {
-                result = -1;
+                result = "-1";
             }
         }
         else {
@@ -2696,7 +2696,7 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
         if(g_slow_control != 2) {
             result = ESS_ReadSc("sc_i2c_config_check", hybrid_index, "hyb_i2c_config_check0" + QString::number(hybrid_index), ok);
             if(!ok) {
-                result = -1;
+                result = "-1";
             }
         }
         else {
