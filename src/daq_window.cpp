@@ -329,7 +329,7 @@ void DAQWindow::LoadConfig(QString text){
         bool found = this->m_daqConfig->LoadDAQConf(fname.c_str());
         if (!found){
             std::cout << "File not found" << std::endl;
-            m_ui->line_configFile->insert("ERROR: not found");
+            m_ui->line_configFile->insert(" : not found");
         }
 
         else {
@@ -1034,18 +1034,8 @@ void DAQWindow::onUpdateDAQSettings(){
                                                       tr("Select config file"), this->GetApplicationPath() + "/../configs",
                                                       tr("Text (*.json)") );
         if(dirStr=="") return;
-        if(!dirStr.contains("/configs/")){
-            qDebug()<< "Config file not located in config folder/subfolder  -- Abort";
-            m_ui->line_configFile->setText("ERROR: config file not in config folder");
-            return;
-        }
-        QString fname = dirStr.split("/").last();
-        if(fname.endsWith(".json")) {
-            fname.remove(fname.size()-5,5);
-        }
-
-        m_ui->line_configFile->setText(fname);
-        emit m_ui->Button_load->clicked();
+		m_ui->line_configFile->setText(dirStr);
+		emit m_ui->Button_load->clicked();
     }
     else if(QObject::sender() == m_ui->Button_load){
         QString text = m_ui->line_configFile->displayText();
@@ -1356,8 +1346,8 @@ void DAQWindow::onUpdateDAQSettings(){
                     }
                 }
                 bool ok;
-                int hybrid = QInputDialog::getInt(nullptr, "Add hybrid to " + g_card_name + " " + fecIndex + ":",
-                                                  tr("Hybrid number?"),freeHybridIndex,0,7,1,&ok);
+                int hybrid = QInputDialog::getInt(nullptr, "Add hybrid to " + g_card_name + " "
+                    + QString::number(fecIndex) + ":", tr("Hybrid number?"),freeHybridIndex,0,7,1,&ok);
                 if(ok && !m_daq.m_fecs[fecIndex].GetHybrid(hybrid)) {
                     QTreeWidgetItem *hybridItem = new QTreeWidgetItem();
                     hybridItem->setText(0,"Hybrid "+QString::number(hybrid));
@@ -3584,5 +3574,3 @@ void DAQWindow::onUpdateVMMChannelSettings()
         }
     }
 }
-
-

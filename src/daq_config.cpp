@@ -9,13 +9,17 @@ DAQConfig::DAQConfig(DAQWindow *top, QObject *parent)
 
 bool DAQConfig::LoadDAQConf(const char *filename) {
     // add config path before file name
-    std::string fname = m_daqWindow->GetApplicationPath().toStdString();
-    fname += "/../";
-    fname += CONFIG_DIR;
-    fname += "/";
-    fname += filename;
-    std::cout << filename << " " << fname.c_str() << std::endl;
-    return LoadDAQConfig(fname);
+	if (not LoadDAQConfig(filename))
+	{
+		std::string fname = m_daqWindow->GetApplicationPath().toStdString();
+		fname += "/../";
+		fname += CONFIG_DIR;
+        fname += "/";
+        fname += filename;
+        std::cout << filename << " " << fname.c_str() << std::endl;
+        return LoadDAQConfig(fname);
+    }
+	return true;
 }
 
 bool DAQConfig::WriteDAQConf(const char *filename) {
@@ -30,9 +34,10 @@ bool DAQConfig::WriteDAQConf(const char *filename) {
 bool DAQConfig::LoadDAQConfig(std::string fname) {
     QFile file;
     file.setFileName(QString::fromStdString(fname));
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString val = file.readAll();
-    file.close();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		return false;
+	QString val = file.readAll();
+	file.close();
     QJsonDocument doc = QJsonDocument::fromJson(val.toUtf8());
     QJsonObject globalObject = doc.object();
 
