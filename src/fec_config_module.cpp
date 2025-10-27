@@ -51,9 +51,15 @@ FECConfigModule& FECConfigModule::LoadSocket(SocketHandler& socket)
 }
 
 // ------------------------------------------------------------------------ //
+/// @brief Apply configuration to VMM chip.
+/// @return false if configuration was successful, true if there was an error.
+/// @warning The convention for the return value is *HIGHLY UNUSUAL and MISLEADING*: consider refactoring.
+/// @param hybrid_index Index of the hybrid with this FEC module for which VMM configuration is checked.
+/// @param vmm_index Index of the VMM chip within the specified Hybrid.
+/// @param enableConfigCheck Check VMM configuration after applying it to the chip.
 bool FECConfigModule::ConfigVMM(int hybrid_index, int vmm_index, bool enableConfigCheck)
 {
-    bool result = true;
+    bool errorOccured = false;
     bool ok;
 
     ///////////////////////////////////////////////////
@@ -69,8 +75,9 @@ bool FECConfigModule::ConfigVMM(int hybrid_index, int vmm_index, bool enableConf
     FillGlobalRegisters(globalRegisters, hybrid_index,  vmm_index);
     if(globalRegisters.size()!=3){
         GetMessageHandler()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
-        return -1;
-    }
+		errorOccured = true;
+		return errorOccured;
+	}
     ///////////////////////////////////////////////////
     // Channel Registers
     ///////////////////////////////////////////////////
@@ -79,9 +86,10 @@ bool FECConfigModule::ConfigVMM(int hybrid_index, int vmm_index, bool enableConf
     FillChannelRegisters(channelRegisters, hybrid_index,  vmm_index);
     if(channelRegisters.size()!=64){
         GetMessageHandler()("ERROR Channel registers do not have 64 values", "FEC_config_module::SendConfig", true);
-        return -1;
-    }
-    ///////////////////////////////////////////////////
+		errorOccured = true;
+		return errorOccured;
+	}
+	///////////////////////////////////////////////////
     // Global SPI_2
     ///////////////////////////////////////////////////
     std::vector<QString> globalRegisters2;
@@ -89,11 +97,11 @@ bool FECConfigModule::ConfigVMM(int hybrid_index, int vmm_index, bool enableConf
     FillGlobalRegisters2(globalRegisters2, hybrid_index,  vmm_index);
     if(globalRegisters2.size()!=3){
         GetMessageHandler()("ERROR Global SPI does not have 3 words", "FEC_config_module::SendConfig", true);
-        return -1;
-    }
+		errorOccured = true;
+		return errorOccured;
+	}
 
-
-    if(g_slow_control != 2) {
+	if(g_slow_control != 2) {
         int idx = hybrid_index*2+vmm_index;
         if(g_use_config_check) {
             //reset I2C address 65 register 0
@@ -215,9 +223,10 @@ bool FECConfigModule::ConfigVMM(int hybrid_index, int vmm_index, bool enableConf
             GetMessageHandler()(sx);sx.str("");
         }
         if(!GetSocketHandler().SendDatagram(datagram, ip, send_to_port, "FEC_config_module::SendConfig")) {
-            return -1;
-        }
-        //sleep(2);
+			errorOccured = true;
+			return errorOccured;
+		}
+		//sleep(2);
         readOK = GetSocketHandler().WaitForReadyRead();
         if(readOK) {
             if(IsDbgEnabled())GetMessageHandler()("Processing replies...", "FEC_config_module::SendConfig");
@@ -226,17 +235,18 @@ bool FECConfigModule::ConfigVMM(int hybrid_index, int vmm_index, bool enableConf
         else {
             GetMessageHandler()("Timeout while waiting for replies from VMM", "FEC_config_module::SendConfig");
             GetSocketHandler().CloseAndDisconnect("Configuration::SendConfig");
-            return -1;
-        }
-    }
+			errorOccured = true;
+			return errorOccured;
+		}
+	}
     GetSocketHandler().CloseAndDisconnect("Configuration::SendConfig");
     if(g_use_config_check) {
         //poll I2C address 65 register 0
         if(enableConfigCheck) {
-            result = CheckConfigurationOfVMMs(hybrid_index, vmm_index);
-        }
+			errorOccured = CheckConfigurationOfVMMs(hybrid_index, vmm_index);
+		}
     }
-    return result;
+	return errorOccured;
 }
 
 
@@ -2620,9 +2630,12 @@ QString FECConfigModule::CommunicateWithHybridI2C(int i2c_addr, int hybrid_index
     return result;
 }
 
-
-
 // ------------------------------------------------------------------------ //
+/// @brief Checks if configuration of VMM chip went well.
+/// @return false if configuration was successful, true if there was an error
+/// @warning The convention for the return value is *HIGHLY UNUSUAL and MISLEADING*: consider refactoring.
+/// @param hybrid_index Index of the hybrid with this FEC module for which VMM configuration is checked.
+/// @param vmm_index Index of the VMM chip within the specified Hybrid.
 bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
 {
     //different phases of check
@@ -2632,18 +2645,18 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
 
     //Phase 1
     int counter = 0;
-    int bitToPoll=0;
-    int bitToCheck=0;
+    int pollBit=0;
+    int errorBit=0;
     QString result="0";
     bool ok;
 
     if(vmm_index == 0) {
-        bitToPoll = 0x08;
-        bitToCheck = 0x20;
+        pollBit = 0x08;
+        errorBit = 0x20;
     }
     else {
-        bitToPoll = 0x10;
-        bitToCheck = 0x40;
+        pollBit = 0x10;
+        errorBit = 0x40;
     }
     while(counter < 10) {
         counter++;
@@ -2671,7 +2684,7 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
 
         uint32_t res = result.toUInt(&ok, 16);
         //std::cout << "Config check: reading cyle nr " << counter << ",  " << (res & bitToPoll) << std::endl;
-        if((res & bitToPoll) ==  bitToPoll) {
+        if((res & pollBit) ==  pollBit) {
             QThread::msleep(10);
             counter = 0;
             break;
@@ -2702,7 +2715,7 @@ bool FECConfigModule::CheckConfigurationOfVMMs(int hybrid_index, int vmm_index)
         bool ok;
         int res = result.toUInt(&ok, 16);
         //std::cout << counter << " " << res << " " << bitToCheck << " " << (res & bitToCheck) << std::endl;
-        if((res & bitToCheck) ==  0x00) {
+        if((res & errorBit) !=  0x00) {
             QThread::msleep(10);
             return true;
         }

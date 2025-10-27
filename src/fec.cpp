@@ -68,11 +68,8 @@ void FEC::SendAll(bool useConfigCheck){
             m_fecConfigModule->ConfigHybrid(k);
 
             for (unsigned short m=0; m < VMMS_PER_HYBRID; m++){
-                bool result = m_fecConfigModule->ConfigVMM(k, m, useConfigCheck);
-                if(!result) {
-                    config_error[k*VMMS_PER_HYBRID+m] = 1;
-                }
-            }
+				config_error[k * VMMS_PER_HYBRID + m] = m_fecConfigModule->ConfigVMM(k, m, useConfigCheck);
+			}
         }
     }
 

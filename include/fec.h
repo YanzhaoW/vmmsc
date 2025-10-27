@@ -74,7 +74,7 @@ private:
     std::vector<const char*> *m_regNames;
     std::vector<unsigned long> *m_reg;
     char *m_chr;
-    int config_error[HYBRIDS_PER_FEC*VMMS_PER_HYBRID];
+    bool config_error[HYBRIDS_PER_FEC*VMMS_PER_HYBRID];
     std::map<std::string, std::string> m_fec_info;
     int m_index=0;
     //For FEC, last part of the IP address, for assister combination from ring and FEN
