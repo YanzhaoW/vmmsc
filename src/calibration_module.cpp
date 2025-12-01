@@ -1,4 +1,5 @@
 #include <cmath>
+#include <QFlags>
 #include <numeric>
 #include <QJsonDocument>
 #include <QJsonArray>
