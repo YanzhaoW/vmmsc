@@ -1,0 +1,23 @@
+target_sources(
+  vmmdcs
+  PUBLIC FILE_SET
+         HEADERS
+         BASE_DIRS
+         ${CMAKE_CURRENT_SOURCE_DIR}
+         FILES
+         calibration_module.h
+         CMakeLists.txt
+         daq_config.h
+         daq_window.h
+         daq.h
+         daq_window.ui
+         fec_config_module.h
+         fec.h
+         globparameter.h
+         hybrid.h
+         message_handler.h
+         qcustomplot.h
+         socket_handler.h
+         vmm_sys_regs_map.h
+         vmm.h
+         vmmsocket.h)

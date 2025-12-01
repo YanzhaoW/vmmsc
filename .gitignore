@@ -43,4 +43,6 @@ attic/
 build/*
 !build/vmmdcs.pro
 
+.cache
+
 

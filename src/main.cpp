@@ -1,3 +1,4 @@
+#include <QFlags>
 #include <QApplication>
 #include "daq_window.h"
 #include <QStyleFactory>
